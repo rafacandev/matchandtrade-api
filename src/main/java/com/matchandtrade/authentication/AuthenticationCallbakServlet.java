@@ -7,17 +7,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.matchandtrade.common.util.ApplicationContextProvider;
 import com.matchandtrade.configuration.AuthenticationProperties;
 
+@Component
 public class AuthenticationCallbakServlet extends HttpServlet {
 	private static final long serialVersionUID = -6183491052218601077L;
 	
-	private static final ApplicationContext context = ApplicationContextProvider.getApplicationContext();
-	private static AuthenticationProperties authenticationProperties = (AuthenticationProperties) context.getBean("authenticationProperties");
-	private static AuthenticationOAuth authenticationOAuth = (AuthenticationOAuth) context.getBean("authenticationOAuth");
+	@Autowired
+	private AuthenticationProperties authenticationProperties;
+	@Autowired
+	private AuthenticationOAuth authenticationOAuth;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -85,6 +87,7 @@ public class AuthenticationCallbakServlet extends HttpServlet {
 		result.setUserId(1);
 		result.setEmail(email);
 		result.setName(name);
+		result.setNewUser(true);
 		return result;
 	}
 }

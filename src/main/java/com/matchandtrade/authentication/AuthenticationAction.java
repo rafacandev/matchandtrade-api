@@ -7,7 +7,7 @@ package com.matchandtrade.authentication;
  */
 public enum AuthenticationAction {
 
-	AUTHENTICATE, SIGNOUT;
+	AUTHENTICATE, CALLBACK, SIGNOUT;
 
 	public static AuthenticationAction get(String s) {
 		AuthenticationAction result = null;
@@ -18,6 +18,9 @@ public enum AuthenticationAction {
 		case "sign-out":
 			result = AuthenticationAction.SIGNOUT;
 			break;
+		case "callback":
+			result = AuthenticationAction.CALLBACK;
+			break;			
 		default:
 			// There is no default value
 			break;

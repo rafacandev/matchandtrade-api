@@ -26,7 +26,7 @@
 	<bean id="authenticationProperties" class="com.matchandtrade.configuration.AuthenticationProperties">
 		<property name="clientId" value="clientId"/>
 		<property name="clientSecret" value="clientSecret"/>
-		<property name="redirectURI" value="http://localhost:8080/authenticatecallback"/>
+		<property name="redirectURI" value="http://localhost:8080/authenticate/callback"/>
 	</bean>
 	<!--
 		For testing purposes use "AuthenticationOAuthTestExistingUser" if you want to mock an authentication server.

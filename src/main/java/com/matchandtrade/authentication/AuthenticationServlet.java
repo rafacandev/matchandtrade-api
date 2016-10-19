@@ -24,6 +24,8 @@ public class AuthenticationServlet extends HttpServlet {
 	private AuthenticationProperties authenticationProperties;
 	@Autowired
 	private AuthenticationOAuth authenticationOAuth;
+	@Autowired
+	private AuthenticationCallbakServlet authenticationCallbakServlet;
 	
 	/**
 	 * Delegates the request to the correct action.
@@ -39,6 +41,8 @@ public class AuthenticationServlet extends HttpServlet {
 			singOut(request, response);
 		} else if (targetAction == AuthenticationAction.AUTHENTICATE) {
 			redirectToAuthenticationServer(request, response);
+		} else if (targetAction == AuthenticationAction.CALLBACK) {
+			authenticationCallbakServlet.doGet(request, response);
 		}
 		response.getOutputStream().print("Hello from AuthenticationServlet. targetAction: " + targetAction);
 	}
