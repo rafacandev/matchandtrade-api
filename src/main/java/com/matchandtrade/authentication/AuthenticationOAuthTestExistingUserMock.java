@@ -20,9 +20,6 @@ import org.apache.http.client.utils.URIBuilder;
  *
  */
 public class AuthenticationOAuthTestExistingUserMock implements AuthenticationOAuth {
-//
-//	@Autowired
-//	UserDao userDao;
 
 	@Override
 	public void redirectToAuthorizationServer(HttpServletResponse response, String state, String clientId, String redirectURI) throws AuthenticationException {

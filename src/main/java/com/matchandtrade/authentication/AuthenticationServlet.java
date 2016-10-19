@@ -11,14 +11,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.matchandtrade.configuration.AuthenticationProperties;
 
 
 @WebServlet(name="authenticationServlet", urlPatterns="/authenticate/*")
+@Component
 public class AuthenticationServlet extends HttpServlet {
 	private static final long serialVersionUID = 373664290851751809L;
+	
+	private final Logger logger = LoggerFactory.getLogger(AuthenticationServlet.class);
 	
 	@Autowired
 	private AuthenticationProperties authenticationProperties;
@@ -44,7 +50,8 @@ public class AuthenticationServlet extends HttpServlet {
 		} else if (targetAction == AuthenticationAction.CALLBACK) {
 			authenticationCallbakServlet.doGet(request, response);
 		}
-		response.getOutputStream().print("Hello from AuthenticationServlet. targetAction: " + targetAction);
+		logger.debug("Authentication Action not found for URL {}.", request.getRequestURI());
+		response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
 	}
 
 	private String generateAntiForgeryToken() {

@@ -20,6 +20,7 @@
 		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 		
 	<import resource="file:${matchandtrade.config.file:src/config/matchandtrade-config.xml}" />
+	<import resource="application-context-hibernate.xml" />
 <!-- 
 	<import resource="application-context-common.xml" />
 	<import resource="classpath:META-INF/cxf/cxf.xml" />

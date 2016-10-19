@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -44,7 +45,7 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 		httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		try {
-			CloseableHttpResponse httpPostResponse = httpClient.execute(httpPost);
+			CloseableHttpResponse httpPostResponse = httpClientExecutePost(httpPost, httpClient);
 			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(httpPostResponse.getEntity().getContent()));
 			StringBuilder responseString = new StringBuilder();
@@ -59,11 +60,22 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 			@SuppressWarnings("unchecked")
 			Map<String,Object> accessMap = jacksonObjectMapper.readValue(responseString.toString(), Map.class);
 			String accessToken = (String) accessMap.get("access_token");
+			
+			if (accessToken == null) {
+				throw new AuthenticationException("access_token parameter not found on response body: [" + responseString + "].");
+			}
+			
 			return accessToken;
 		} catch (UnsupportedOperationException | IOException e) {
 			System.out.println("Not able to obtain access token." + e.getMessage());
 			throw new AuthenticationException(e);
 		}
+	}
+
+	CloseableHttpResponse httpClientExecutePost(HttpPost httpPost, CloseableHttpClient httpClient)
+			throws IOException, ClientProtocolException {
+		CloseableHttpResponse httpPostResponse = httpClient.execute(httpPost);
+		return httpPostResponse;
 	}
 
 	@Override
@@ -83,8 +95,7 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 		httpGet.setHeader("Authorization", "Bearer " + accessToken);
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		try {
-			CloseableHttpResponse httpPostResponse;
-			httpPostResponse = httpClient.execute(httpGet);
+			CloseableHttpResponse httpPostResponse = httpClient.execute(httpGet);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(httpPostResponse.getEntity().getContent()));
 
 			StringBuilder respString = new StringBuilder();
