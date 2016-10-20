@@ -1,4 +1,4 @@
-package com.matchandtrade.service.json;
+package com.matchandtrade.controller.json;
 
 public class UserJson extends JsonLinkSupport {
 

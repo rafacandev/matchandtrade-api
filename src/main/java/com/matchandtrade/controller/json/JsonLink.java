@@ -1,4 +1,4 @@
-package com.matchandtrade.service.json;
+package com.matchandtrade.controller.json;
 
 /**
  * Stores link attributes for hypermedia usage.

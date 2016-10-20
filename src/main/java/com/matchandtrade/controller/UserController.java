@@ -1,29 +1,21 @@
-package com.matchandtrade.service;
+package com.matchandtrade.controller;
 import java.util.Date;
-
-import javax.websocket.server.PathParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Provider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.matchandtrade.controller.json.UserJson;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.service.json.UserJson;
 
 //@Api(value = "/users")
 //@Path("/users")
 @RestController
 @RequestMapping(path="/users")
-public class UserService {
+public class UserController {
 
 	@Autowired
 	private UserModel model;
