@@ -14,7 +14,7 @@ import com.matchandtrade.persistence.entity.UserEntity;
 //@Api(value = "/users")
 //@Path("/users")
 @RestController
-@RequestMapping(path="/users")
+@RequestMapping(path="/rest/v1/users")
 public class UserController {
 
 	@Autowired
