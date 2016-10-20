@@ -1,4 +1,4 @@
-package com.matchandtrade.configuration;
+package com.matchandtrade.config;
 
 public class AuthenticationProperties {
 	

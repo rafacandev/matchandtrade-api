@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.configuration.AuthenticationProperties;
+import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.dao.UserDao;
 import com.matchandtrade.persistence.entity.UserEntity;
 

@@ -27,7 +27,6 @@ public abstract class Dao<T extends Entity> {
 
     protected abstract Criteria buildSearchCriteria(SearchCriteria searchCriteria);
 
-    @SuppressWarnings("unchecked")
     @Transactional
     public T get(Integer id) {
         Session session = sessionFactory.getCurrentSession();

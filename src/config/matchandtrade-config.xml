@@ -23,7 +23,7 @@
 	</bean>
 
 	<!-- Authentication properties -->
-	<bean id="authenticationProperties" class="com.matchandtrade.configuration.AuthenticationProperties">
+	<bean id="authenticationProperties" class="com.matchandtrade.config.AuthenticationProperties">
 		<property name="clientId" value="clientId"/>
 		<property name="clientSecret" value="clientSecret"/>
 		<property name="redirectURI" value="http://localhost:8080/authenticate/callback"/>
