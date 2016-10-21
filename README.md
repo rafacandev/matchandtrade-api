@@ -16,7 +16,7 @@ Match and Trade is a website where people post their unwanted items. Next, the w
 
 Download the source code:
 
-`git clone zzzzzzzzz`
+`git clone https://github.com/rafasantos/matchandtrade.git`
 
 Build the source code. The files will be generated on the `/target` folder:
 
@@ -54,7 +54,12 @@ Swagger page:
 
 You can change the logging level with the property `logging.level.root=DESIRED_LOGGING_LEVEL` or changing the `logback.xml`.
 
-Example: `mvn spring-boot:run -Dlogging.level.root=debug` or `mvn test -Dlogging.level.root=debug` or `java -jar /target/webservice-0.0.1-SNAPSHOT.jar -Dlogging.level.root=debug`
+Examples:
+```
+mvn spring-boot:run -Dlogging.level.root=debug
+mvn test -Dlogging.level.root=debug
+java -jar /target/webservice-0.0.1-SNAPSHOT.jar -Dlogging.level.root=debug
+```
 
 
 [1]: https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html "Install Java JDK"
