@@ -14,9 +14,9 @@
 		</encoder>
 	</appender>
 
-	<logger level="DEBUG" name="com.matchandtrade.persistance" />
+	<logger level="inherited" name="com.matchandtrade" />
 
-	<root level="INFO">
+	<root level="${logging.level.root:-info}">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 	</root>

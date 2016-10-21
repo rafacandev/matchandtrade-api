@@ -13,6 +13,7 @@
 
 	<!-- Set noisy testing loggers to level=error -->	
     <logger name="org.springframework" level="error" />
+    <logger name="springfox" level="error" />
     <logger name="org.hibernate" level="error" />
 
 </configuration>

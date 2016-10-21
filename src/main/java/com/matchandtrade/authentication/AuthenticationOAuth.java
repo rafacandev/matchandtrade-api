@@ -12,7 +12,7 @@ public interface AuthenticationOAuth {
 
 	public UserAuthentication obtainUserInformation(String accessToken) throws AuthenticationException;
 	
-	public void redirectToAuthorizationServer(
+	public void redirectToAuthorizationAuthority(
 			HttpServletResponse response,
 			String state,
 			String clientId,

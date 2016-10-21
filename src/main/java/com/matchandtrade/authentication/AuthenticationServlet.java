@@ -31,27 +31,27 @@ public class AuthenticationServlet extends HttpServlet {
 	@Autowired
 	private AuthenticationOAuth authenticationOAuth;
 	@Autowired
-	private AuthenticationCallbakServlet authenticationCallbakServlet;
+	private AuthenticationCallback authenticationCallbakServlet;
 	
 	/**
 	 * Delegates the request to the correct action.
-	 * If request.getRequestURI() ends in 'sing-out' it ends the session.
+	 * If request.getRequestURI() ends in 'sign-out' it ends the session.
 	 * Otherwise proceeds with the regular user authentication process.
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		AuthenticationAction targetAction = getAuthenticationAction(request);
+		logger.debug("Performing Authentication Action {} for requet [{}].", targetAction, request.getRequestURI());
 		if (targetAction == null) {
 			response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
 		} else if (targetAction == AuthenticationAction.SIGNOUT) {
-			singOut(request, response);
+			signOut(request, response);
+			response.setStatus(Response.Status.RESET_CONTENT.getStatusCode());
 		} else if (targetAction == AuthenticationAction.AUTHENTICATE) {
 			redirectToAuthenticationServer(request, response);
 		} else if (targetAction == AuthenticationAction.CALLBACK) {
 			authenticationCallbakServlet.doGet(request, response);
 		}
-		logger.debug("Authentication Action not found for URL {}.", request.getRequestURI());
-		response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
 	}
 
 	private String generateAntiForgeryToken() {
@@ -81,11 +81,12 @@ public class AuthenticationServlet extends HttpServlet {
 		request.getSession().setAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString(), state);
 
 		// 2. Send an authentication request to the OAuth server
-		authenticationOAuth.redirectToAuthorizationServer(response, state, authenticationProperties.getClientId(), authenticationProperties.getRedirectURI());
+		authenticationOAuth.redirectToAuthorizationAuthority(response, state, authenticationProperties.getClientId(), authenticationProperties.getRedirectURI());
+		logger.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", authenticationProperties.getRedirectURI());
 	}
 	
-	private void singOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void signOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		logger.debug("Signing out from session id: [{}]", request.getSession().getId());
 		request.getSession().invalidate();
-		response.setStatus(Response.Status.OK.getStatusCode());
 	}
 }

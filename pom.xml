@@ -98,13 +98,12 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<parallel>suites</parallel>
 					<threadCount>4</threadCount>
 					<excludes>
-						<exclude>**/*Test.java</exclude>
+						<exclude>**/*Suite.java</exclude>						
 					</excludes>
 					<includes>
-						<include>**/*UnitTest.java</include>
+						<include>**/*Test.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -118,10 +117,10 @@
 					<threadCount>4</threadCount>
 					<excludes>
 						<exclude>**/*Test.java</exclude>
-						<exclude>**/*UnitSuite.java</exclude>
+						<exclude>**/*IT.java</exclude>
 					</excludes>
 					<includes>
-						<include>**/*IntegrationSuite.java</include>
+						<include>**/*Suite.java</include>
 					</includes>
 				</configuration>				
 			</plugin>
@@ -142,6 +141,9 @@
 						</reports>
 					</reportSet>
 				</reportSets>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>

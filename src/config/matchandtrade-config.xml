@@ -24,17 +24,17 @@
 
 	<!-- Authentication properties -->
 	<bean id="authenticationProperties" class="com.matchandtrade.config.AuthenticationProperties">
-		<property name="clientId" value="clientId"/>
-		<property name="clientSecret" value="clientSecret"/>
-		<property name="redirectURI" value="http://localhost:8080/authenticate/callback"/>
+			<property name="clientId" value="clientIdProperty"/>
+			<property name="clientSecret" value="clientSecretProperty"/>
+			<property name="redirectURI" value="http://localhost:8080/authenticate/callback"/>
 	</bean>
 	<!--
-		For testing purposes use "AuthenticationOAuthTestExistingUser" if you want to mock an authentication server.
+		For testing purposes use "AuthenticationOAuthExistingUser" if you want to mock an authentication server.
 	-->
-	<bean id="authenticationOAuth" class="com.matchandtrade.authentication.AuthenticationOAuthTestExistingUserMock"/>
+	<bean id="authenticationOAuth" class="com.matchandtrade.authentication.AuthenticationOAuthExistingUserMock"/>
 	<!--
 		For real world OAuth implementations use "AuthenticationOAuthGoogle"
-		<bean id="authenticationOAuth" class="com.matchandtrade.authentication.AuthenticationOAuthGoogle"/>
+	<bean id="authenticationOAuth" class="com.matchandtrade.authentication.AuthenticationOAuthGoogle"/>
 	-->
 	
 </beans>

@@ -9,21 +9,61 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
+
+	private final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthGoogle.class);
 	
+	/**
+	 * Extracts the access token from the response string.
+	 * @param responseString
+	 * @return access token from response string.
+	 * @throws IOException
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 */
+	private String getAccessToken(String responseString) throws IOException, JsonParseException, JsonMappingException {
+		ObjectMapper jacksonObjectMapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
+		Map<String,Object> accessMap = jacksonObjectMapper.readValue(responseString, Map.class);
+		String accessToken = (String) accessMap.get("access_token");
+		return accessToken;
+	}
+	
+	/**
+	 * Returns the equivalent HttpResponse content as string.
+	 * @param httpResponse
+	 * @return string body representation from HttpResponse
+	 * @throws IOException
+	 */
+	private String getResponse(HttpResponse httpResponse) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+		StringBuilder responseString = new StringBuilder();
+		String line;
+		while((line = reader.readLine()) != null) {
+			responseString.append(line);
+		}
+		return responseString.toString();
+	}
 	
 	@Override
 	public String obtainAccessToken(String codeParameter, String clientId, String clientSecret, String redirectURI) throws AuthenticationException {
+		// Build access token URI
 		URI uri = null;
 		try {
 			uri = new URIBuilder()
@@ -37,49 +77,41 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 			        .setParameter("grant_type", "authorization_code" )
 			        .build();
 		} catch (URISyntaxException e) {
-			System.err.println("Error building uri. Exception message: " + e.getMessage() );
 			throw new AuthenticationException(e);
 		}
 		
 		HttpPost httpPost = new HttpPost(uri);
 		httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		CloseableHttpClient httpClient = HttpClients.createDefault();
+		CloseableHttpResponse httpResponse;
 		try {
-			CloseableHttpResponse httpPostResponse = httpClientExecutePost(httpPost, httpClient);
-			
-			BufferedReader reader = new BufferedReader(new InputStreamReader(httpPostResponse.getEntity().getContent()));
-			StringBuilder responseString = new StringBuilder();
-			String line;
-			while((line = reader.readLine()) != null) {
-				responseString.append(line);
-			}
-			System.out.println(responseString.toString());
-			
-			// Returns only the 'access_token' from responseString
-			ObjectMapper jacksonObjectMapper = new ObjectMapper();
-			@SuppressWarnings("unchecked")
-			Map<String,Object> accessMap = jacksonObjectMapper.readValue(responseString.toString(), Map.class);
-			String accessToken = (String) accessMap.get("access_token");
-			
+			// Execute the HTTP POST
+			httpResponse = httpClientExecute(httpPost, httpClient);
+			// Get HTTP Request as string
+			String responseString = getResponse(httpResponse);
+			httpResponse.close();
+			logger.debug("Access token response body {}.", responseString);
+			// Get the 'access_token' from responseString
+			String accessToken = getAccessToken(responseString);
 			if (accessToken == null) {
 				throw new AuthenticationException("access_token parameter not found on response body: [" + responseString + "].");
 			}
-			
 			return accessToken;
 		} catch (UnsupportedOperationException | IOException e) {
-			System.out.println("Not able to obtain access token." + e.getMessage());
-			throw new AuthenticationException(e);
+			throw new AuthenticationException("Not able to obtain access token. " + e.getMessage());
 		}
 	}
 
-	CloseableHttpResponse httpClientExecutePost(HttpPost httpPost, CloseableHttpClient httpClient)
+	CloseableHttpResponse httpClientExecute(HttpRequestBase httpRequest, CloseableHttpClient httpClient)
 			throws IOException, ClientProtocolException {
-		CloseableHttpResponse httpPostResponse = httpClient.execute(httpPost);
-		return httpPostResponse;
+		logger.debug("Sending HTTP POST request to {}.", httpRequest.getURI() );
+		CloseableHttpResponse httpResponse = httpClient.execute(httpRequest);
+		return httpResponse;
 	}
 
 	@Override
 	public UserAuthentication obtainUserInformation(String accessToken) throws AuthenticationException {
+		// Build user information URI
 		URI uri = null;
 		try {
 			uri = new URIBuilder()
@@ -88,27 +120,25 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 			        .setPath("/userinfo/v2/me")
 			        .build();
 		} catch (URISyntaxException e) {
-			System.err.println("Error building uri. Exception message: " + e.getMessage() );
+			throw new AuthenticationException(e);
 		}
 		
 		HttpGet httpGet = new HttpGet(uri);
 		httpGet.setHeader("Authorization", "Bearer " + accessToken);
 		CloseableHttpClient httpClient = HttpClients.createDefault();
+		CloseableHttpResponse httpResponse;
 		try {
-			CloseableHttpResponse httpPostResponse = httpClient.execute(httpGet);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(httpPostResponse.getEntity().getContent()));
+			// Execute the HTTP request
+			httpResponse = httpClientExecute(httpGet, httpClient);
+			// Get the responseString
+			String responseString = getResponse(httpResponse);
+			httpResponse.close();
+			logger.debug("User information response body {} for access token {}.", responseString, accessToken);
 
-			StringBuilder respString = new StringBuilder();
-			String line;
-			while((line = reader.readLine()) != null) {
-				respString.append(line);
-			}
-			System.out.println(respString.toString());
-			
+			// Get the user information from responseString
 			ObjectMapper jacksonObjectMapper = new ObjectMapper();
 			@SuppressWarnings("unchecked")
-			Map<String,Object> userInfoMap = jacksonObjectMapper.readValue(respString.toString(), Map.class);
-
+			Map<String,Object> userInfoMap = jacksonObjectMapper.readValue(responseString, Map.class);
 			UserAuthentication result = new UserAuthentication();
 			result.setEmail(userInfoMap.get("email").toString());
 			result.setName(userInfoMap.get("name").toString());
@@ -118,7 +148,7 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 		}
 	}
 
-	public void redirectToAuthorizationServer(HttpServletResponse response, String state, String clientId, String redirectURI) throws AuthenticationException {
+	public void redirectToAuthorizationAuthority(HttpServletResponse response, String state, String clientId, String redirectURI) throws AuthenticationException {
 		// 2. Send an authentication request to Google
 		URI uri = null;
 		try {
@@ -133,10 +163,10 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 			        .setParameter("state", state)
 			        .build();
 		} catch (URISyntaxException e) {
-			System.err.println("Error building uri. Exception message: " + e.getMessage() );
+			logger.error("Error building redirect URI to authorizationAuthority.", e);
 		}
 		try {
-			System.out.println(uri.toURL().toString());
+			logger.debug("Redirecting to authorization authority at URL {}.", uri.toURL());
 			response.sendRedirect(uri.toURL().toString());
 		} catch (IOException e) {
 			throw new AuthenticationException(e);

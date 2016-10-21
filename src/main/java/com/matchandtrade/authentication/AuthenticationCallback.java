@@ -16,9 +16,9 @@ import com.matchandtrade.persistence.dao.UserDao;
 import com.matchandtrade.persistence.entity.UserEntity;
 
 @Component
-public class AuthenticationCallbakServlet {
+public class AuthenticationCallback {
 	
-	private final Logger logger = LoggerFactory.getLogger(AuthenticationCallbakServlet.class);
+	private final Logger logger = LoggerFactory.getLogger(AuthenticationCallback.class);
 	
 	@Autowired
 	private AuthenticationProperties authenticationProperties;

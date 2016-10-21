@@ -56,7 +56,6 @@ public class AuthenticationServletTest {
 		request.setRequestURI("http://localhost:8080/authenticate");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		
-//		AuthenticationServlet authenticationServlet = new AuthenticationServlet();
 		authenticationServlet.doGet(request, response);
 		
 		URI uri = new URI(response.getRedirectedUrl());

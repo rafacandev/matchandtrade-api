@@ -23,17 +23,17 @@ import com.matchandtrade.config.AuthenticationProperties;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = "/application-context-test.xml")
-public class AuthenticationCallbakServletTest {
+public class AuthenticationCallbakTest {
 	
 	@Autowired
 	AuthenticationProperties authenticationProperties;
 	
 	@Autowired
-	AuthenticationCallbakServlet authenticationCallbakServlet;
+	AuthenticationCallback authenticationCallbakServlet;
 	
 	@Test
 	public void doGetAtiForgeryTokenNotMatch() throws ServletException, IOException {
-		AuthenticationCallbakServlet authenticationCallbakServlet = new AuthenticationCallbakServlet();
+		AuthenticationCallback authenticationCallbakServlet = new AuthenticationCallback();
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setParameter("state", "stateParameter");
 		request.getSession().setAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString(), "stateAttribute");
