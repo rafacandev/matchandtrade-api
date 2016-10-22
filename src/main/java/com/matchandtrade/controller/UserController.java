@@ -1,22 +1,24 @@
 package com.matchandtrade.controller;
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.matchandtrade.authorization.Authorization;
 import com.matchandtrade.controller.json.UserJson;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.transformer.UserTransformer;
 
 //@Api(value = "/users")
 //@Path("/users")
 @RestController
 @RequestMapping(path="/rest/v1/users")
-public class UserController {
+public class UserController extends Controller {
 
+	@Autowired
+	private Authorization authorization;
 	@Autowired
 	private UserModel model;
 	
@@ -27,13 +29,11 @@ public class UserController {
 	@RequestMapping(path="/{userId}", method=RequestMethod.GET)
 	public UserJson get(@PathVariable("userId") Integer userId) {
 		// Check authorization for this operation
-//		authorization.validateIdentityAndDoBasicAuthorization(sessionProvider.getUserAuthentication(), userId);
+		authorization.validateIdentityAndDoBasicAuthorization(getUserAuthentication(), userId);
 		// Delegate to model layer
 		UserEntity userEntity = model.get(userId);
 		// Transform the response
-//		UserJson result = userTransformer.transform(userEntity);
-		UserJson result = new UserJson();
-		result.setEmail(new Date().toString());
+		UserJson result = UserTransformer.transform(userEntity);
 		return result;
 	}
 
