@@ -1,4 +1,4 @@
-package com.matchandtrade.controller;
+package com.matchandtrade.rest.v1.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.Authorization;
-import com.matchandtrade.controller.json.UserJson;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.rest.Controller;
+import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.transformer.UserTransformer;
 
 //@Api(value = "/users")

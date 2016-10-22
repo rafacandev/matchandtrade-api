@@ -1,11 +1,9 @@
 package com.matchandtrade.authorization;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.authentication.UserAuthentication;
-import com.matchandtrade.controller.RestException;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
 
@@ -23,9 +21,9 @@ public class Authorization {
 	 */
 	public void doBasicAuthorization(UserAuthentication userAuthentication) {
 		if (userAuthentication == null) {
-			throw new RestException(HttpStatus.UNAUTHORIZED);
+			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
 		} else if (userAuthentication.getUserId() == null) {
-			throw new RestException(HttpStatus.FORBIDDEN);
+			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
 		}
 	}
 	
@@ -37,7 +35,7 @@ public class Authorization {
 	 */
 	public void validateIdentity(UserEntity userEntity, Integer userId) {
 		if (userEntity.getRole() != UserEntity.Role.ADMINISTRATOR && !userEntity.getUserId().equals(userId)) {
-			throw new RestException(HttpStatus.FORBIDDEN);
+			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
 		}
 	}
 

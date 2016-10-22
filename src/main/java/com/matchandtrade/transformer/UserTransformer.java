@@ -1,7 +1,7 @@
 package com.matchandtrade.transformer;
 
-import com.matchandtrade.controller.json.UserJson;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.rest.v1.json.UserJson;
 
 public class UserTransformer {
 	

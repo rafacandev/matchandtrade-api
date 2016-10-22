@@ -1,4 +1,4 @@
-package com.matchandtrade.controller;
+package com.matchandtrade.rest.exception;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.matchandtrade.controller;
+package com.matchandtrade.rest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

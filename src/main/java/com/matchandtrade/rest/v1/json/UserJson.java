@@ -1,6 +1,6 @@
-package com.matchandtrade.controller.json;
+package com.matchandtrade.rest.v1.json;
 
-public class UserJson extends JsonLinkSupport {
+public class UserJson {
 
 	private String email;
 	private String name;
