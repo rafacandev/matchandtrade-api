@@ -93,31 +93,46 @@
 				</configuration>
 			</plugin>
 			
-			<!-- Unit Tests will test classes ending in *UnitTest-->
+			<!-- Unit Tests will test classes ending in *UT-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<threadCount>4</threadCount>
 					<excludes>
-						<exclude>**/*Suite.java</exclude>						
+						<exclude>**/*Suite.java</exclude>
 					</excludes>
 					<includes>
-						<include>**/*Test.java</include>
+						<include>**/*UT.java</include>
 					</includes>
 				</configuration>
 			</plugin>
 
-			<!-- Integration Tests will test classes ending in *IntegrationSuite-->
+			<!-- Integration Tests will test classes ending in *Suite* -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<parallel>suites</parallel>
 					<threadCount>4</threadCount>
 					<excludes>
 						<exclude>**/*Test.java</exclude>
-						<exclude>**/*IT.java</exclude>
+						<exclude>**/*UT.java</exclude>
 					</excludes>
 					<includes>
 						<include>**/*Suite.java</include>

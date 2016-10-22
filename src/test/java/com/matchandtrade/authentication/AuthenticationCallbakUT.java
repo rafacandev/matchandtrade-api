@@ -23,7 +23,7 @@ import com.matchandtrade.config.AuthenticationProperties;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = "/application-context-test.xml")
-public class AuthenticationCallbakTest {
+public class AuthenticationCallbakUT {
 	
 	@Autowired
 	AuthenticationProperties authenticationProperties;

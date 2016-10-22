@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = "/application-context-test.xml")
-public class AuthenticationOAuthGoogleTest {
+public class AuthenticationOAuthGoogleUT {
 	
 	private AuthenticationOAuthGoogle spyAuthenticationOAuthGoogle(String response)
 			throws IOException, ClientProtocolException {

@@ -24,7 +24,7 @@ import com.matchandtrade.config.AuthenticationProperties;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = "/application-context-test.xml")
-public class AuthenticationServletTest {
+public class AuthenticationServletUT {
 	
 	@Autowired
 	AuthenticationProperties authenticationProperties;
