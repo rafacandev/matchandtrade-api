@@ -12,17 +12,15 @@ import javax.servlet.ServletException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.AuthenticationProperties;
+import com.matchandtrade.test.TestingDefaultAnnotations;
 
-@SpringBootTest
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = "/application-context-test.xml")
+@TestingDefaultAnnotations
 public class AuthenticationCallbakUT {
 	
 	@Autowired
@@ -32,7 +30,7 @@ public class AuthenticationCallbakUT {
 	AuthenticationCallback authenticationCallbakServlet;
 	
 	@Test
-	public void doGetAtiForgeryTokenNotMatch() throws ServletException, IOException {
+	public void doGetAtiForgeryTokenNegative() throws ServletException, IOException {
 		AuthenticationCallback authenticationCallbakServlet = new AuthenticationCallback();
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setParameter("state", "stateParameter");
@@ -44,7 +42,7 @@ public class AuthenticationCallbakUT {
 	}
 	
 	@Test
-	public void doGetAtiForgeryTokenMatch() throws ServletException, IOException {
+	public void doGetAtiForgeryTokenPositive() throws ServletException, IOException {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setParameter("state", "identicalStateMock");

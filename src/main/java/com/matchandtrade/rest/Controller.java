@@ -12,11 +12,11 @@ import com.matchandtrade.authentication.UserAuthentication;
 public class Controller {
 	
 	@Autowired
-	private HttpServletRequest request;
+	private HttpServletRequest httpRequest;
 	
 	public UserAuthentication getUserAuthentication() {
 		UserAuthentication result = null;
-    	HttpSession  session = request.getSession(false);
+    	HttpSession  session = httpRequest.getSession(false);
     	if (session != null) {
     		UserAuthentication user = (UserAuthentication) session.getAttribute("user");
     		if (user != null) {
@@ -24,6 +24,10 @@ public class Controller {
     		}
 		}
         return result;
+	}
+	
+	public void setHttpServletRequest(HttpServletRequest httpRequest) {
+		this.httpRequest = httpRequest;
 	}
 	
 	private UserAuthentication transform(UserAuthentication userAuthentication) {

@@ -19,6 +19,7 @@
 	</parent>
 
 	<properties>
+		<!-- Plugins and dependencies versions -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
@@ -26,7 +27,20 @@
 		<org.apache.httpcomponents.httpclient>4.5.2</org.apache.httpcomponents.httpclient>
 		<io.springfox.version>2.6.0</io.springfox.version>
 		<cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
+		
+		<!-- Profile placeholders and defaults -->
+		<skip.unit.tests>false</skip.unit.tests>
 	</properties>
+	
+	<profiles>
+		<!-- Integration Test profile. It will skip unit testing and run only integration test -->
+		<profile>
+			<id>it</id>
+			<properties>
+				<skip.unit.tests>true</skip.unit.tests>
+			</properties>
+		</profile>
+	</profiles>
 	
 	<dependencies>
 		<!-- Spring Boot -->
@@ -85,6 +99,16 @@
 
 	<build>
 		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -112,6 +136,7 @@
 					<includes>
 						<include>**/*UT.java</include>
 					</includes>
+					<skipTests>${skip.unit.tests}</skipTests>
 				</configuration>
 			</plugin>
 
@@ -119,14 +144,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
 				<configuration>
 					<parallel>suites</parallel>
 					<threadCount>4</threadCount>
@@ -137,7 +154,16 @@
 					<includes>
 						<include>**/*Suite.java</include>
 					</includes>
-				</configuration>				
+				</configuration>
+				<executions>
+					<execution>
+						<id>failsafe-integration-tests</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+					</execution>
+				</executions>				
 			</plugin>
 		</plugins>
 	</build>

@@ -12,15 +12,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.matchandtrade.test.TestingDefaultAnnotations;
 
-@SpringBootTest
+
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = "/application-context-test.xml")
+@TestingDefaultAnnotations
 public class AuthenticationOAuthGoogleUT {
 	
 	private AuthenticationOAuthGoogle spyAuthenticationOAuthGoogle(String response)
