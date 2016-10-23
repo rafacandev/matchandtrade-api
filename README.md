@@ -76,7 +76,7 @@ As mentioned on the *Unit Test and Integration Test* section, tests are configur
 
 Unit tests should be placed on the folder `src/test/*` must be atomic and executed in any order. The file name also needs to end on `*UT.java`. Look at the file `src/test/java/com/matchandtrade/authentication/AuthenticationServletUT.java` for an example.
 
-Integration tests are also placed on `src/test/*` and may depend on other integration tests (although dependency should be avoided) and must be executed within a test suite. The test suite file name needs and on `*Suite.java` while the integration test needs to end on `*IT.java`. Look at the file `src/test/java/com/matchandtrade/rest/v1/controller/UserControllerSuite.java` for an example.
+Integration tests are also placed on `src/test/*` and may depend on other integration tests (although dependency should be avoided) and must be executed within a test suite. The test suite file name needs to end on `*Suite.java` while the integration test needs to end on `*IT.java`. Look at the file `src/test/java/com/matchandtrade/rest/v1/controller/UserControllerSuite.java` for an example.
 
 
 
