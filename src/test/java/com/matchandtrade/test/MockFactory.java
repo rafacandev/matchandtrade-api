@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.rest.transformer.UserTransformer;
 import com.matchandtrade.test.random.UserRandom;
-import com.matchandtrade.transformer.UserTransformer;
 
 @Component
 public class MockFactory {

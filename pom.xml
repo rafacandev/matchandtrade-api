@@ -11,6 +11,14 @@
 	<name>matchandtrade-webservice</name>
 	<description>Match and Trade REST Web Service</description>
 
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://github.com/rafasantos/matchandtrade/blob/master/LICENSE.txt</url>
+			<comments>Open source, can distribute, can modify, cannot hold liable, provided "as is"</comments>
+		</license>
+	</licenses>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -19,7 +27,7 @@
 	</parent>
 
 	<properties>
-		<!-- Plugins and dependencies versions -->
+		<!-- Plugin and dependency versions -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
@@ -27,20 +35,7 @@
 		<org.apache.httpcomponents.httpclient>4.5.2</org.apache.httpcomponents.httpclient>
 		<io.springfox.version>2.6.0</io.springfox.version>
 		<cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
-		
-		<!-- Profile placeholders and defaults -->
-		<skip.unit.tests>false</skip.unit.tests>
 	</properties>
-	
-	<profiles>
-		<!-- Integration Test profile. It will skip unit testing and run only integration test -->
-		<profile>
-			<id>it</id>
-			<properties>
-				<skip.unit.tests>true</skip.unit.tests>
-			</properties>
-		</profile>
-	</profiles>
 	
 	<dependencies>
 		<!-- Spring Boot -->
@@ -67,7 +62,6 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-logging</artifactId>
 		</dependency>
-
 
 		<!-- H2 Database -->
 		<dependency>
@@ -136,7 +130,6 @@
 					<includes>
 						<include>**/*UT.java</include>
 					</includes>
-					<skipTests>${skip.unit.tests}</skipTests>
 				</configuration>
 			</plugin>
 
@@ -155,15 +148,6 @@
 						<include>**/*Suite.java</include>
 					</includes>
 				</configuration>
-				<executions>
-					<execution>
-						<id>failsafe-integration-tests</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>integration-test</goal>
-						</goals>
-					</execution>
-				</executions>				
 			</plugin>
 		</plugins>
 	</build>
@@ -174,17 +158,6 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>${cobertura-maven-plugin.version}</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>cobertura-integration-test</report>
-							<report>cobertura</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>

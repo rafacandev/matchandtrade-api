@@ -1,4 +1,4 @@
-package com.matchandtrade.transformer;
+package com.matchandtrade.rest.transformer;
 
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.UserJson;

@@ -9,8 +9,8 @@ import com.matchandtrade.authorization.Authorization;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.Controller;
+import com.matchandtrade.rest.transformer.UserTransformer;
 import com.matchandtrade.rest.v1.json.UserJson;
-import com.matchandtrade.transformer.UserTransformer;
 
 //@Api(value = "/users")
 //@Path("/users")
