@@ -12,15 +12,15 @@ public class RestException extends RuntimeException {
 	private HttpStatus httpStatus;
 	
 	public RestException(HttpStatus httpStatus, String errorKey, String errorMessage) {
-		super("RestException with httpStatus: " + httpStatus.name() + "-" + httpStatus.toString() + "; errorKey: " + errorKey + "; errorMessage: " + errorMessage);
+		super("RestException with httpStatus: " + httpStatus.toString() + " - " + httpStatus.getReasonPhrase() + "; errorKey: " + errorKey + "; errorMessage: " + errorMessage);
 		this.httpStatus = httpStatus;
 		this.errors.put(errorKey, errorMessage);
 	}
 
 	public RestException(HttpStatus httpStatus) {
-		super("RestException with httpStatus: " + httpStatus.name() + "-" + httpStatus.toString() + ".");
+		super("RestException with httpStatus: " + httpStatus.toString() + " - " + httpStatus.getReasonPhrase() + ".");
 		this.httpStatus = httpStatus;
-		this.errors.put(httpStatus.name(), httpStatus.toString());
+		this.errors.put(httpStatus.toString(), httpStatus.getReasonPhrase());
 	}
 	
 	public Map<String, String> getErrors() {

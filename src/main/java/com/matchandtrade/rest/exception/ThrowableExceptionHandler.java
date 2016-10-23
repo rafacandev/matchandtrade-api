@@ -51,7 +51,7 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
      * Otherwise it won't be serialized as Json.
      * @author rafael.santos.bra@gmail.com
      */
-    private class ErrorJson {
+    class ErrorJson {
     	private List<Error> errors = new ArrayList<>();
 		public List<Error> getErrors() {
 			return errors;
@@ -63,7 +63,7 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
      * Otherwise it won't be serialized as Json.
      * @author rafael.santos.bra@gmail.com
      */
-    private class Error {
+    class Error {
     	private String key;
     	private String description;
     	
@@ -71,12 +71,9 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
     		this.key = key;
     		this.description = description;
     	}
-    	
-		@SuppressWarnings("unused")
 		public String getKey() {
 			return key;
 		}
-		@SuppressWarnings("unused")
 		public String getDescription() {
 			return description;
 		}
