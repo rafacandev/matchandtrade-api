@@ -6,9 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.authentication.UserAuthentication;
@@ -16,10 +15,10 @@ import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.IntegrationTestStore;
 import com.matchandtrade.test.MockFactory;
+import com.matchandtrade.test.TestingDefaultAnnotations;
 
-@SpringBootTest
 @RunWith(SpringRunner.class)
-@ContextConfiguration(locations = "/application-context-test.xml")
+@TestingDefaultAnnotations
 public class UserControllerGetIT {
 	
 	@Autowired
@@ -41,6 +40,7 @@ public class UserControllerGetIT {
 	}
 	
 	@Test
+	@Rollback(false)
 	public void getPositive() {
 		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUserFromIntegrationTestStore();
 		userController.setHttpServletRequest(httpRequest);
