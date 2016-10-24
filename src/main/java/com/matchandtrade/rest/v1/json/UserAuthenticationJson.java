@@ -1,10 +1,6 @@
-package com.matchandtrade.authentication;
+package com.matchandtrade.rest.v1.json;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserAuthentication {
-
+public class UserAuthenticationJson {
 	private Integer userId;
 	private boolean isAuthenticated = false;
 	private Boolean isNewUser;

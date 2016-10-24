@@ -15,7 +15,7 @@ public class Authorization {
 	private UserModel userModel;
 	
 	/**
-	 * Throws <pre>RestException</pre> if <pre>userAuthentication</pre> or <pre>userAuthentication.userId</pre> is null
+	 * Throws <pre>AuthorizationException</pre> if <pre>userAuthentication</pre> or <pre>userAuthentication.userId</pre> is null
 	 * @param userAuthentication
 	 * @return UserEntity instance of <pre>user.userId</pre>
 	 */
@@ -28,13 +28,17 @@ public class Authorization {
 	}
 	
 	/**
-	 * Throws <pre>RestException</pre> if user is not <pre>ROLE.ADMINISTRATOR<pre> or
+	 * Throws <pre>AuthorizationException</pre> if user is not <pre>ROLE.ADMINISTRATOR<pre> or
 	 * if <pre>userEntity.userId</pre> is not equals to <pre>userId</pre>.
 	 * @param userEntity
 	 * @param userId
 	 */
 	public void validateIdentity(UserEntity userEntity, Integer userId) {
-		if (userEntity.getRole() != UserEntity.Role.ADMINISTRATOR && !userEntity.getUserId().equals(userId)) {
+		if (userEntity == null) {
+			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
+		} else if (userId == null) {
+			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
+		} else if (userEntity.getRole() != UserEntity.Role.ADMINISTRATOR && !userEntity.getUserId().equals(userId)) {
 			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
 		}
 	}

@@ -1,11 +1,12 @@
 package com.matchandtrade.rest.v1.json;
 
-public class UserJson {
+import com.matchandtrade.rest.Json;
+
+public class UserJson implements Json {
 
 	private String email;
 	private String name;
 	private Integer userId;
-//	private Set<TradeListJson> tradeLists = new HashSet<>();
 
 	public Integer getUserId() {
 		return userId;
@@ -19,12 +20,6 @@ public class UserJson {
 		return name;
 	}
 	
-//	@ApiModelProperty(hidden=true)
-//	@JsonInclude(JsonInclude.Include.NON_EMPTY)
-//	public Set<TradeListJson> getTradeLists() {
-//		return tradeLists;
-//	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -36,9 +31,5 @@ public class UserJson {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-//	public void setTradeLists(Set<TradeListJson> tradeLists) {
-//		this.tradeLists = tradeLists;
-//	}
 
 }

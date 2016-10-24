@@ -18,26 +18,13 @@ public class Controller {
 		UserAuthentication result = null;
     	HttpSession  session = httpRequest.getSession(false);
     	if (session != null) {
-    		UserAuthentication user = (UserAuthentication) session.getAttribute("user");
-    		if (user != null) {
-    			result = transform(user);
-    		}
+    		result = (UserAuthentication) session.getAttribute("user");
 		}
         return result;
 	}
 	
 	public void setHttpServletRequest(HttpServletRequest httpRequest) {
 		this.httpRequest = httpRequest;
-	}
-	
-	private UserAuthentication transform(UserAuthentication userAuthentication) {
-		UserAuthentication result = new UserAuthentication();
-		result.setAuthenticated(userAuthentication.isAuthenticated());
-		result.setEmail(userAuthentication.getEmail());
-		result.setName(userAuthentication.getName());
-		result.setNewUser(userAuthentication.isNewUser());
-		result.setUserId(userAuthentication.getUserId());
-		return result;
 	}
 
 }

@@ -47,10 +47,10 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 	@Override
 	public UserAuthentication obtainUserInformation(String accessToken) throws AuthenticationException {
 		UserAuthentication result = new UserAuthentication();
-		result.setAuthenticated(true);
+		result.setAuthenticated(false);
 		result.setEmail(accessToken + "@mock.com");
 		result.setName(accessToken);
-		result.setNewUser(true);
+		result.setNewUser(false);
 		return result;
 	}
 
