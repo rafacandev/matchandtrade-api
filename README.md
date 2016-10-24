@@ -78,7 +78,10 @@ Unit tests should be placed on the folder `src/test/*` must be atomic and execut
 
 Integration tests are also placed on `src/test/*` and may depend on other integration tests (although dependency should be avoided) and must be executed within a test suite. The test suite file name needs to end on `*Suite.java` while the integration test needs to end on `*IT.java`. Look at the file `src/test/java/com/matchandtrade/rest/v1/controller/UserControllerSuite.java` for an example.
 
+To run one single unit test use `mvn -Dtest=TEST_NAME verify`. To run one singe integration test use `mvn -Dit.test=INTEGRATION_TEST_NAME verify`. See maven [surefire][3] and [failsave][4] pulgins documentation. 
 
 
 [1]: https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html "Install Java JDK"
 [2]: http://maven.apache.org/install.html "Install Maven"
+[3]: https://maven.apache.org/surefire/maven-surefire-plugin/examples/single-test.html "Maven surefire"
+[4]: https://maven.apache.org/surefire/maven-failsafe-plugin/examples/single-test.html "Maven failsafe"
