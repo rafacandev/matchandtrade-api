@@ -15,9 +15,11 @@ public class MockFactory {
 	
 	@Autowired
 	private UserModel userModel;
+	@Autowired
+	private UserTransformer userTransformer;
 	
 	public UserAuthentication getUserAuthentication() {
-		UserEntity userEntity = UserTransformer.transform(UserRandom.next());
+		UserEntity userEntity = userTransformer.transform(UserRandom.next());
 		userModel.save(userEntity);
 		
 		UserAuthentication result = new UserAuthentication();

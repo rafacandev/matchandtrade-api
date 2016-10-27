@@ -5,10 +5,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.authentication.UserAuthentication;
+import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.rest.v1.json.UserAuthenticationJson;
 import com.matchandtrade.test.MockFactory;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -22,7 +22,7 @@ public class AuthenticationControllerGetIT {
 	@Autowired
 	private MockFactory mockFactory;
 	
-	@Test
+	@Test(expected=AuthorizationException.class)
 	public void getNegative() {
 		MockHttpServletRequest httpRequest = new MockHttpServletRequest();
 		authenticationController.setHttpServletRequest(httpRequest);

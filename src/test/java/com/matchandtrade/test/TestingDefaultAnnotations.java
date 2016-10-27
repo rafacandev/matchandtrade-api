@@ -8,13 +8,11 @@ import java.lang.annotation.Target;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest
 @ContextConfiguration(locations = "/application-context-test.xml")
-@Transactional
 @Commit
 public @interface TestingDefaultAnnotations {
 
