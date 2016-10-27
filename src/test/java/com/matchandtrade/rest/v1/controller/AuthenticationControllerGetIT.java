@@ -31,7 +31,6 @@ public class AuthenticationControllerGetIT {
 	}
 	
 	@Test
-	@Rollback(false)
 	public void getPositive() {
 		UserAuthentication userAuthentication = mockFactory.getUserAuthentication();
 		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUser(userAuthentication);

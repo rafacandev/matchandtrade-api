@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,9 +16,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.authorization.AuthorizationException.Type;
+import com.matchandtrade.validator.ValidationException;
 
 @ControllerAdvice
 public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	private final Logger logger = LoggerFactory.getLogger(ThrowableExceptionHandler.class);
 
     @ExceptionHandler(Throwable.class)
     @ResponseBody
@@ -38,7 +43,14 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
 				status = HttpStatus.FORBIDDEN;
 			}
     		errorJson.getErrors().add(new Error(status.toString(), status.getReasonPhrase()));
+		} else if (exception instanceof ValidationException) {
+			ValidationException e = (ValidationException) exception;
+			status = HttpStatus.UNPROCESSABLE_ENTITY;
+			e.getErrors().forEach( (k, v) -> 
+				errorJson.getErrors().add(new Error(k.toString(), v))
+			);
 		} else {
+			logger.error("Error proccessing request to URI: [{}]. Exception message: [{}].", request.getRequestURI(), exception.getMessage(), exception);
 			errorJson.getErrors().add(new Error(status.toString(), status.getReasonPhrase()));
 		}
     	

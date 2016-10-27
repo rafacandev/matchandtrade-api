@@ -10,7 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 @RunWith(Suite.class)
 @ContextConfiguration(locations = "/application-context-test.xml")
 @SuiteClasses({
-	UserControllerGetIT.class
+	UserControllerGetIT.class,
+	UserControllerPutIT.class
 })
 public class UserControllerSuite {
 

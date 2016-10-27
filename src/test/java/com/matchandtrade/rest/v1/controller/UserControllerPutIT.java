@@ -7,19 +7,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.matchandtrade.authentication.AuthenticationException;
 import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.IntegrationTestStore;
 import com.matchandtrade.test.MockFactory;
 import com.matchandtrade.test.TestingDefaultAnnotations;
+import com.matchandtrade.test.random.UserRandom;
+import com.matchandtrade.validator.ValidationException;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class UserControllerGetIT {
+public class UserControllerPutIT {
 	
 	@Autowired
 	private MockFactory mockFactory;
@@ -34,18 +36,30 @@ public class UserControllerGetIT {
 	}
 	
 	@Test(expected=AuthorizationException.class)
-	public void getNegativeUnauthorized() {
-		// the database is not supposed to hold negative userId. Therefore is a safe assumption to say that it will throw AuthorizationException
-		userController.get(-1);
-	}
-	
-	@Test
-	@Rollback(false)
-	public void getPositive() {
+	public void putNegativeUnauthorizedResource() {
+		// Trying to edit a resource of another user
 		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUserFromIntegrationTestStore();
 		userController.setHttpServletRequest(httpRequest);
-		UserJson response = userController.get(userAuthentication.getUserId());
-		assertEquals(userAuthentication.getUserId(), response.getUserId());
+		UserJson requestJson = UserRandom.next();
+		userController.put(-1, requestJson);
+	}	
+	
+	@Test
+	public void putPositive() {
+		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUserFromIntegrationTestStore();
+		userController.setHttpServletRequest(httpRequest);
+		UserJson requestJson = UserRandom.next();
+		requestJson.setEmail(userAuthentication.getEmail());
+		UserJson responseJson = userController.put(userAuthentication.getUserId(), requestJson);
+		assertEquals(requestJson.getName(), responseJson.getName());
+	}
+	
+	@Test(expected=ValidationException.class)
+	public void putNegativeValidation() {
+		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUserFromIntegrationTestStore();
+		userController.setHttpServletRequest(httpRequest);
+		UserJson requestJson = UserRandom.next();
+		userController.put(userAuthentication.getUserId(), requestJson);
 	}
 
 }

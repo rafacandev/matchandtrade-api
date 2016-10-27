@@ -11,6 +11,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.authorization.AuthorizationException.Type;
 import com.matchandtrade.test.TestingDefaultAnnotations;
+import com.matchandtrade.validator.ValidationException;
+import com.matchandtrade.rest.exception.ThrowableExceptionHandler.Error;
 import com.matchandtrade.rest.exception.ThrowableExceptionHandler.ErrorJson;
 
 @RunWith(SpringRunner.class)
@@ -58,4 +60,18 @@ public class ThrowableExceptionHandlerUT extends ResponseEntityExceptionHandler 
 		Assert.assertEquals(2, response.getBody().getErrors().size());
 	}
 
+	@Test
+	public void validationException() {
+		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
+		String errorMessage = "Testing Invalid Operation";
+		ValidationException e = new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, errorMessage);
+		ResponseEntity<ErrorJson> response = throwableExceptionHandler.handleControllerException(null, e);
+		
+		Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
+		Error error = response.getBody().getErrors().iterator().next();
+		Assert.assertEquals(errorMessage, error.getDescription());
+		Assert.assertEquals(ValidationException.ErrorType.INVALID_OPERATION.toString(), error.getKey());
+	}
+	
+	
 }

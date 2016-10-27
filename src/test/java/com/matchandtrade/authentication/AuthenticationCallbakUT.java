@@ -43,7 +43,6 @@ public class AuthenticationCallbakUT {
 	}
 	
 	@Test
-	@Rollback(false)
 	public void doGetAtiForgeryTokenPositive() throws ServletException, IOException {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		MockHttpServletRequest request = new MockHttpServletRequest();
