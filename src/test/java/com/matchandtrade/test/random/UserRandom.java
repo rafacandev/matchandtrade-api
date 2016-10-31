@@ -5,10 +5,9 @@ import com.matchandtrade.rest.v1.json.UserJson;
 public class UserRandom {
 	
 	public static UserJson next() {
-		StringRandom random = new StringRandom();
 		UserJson result = new UserJson();
-		result.setName(random.nextName());
-		result.setEmail(random.nextEmail());
+		result.setName(StringRandom.nextName());
+		result.setEmail(StringRandom.nextEmail());
 		return result;
 	}
 	

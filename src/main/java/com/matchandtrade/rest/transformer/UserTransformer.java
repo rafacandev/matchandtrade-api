@@ -1,8 +1,12 @@
 package com.matchandtrade.rest.transformer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.UserJson;
@@ -36,6 +40,14 @@ public class UserTransformer {
 		result.setName(entity.getName());
 		result.setUserId(entity.getUserId());
 		return result;
+	}
+
+	public static SearchResult<UserJson> transform(SearchResult<UserEntity> searchResult) {
+		List<UserJson> resultList = new ArrayList<>();
+		for(UserEntity u : searchResult.getResultList()) {
+			resultList.add(transform(u));
+		}
+		return new SearchResult<>(resultList, searchResult.getPagination());
 	}
 	
 }

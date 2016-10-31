@@ -31,10 +31,15 @@
 		</property>
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
-				<prop key="hibernate.default_schema">matchandtrade</prop>
+				<!-- Logging -->
 				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.format_sql">false</prop>
+				<!-- Advanced options -->
+				<prop key="hibernate.default_entity_mode">pojo</prop>
+				<!-- Schema options -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+				<prop key="hibernate.default_schema">matchandtrade</prop>
+				<!-- WARNING: This value can destroy the entire database. In doubt use 'validate' -->
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>

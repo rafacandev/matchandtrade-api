@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class StringRandom {
 	
-	String[] adjectives = {
+	private static String[] adjectives = {
 			"able",
 			"abnormal",
 			"absent",
@@ -15,7 +15,7 @@ public class StringRandom {
 			"acceptable"
 	};
 	
-	String[] noums = {
+	private static String[] noums = {
 			"call",
 			"calorie",
 			"camera",
@@ -27,29 +27,29 @@ public class StringRandom {
 			"cane",
 	};
 	
-	String[] prepositions = {
+	private static String[] prepositions = {
 		"with",
 		"plus",
 		"and"
 	};
 	
-	private Random random = new Random();
+	private static Random random = new Random();
 	
-	public String nextName() {
+	public static String nextName() {
 		int aPosition = random.nextInt(adjectives.length);
 		int nPosition = random.nextInt(noums.length);
-		return adjectives[aPosition] + " " + noums[nPosition] + "-" + random.nextInt(500);
+		return adjectives[aPosition] + " " + noums[nPosition] + "-" + random.nextInt(9999);
 	}
 
-	public String nextDescription() {
+	public static String nextDescription() {
 		int pPosition = random.nextInt(prepositions.length);
-		return nextName() + " " + prepositions[pPosition] + " " + nextName() + "-" + random.nextInt(500);
+		return nextName() + " " + prepositions[pPosition] + " " + nextName() + "-" + random.nextInt(9999);
 	}
 	
-	public String nextEmail() {
+	public static String nextEmail() {
 		int aPosition = random.nextInt(adjectives.length);
 		int nPosition = random.nextInt(noums.length);
-		return adjectives[aPosition] + noums[nPosition] + "-" + random.nextInt(500) + "@random.com";
+		return adjectives[aPosition] + noums[nPosition] + "-" + random.nextInt(9999) + "@random.com";
 	}
 
 }

@@ -15,12 +15,6 @@ import com.matchandtrade.persistence.entity.UserEntity;
 @Component
 public class TradeItemDao extends Dao<TradeItemEntity> {
 
-	@Override
-	protected Class<TradeItemEntity> getEntityClass() {
-		return TradeItemEntity.class;
-	}
-
-	@Override
 	protected Criteria buildSearchCriteria(SearchCriteria searchCriteria) {
 		Criteria result = getCurrentSession().createCriteria(UserEntity.class);
 		String tradeListAlias = UserEntity.Field.tradeLists.toString();

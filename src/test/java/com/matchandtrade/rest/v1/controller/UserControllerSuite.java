@@ -11,7 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(locations = "/application-context-test.xml")
 @SuiteClasses({
 	UserControllerGetIT.class,
-	UserControllerPutIT.class
+	UserControllerPutIT.class,
+	UserControllerSearchIT.class
 })
 public class UserControllerSuite {
 

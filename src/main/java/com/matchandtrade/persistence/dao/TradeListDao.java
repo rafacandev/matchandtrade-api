@@ -21,11 +21,6 @@ public class TradeListDao extends Dao<TradeListEntity> {
 	@Autowired
 	SessionFactory sessionFactory;
 	
-	@Override
-	protected Class<TradeListEntity> getEntityClass() {
-		return TradeListEntity.class;
-	}
-	
 	@Transactional
 	public void save(TradeListEntity tradeListEntity) {
 		Session session = sessionFactory.getCurrentSession();
@@ -38,7 +33,6 @@ public class TradeListDao extends Dao<TradeListEntity> {
 		return (TradeListEntity) session.get(TradeListEntity.class, tradeListId);
 	}
 
-	@Override
 	protected Criteria buildSearchCriteria(SearchCriteria searchCriteria) {
 		Criteria result = getCurrentSession().createCriteria(UserEntity.class);
 		String tradeListsAlias = UserEntity.Field.tradeLists.toString();

@@ -1,41 +1,50 @@
 package com.matchandtrade.persistence.dao;
 
+import java.util.List;
+
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.RootEntityResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.matchandtrade.common.Criterion;
 import com.matchandtrade.common.SearchCriteria;
+import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.UserEntity;
+
 
 @Component
 public class UserDao extends Dao<UserEntity> {
 
 	@Autowired
 	SessionFactory sessionFactory;
+	@Autowired
+	SearchDao<UserEntity> searchableDao;
 	
-	@Transactional
-	public UserEntity get(String email) {
-		// TODO use buildSearchCriteria() instead
-		Session session = sessionFactory.getCurrentSession();
-		Criteria c = session.createCriteria(UserEntity.class);
-		c.add(Restrictions.eq("email", email));
-		UserEntity result = (UserEntity) c.uniqueResult();
+	protected Criteria buildSearchCriteria(SearchCriteria searchCriteria) {
+		Criteria result = getCurrentSession().createCriteria(UserEntity.class);
+		// Add Criterion
+		for (Criterion c : searchCriteria.getCriteria()) {
+			if (c.getField().equals(UserEntity.Field.email)) {
+				result.add(Restrictions.eq(UserEntity.Field.email.toString(), c.getValue()));
+			}
+		}
 		return result;
 	}
-
-	@Override
-	protected Class<UserEntity> getEntityClass() {
-		return UserEntity.class;
-	}
-
-	@Override
-	protected Criteria buildSearchCriteria(SearchCriteria searchCriteria) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
+	public SearchResult<UserEntity> search(SearchCriteria searchCriteria) {
+		Criteria criteria = buildSearchCriteria(searchCriteria);
+		// Set pagination total
+		long rowCount = SearchDao.rowCount(criteria);
+		searchCriteria.getPagination().setTotal(rowCount);
+		// Search
+		List<UserEntity> resultList = searchableDao.search(
+				buildSearchCriteria(searchCriteria),
+				searchCriteria.getPagination(),
+				RootEntityResultTransformer.INSTANCE);
+		return new SearchResult<>(resultList, searchCriteria.getPagination());
+	}
+
 }

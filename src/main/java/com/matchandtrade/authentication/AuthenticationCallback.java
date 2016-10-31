@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.config.AuthenticationProperties;
-import com.matchandtrade.persistence.dao.UserDao;
+import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
 
 @Component
@@ -25,7 +25,7 @@ public class AuthenticationCallback {
 	@Autowired
 	private AuthenticationOAuth authenticationOAuth;
 	@Autowired
-	private UserDao userDao;
+	private UserModel userModel;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 3. Confirm anti-forgery state token
@@ -70,15 +70,14 @@ public class AuthenticationCallback {
 	 * @return updated User.
 	 */
 	private UserAuthentication updateUserInfo(String email, String name) {
-		//TODO UserModel instead of UserDao
-		UserEntity userEntity = userDao.get(email);
+		UserEntity userEntity = userModel.get(email);
 		boolean isNewUser = false;
 		if (userEntity == null) {
 			userEntity = new UserEntity();
 			userEntity.setEmail(email);
 			userEntity.setName(name);
 			userEntity.setRole(UserEntity.Role.USER);
-			userDao.save(userEntity);
+			userModel.save(userEntity);
 			isNewUser = true;
 		}
 		UserAuthentication result = new UserAuthentication();

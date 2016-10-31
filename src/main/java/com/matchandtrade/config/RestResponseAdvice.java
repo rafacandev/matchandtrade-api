@@ -8,6 +8,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.JsonLinkSuppport;
 import com.matchandtrade.rest.JsonResponse;
@@ -28,21 +29,33 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
 						Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
 						ServerHttpResponse response) {
+		// TODO Refactor this area
 		// Add JSON meta-data if body is instance of Json.
 		if (body instanceof Json) {
-			if (body instanceof JsonLinkSuppport) {
-				// Load links using Spring HATEOAS. See: http://projects.spring.io/spring-hateoas/
-				JsonLinkSuppport bodyAsJsonLinkSupport = (JsonLinkSuppport) body;
-				bodyAsJsonLinkSupport.loadLinks();
-			}
-			Json bodyAsJson = (Json) body;
-			// Prepare JsonResponse
+			return loadLinks(body, request);
+		} else if (body instanceof SearchResult) {
 			JsonResponse jsonResponse = new JsonResponse();
-			jsonResponse.setData(bodyAsJson);
 			jsonResponse.setRequestURL(request.getURI().toString());
-			return jsonResponse;
+			@SuppressWarnings("unchecked")
+			SearchResult<Json> bodyAsSearchResult = (SearchResult<Json>) body;
+			Json j = bodyAsSearchResult.getResultList().get(0);
+			return loadLinks(j, request);
 		}
 		return body;
+	}
+
+	private JsonResponse loadLinks(Object body, ServerHttpRequest request) {
+		if (body instanceof JsonLinkSuppport) {
+			// Load links using Spring HATEOAS. See: http://projects.spring.io/spring-hateoas/
+			JsonLinkSuppport bodyAsJsonLinkSupport = (JsonLinkSuppport) body;
+			bodyAsJsonLinkSupport.loadLinks();
+		}
+		Json bodyAsJson = (Json) body;
+		// Prepare JsonResponse
+		JsonResponse jsonResponse = new JsonResponse();
+		jsonResponse.setData(bodyAsJson);
+		jsonResponse.setRequestURL(request.getURI().toString());
+		return jsonResponse;
 	}
 
 }

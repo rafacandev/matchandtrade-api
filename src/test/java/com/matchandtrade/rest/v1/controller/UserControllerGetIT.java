@@ -36,7 +36,7 @@ public class UserControllerGetIT {
 	@Test(expected=AuthorizationException.class)
 	public void getNegativeUnauthorized() {
 		// the database is not supposed to hold negative userId. Therefore is a safe assumption to say that it will throw AuthorizationException
-		userController.get(-1);
+		userController.getByUserId(-1);
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ public class UserControllerGetIT {
 	public void getPositive() {
 		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUserFromIntegrationTestStore();
 		userController.setHttpServletRequest(httpRequest);
-		UserJson response = userController.get(userAuthentication.getUserId());
+		UserJson response = userController.getByUserId(userAuthentication.getUserId());
 		assertEquals(userAuthentication.getUserId(), response.getUserId());
 	}
 

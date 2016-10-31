@@ -4,7 +4,6 @@ import java.util.List;
 
 public class SearchResult<T> {
 	private Pagination pagination;
-//	@ApiModelProperty(name="data")
 	private List<T> resultList;
 	
 	public SearchResult(List<T> resultList, Pagination pagination) {

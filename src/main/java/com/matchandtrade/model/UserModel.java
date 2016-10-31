@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.matchandtrade.common.Pagination;
+import com.matchandtrade.common.SearchCriteria;
+import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.dao.UserDao;
 import com.matchandtrade.persistence.entity.TradeListEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -17,21 +20,36 @@ public class UserModel {
 
 	@Transactional
 	public UserEntity get(Integer userId) {
-    	UserEntity userEntity = userDao.get(userId);
-    	return userEntity;
+    	return userDao.get(UserEntity.class, userId);
+	}
+
+	@Transactional
+	public UserEntity get(String email) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
+		searchCriteria.addCriterion(UserEntity.Field.email, email);
+		SearchResult<UserEntity> searchResult = search(searchCriteria);
+		if (!searchResult.getResultList().isEmpty()) {
+			return searchResult.getResultList().get(0);
+		} else {
+			return null;
+		}
 	}
 	
 	@Transactional
-	public UserEntity save(UserEntity entity) {
+	public void save(UserEntity entity) {
 		userDao.save(entity);
-		return entity;
 	}
 
 	@Transactional
 	public void saveTradeList(Integer userId, TradeListEntity tradeListEntity) {
-			UserEntity userEntity = userDao.get(userId);
+			UserEntity userEntity = userDao.get(UserEntity.class, userId);
 			userEntity.getTradeLists().add(tradeListEntity);
 			userDao.save(userEntity);
+	}
+
+	@Transactional
+	public SearchResult<UserEntity> search(SearchCriteria searchCriteria) {
+		return userDao.search(searchCriteria);
 	}
 
 }

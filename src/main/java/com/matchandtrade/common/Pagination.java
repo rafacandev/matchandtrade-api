@@ -1,57 +1,78 @@
 package com.matchandtrade.common;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 /**
- * Data structure to store pagination values.
+ * POJO to keep pagination values.
  * @author rafael.santos.bra@gmail.com
  */
 public class Pagination {
-	private Integer limit;
-	private Integer page;
-	private Long total;
+	private int size = 10;
+	private int number = 0;
+	private long total = 0;
+
+	public Pagination() {
+		super();
+	}
+	
+	public Pagination(Integer number, Integer size) {
+		if (number != null) {
+			this.number = number;
+		}
+		if (size != null) {
+			this.size = size;
+		}
+	}
+	
+	public Pagination(Integer number, Integer size, Long total ) {
+		this(number, size);
+		if (total != null) {
+			this.total = total;
+		}
+	}
 
 	/**
-	 * Page and limit must be a value greater than zero value
-	 * @param page
-	 * @param limit
-	 * @param total
+	 * Get the page size.
+	 * @return
 	 */
-	public Pagination(Integer page, Integer limit, Long total) {
-		if (page != null && page > 0) {
-			this.page = page;
-		} else {
-			this.page = 1;
-		}
-		if (limit != null && limit > 0) {
-			this.limit = limit;
-		} else {
-			this.limit = 10;
-		}
-		this.total = total;
+	public int getSize() {
+		return size;
 	}
-
 	/**
-	 * Page and limit must be a greater than zero value
-	 * @param page
-	 * @param limit
+	 * Set the page size.
+	 * @param size
 	 */
-	public Pagination(Integer page, Integer limit) {
-		this(page, limit, null);
+	public void setSize(int size) {
+		this.size = size;
 	}
-
-	@JsonInclude(JsonInclude.Include.NON_EMPTY)
-	public Integer getLimit() {
-		return limit;
+	
+	/**
+	 * Get the page number starting on zero.
+	 * @return
+	 */
+	public int getNumber() {
+		return number;
 	}
-
-	@JsonInclude(JsonInclude.Include.NON_EMPTY)
-	public Integer getPage() {
-		return page;
+	/**
+	 * Set the page number.
+	 * @param number
+	 */
+	public void setNumber(int number) {
+		this.number = number;
 	}
-
-	public Long getTotal() {
+	
+	/**
+	 * Get the total of records.
+	 * @return
+	 */
+	public long getTotal() {
 		return total;
 	}
-
+	
+	/**
+	 * Set the total of records
+	 * @param total
+	 */
+	public void setTotal(long total) {
+		this.total = total;
+	}
+	
 }
