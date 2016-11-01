@@ -1,4 +1,4 @@
-package com.matchandtrade.validator;
+package com.matchandtrade.rest.v1.validator;
 
 import java.util.HashMap;
 import java.util.Map;

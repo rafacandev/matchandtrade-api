@@ -1,4 +1,4 @@
-package com.matchandtrade.rest.exception;
+package com.matchandtrade.rest.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.authorization.AuthorizationException.Type;
-import com.matchandtrade.validator.ValidationException;
+import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.v1.validator.ValidationException;
 
 @ControllerAdvice
 public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {

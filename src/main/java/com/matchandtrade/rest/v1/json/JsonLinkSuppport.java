@@ -1,4 +1,4 @@
-package com.matchandtrade.rest;
+package com.matchandtrade.rest.v1.json;
 
 import java.util.List;
 

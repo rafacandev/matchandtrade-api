@@ -1,4 +1,4 @@
-package com.matchandtrade.rest.transformer;
+package com.matchandtrade.rest.v1.transformer;
 
 import java.util.ArrayList;
 import java.util.List;

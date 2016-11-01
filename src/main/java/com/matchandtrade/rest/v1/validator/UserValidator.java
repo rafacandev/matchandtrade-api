@@ -1,4 +1,4 @@
-package com.matchandtrade.validator;
+package com.matchandtrade.rest.v1.validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.rest.transformer.UserTransformer;
+import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.test.random.UserRandom;
 
 @Component
@@ -18,10 +18,9 @@ public class MockFactory {
 	@Autowired
 	private UserTransformer userTransformer;
 	
-	public UserAuthentication getUserAuthentication() {
+	public UserAuthentication nextRandomUserAuthentication() {
 		UserEntity userEntity = userTransformer.transform(UserRandom.next());
 		userModel.save(userEntity);
-		
 		UserAuthentication result = new UserAuthentication();
 		result.setAuthenticated(true);
 		result.setEmail(userEntity.getEmail());
@@ -31,7 +30,15 @@ public class MockFactory {
 		
 		return result;
 	}
-	
+
+	public MockHttpServletRequest getHttpRquestWithAuthenticatedUser() {
+		UserAuthentication userAuthentication = nextRandomUserAuthentication();
+		IntegrationTestStore.add(IntegrationTestStore.StoredObject.UserAuthentication, userAuthentication);
+		MockHttpServletRequest result = new MockHttpServletRequest();
+		result.getSession().setAttribute("user", userAuthentication);
+		return result;
+	}
+
 	public MockHttpServletRequest getHttpRquestWithAuthenticatedUser(UserAuthentication userAuthentication) {
 		MockHttpServletRequest result = new MockHttpServletRequest();
 		result.getSession().setAttribute("user", userAuthentication);
@@ -42,5 +49,5 @@ public class MockFactory {
 		UserAuthentication userAuthentication = (UserAuthentication) IntegrationTestStore.get(IntegrationTestStore.StoredObject.UserAuthentication);
 		return getHttpRquestWithAuthenticatedUser(userAuthentication);
 	}
-
+	
 }

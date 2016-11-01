@@ -1,4 +1,4 @@
-package com.matchandtrade.rest;
+package com.matchandtrade.rest.v1.json;
 
 /**
  * Base for all JSON responses which includes: requestURL, data and pagination.

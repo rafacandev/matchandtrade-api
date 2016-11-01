@@ -1,4 +1,4 @@
-package com.matchandtrade.rest.exception;
+package com.matchandtrade.rest.handler;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,10 +10,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.authorization.AuthorizationException.Type;
+import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.handler.ThrowableExceptionHandler.ErrorJson;
+import com.matchandtrade.rest.handler.ThrowableExceptionHandler.Error;
+import com.matchandtrade.rest.v1.validator.ValidationException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.validator.ValidationException;
-import com.matchandtrade.rest.exception.ThrowableExceptionHandler.Error;
-import com.matchandtrade.rest.exception.ThrowableExceptionHandler.ErrorJson;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
@@ -71,7 +72,6 @@ public class ThrowableExceptionHandlerUT extends ResponseEntityExceptionHandler 
 		Error error = response.getBody().getErrors().iterator().next();
 		Assert.assertEquals(errorMessage, error.getDescription());
 		Assert.assertEquals(ValidationException.ErrorType.INVALID_OPERATION.toString(), error.getKey());
-	}
-	
+	}	
 	
 }

@@ -1,4 +1,4 @@
-package com.matchandtrade.rest.transformer;
+package com.matchandtrade.rest.v1.transformer;
 
 import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.rest.v1.json.UserAuthenticationJson;

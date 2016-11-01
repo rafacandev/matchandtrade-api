@@ -1,4 +1,4 @@
-package com.matchandtrade.rest.exception;
+package com.matchandtrade.rest;
 
 import java.util.HashMap;
 import java.util.Map;

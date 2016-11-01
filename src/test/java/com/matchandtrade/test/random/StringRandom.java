@@ -51,5 +51,9 @@ public class StringRandom {
 		int nPosition = random.nextInt(noums.length);
 		return adjectives[aPosition] + noums[nPosition] + "-" + random.nextInt(9999) + "@random.com";
 	}
+	
+	public static String nextString() {
+		return random.nextInt(9999) + random.nextInt(9999) + random.nextInt(9999) + "";		
+	}
 
 }

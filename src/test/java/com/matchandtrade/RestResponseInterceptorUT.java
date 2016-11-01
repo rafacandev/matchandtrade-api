@@ -16,8 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.config.RestResponseAdvice;
-import com.matchandtrade.rest.JsonResponse;
+import com.matchandtrade.rest.handler.RestResponseAdvice;
+import com.matchandtrade.rest.v1.json.JsonResponse;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.UserRandom;

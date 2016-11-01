@@ -16,9 +16,9 @@ import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.Controller;
-import com.matchandtrade.rest.transformer.UserTransformer;
 import com.matchandtrade.rest.v1.json.UserJson;
-import com.matchandtrade.validator.UserValidator;
+import com.matchandtrade.rest.v1.transformer.UserTransformer;
+import com.matchandtrade.rest.v1.validator.UserValidator;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -50,7 +50,7 @@ public class UserController extends Controller {
 	
 	@ApiResponses(value={@ApiResponse(response=UserJson.class, responseContainer="List", message="OK", code=200)})
 	@RequestMapping(method=RequestMethod.GET)
-	public SearchResult<UserJson> getBySearching(
+	public SearchResult<UserJson> searching(
 			@RequestParam(required=false) Integer _pageNumber,
 			@RequestParam(required=false) Integer _pageSize,
 			@RequestParam String email) {

@@ -1,6 +1,7 @@
-package com.matchandtrade.config;
+package com.matchandtrade.rest.handler;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
@@ -9,9 +10,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.rest.Json;
-import com.matchandtrade.rest.JsonLinkSuppport;
-import com.matchandtrade.rest.JsonResponse;
+import com.matchandtrade.rest.v1.json.Json;
+import com.matchandtrade.rest.v1.json.JsonLinkSuppport;
+import com.matchandtrade.rest.v1.json.JsonResponse;
 
 @ControllerAdvice
 public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
@@ -38,8 +39,12 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 			jsonResponse.setRequestURL(request.getURI().toString());
 			@SuppressWarnings("unchecked")
 			SearchResult<Json> bodyAsSearchResult = (SearchResult<Json>) body;
-			Json j = bodyAsSearchResult.getResultList().get(0);
-			return loadLinks(j, request);
+			if (!bodyAsSearchResult.getResultList().isEmpty()) {
+				Json j = bodyAsSearchResult.getResultList().get(0);
+				return loadLinks(j, request);
+			} else {
+				response.setStatusCode(HttpStatus.NOT_FOUND);
+			}
 		}
 		return body;
 	}

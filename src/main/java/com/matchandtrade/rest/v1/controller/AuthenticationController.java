@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.rest.Controller;
-import com.matchandtrade.rest.transformer.UserAuthenticationTransformer;
 import com.matchandtrade.rest.v1.json.UserAuthenticationJson;
+import com.matchandtrade.rest.v1.transformer.UserAuthenticationTransformer;
 
 @RestController
 @RequestMapping(path = "/rest/v1/authentications")
