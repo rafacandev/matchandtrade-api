@@ -1,5 +1,7 @@
 package com.matchandtrade.rest.v1.json;
 
+import com.matchandtrade.rest.Json;
+
 /**
  * Base for all JSON responses which includes: requestURL, data and pagination.
  * 

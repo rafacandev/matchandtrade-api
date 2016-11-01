@@ -1,5 +1,7 @@
 package com.matchandtrade.rest.v1.json;
 
+import com.matchandtrade.rest.Json;
+
 public class UserAuthenticationJson implements Json {
 	private Integer userId;
 	private boolean isAuthenticated = false;

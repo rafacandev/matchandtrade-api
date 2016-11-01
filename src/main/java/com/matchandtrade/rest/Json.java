@@ -1,4 +1,4 @@
-package com.matchandtrade.rest.v1.json;
+package com.matchandtrade.rest;
 
 /**
  * Marker interface for java classes intended to be serialized as JSON. 

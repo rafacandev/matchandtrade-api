@@ -35,6 +35,9 @@ public class UserTransformer {
 	}
 	
 	public static UserJson transform(UserEntity entity) {
+		if (entity == null) {
+			return null;
+		}
 		UserJson result = new UserJson();
 		result.setEmail(entity.getEmail());
 		result.setName(entity.getName());

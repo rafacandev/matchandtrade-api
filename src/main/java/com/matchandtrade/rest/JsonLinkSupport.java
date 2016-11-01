@@ -1,4 +1,4 @@
-package com.matchandtrade.rest.v1.json;
+package com.matchandtrade.rest;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author rafael.santos.bra@gmail.com
  * @see com.matchandtrade.config.RestResponseInterceptor;
  */
-public abstract class JsonLinkSuppport extends ResourceSupport implements Json {
+public abstract class JsonLinkSupport extends ResourceSupport implements Json {
 	
 	public abstract void loadLinks();
 	

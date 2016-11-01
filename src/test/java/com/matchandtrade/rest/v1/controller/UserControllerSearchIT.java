@@ -41,14 +41,14 @@ public class UserControllerSearchIT {
 	
 	@Test
 	public void searchPositive() {
-		SearchResult<UserJson> response = userController.searching(0, 5, userEntity.getEmail());
+		SearchResult<UserJson> response = userController.search(0, 5, userEntity.getEmail());
 		UserJson responseContent = response.getResultList().get(0);
 		Assert.assertEquals(userEntity.getEmail(), responseContent.getEmail());
 	}
 	
 	@Test
 	public void searchNegative() {
-		SearchResult<UserJson> response = userController.searching(0, 5, StringRandom.nextString());
+		SearchResult<UserJson> response = userController.search(0, 5, StringRandom.nextString());
 		Assert.assertTrue(response.getResultList().isEmpty());
 	}
 

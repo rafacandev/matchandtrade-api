@@ -50,7 +50,7 @@ public class UserController extends Controller {
 	
 	@ApiResponses(value={@ApiResponse(response=UserJson.class, responseContainer="List", message="OK", code=200)})
 	@RequestMapping(method=RequestMethod.GET)
-	public SearchResult<UserJson> searching(
+	public SearchResult<UserJson> search(
 			@RequestParam(required=false) Integer _pageNumber,
 			@RequestParam(required=false) Integer _pageSize,
 			@RequestParam String email) {

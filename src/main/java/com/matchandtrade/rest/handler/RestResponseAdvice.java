@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.rest.v1.json.Json;
-import com.matchandtrade.rest.v1.json.JsonLinkSuppport;
-import com.matchandtrade.rest.v1.json.JsonResponse;
+import com.matchandtrade.rest.Json;
+import com.matchandtrade.rest.JsonLinkSupport;
 
 @ControllerAdvice
 public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
@@ -23,44 +22,44 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 	}
 
 	/**
-	 * When <i>body</i> is an instance of <i>Json<i>, then:
-	 * Create an <i>JsonResponse<i> object and assing the <i>body</i> as <i>JsonResponse.data</i>
+	 * When <i>body</i> is an instance of <i>JsonLinkSupport<i> or SearchResult<JsonLinkSupport>, then
+	 * load the HATEOAS links of each JsonLinkSupport object.
+	 * 
+	 * Additionally, sets status code as HttpStatus.NOT_FOUND of body is null or SearchResult.getResultList().isEmpty().
+	 * 
+	 * @see http://projects.spring.io/spring-hateoas/
 	 */
 	@Override
-	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
-						Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
-						ServerHttpResponse response) {
-		// TODO Refactor this area
-		// Add JSON meta-data if body is instance of Json.
-		if (body instanceof Json) {
-			return loadLinks(body, request);
+	public Object beforeBodyWrite(
+				Object body,
+				MethodParameter returnType,
+				MediaType selectedContentType,
+				Class<? extends HttpMessageConverter<?>> selectedConverterType,
+				ServerHttpRequest request,
+				ServerHttpResponse response) {
+		if (body == null) {
+			response.setStatusCode(HttpStatus.NOT_FOUND);
+			return null;
+		}
+		if (body instanceof JsonLinkSupport) {			
+			// Load links using Spring HATEOAS. See: http://projects.spring.io/spring-hateoas/
+			JsonLinkSupport bodyAsJsonLinkSupport = (JsonLinkSupport) body;
+			bodyAsJsonLinkSupport.loadLinks();
+			return bodyAsJsonLinkSupport;
 		} else if (body instanceof SearchResult) {
-			JsonResponse jsonResponse = new JsonResponse();
-			jsonResponse.setRequestURL(request.getURI().toString());
 			@SuppressWarnings("unchecked")
 			SearchResult<Json> bodyAsSearchResult = (SearchResult<Json>) body;
-			if (!bodyAsSearchResult.getResultList().isEmpty()) {
-				Json j = bodyAsSearchResult.getResultList().get(0);
-				return loadLinks(j, request);
-			} else {
+			if (bodyAsSearchResult.getResultList().isEmpty()) {
 				response.setStatusCode(HttpStatus.NOT_FOUND);
+			} else {
+				for (Json j : bodyAsSearchResult.getResultList()) {
+					if (j instanceof JsonLinkSupport) {
+						JsonLinkSupport jAsJsonLinkSupport = (JsonLinkSupport) j;
+						jAsJsonLinkSupport.loadLinks();
+					}
+				}
 			}
 		}
 		return body;
 	}
-
-	private JsonResponse loadLinks(Object body, ServerHttpRequest request) {
-		if (body instanceof JsonLinkSuppport) {
-			// Load links using Spring HATEOAS. See: http://projects.spring.io/spring-hateoas/
-			JsonLinkSuppport bodyAsJsonLinkSupport = (JsonLinkSuppport) body;
-			bodyAsJsonLinkSupport.loadLinks();
-		}
-		Json bodyAsJson = (Json) body;
-		// Prepare JsonResponse
-		JsonResponse jsonResponse = new JsonResponse();
-		jsonResponse.setData(bodyAsJson);
-		jsonResponse.setRequestURL(request.getURI().toString());
-		return jsonResponse;
-	}
-
 }
