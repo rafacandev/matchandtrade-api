@@ -33,7 +33,7 @@ public class UserControllerSearchIT {
 	@Before
 	@Commit
 	public void before() {
-		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthentication();
+		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUser(userAuthentication);
 		userController.setHttpServletRequest(httpRequest);
 		userEntity = userModel.get(userAuthentication.getUserId());

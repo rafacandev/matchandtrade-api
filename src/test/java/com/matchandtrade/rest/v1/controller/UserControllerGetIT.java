@@ -29,7 +29,7 @@ public class UserControllerGetIT {
 	
 	@Before
 	public void beforeClass() {
-		userAuthentication = mockFactory.nextRandomUserAuthentication();
+		userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		IntegrationTestStore.add(IntegrationTestStore.StoredObject.UserAuthentication, userAuthentication);
 	}
 	

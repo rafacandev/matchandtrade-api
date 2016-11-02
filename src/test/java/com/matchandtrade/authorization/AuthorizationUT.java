@@ -48,20 +48,20 @@ public class AuthorizationUT {
 
 	@Test(expected=AuthorizationException.class)
 	public void validateIdentityAndDoBasicAuthorizationNegativeUserIdMismatch() {
-		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthentication();
+		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		authorization.validateIdentityAndDoBasicAuthorization(userAuthentication, -1);
 	}
 	
 	@Test(expected=AuthorizationException.class)
 	public void validateIdentityAndDoBasicAuthorizationNegativeUserNull() {
-		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthentication();
+		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		authorization.validateIdentityAndDoBasicAuthorization(userAuthentication, null);
 	}
 
 	@Test
 	@Rollback(false)
 	public void validateIdentityAndDoBasicAuthorizationPositive() {
-		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthentication();
+		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		UserEntity result = authorization.validateIdentityAndDoBasicAuthorization(userAuthentication, userAuthentication.getUserId());
 		Assert.assertEquals(userAuthentication.getUserId(), result.getUserId());
 	}
@@ -69,11 +69,11 @@ public class AuthorizationUT {
 	@Test
 	@Rollback(false)
 	public void validateIdentityAndDoBasicAuthorizationPositiveAdminstrator() {
-		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthentication();
+		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		UserEntity userEntity = userModel.get(userAuthentication.getUserId());
 		userEntity.setRole(UserEntity.Role.ADMINISTRATOR);
 		userModel.save(userEntity);
-		UserAuthentication anotherUser = mockFactory.nextRandomUserAuthentication();
+		UserAuthentication anotherUser = mockFactory.nextRandomUserAuthenticationPersisted();
 		UserEntity result = authorization.validateIdentityAndDoBasicAuthorization(userAuthentication, anotherUser.getUserId());
 		Assert.assertEquals(userAuthentication.getUserId(), result.getUserId());
 	}

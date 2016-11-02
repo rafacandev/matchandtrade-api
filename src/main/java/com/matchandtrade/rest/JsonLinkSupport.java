@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public abstract class JsonLinkSupport extends ResourceSupport implements Json {
 	
-	public abstract void loadLinks();
+	public abstract void buildLinks();
 	
 	@JsonProperty("_links")
 	@Override

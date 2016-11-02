@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
+	public static final String ACCESS_TOKEN = "MockedAccessToken";
+	public static final String EMAIL = "mockedemail@test.com";
+	public static final String NAME = "Mocked Name";
 
 	@Override
 	public void redirectToAuthorizationAuthority(HttpServletResponse response, String state, String clientId, String redirectURI) throws AuthenticationException {
@@ -48,8 +51,8 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 	public UserAuthentication obtainUserInformation(String accessToken) throws AuthenticationException {
 		UserAuthentication result = new UserAuthentication();
 		result.setAuthenticated(false);
-		result.setEmail(accessToken + "@mock.com");
-		result.setName(accessToken);
+		result.setEmail(EMAIL);
+		result.setName(NAME);
 		result.setNewUser(false);
 		return result;
 	}
@@ -57,7 +60,7 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 	@Override
 	public String obtainAccessToken(String codeParameter, String clientId, String clientSecret, String redirectURI)
 			throws AuthenticationException {
-		return "AuthenticationOAuthTestExistingUserMock";
+		return ACCESS_TOKEN;
 	}
 
 }

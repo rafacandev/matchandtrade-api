@@ -29,6 +29,7 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 	 * 
 	 * @see http://projects.spring.io/spring-hateoas/
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Object beforeBodyWrite(
 				Object body,
@@ -37,29 +38,48 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 				Class<? extends HttpMessageConverter<?>> selectedConverterType,
 				ServerHttpRequest request,
 				ServerHttpResponse response) {
+
+		// If body is null, then return HttpStatus.NOT_FOUND
 		if (body == null) {
 			response.setStatusCode(HttpStatus.NOT_FOUND);
 			return null;
 		}
-		if (body instanceof JsonLinkSupport) {			
-			// Load links using Spring HATEOAS. See: http://projects.spring.io/spring-hateoas/
-			JsonLinkSupport bodyAsJsonLinkSupport = (JsonLinkSupport) body;
-			bodyAsJsonLinkSupport.loadLinks();
-			return bodyAsJsonLinkSupport;
-		} else if (body instanceof SearchResult) {
-			@SuppressWarnings("unchecked")
-			SearchResult<Json> bodyAsSearchResult = (SearchResult<Json>) body;
-			if (bodyAsSearchResult.getResultList().isEmpty()) {
-				response.setStatusCode(HttpStatus.NOT_FOUND);
-			} else {
-				for (Json j : bodyAsSearchResult.getResultList()) {
-					if (j instanceof JsonLinkSupport) {
-						JsonLinkSupport jAsJsonLinkSupport = (JsonLinkSupport) j;
-						jAsJsonLinkSupport.loadLinks();
-					}
-				}
-			}
+		
+		// If is a JsonLinkSupport, then build its links using Spring HATEOAS. See: http://projects.spring.io/spring-hateoas/
+		if (body instanceof JsonLinkSupport) {
+			((JsonLinkSupport) body).buildLinks();
+			return body;
+		}
+		
+		/*
+		 * SearchResult is going to be serialized as an JSON array.
+		 * Also, build SearchResult.getResultList() links using Spring HATEOAS. See: http://projects.spring.io/spring-hateoas/
+		 * Also, is assumed that SearchResult should only be returned by Controller classes and are SearchResult<Json>. 
+		 */
+		// 
+		if (body instanceof SearchResult) {
+			handleSearchResult((SearchResult) body, response);
+			
+			// Handle pagination
+			
+			return body;
+			
 		}
 		return body;
 	}
+
+	private void handleSearchResult(SearchResult<Json> searchResult, ServerHttpResponse response) {
+		if (searchResult.getResultList().isEmpty()) {
+			response.setStatusCode(HttpStatus.NOT_FOUND);
+		} else {
+			for (Json j : searchResult.getResultList()) {
+				if (j instanceof JsonLinkSupport) {
+					JsonLinkSupport jAsJsonLinkSupport = (JsonLinkSupport) j;
+					jAsJsonLinkSupport.buildLinks();
+				}
+			}
+		}
+	}
+
+
 }

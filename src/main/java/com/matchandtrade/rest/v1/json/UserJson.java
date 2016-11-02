@@ -37,7 +37,7 @@ public class UserJson extends JsonLinkSupport {
 	}
 	
 	@Override
-	public void loadLinks() {
+	public void buildLinks() {
 		if (getUserId() != null) {
 			add(linkTo(methodOn(UserController.class).getByUserId(getUserId())).withSelfRel());
 		}

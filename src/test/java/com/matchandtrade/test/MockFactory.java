@@ -18,7 +18,19 @@ public class MockFactory {
 	@Autowired
 	private UserTransformer userTransformer;
 	
+	
 	public UserAuthentication nextRandomUserAuthentication() {
+		UserEntity userEntity = userTransformer.transform(UserRandom.next());
+		UserAuthentication result = new UserAuthentication();
+		result.setAuthenticated(true);
+		result.setEmail(userEntity.getEmail());
+		result.setName(userEntity.getName());
+		result.setNewUser(true);
+		result.setUserId(userEntity.getUserId());
+		return result;
+	}
+	
+	public UserAuthentication nextRandomUserAuthenticationPersisted() {
 		UserEntity userEntity = userTransformer.transform(UserRandom.next());
 		userModel.save(userEntity);
 		UserAuthentication result = new UserAuthentication();
@@ -27,12 +39,11 @@ public class MockFactory {
 		result.setName(userEntity.getName());
 		result.setNewUser(true);
 		result.setUserId(userEntity.getUserId());
-		
 		return result;
 	}
 
 	public MockHttpServletRequest getHttpRquestWithAuthenticatedUser() {
-		UserAuthentication userAuthentication = nextRandomUserAuthentication();
+		UserAuthentication userAuthentication = nextRandomUserAuthenticationPersisted();
 		IntegrationTestStore.add(IntegrationTestStore.StoredObject.UserAuthentication, userAuthentication);
 		MockHttpServletRequest result = new MockHttpServletRequest();
 		result.getSession().setAttribute("user", userAuthentication);

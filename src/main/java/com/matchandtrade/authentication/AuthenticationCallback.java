@@ -63,6 +63,14 @@ public class AuthenticationCallback {
 	}
 
 	/**
+	 * Sets the AuthenticationOAuth
+	 * @param authenticationOAuth
+	 */
+	public void setAuthenticationOAuth(AuthenticationOAuth authenticationOAuth) {
+		this.authenticationOAuth = authenticationOAuth;
+	}
+
+	/**
 	 * Check if there is a user for the given email.
 	 * If not, then save a new user in the local database.
 	 * If yes, then return the information in the local database for the exiting user.
