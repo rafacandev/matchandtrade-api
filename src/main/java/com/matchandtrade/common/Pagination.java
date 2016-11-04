@@ -5,6 +5,22 @@ package com.matchandtrade.common;
  * @author rafael.santos.bra@gmail.com
  */
 public class Pagination {
+	
+	public enum Parameter {
+		FIRST("_firstPage"), LAST("_lastPage"), NUMBER("_pageNumber"), SIZE("_pageSize"), TOTAL_COUNT("_totalCount");
+	    
+		private final String text;
+	    
+	    private Parameter(final String text) {
+	        this.text = text;
+	    }
+
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	}
+	
 	private int size = 10;
 	private int number = 0;
 	private long total = 0;
