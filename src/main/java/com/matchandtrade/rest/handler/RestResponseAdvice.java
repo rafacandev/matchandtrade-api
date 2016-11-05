@@ -22,6 +22,14 @@ import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.JsonLinkSupport;
 
+/**
+ * This <i>ResponseBodyAdvice</i> handles HATEOAS and response status codes.
+ * It will build {@link Json} links and generate the header <i>Links</i> and <i>X-Pagination-Total-Count</i>
+ * 
+ * @see https://tools.ietf.org/html/rfc5988
+ * @see https://developer.github.com/guides/traversing-with-pagination/
+ * @author rafael.santos.bra@gmail.com
+ */
 @ControllerAdvice
 public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 	
@@ -89,12 +97,6 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 				.setScheme(request.getURI().getScheme())
 				.setHost(request.getURI().getHost())
 				.setPath(request.getURI().getPath());
-		String basicUri = null;
-		try {
-			basicUri = basicUriBuilder.build().toString();
-		} catch (URISyntaxException e) {
-			logger.error("Unable to build URI.", e);
-		}
 		// Rebuild query parameters without _pageSize and _pageNumber
 		List<NameValuePair> queryParams = URLEncodedUtils.parse(request.getURI(), "UTF-8");
 		for (NameValuePair param : queryParams) {
@@ -102,10 +104,23 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 				basicUriBuilder.addParameter(param.getName(), param.getValue());
 			}
 		}
+		// Rebuild the URI without _pageSize and _pageNumber
+		String basicUriString = null;
+		try {
+			basicUriString = basicUriBuilder.build().toString();
+		} catch (URISyntaxException e) {
+			logger.warn("Unable to build URI.", e);
+		}
 		// Build nextPage, previousPage query strings
-		String leadingAmpersand = (queryParams.isEmpty() ? "" : "&");
-		String nextPage = basicUri + leadingAmpersand + Pagination.Parameter.NUMBER + "=" + (searchResult.getPagination().getNumber() + 1);
-		String previousPage = basicUri + leadingAmpersand + Pagination.Parameter.NUMBER + "=" + (searchResult.getPagination().getNumber()  - 1);
+		String paginationStartString = "<" + basicUriString + (queryParams.isEmpty() ? "" : "&") + Pagination.Parameter.NUMBER + "="; 
+		String nextPage = paginationStartString 
+				+ (searchResult.getPagination().getNumber() + 1)
+				+ "&_pageSize=" + (searchResult.getPagination().getSize())
+				+ ">; rel=\"nextPage\"";
+		String previousPage = paginationStartString 
+				+ (searchResult.getPagination().getNumber() - 1)
+				+ "&_pageSize=" + (searchResult.getPagination().getSize())
+				+ ">; rel=\"previousPage\"";
 		// Build the result
 		PaginationHeader result = new PaginationHeader();
 		String totalCount = String.valueOf(searchResult.getPagination().getTotal());

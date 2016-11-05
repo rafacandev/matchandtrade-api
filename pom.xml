@@ -130,6 +130,8 @@
 					<includes>
 						<include>**/*UT.java</include>
 					</includes>
+					<!-- -Xverify:none may reduce startup time. No need to verify bitecode on the test phase -->
+					<argLine>-Xverify:none</argLine>
 				</configuration>
 			</plugin>
 
