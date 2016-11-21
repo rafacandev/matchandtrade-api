@@ -50,9 +50,13 @@ Run unit tests:
 
 `mvn test`
 
-Run integration tests:
+Run integration tests (including unit tests):
 
-`mvn integration-test`
+`mvn verify`
+
+Run only the integration test (excluding unit tests):
+
+`mvn test-compile failsafe:integration-test`
 
 Generate maven web site. Files will be generated at `/target/site`:
 
