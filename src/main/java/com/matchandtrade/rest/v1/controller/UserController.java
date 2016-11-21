@@ -38,7 +38,7 @@ public class UserController extends Controller {
 
 	@ApiResponses(value={@ApiResponse(response=UserJson.class, message="OK", code=200)})
 	@RequestMapping(path="/{userId}", method=RequestMethod.GET)
-	public UserJson getByUserId(@PathVariable("userId") Integer userId) {
+	public UserJson get(@PathVariable("userId") Integer userId) {
 		// Check authorization for this operation
 		authorization.validateIdentityAndDoBasicAuthorization(getUserAuthentication(), userId);
 		// Delegate to model layer
@@ -50,7 +50,7 @@ public class UserController extends Controller {
 	
 	@ApiResponses(value={@ApiResponse(response=UserJson.class, responseContainer="List", message="OK", code=200)})
 	@RequestMapping(method=RequestMethod.GET)
-	public SearchResult<UserJson> search(
+	public SearchResult<UserJson> get(
 			@RequestParam(required=false) Integer _pageNumber,
 			@RequestParam(required=false) Integer _pageSize,
 			@RequestParam String email) {
