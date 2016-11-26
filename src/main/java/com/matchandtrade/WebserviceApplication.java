@@ -40,7 +40,6 @@ import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfigurati
 import org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpEncodingAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.WebSocketAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ImportResource;
@@ -50,7 +49,7 @@ import org.springframework.context.annotation.ImportResource;
 @SpringBootApplication
 @EnableAutoConfiguration(
 	exclude={
-			// Classed found on the auto-configuration report Positive Matches
+		// Classed found on the auto-configuration report Positive Matches
 		DataSourceAutoConfiguration.class,
 		AopAutoConfiguration.JdkDynamicAutoProxyConfiguration.class,
 		HibernateJpaAutoConfiguration.class,
@@ -65,18 +64,13 @@ import org.springframework.context.annotation.ImportResource;
 		JtaAutoConfiguration.class,
 		PersistenceExceptionTranslationAutoConfiguration.class,
 		WebClientAutoConfiguration.class,
-		WebMvcAutoConfiguration.class,
 		WebSocketAutoConfiguration.class,
-
-		// Classed found on the auto-configuration console Negative Matches
+//		// Classed found on the auto-configuration console Negative Matches
 		ActiveMQAutoConfiguration.class,
 		AopAutoConfiguration.CglibAutoProxyConfiguration.class,
 		ArtemisAutoConfiguration.class,
-//		AtomikosJtaConfiguration.class,
 		BatchAutoConfiguration.class,
-//		BitronixJtaConfiguration.class,
 		CacheAutoConfiguration.class,
-//		CaffeineCacheConfiguration.class,
 		CassandraAutoConfiguration.class,
 		CassandraDataAutoConfiguration.class,
 		CassandraRepositoriesAutoConfiguration.class,
@@ -84,22 +78,19 @@ import org.springframework.context.annotation.ImportResource;
 		CouchbaseAutoConfiguration.class,
 		CouchbaseCacheConfiguration.class,
 		CouchbaseRepositoriesAutoConfiguration.class,
-//		DataSourceAutoConfiguration.EmbeddedDatabaseConfiguration.class
-		
-DataSourcePoolMetadataProvidersConfiguration.class,
-DeviceDelegatingViewResolverAutoConfiguration.class,
-DeviceResolverAutoConfiguration.class,
-//EhCacheCacheConfiguration.class,
-ElasticsearchAutoConfiguration.class,
-ElasticsearchDataAutoConfiguration.class,
-ElasticsearchRepositoriesAutoConfiguration.class,
-EmbeddedMongoAutoConfiguration.class,
-EmbeddedServletContainerAutoConfiguration.EmbeddedJetty.class,
-EmbeddedServletContainerAutoConfiguration.EmbeddedUndertow.class,
-FacebookAutoConfiguration.class,
-FallbackWebSecurityAutoConfiguration.class,
-FlywayAutoConfiguration.class,
-FreeMarkerAutoConfiguration.class		
+		DataSourcePoolMetadataProvidersConfiguration.class,
+		DeviceDelegatingViewResolverAutoConfiguration.class,
+		DeviceResolverAutoConfiguration.class,
+		ElasticsearchAutoConfiguration.class,
+		ElasticsearchDataAutoConfiguration.class,
+		ElasticsearchRepositoriesAutoConfiguration.class,
+		EmbeddedMongoAutoConfiguration.class,
+		EmbeddedServletContainerAutoConfiguration.EmbeddedJetty.class,
+		EmbeddedServletContainerAutoConfiguration.EmbeddedUndertow.class,
+		FacebookAutoConfiguration.class,
+		FallbackWebSecurityAutoConfiguration.class,
+		FlywayAutoConfiguration.class,
+		FreeMarkerAutoConfiguration.class
 })
 public class WebserviceApplication {
 
