@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -29,7 +30,6 @@ public class AuthenticationCallbakUT {
 	@Autowired
 	private MockFactory mockFactory;
 	
-	
 	@Test
 	public void doGetAtiForgeryTokenNegative() throws ServletException, IOException {
 		AuthenticationCallback authenticationCallbakServlet = new AuthenticationCallback();
@@ -45,20 +45,24 @@ public class AuthenticationCallbakUT {
 	
 	@Test
 	public void doGetAtiForgeryTokenPositive() throws ServletException, IOException {
-		UserAuthentication sessionUserAuthentication = mockFactory.nextRandomUserAuthentication();
+		UserAuthentication sessionUserAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		MockHttpServletRequest request = mockFactory.getHttpRquestWithAuthenticatedUser(sessionUserAuthentication);
 		request.setParameter("state", "identicalStateMock");
 		request.getSession().setAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString(), "identicalStateMock");
 		
-		// AuthenticationCallbakServlet.AuthenticationOAuth is defined as AuthenticationOAuthTestExistingUserMock on matchandtrade-config.xml
+		AuthenticationOAuth authenticationOAuthMock = Mockito.mock(AuthenticationOAuth.class);
+		Mockito.when(authenticationOAuthMock.obtainAccessToken(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn("accessTokenMock");
+		Mockito.when(authenticationOAuthMock.obtainUserInformation("accessTokenMock")).thenReturn(sessionUserAuthentication);
+		authenticationCallbakServlet.setAuthenticationOAuth(authenticationOAuthMock);
+
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		authenticationCallbakServlet.doGet(request, response);
 
 		UserAuthentication responseUserAuthentication = (UserAuthentication) request.getSession(false).getAttribute("user");
 		assertNotNull(responseUserAuthentication.getUserId());
 		assertTrue(responseUserAuthentication.isAuthenticated());
-		assertEquals(AuthenticationOAuthExistingUserMock.EMAIL, responseUserAuthentication.getEmail());
-		assertEquals(AuthenticationOAuthExistingUserMock.NAME, responseUserAuthentication.getName());
+		assertEquals(sessionUserAuthentication.getEmail(), responseUserAuthentication.getEmail());
+		assertEquals(sessionUserAuthentication.getName(), responseUserAuthentication.getName());
 	}
 	
 }

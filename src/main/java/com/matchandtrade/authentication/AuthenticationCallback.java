@@ -73,7 +73,7 @@ public class AuthenticationCallback {
 	/**
 	 * Check if there is a user for the given email.
 	 * If not, then save a new user in the local database.
-	 * If yes, then return the information in the local database for the exiting user.
+	 * If yes, then return the information from the local database as the exiting user.
 	 * 
 	 * @return updated User.
 	 */
