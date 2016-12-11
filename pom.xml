@@ -71,6 +71,13 @@
 			<scope>runtime</scope>
 		</dependency>
 		
+		<!-- C3P0 http://www.mchange.com/projects/c3p0 -->
+		<dependency>
+		    <groupId>com.mchange</groupId>
+		    <artifactId>c3p0</artifactId>
+		    <version>0.9.5.2</version>
+		</dependency>
+		
 		<!-- Apache HttpComponents -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>

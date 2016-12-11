@@ -17,6 +17,6 @@
 		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 		
 	<import resource="file:${matchandtrade.config.file:src/config/matchandtrade-config.xml}" />
-	<import resource="application-context-hibernate.xml" />
+	
 
 </beans>
