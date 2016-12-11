@@ -44,8 +44,10 @@ import org.springframework.boot.autoconfigure.websocket.WebSocketAutoConfigurati
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ImportResource;
 
+import com.matchandtrade.authentication.AuthenticationServlet;
+
 @ImportResource("classpath:application-context-spring-boot.xml")
-@ServletComponentScan
+@ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
 @EnableAutoConfiguration(
 	exclude={
