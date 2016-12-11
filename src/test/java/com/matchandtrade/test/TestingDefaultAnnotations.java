@@ -7,12 +7,10 @@ import java.lang.annotation.Target;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
-import org.springframework.test.context.ContextConfiguration;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest
-@ContextConfiguration(locations = "/application-context-test.xml")
 @Commit
 public @interface TestingDefaultAnnotations {
 

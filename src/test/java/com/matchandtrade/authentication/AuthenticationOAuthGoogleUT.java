@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
-
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
 public class AuthenticationOAuthGoogleUT {
