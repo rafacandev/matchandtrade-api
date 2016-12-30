@@ -211,9 +211,11 @@
 					</execution>
 				</executions>
 				<configuration>
+					<parallel>classes</parallel>
 					<threadCount>4</threadCount>
 					<excludes>
 						<exclude>**/*Suite.java</exclude>
+						<exclude>**/*Test.java</exclude>
 					</excludes>
 					<includes>
 						<include>**/*UT.java</include>
