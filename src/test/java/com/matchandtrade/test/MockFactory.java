@@ -18,7 +18,6 @@ public class MockFactory {
 	@Autowired
 	private UserTransformer userTransformer;
 	
-	
 	public UserAuthentication nextRandomUserAuthentication() {
 		UserEntity userEntity = userTransformer.transform(UserRandom.next());
 		UserAuthentication result = new UserAuthentication();
@@ -42,23 +41,17 @@ public class MockFactory {
 		return result;
 	}
 
-	public MockHttpServletRequest getHttpRquestWithAuthenticatedUser() {
+	public MockHttpServletRequest getHttpRequestWithAuthenticatedUser() {
 		UserAuthentication userAuthentication = nextRandomUserAuthenticationPersisted();
-		IntegrationTestStore.add(IntegrationTestStore.StoredObject.UserAuthentication, userAuthentication);
-		MockHttpServletRequest result = new MockHttpServletRequest();
-		result.getSession().setAttribute("user", userAuthentication);
-		return result;
-	}
-
-	public MockHttpServletRequest getHttpRquestWithAuthenticatedUser(UserAuthentication userAuthentication) {
 		MockHttpServletRequest result = new MockHttpServletRequest();
 		result.getSession().setAttribute("user", userAuthentication);
 		return result;
 	}
 	
-	public MockHttpServletRequest getHttpRquestWithAuthenticatedUserFromIntegrationTestStore() {
-		UserAuthentication userAuthentication = (UserAuthentication) IntegrationTestStore.get(IntegrationTestStore.StoredObject.UserAuthentication);
-		return getHttpRquestWithAuthenticatedUser(userAuthentication);
+	public MockHttpServletRequest getHttpRequestWithAuthenticatedUser(UserAuthentication userAuthentication) {
+		MockHttpServletRequest result = new MockHttpServletRequest();
+		result.getSession().setAttribute("user", userAuthentication);
+		return result;
 	}
 	
 }

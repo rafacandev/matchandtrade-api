@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.authentication.UserAuthentication;
@@ -31,10 +30,9 @@ public class UserControllerSearchIT {
 	private UserEntity userEntity;
 	
 	@Before
-	@Commit
 	public void before() {
 		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
-		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUser(userAuthentication);
+		MockHttpServletRequest httpRequest = mockFactory.getHttpRequestWithAuthenticatedUser(userAuthentication);
 		userController.setHttpServletRequest(httpRequest);
 		userEntity = userModel.get(userAuthentication.getUserId());
 	}

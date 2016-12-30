@@ -13,7 +13,6 @@ import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.validator.ValidationException;
-import com.matchandtrade.test.IntegrationTestStore;
 import com.matchandtrade.test.MockFactory;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.UserRandom;
@@ -24,20 +23,26 @@ public class UserControllerPutIT {
 	
 	@Autowired
 	private MockFactory mockFactory;
-	private UserAuthentication userAuthentication;
 	@Autowired
 	private UserController userController;
 	
+	private UserAuthentication userAuthentication;
+	private MockHttpServletRequest httpRequest;
+
 	@Before
-	public void beforeClass() {
-		userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
-		IntegrationTestStore.add(IntegrationTestStore.StoredObject.UserAuthentication, userAuthentication);
+	public void before() {
+		// Let reuse userAuthentication and httpRequest to avoid unnecessary trips to the persistance layer
+		if (userAuthentication == null) {
+			userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
+		}
+		if (httpRequest == null) {
+			httpRequest = mockFactory.getHttpRequestWithAuthenticatedUser(userAuthentication);
+		}
 	}
 	
 	@Test(expected=AuthorizationException.class)
 	public void putNegativeUnauthorizedResource() {
 		// Trying to edit a resource of another user
-		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUserFromIntegrationTestStore();
 		userController.setHttpServletRequest(httpRequest);
 		UserJson requestJson = UserRandom.next();
 		userController.put(-1, requestJson);
@@ -45,7 +50,6 @@ public class UserControllerPutIT {
 	
 	@Test
 	public void putPositive() {
-		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUserFromIntegrationTestStore();
 		userController.setHttpServletRequest(httpRequest);
 		UserJson requestJson = UserRandom.next();
 		requestJson.setEmail(userAuthentication.getEmail());
@@ -55,7 +59,6 @@ public class UserControllerPutIT {
 	
 	@Test(expected=ValidationException.class)
 	public void putNegativeValidation() {
-		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUserFromIntegrationTestStore();
 		userController.setHttpServletRequest(httpRequest);
 		UserJson requestJson = UserRandom.next();
 		userController.put(userAuthentication.getUserId(), requestJson);

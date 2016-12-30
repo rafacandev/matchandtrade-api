@@ -33,7 +33,7 @@ public class AuthenticationControllerGetIT {
 	@Test
 	public void getPositive() {
 		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
-		MockHttpServletRequest httpRequest = mockFactory.getHttpRquestWithAuthenticatedUser(userAuthentication);
+		MockHttpServletRequest httpRequest = mockFactory.getHttpRequestWithAuthenticatedUser(userAuthentication);
 		authenticationController.setHttpServletRequest(httpRequest);
 		UserAuthenticationJson response = authenticationController.get();
 		Assert.assertEquals(userAuthentication.getUserId(), response.getUserId());
