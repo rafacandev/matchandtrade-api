@@ -85,6 +85,10 @@ public class AuthenticationServlet extends HttpServlet {
 		logger.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", authenticationProperties.getRedirectURI());
 	}
 	
+	public void setAuthenticationOAuth(AuthenticationOAuth authenticationOAuth) {
+		this.authenticationOAuth = authenticationOAuth;
+	}
+	
 	private void signOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.debug("Signing out from session id: [{}]", request.getSession().getId());
 		request.getSession().invalidate();

@@ -1,5 +1,6 @@
 package com.matchandtrade;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration;
@@ -93,11 +94,11 @@ import org.springframework.boot.autoconfigure.webservices.WebServicesAutoConfigu
 import org.springframework.boot.autoconfigure.websocket.WebSocketAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.WebSocketMessagingAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.env.Environment;
 
 import com.matchandtrade.authentication.AuthenticationServlet;
+import com.matchandtrade.config.AppConfiguration;
 
-@ImportResource("classpath:application-context-spring-boot.xml")
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={
@@ -269,7 +270,20 @@ import com.matchandtrade.authentication.AuthenticationServlet;
 })
 public class WebserviceApplication {
 
+	@Autowired
+	Environment environment;
+	
 	public static void main(String[] args) {
+		
+		// TODO Move this to a utility class
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equals("--configFile")) {
+				// TODO: catch error when no value is associated to "configFile"
+				AppConfiguration.CONFIG_FILE = args[i+1];
+			}
+		}
+		
+		
 		SpringApplication.run(WebserviceApplication.class, args);
 	}
 

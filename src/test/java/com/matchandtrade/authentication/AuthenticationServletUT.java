@@ -49,16 +49,17 @@ public class AuthenticationServletUT {
 	}
 	
 	@Test
-	public void doGetAuthenticate() throws ServletException, IOException, URISyntaxException {
+	public void doGetAuthenticateExistingUserMock() throws ServletException, IOException, URISyntaxException {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setRequestURI("http://localhost:8080/authenticate");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		
+		authenticationServlet.setAuthenticationOAuth(new AuthenticationOAuthExistingUserMock());
 		authenticationServlet.doGet(request, response);
 		
 		URI uri = new URI(response.getRedirectedUrl());
 		String redirectUrl = uri.getScheme() +"://" + uri.getHost() + ":" + uri.getPort() + uri.getPath();
-		assertEquals("http://localhost:8080/authenticate/callback", redirectUrl);
+		assertEquals(authenticationProperties.getRedirectURI(), redirectUrl);
 	}
 	
 	@Test
