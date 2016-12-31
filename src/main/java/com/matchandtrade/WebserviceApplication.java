@@ -1,6 +1,5 @@
 package com.matchandtrade;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration;
@@ -94,10 +93,9 @@ import org.springframework.boot.autoconfigure.webservices.WebServicesAutoConfigu
 import org.springframework.boot.autoconfigure.websocket.WebSocketAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.WebSocketMessagingAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.core.env.Environment;
 
 import com.matchandtrade.authentication.AuthenticationServlet;
-import com.matchandtrade.config.AppConfiguration;
+import com.matchandtrade.cli.AppCli;
 
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
@@ -269,22 +267,25 @@ import com.matchandtrade.config.AppConfiguration;
 	XADataSourceAutoConfiguration.class
 })
 public class WebserviceApplication {
-
-	@Autowired
-	Environment environment;
 	
-	public static void main(String[] args) {
-		
-		// TODO Move this to a utility class
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("--configFile")) {
-				// TODO: catch error when no value is associated to "configFile"
-				AppConfiguration.CONFIG_FILE = args[i+1];
-			}
+	public static void main(String[] arguments) {
+		// TODO: Create an abstraction to handle Console outputs instead of use System.err or System.out
+		// Handles the command line options.
+		AppCli cli = null;
+		try {
+			cli = new AppCli(arguments);
+		} catch (Throwable t) {
+			System.err.println("Not able to start application! " + t.getMessage());
+			System.err.println("Exiting the application with error code [1]. Not able to process command line options.");
+			System.exit(1);
 		}
 		
-		
-		SpringApplication.run(WebserviceApplication.class, args);
+		// If line output message is interrupted; then, display message 
+		if (cli.isInterrupted()) {
+			System.out.println(cli.getCommandLineOutputMessage());
+		} else {
+			// Proceed normally
+			SpringApplication.run(WebserviceApplication.class, arguments);
+		}
 	}
-
 }
