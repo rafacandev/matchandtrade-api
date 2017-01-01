@@ -76,11 +76,11 @@ java -jar /target/webservice-0.0.1-SNAPSHOT.jar -Dlogging.level.root=debug
 ```
 
 ## Writing Unit Test and Integration Test
-As mentioned on the *Unit Test and Integration Test* section, tests are configured with the maven plugins `maven-surefire-plugin` and `maven-failsafe-plugin` respectively. To run unit tests use `mvn test` to run integration tests use `mvn verify`.
+As mentioned on the *Unit Test and Integration Test* section, use `mvn test` to run unit tests and `mvn verify` to run integration tests.
 
-Unit tests should be placed on the folder `src/test/*` must be atomic and executed in any order. The file name also needs to end on `*UT.java`. Look at the file `src/test/java/com/matchandtrade/authentication/AuthenticationServletUT.java` for an example.
+Unit tests should be placed on the folder `src/test/*` must be atomic (does not depend on anything to run) and executed in any order. The file name also needs to end on `*UT.java`. Look at the file `src/test/java/com/matchandtrade/authentication/AuthenticationServletUT.java` for an example.
 
-Integration tests are also placed on `src/test/*` and may depend on other integration tests (although dependency should be avoided) and must be executed within a test suite. The test suite file name needs to end on `*Suite.java` while the integration test needs to end on `*IT.java`. Look at the file `src/test/java/com/matchandtrade/rest/v1/controller/UserControllerSuite.java` for an example.
+Integration tests are also placed on `src/test/*` and may not be atomic (depending on environment or other components) and must be executed within a test suite. The test suite file name needs to end on `*Suite.java` while the integration test needs to end on `*IT.java`. Look at the file `src/test/java/com/matchandtrade/rest/v1/controller/UserControllerSuite.java` for an example.
 
 To run one single unit test use `mvn -Dtest=TEST_NAME verify`. To run one singe integration test use `mvn -Dit.test=INTEGRATION_TEST_NAME verify`. See maven [surefire][3] and [failsave][4] pulgins documentation. 
 
@@ -88,9 +88,9 @@ To run one single unit test use `mvn -Dtest=TEST_NAME verify`. To run one singe 
 ### RESTful API
 The RESTful API is documented via [Swagger][5] and can be accessed from `http://localhost:8080/swagger-ui.html`
 ## Resourses
-Generally speaking, resources and payloads have consistent formats. Furthermore, [expand resources]:[7] is discouraged and multiple asynchronous calls are favored in order to load sub-resources.
+Generally speaking, resources and payloads have consistent formats. Furthermore, [expanding resources][7] is discouraged and multiple asynchronous calls are favored in order to load sub-resources.
 ## HATEOAS
-The importance of HATEOAS cannot be emphasized enough. This app uses the [Spring HATEOAS][8] approach to handel hypermedia.
+The importance of HATEOAS cannot be emphasized enough. This app uses the [Spring HATEOAS][8] approach to handle hypermedia.
 ## Many To Many Relationships
 Relationships are treated as resources similarly to what is described on this [post][6].
 ## Pagination
