@@ -44,34 +44,44 @@ import java.util.List;
 import java.util.Map;
 
 public class TradeMaximizer {
+	
+	private Output out;
+	
 	public static void main(String[] args) {
-
 		String wantFilePath = "src/test/resources/trademaximizer/wants.txt";
-
 		for (int i = 0; i < args.length; i++) {
 			if ("-input".equals(args[i])) {
 				wantFilePath = args[i + 1];
 			}
 		}
-
 		new TradeMaximizer().run(wantFilePath);
 	}
+	
+	public TradeMaximizer() {
+		super();
+		this.out = new Output(System.out);
+	}
+	
+	public TradeMaximizer(Output o) {
+		this.out = o;
+	}
+	
 
 	final String version = "Version 1.3a";
 
 	void run(String wantFilePath) {
-		System.out.println("TradeMaximizer " + version);
+		out.println("TradeMaximizer " + version);
 
 		List<String[]> wantLists = readWantLists(wantFilePath);
 		if (wantLists == null)
 			return;
 		if (options.size() > 0) {
-			System.out.print("Options:");
+			out.print("Options:");
 			for (String option : options)
-				System.out.print(" " + option);
-			System.out.println();
+				out.print(" " + option);
+			out.println();
 		}
-		System.out.println();
+		out.println();
 
 		buildGraph(wantLists);
 		if (showMissing && officialNames != null && officialNames.size() > 0) {
@@ -80,16 +90,16 @@ public class TradeMaximizer {
 			List<String> missing = new ArrayList<String>(officialNames);
 			Collections.sort(missing);
 			for (String name : missing) {
-				System.out.println("**** Missing want list for official name " + name);
+				out.println("**** Missing want list for official name " + name);
 			}
-			System.out.println();
+			out.println();
 		}
 		if (showErrors && errors.size() > 0) {
 			Collections.sort(errors);
-			System.out.println("ERRORS:");
+			out.println("ERRORS:");
 			for (String error : errors)
-				System.out.println(error);
-			System.out.println();
+				out.println(error);
+			out.println();
 		}
 
 		long startTime = System.currentTimeMillis();
@@ -110,20 +120,27 @@ public class TradeMaximizer {
 					for (int j = 0; j < cycles.size(); j++)
 						groups[j] = cycles.get(j).size();
 					Arrays.sort(groups);
-					System.out.print("[ " + sumSquares + " :");
+					out.print("[ " + sumSquares + " :");
 					for (int j = groups.length - 1; j >= 0; j--)
-						System.out.print(" " + groups[j]);
-					System.out.println(" ]");
+						out.print(" " + groups[j]);
+					out.println(" ]");
 				}
 			}
-			System.out.println();
+			out.println();
 			graph.restoreMatches();
 		}
 		long stopTime = System.currentTimeMillis();
 		displayMatches(bestCycles);
 
 		if (showElapsedTime)
-			System.out.println("Elapsed time = " + (stopTime - startTime) + "ms");
+			out.println("Elapsed time = " + (stopTime - startTime) + "ms");
+		
+		try {
+			out.output();
+		} catch (IOException e) {
+			System.out.print("Unable to output the results. Writing to the console instead.");
+			System.out.print(out.getOutputString());
+		}
 	}
 
 	int sumOfSquares(List<List<Graph.Vertex>> cycles) {
@@ -167,6 +184,7 @@ public class TradeMaximizer {
 	HashSet<String> officialNames = null;
 	List<String> usedNames = new ArrayList<String>();
 
+	@SuppressWarnings("resource")
 	List<String[]> readWantLists(String wantFilePath) {
 		BufferedReader in = null;
 		try {
@@ -179,8 +197,9 @@ public class TradeMaximizer {
 
 			for (int lineNumber = 1;; lineNumber++) {
 				String line = in.readLine();
-				if (line == null)
+				if (line == null) {
 					return wantLists;
+				}
 
 				line = line.trim();
 				if (line.length() == 0)
@@ -363,15 +382,16 @@ public class TradeMaximizer {
 			try {
 				in.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				out.println("Error closing file " + wantFilePath);
+				out.println("Exception message: " + e.getMessage());
 			}
 		}
 	}
 
 	void fatalError(String msg) {
-		System.out.println();
-		System.out.println("FATAL ERROR: " + msg);
+		out.println();
+		out.println("FATAL ERROR: " + msg);
+		System.out.println(out.getOutputString());
 		System.exit(1);
 	}
 
@@ -625,41 +645,41 @@ public class TradeMaximizer {
 		}
 
 		if (showLoops) {
-			System.out.println("TRADE LOOPS (" + numTrades + " total trades):");
-			System.out.println();
+			out.println("TRADE LOOPS (" + numTrades + " total trades):");
+			out.println();
 			for (String item : loops)
-				System.out.println(item);
+				out.println(item);
 		}
 
 		if (showSummary) {
 			Collections.sort(summary);
-			System.out.println("ITEM SUMMARY (" + numTrades + " total trades):");
-			System.out.println();
+			out.println("ITEM SUMMARY (" + numTrades + " total trades):");
+			out.println();
 			for (String item : summary)
-				System.out.println(item);
-			System.out.println();
+				out.println(item);
+			out.println();
 		}
 
-		System.out.print("Num trades  = " + numTrades + " of " + (ITEMS - DUMMY_ITEMS) + " items");
+		out.print("Num trades  = " + numTrades + " of " + (ITEMS - DUMMY_ITEMS) + " items");
 		if (ITEMS - DUMMY_ITEMS == 0)
-			System.out.println();
+			out.println();
 		else
-			System.out.println(new DecimalFormat(" (0.0%)").format(numTrades / (double) (ITEMS - DUMMY_ITEMS)));
+			out.println(new DecimalFormat(" (0.0%)").format(numTrades / (double) (ITEMS - DUMMY_ITEMS)));
 
 		if (showStats) {
-			System.out.print("Total cost  = " + totalCost);
+			out.print("Total cost  = " + totalCost);
 			if (numTrades == 0)
-				System.out.println();
+				out.println();
 			else
-				System.out.println(new DecimalFormat(" (avg 0.00)").format(totalCost / (double) numTrades));
-			System.out.println("Num groups  = " + numGroups);
-			System.out.print("Group sizes =");
+				out.println(new DecimalFormat(" (avg 0.00)").format(totalCost / (double) numTrades));
+			out.println("Num groups  = " + numGroups);
+			out.print("Group sizes =");
 			Collections.sort(groupSizes);
 			Collections.reverse(groupSizes);
 			for (int groupSize : groupSizes)
-				System.out.print(" " + groupSize);
-			System.out.println();
-			System.out.println("Sum squares = " + sumOfSquares);
+				out.print(" " + groupSize);
+			out.println();
+			out.println("Sum squares = " + sumOfSquares);
 
 			// System.out.println("Orphans = " + graph.orphans.size());
 		}

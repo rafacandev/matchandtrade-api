@@ -82,6 +82,7 @@ public class Graph {
 			this.cost = cost;
 		}
 
+		@SuppressWarnings("unused")
 		private Edge() {
 		} // hide default constructor
 	}
@@ -235,6 +236,7 @@ public class Graph {
 		for (Vertex v : SENDERS) {
 			v.EDGES = removeBadEdges(v.EDGES);
 
+			@SuppressWarnings("unused")
 			long save = v.minimumInCost;
 			v.minimumInCost = Long.MAX_VALUE;
 			for (Edge edge : v.EDGES)
