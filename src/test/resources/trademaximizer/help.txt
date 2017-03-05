@@ -1,0 +1,283 @@
+CONTENT FOUND AT: https://boardgamegeek.com/wiki/page/TradeMaximizer
+
+
+TradeMaximizer  
+
+Table of Contents
+What is TradeMaximizer?
+What is the current version?
+Where can I get it?
+How do I run it?
+How do priorities work?
+How does duplicate protection (dummy items) work?
+How should a want list be formatted?
+What options are available?
+What are official names?
+How does the algorithm work?
+Questions? Related threads
+Older trade finders
+
+What is TradeMaximizer?
+
+TradeMaximizer is a program for finding trades in Math Trades, developed by cokasaki. Its main features are that it always finds the maximum number of trades possible, and that it does so very quickly (in seconds).
+
+What is the current version?
+
+The current version is 1.3a, released on 7 March, 2008. It's really recommended though you use v1.4, see next paragraph.
+
+There is a pending version 1.4 with changes by JeffyJeff that adds other metric's that goes with the ITERATIONS option as well as options being recognized via command line.
+
+Where can I get it?
+
+The source code and pre-compiled packages can be downloaded from SourceForge. The source code is written in Java.
+
+The version with JeffyJeff's changes (v1.4) has source code checked into sourceforge but not yet the pre-compiled package, for now you can obtain if from http://bgg.activityclub.org/trademax/tm.jar (sources are also included right in the jar).
+
+How do I run it?
+
+To run TradeMaximizer, follow these steps.
+
+1. Save the want lists in a file (eg, wants.txt) in the "trademax" folder.
+
+2. Open a shell (Unix) or command prompt (Windows) in the same folder, and run the command
+    java -jar tm.jar < wants.txt
+
+If you want to save the results to a file (eg, results.txt), run the command
+    java -jar tm.jar < wants.txt > results.txt
+
+There is a simple batch file for Windows users, so you can say shorten this to
+    tm wants
+
+or
+    tm wants > results.txt
+If you are using v1.4 you can also give options and the name of the input file right on the command line such as:
+
+    java -jar tm.jar optional-options-here filename-or-url
+for example:
+
+    java -jar tm.jar --iterations=200 http://bgg.activityclub.org/olwlg/46735-officialwants.txt
+this is an example syntax to read the wants from an online source and store them in your hard drive as the text file results.txt
+
+    java -jar tm.jar http://bgg.activityclub.org/olwlg/46735-officialwants.txt > results.txt
+How do priorities work?
+
+By default, TradeMaximizer does not use priorities. The moderator can choose to use priorities by specifying a priority scheme as an option (eg, LINEAR-PRIORITIES).
+
+When using priorities, each wanted item in a want list is assigned a certain cost, where lower cost means higher priority. The system then uses cost as a tie-breaker among different ways of achieving the maximum number of trades. In particular, it finds the set of trades that has the minimum total cost, where total cost is the sum of the costs of all the individual items traded.
+
+All priority schemes begin by finding the rank of each wanted item in a want list. The cost is then calculated as a function of rank.
+In LINEAR-PRIORITIES, cost = rank.
+In TRIANGLE-PRIORITIES, cost = 1+2+...+rank = rank*(rank+1)/2.
+In SQUARE-PRIORITIES, cost = rank*rank.
+In SCALED-PRIORITIES, cost = 1 + (rank-1)*2520/number of wants.
+In the simplest case, rank is equal to the position of the item in the list. In other words, the first wanted item has rank 1, the second wanted item has rank 2, and so on.
+
+The simple case can be altered in two ways. First, the moderator can set the SMALL-STEP=num option. This sets how much the rank increases when you move from one position to the next. (By default, the small-step value is 1.)
+
+Second, the user can include a semicolon in a want list. A semicolon says "increase the rank of the next item by the big-step value". (The big-step value is 9 by default, but can be set by the moderator using the BIG-STEP=num option.)
+
+For example, in the want list
+  A : B C ; D
+
+item B has rank 1, item C has rank 2, and item D has rank 12, assuming the small-step value is 1 and the big-step value is 9. Notice that the gap in rank between items C and D is the small-step value plus the big-step value, not just the big-step value. If the small-step and big-step values were 0 and 100, respectively, then item C would have rank 1 and item D would have rank 101.
+Multiple semicolons in a row are allowed, as are semicolons before the first wanted item.
+
+How does duplicate protection (dummy items) work?
+
+Suppose you are looking for Vegas Showdown in a math trade, and other people have put up several copies of it. If you have put up a single item in the math trade, then you can safely put all the copies of Vegas Showdown in your want list, as in
+  005-HTMF : 197-CAYL 123-VEGA 078-VEGA 150-VEGA 026-TOCO
+
+However, suppose you are creating several want lists. If you put all the copies of Vegas Showdown in all of your want lists, as in
+  005-HTMF : 197-CAYL 123-VEGA 078-VEGA 150-VEGA 026-TOCO
+  006-JENG : 197-CAYL 123-VEGA 078-VEGA 150-VEGA 026-TOCO
+
+then you might end up with multiple copies of Vegas Showdown. In some situations, this would be okay, but in other situations, you would vastly prefer not to get multiple copies of the same game.
+In TradeMaximizer, you can protect against getting duplicates by adding a dummy wantlist, as follows:
+
+1. Add username tags to all of your want lists (if you haven't already).
+  (cokasaki) 005-HTMF : 197-CAYL 123-VEGA 078-VEGA 150-VEGA 026-TOCO
+  (cokasaki) 006-JENG : 197-CAYL 123-VEGA 078-VEGA 150-VEGA 026-TOCO
+
+Username tags have the form "(name)" and go at the beginning of the want list.
+2. Create a dummy item, named "%something", and add the set of duplicate items to the want list of the dummy item.
+  (cokasaki) %VEGAS : 123-VEGA 078-VEGA 150-VEGA
+3. Now remove the duplicate items from your regular want lists, and add the dummy item instead.
+  (cokasaki) 005-HTMF : 197-CAYL %VEGAS 026-TOCO
+  (cokasaki) 006-JENG : 197-CAYL %VEGAS 026-TOCO
+Now at most one of your regular items can "win" the dummy item, and the dummy item can win at most one of the duplicate items, so you will receive at most one of the duplicates.
+
+Some things to note about dummy items:
+
+Dummy items can only be used if the trade moderator has selected the ALLOW-DUMMIES option.
+You must include a username tag in any want list that involves dummy items.
+You can create as many dummy items as you want.
+You cannot refer to anyone else's dummy items, nor can they refer to yours.
+You can refer to one of your dummy items in the want list of another dummy item.
+Dummy items are not included in the trade count, so they do not artificially inflate the number of trades.
+In a trade with priorities, keep in mind that priorities are ignored in the want list for a dummy item. However, the priority of the dummy item in the want list for one of your regular items is handled normally.
+Dummy items are elided from the trade output. For example, if 006-JENG received %VEGAS and %VEGAS received 123-VEGA, then the output would say that 006-JENG received 123-VEGA.
+How should a want list be formatted?
+
+Each want list should be on a single line, even if that line is very long. In its simplest form, a want list is simply a list of item names (taken from the item summary published by the trade moderator) separated by spaces. For example,
+  1 2 3 4 5
+
+This means that item 1 wants any of the items 2, 3, 4, or 5. Note that if you do not see any items that you are willing to trade for, then you should submit a blank want list for your item, such as
+  1
+
+This means that you will not accept anything for item 1.
+The order of the wanted items in the want list is irrelevant, unless the trade moderator has chosen to use priorities, in which case the items should be ordered from most wanted to least wanted.
+
+There are three more notations you can add to your want list, if desired.
+
+1. You can add a colon right after the very first item (the wanting item), as in
+  1 : 2 3 4 5
+
+Spaces around the colon are optional. Adding a colon makes your want list slightly more readable, and allows TradeMaximizer to detect certain errors that could be catastrophic if left undetected. In particular, using colons prevents errors in which a line break was accidentally deleted, combining two want lists
+  1 2 3 4 5
+  6 7 8 9
+
+into a single want list
+  1 2 3 4 5 6 7 8 9
+
+With colons, this would become
+  1 : 2 3 4 5 6 : 7 8 9
+
+and TradeMaximizer would know immediately that there was an error, because the colon was in the wrong place.
+2. You can add your username to the beginning your want list by surrounding it with parentheses, as in
+  (cokasaki) 1 2 3 4 5
+
+Adding usernames makes the output more readable by bringing the results for all of your items together, even if the items were spread out. Usernames also helps TradeMaximizer detect certain kinds of errors.
+Usernames are allowed to contain spaces, as in
+  (John Doe) 1 2 3 4 5
+Note that usernames are mandatory in any want list involving dummy items.
+
+3. You can mix semicolons freely with the wanted items, as in
+  1 2 3 ; 4 5
+
+Spaces around semicolons are optional.
+Semicolons are only useful in a trade with priorities. The semicolons indicate gaps in your preferences. In this example, you are saying that there is a big gap between your preferences for items 2 and 3 and your preferences for items 4 and 5.
+
+You can use multiple semicolons in a row to indicate even bigger gaps.
+
+What options are available?
+
+As a moderator, you'll need to decide what options to use for your math trade. Include the options at the top of the want-list file, on one or more lines starting with the characters "#!". For example,
+#! LINEAR-PRIORITIES ALLOW-DUMMIES
+...
+
+All options must be declared before the first real want list.
+Here are the available options:
+
+LINEAR-PRIORITIES: Use the 1,2,3,4,... priority scheme.
+TRIANGLE-PRIORITIES: Use the 1,3,6,10,... priority scheme.
+SQUARE-PRIORITIES: Use the 1,4,9,16,... priority scheme.
+SCALED-PRIORITIES: Normalize priorities to the range 1..2521.
+SMALL-STEP=num: Adjust how priorities change between successive entries in a want list.
+BIG-STEP=num: Adjust how priorities change for each semicolon in a want list.
+ALLOW-DUMMIES: Allow users to include dummy items to protect against getting duplicates.
+ITERATIONS=num: How many times to run the main algorithm, keeping the solution with the smallest sum-of-squares metric (default, see 1.4 METRIC option).
+SEED=num: Seed for the random-number generator, so that the results are repeatable. This option is only applicable when ITERATIONS is also being used.
+REQUIRE-COLONS: Make colons mandatory for every want list.
+REQUIRE-USERNAMES: Make usernames mandatory for every want list.
+HIDE-LOOPS: Do not output the trade loops.
+HIDE-SUMMARY: Do not output the item summary.
+HIDE-NONTRADES: Do not include items that did not trade in the item summary.
+HIDE-ERRORS: Do not output error messages (except for fatal errors).
+HIDE-REPEATS: Do not output error messages when a want list includes the same item more than once.
+HIDE-STATS: Do not output the result statistics (other than the number of trades).
+SORT-BY-ITEM: Sort the item summary by item, instead of by username.
+CASE-SENSITIVE: Treat item names as case-sensitive instead of converting all lowercase letters to uppercase.
+SHOW-MISSING: Show items with missing want lists
+SHOW-ELAPSED-TIME: show elapsed time
+NONTRADE-COST=num: Adjust the cost of not trading an item from its default value of 1 billion to num. The net effect is to forbid trade loops whose average cost per item exceeds num. Note that this means that you can end up with less than the maximum number of trades. (Warning: this option is experimental and may be removed at some point.)
+Options available in 1.4:
+METRIC: Chain-Sizes-SOS (same as default, ie. sum of squares), Users-Trading (number of users with at least one item trading), Favor-User=username (number of items this user is trading), and a few others.
+VERBOSE: when using ITERATIONS display metric of each iteration not just when the iteration computed a better metric.
+Note that the default priority scheme is not to use priorities (ie, the 1,1,1,... scheme). Also note that dummy items are not allowed unless the moderator explicitly says so.
+
+Note that Users-Trading METRIC is not overly useful if using PRIORITIES.
+
+Note also that none of the METRIC's (including the default one if you are using ITERATIONS) affect the actual number of total items trading. In most math trades there are actually thousands (or more) different combinations of items trading which all have the maximal number of items trading. Using ITERATIONS and optional a specific metric (like Users-Trading) simply has TradeMaximizer run the algorithm multiple times and looking at each set of possible results for the one that best meets the specified metric.
+
+What are official names?
+
+If desired, the moderator can declare official names for all non-dummy items. Want lists for non-dummy items not on this list will be flagged as errors. This helps catch errors in which users misspell their own item names. The format is
+
+<tt> #! <i>options</i><br> !BEGIN-OFFICIAL-NAMES<br> <i>itemname1</i> <i>optional description</i><br> ...<br> <i>itemnameK</i> <i>optional description</i><br> !END-OFFICIAL-NAMES<br> <i>wantlist1</i><br> ...<br> <i>wantlistN</i><br> </tt>
+
+The format is designed so that the moderator can simply cut-and-paste the official item names into the wantlist file.
+
+How does the algorithm work?
+
+(Compiled from a series of posts by cokasaki)
+
+Ok, here's how TradeMaximizer works.
+
+First, split each item into two parts called nodes. One node is called the receiving node and the other node is called the sending node. For example, if a trade involved three items (1, 2, and 3) then there would be six nodes (1R, 1S, 2R, 2S, 3R, and 3S).
+
+Now, for each want in the want lists, add a connection (called an edge) between the corresponding receiving and sending nodes. For example, if item 1 wanted item 2, then there would be an edge between nodes 1R and 2S.
+
+Technically, this kind of structure is called a bipartite graph. A graph is a set of nodes and edges, and bipartite means that the nodes can be partitioned into two groups, such that all of the edges go between the two groups (and no edges go between nodes in the same group). In this graph, the two groups are the receiving nodes and the sending nodes.
+
+We will be trying to find a matching, which is a subset of the edges such that no node is touched by more than one edge. Each edge in the chosen matching will mean than the owner of the sending node sends the item to the owner of the receiving node. In our context, no item can be sent more than once, and no item will receive more than one item in exchange, so the limitations of a matching make sense.
+
+Naturally, because we are trying to maximize the number of trades, we want a maximum matching, which is a matching that contains as many edges as possible. However, there's a problem. A maximum matching does not guarantee trade loops. For example, a maximum matching might include the edges 1R-2S and 2R-3S. Here the owner of item 2 receives item 3, and sends his item to the owner of item 1. However, the owner of item 1 receives something without sending anything, and the owner of item 3 sends something without receiving.
+
+To prevent this, we add a self edge between each receiving node and its corresponding sending node (eg, 1R-1S, 2R-2S, etc.). Now it is always possible to find a perfect matching, which is a matching that contains every node in the graph. Any perfect matching corresponds to a valid set of trades. Each self edge chosen means that that item does not trade. All the remaining edges make up one or more trade loops.
+
+This last point is key. One of the advantages of this algorithm is that it doesn't actually look for loops, which are pretty hard to deal with. Instead, it looks for matchings, which are much easier to deal with. But because of the way we've constructed the graph, matchings can automatically be turned into loops.
+
+For example, suppose edge 1R-2S is in the matching. Then we look at what node 2R is connected to. Maybe it's connected to 1S, in which case we have a loop of two items. Or maybe it's connected to another node, say 7S. Then we look at what node 7R is connected to. Maybe it's connected to 1S, in which case we have a loop of three items. Or maybe it's connected to a fourth node. We can't continue like this forever (because we would run out of items), and we can't go back to one of the S nodes we've already visited (because that would mean that S-node was touched twice, which would mean it wasn't a matching), and we can't just stop (because that would mean it wasn't a perfect matching), so eventually we'll reach 1S and complete the trade loop.
+
+Now, assign a cost to each edge: 1 to each of the "real" edges and 1 billion to each of the self edges. Then we try to find the minimum-cost perfect matching. To qualify as minimum cost, it must contain as few self edges as possible. In other words, it contains as many real edges as possible. Every additional real edge means an additional trade, so minimizing the cost means maximizing the number of trades.
+
+Ok, so we're trying to find the minimum-cost perfect matching in a bipartite graph. The approach I took starts with an empty matching, and grows the matching by one edge at a time, until the matching is perfect (that is, until every node is matched).
+
+Although it grows the matching by one edge at a time, that does not mean that it simply adds a new edge every time. No, it might change some of the existing edges along the way to adding the new edge. The idea is to find an augmenting path.
+
+An augmenting path starts at an unmatched receiving node and ends at an unmatched sending node. This could be a path of a single edge, in which case we simply add the new edge. However, the path can also be longer, in which case it alternates between edges that are not in the current matching and edges that are in the current matching. The edges that are not in the current matching go from a receiving node to a sending node, and the edges that are in the current matching go from a sending node back to its matched receiving node.
+
+For example, suppose 1R and 3S are currently unmatched, but there is an edge between 2S and 4R in the current matching. If edges 1R-2S and 4R-3S are in the graph (just not in the current matching), then the augmenting path could be 1R-2S-4R-3S. Notice that the augmenting path always contains an odd number of edges.
+
+Once we find the augmenting path, we flip the status of all its edges. In other words, we add the non-matching edges to the matching, and remove the currently matching edges from the matching. In the above example, we would add edges 1R-2S and 4R-3S to the matching and remove edge 2S-4R from the matching. Notice that we always add one more edge than we remove, so the size of the matching goes up by one. After doing this N times, where N is the number of items in the math trade, we'll have a perfect matching.
+
+(As an aside, there is a small inefficiency in the 1.0 code. It actually loops 2N times, instead of just N times, trying to find augmenting paths. After the first N iterations, it won't be able to find any more augmenting paths, so the last N iterations are wasted.)
+
+So we grow the matching by finding augmenting paths. But we don't want just any old augmenting path. Instead, at each stage, we want the mininimum-cost augmenting path. We find this minimum-cost path using Dijkstra's algorithm.
+
+One confusing catch, however, is that the "costs" in the minimum-cost augmenting path are different from the normal costs on the edges. Instead, the costs used by Dijkstra's algorithm incorporate a notion of prices.
+
+First, we will only look for paths where all steps from a receiving node to a sending node are along an edge not in the current matching, and all steps from a sending node back to a receiving node are along an edge that is in the current matching.
+
+The "costs" for these edges are modified by prices that are maintained for every node. The modified cost for a step from a receiving node R to a sending node S is the price of R plus the normal cost of the edge minus the price of S. The modified cost for an edge from a sending node S to a receiving node R is the price of S minus the normal cost of the edge minus the price of R. Even with the minuses, it will turn out that these modified costs will never be negative, which is important because Dijkstra's algorithm doesn't work with negative edges.
+
+One way to think about the price of a node X is it is both the price that is charged to leave that node, and the reward that is given to enter that node. A reward is just a negative price. So if you are leaving node X and entering node Y, then the cost of the edge is modified by the price of X minus the price of Y.
+
+Also note that, for edges currently in the matching, we subtract the normal edge cost instead of adding it, because that edge will be taken out of the matching if this path is chosen.
+
+The prices are initialized as follows: All receiving nodes are initialized with price 0, and all sending nodes are initialized with a price equal to the cost of the cheapest edge entering that node. (This will be 1 if somebody wants that item, or 1 billion if nobody wants the item, in which case the self edge will be the only edge entering that node.)
+
+After each run of Dijkstra's algorithm to find the minimum-cost augmenting path, we update the matching (add the edges from the augmenting path that weren't in the matching, and removing the edges from the augmenting path that were in the matching).
+
+We also update the prices for all the nodes. Dijkstra's algorithm will tell us, not only the minimum-cost path from an unmatched receiving node to an unmatched sending node, but also the minimum-cost path to every individual node in the graph (from any unmatched receiving node). Note that some nodes cannot be reached starting from an unmatched receiving node. The "minimum-cost" path to unreachable path will be considered to have an infinite cost. We update all of the prices by adding the cost of the minimum-cost path to each node to the price of that node. (We even do this for unreachable nodes, for which the minimum cost is infinite, so we need to be careful how we handle infinity.)
+
+Although it is relatively straightforward to understand how prices work, it is extremely difficult to understand why they work to produce the desired result. I take no credit for inventing this part of the algorithm, which is a standard--albeit fairly obscure--algorithm in the computer science toolkit. My Eureka moment was in figuring out how to model the problem as a bipartite graph in such a way that the standard algorithm could be applied.
+
+That's pretty much it for how TradeMaximizer works. The only major parts that I haven't explained are Dijkstra's algorithm, which is widely known, and skew heaps, which are used as a priority queue by Dijkstra's algorithm (many other kinds of priority queues could be used instead).
+
+Questions? Related threads
+
+If you have questions may be best to ask in one of the following threads:
+
+Math trades are SOLVED!
+Release of TradeMaximizer 1.0
+TradeMaximizer 1.1 with priorities and duplicate protection
+TradeMaximizer 1.3a released
+
+Chris by the way is a published author on a book about data structures... http://www.amazon.com/Purely-Functional-Structures-Chris-Okasaki/dp/0521663504?tag=article-boardgamegeek-20
+
+Older trade finders
+
+TradeGenie
+TradeResolver
+Genetitrade
