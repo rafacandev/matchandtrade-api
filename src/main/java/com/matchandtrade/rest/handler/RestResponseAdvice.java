@@ -63,7 +63,9 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		// If body is null, then return HttpStatus.NOT_FOUND
 		if (body == null) {
 			response.setStatusCode(HttpStatus.NOT_FOUND);
-			return null;
+			RestErrorJson errorJson = new RestErrorJson();
+			errorJson.getErrors().add(new RestError(HttpStatus.NOT_FOUND.name(), "Did not find any resource for the URI: " + request.getURI()));
+			return errorJson;
 		}
 		logger.debug("Processing body instance of [{}] for URI [{}].", body.getClass(), request.getURI());
 		// If is a JsonLinkSupport, then build its links using Spring HATEOAS.
