@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.config.AuthenticationProperties;
+import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.model.UserModel;
+import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 
 @Component
@@ -26,6 +28,8 @@ public class AuthenticationCallback {
 	private AuthenticationOAuth authenticationOAuth;
 	@Autowired
 	private UserModel userModel;
+	@Autowired
+	private AuthenticationModel authenticationModel;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 3. Confirm anti-forgery state token
@@ -54,6 +58,13 @@ public class AuthenticationCallback {
 		// Update user information in the local database
 		user = updateUserInfo(user.getEmail(), user.getName());
 		// Put the user in the session
+		AuthenticationEntity authenticationEntity = authenticationModel.get(accessToken);
+		if (authenticationEntity == null) {
+			authenticationEntity = new AuthenticationEntity();
+		}
+		authenticationEntity.setToken(accessToken);
+		authenticationEntity.setUserId(user.getUserId());
+		authenticationModel.save(authenticationEntity);
 		user.setAuthenticated(true);
 		request.getSession().setAttribute("user", user);
 		
