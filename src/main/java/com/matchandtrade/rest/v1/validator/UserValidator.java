@@ -24,5 +24,7 @@ public class UserValidator {
 			throw new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, "Cannot update User.email on PUT operations.");
 		}
 	}
+	
+	// TODO validatePost. email uniqueness
 
 }

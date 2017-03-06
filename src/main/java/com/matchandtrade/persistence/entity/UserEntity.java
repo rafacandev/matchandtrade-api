@@ -1,18 +1,12 @@
 package com.matchandtrade.persistence.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -31,7 +25,6 @@ public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 	private String email;
 	private String name;
 	private Role role = Role.USER;
-	private Set<TradeListEntity> tradeLists = new HashSet<>(); 
 
 	@Override
 	public boolean equals(Object obj) {
@@ -60,17 +53,17 @@ public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 		return name;
 	}
 
-	@OneToMany(cascade=CascadeType.ALL)
-	@JoinTable(name = "user__trade_list",
-			joinColumns = @JoinColumn(name="user_id"),
-			inverseJoinColumns = @JoinColumn(name="trade_list_id"))
-	public Set<TradeListEntity> getTradeLists() {
-		return tradeLists;
-	}
+//	@OneToMany(cascade=CascadeType.ALL)
+//	@JoinTable(name = "user__trade_list",
+//			joinColumns = @JoinColumn(name="user_id"),
+//			inverseJoinColumns = @JoinColumn(name="trade_list_id"))
+//	public Set<TradeListEntity> getTradeLists() {
+//		return tradeLists;
+//	}
 
 	@Id
 	@Column(name = "user_id")
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Integer getUserId() {
 		return userId;
 	}
@@ -91,9 +84,9 @@ public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 		this.name = name;
 	}
 
-	public void setTradeLists(Set<TradeListEntity> tradeLists) {
-		this.tradeLists = tradeLists;
-	}
+//	public void setTradeLists(Set<TradeListEntity> tradeLists) {
+//		this.tradeLists = tradeLists;
+//	}
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;

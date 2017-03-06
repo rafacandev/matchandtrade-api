@@ -1,6 +1,5 @@
 package com.matchandtrade.model;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,18 +8,17 @@ import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.dao.UserDao;
-import com.matchandtrade.persistence.entity.TradeListEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 
 @Component
 public class UserModel {
-	
+
 	@Autowired
 	UserDao userDao;
 
 	@Transactional
 	public UserEntity get(Integer userId) {
-    	return userDao.get(UserEntity.class, userId);
+		return userDao.get(UserEntity.class, userId);
 	}
 
 	@Transactional
@@ -34,17 +32,10 @@ public class UserModel {
 			return null;
 		}
 	}
-	
+
 	@Transactional
 	public void save(UserEntity entity) {
 		userDao.save(entity);
-	}
-
-	@Transactional
-	public void saveTradeList(Integer userId, TradeListEntity tradeListEntity) {
-			UserEntity userEntity = userDao.get(UserEntity.class, userId);
-			userEntity.getTradeLists().add(tradeListEntity);
-			userDao.save(userEntity);
 	}
 
 	@Transactional
