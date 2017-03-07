@@ -8,7 +8,6 @@ import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.dao.TradeDao;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.UserEntity;
 
 @Component
 public class TradeModel {

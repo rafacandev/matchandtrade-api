@@ -40,9 +40,9 @@ public class RestResponseAdiviceUT {
 	public void notFound(){
 		// Test setup
 		RestResponseAdvice adivice = new RestResponseAdvice();
-		Object response = adivice.beforeBodyWrite(null, null, null, null, serverHttpResquest, serverHttpResponse);
+		RestErrorJson response = (RestErrorJson) adivice.beforeBodyWrite(null, null, null, null, serverHttpResquest, serverHttpResponse);
 		// Assert the response
-		assertNull(response);
+		assertEquals(1, response.getErrors().size());
 		ServletServerHttpResponse servletResponse = (ServletServerHttpResponse) serverHttpResponse;
 		assertEquals(404, servletResponse.getServletResponse().getStatus());
 	}
