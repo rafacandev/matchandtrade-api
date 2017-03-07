@@ -30,7 +30,6 @@ public class AuthenticationIT {
 	@Autowired
 	private UserController userController;
 	
-	
 	@Test
 	public void authenticationPositive() throws ServletException, IOException {
 		MockHttpServletRequest requestAuthentication = new MockHttpServletRequest();

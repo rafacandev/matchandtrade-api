@@ -6,6 +6,8 @@ public class AuthenticationProperties {
 		ANTI_FORGERY_STATE
 	}
 	
+	public static final String AUTHENTICATION_HEADER = "Authentication";
+	
 	private String clientId;
 	private String clientSecret;
 	private String redirectURI;

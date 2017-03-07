@@ -63,13 +63,15 @@ public class AuthenticationCallback {
 			authenticationEntity = new AuthenticationEntity();
 		}
 		authenticationEntity.setToken(accessToken);
+		authenticationEntity.setAntiForgeryState(stateAttribute);
 		authenticationEntity.setUserId(user.getUserId());
 		authenticationModel.save(authenticationEntity);
-		user.setAuthenticated(true);
-		request.getSession().setAttribute("user", user);
+//		user.setAuthenticated(true);
+//		request.getSession().setAttribute("user", user);
 		
 		// Done. Let's redirect the request
 		String userStatusPathParam = user.isNewUser() ? "new-user" : "existing-user";
+		response.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, accessToken);
 		response.sendRedirect("/webui/#/authentication/" + userStatusPathParam);
 	}
 
