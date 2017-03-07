@@ -1,6 +1,4 @@
 package com.matchandtrade.rest.v1.controller;
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +18,6 @@ import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.rest.v1.validator.UserValidator;
 
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 @RestController
 @RequestMapping(path="/rest/v1/users")
 public class UserController extends Controller {
@@ -36,7 +31,6 @@ public class UserController extends Controller {
 	@Autowired
 	private UserTransformer userTransformer;
 
-	@ApiResponses(value={@ApiResponse(response=UserJson.class, message="OK", code=200)})
 	@RequestMapping(path="/{userId}", method=RequestMethod.GET)
 	public UserJson get(@PathVariable("userId") Integer userId) {
 		// Check authorization for this operation
@@ -48,7 +42,6 @@ public class UserController extends Controller {
 		return result;
 	}
 	
-	@ApiResponses(value={@ApiResponse(response=UserJson.class, responseContainer="List", message="OK", code=200)})
 	@RequestMapping(method=RequestMethod.GET)
 	public SearchResult<UserJson> get(
 			@RequestParam(required=false) Integer _pageNumber,
@@ -66,7 +59,6 @@ public class UserController extends Controller {
 		return result;
 	}
 
-	@Transactional
 	@RequestMapping(path="/{userId}", method=RequestMethod.PUT)
 	public UserJson put(@PathVariable("userId") Integer userId, @RequestBody UserJson requestJson) {
 		// Check authorization for this operation

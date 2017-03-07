@@ -1,19 +1,23 @@
 package com.matchandtrade.rest.v1.controller;
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.Authorization;
+import com.matchandtrade.common.Pagination;
+import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.model.TradeModel;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.rest.Controller;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
+
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(path="/rest/v1/trades")
@@ -22,13 +26,12 @@ public class TradeController extends Controller {
 	@Autowired
 	private Authorization authorization;
 	@Autowired
-	private TradeModel model;
+	private TradeModel tradeModel;
 	@Autowired
 	private TradeValidator tradeValidador;
 	@Autowired
 	private TradeTransformer tradeTransformer;
 
-	@Transactional
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeJson post(@RequestBody TradeJson requestJson) {
 		// Check authorization for this operation
@@ -36,12 +39,26 @@ public class TradeController extends Controller {
 		// Validate the request
 		tradeValidador.validatePost(requestJson);
 		// Transform the request
-		
 		TradeEntity tradeEntity = tradeTransformer.transform(requestJson, false);
 		// Delegate to model layer
-		model.save(tradeEntity);
+		tradeModel.save(tradeEntity);
 		// Transform the response
 		TradeJson result = TradeTransformer.transform(tradeEntity);
+		return result;
+	}
+
+	@ApiResponses(value={@ApiResponse(response=TradeJson.class, message="OK", code=200)})
+	@RequestMapping(path="/{tradeId}", method=RequestMethod.GET)
+	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
+		// Check authorization for this operation
+		authorization.doBasicAuthorization(getUserAuthentication());
+		// Build SearchCriteria
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
+		searchCriteria.addCriterion(TradeEntity.Field.tradeId, tradeId);
+		// Delegate to model layer
+		TradeEntity searchResult = tradeModel.get(tradeId);
+		// Transform the response
+		TradeJson result = TradeTransformer.transform(searchResult);
 		return result;
 	}
 }

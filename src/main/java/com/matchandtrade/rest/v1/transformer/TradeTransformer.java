@@ -1,8 +1,12 @@
 package com.matchandtrade.rest.v1.transformer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.model.TradeModel;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.rest.v1.json.TradeJson;
@@ -37,6 +41,14 @@ public class TradeTransformer {
 		result.setName(entity.getName());
 		result.setTradeId(entity.getTradeId());
 		return result;
+	}
+	
+	public static SearchResult<TradeJson> transform(SearchResult<TradeEntity> searchResult) {
+		List<TradeJson> resultList = new ArrayList<>();
+		for(TradeEntity e : searchResult.getResultList()) {
+			resultList.add(transform(e));
+		}
+		return new SearchResult<>(resultList, searchResult.getPagination());
 	}
 
 }
