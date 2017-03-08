@@ -42,7 +42,7 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 		return true;
 	}
 
-	@Column(name = "anti_forgery_state", length = 300, nullable = false, unique = true)
+	@Column(name = "anti_forgery_state", length = 300, nullable = true, unique = false)
 	public String getAntiForgeryState() {
 		return antiForgeryState;
 	}
@@ -54,7 +54,7 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 		return authenticationId;
 	}
 
-	@Column(name = "token", length = 900, nullable = true, unique = true)
+	@Column(name = "token", length = 900, nullable = true, unique = false)
 	public String getToken() {
 		return token;
 	}

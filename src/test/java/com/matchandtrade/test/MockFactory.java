@@ -5,6 +5,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.authentication.UserAuthentication;
+import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
@@ -13,6 +14,12 @@ import com.matchandtrade.test.random.UserRandom;
 @Component
 public class MockFactory {
 	
+	public enum AuthenticationValue {
+		ANTI_FORGERY_STATE, TOKEN
+	}
+	
+	@Autowired
+	private AuthenticationModel authenticationModel;
 	@Autowired
 	private UserModel userModel;
 	@Autowired
@@ -32,6 +39,7 @@ public class MockFactory {
 	public UserAuthentication nextRandomUserAuthenticationPersisted() {
 		UserEntity userEntity = userTransformer.transform(UserRandom.next());
 		userModel.save(userEntity);
+
 		UserAuthentication result = new UserAuthentication();
 		result.setAuthenticated(true);
 		result.setEmail(userEntity.getEmail());

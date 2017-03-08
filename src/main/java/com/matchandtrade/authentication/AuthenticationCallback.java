@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.matchandtrade.common.Pagination;
+import com.matchandtrade.common.SearchCriteria;
+import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.model.UserModel;
@@ -35,6 +38,17 @@ public class AuthenticationCallback {
 		// 3. Confirm anti-forgery state token
 		String stateParameter = request.getParameter("state");
 		String stateAttribute = (String) request.getSession().getAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString());
+		
+//		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
+//		searchCriteria.addCriterion(AuthenticationEntity.Field.antiForgeryState, stateParameter);
+//		SearchResult<AuthenticationEntity> searchResult = authenticationModel.search(searchCriteria);
+//		String stateAttribute = null;
+//		if (searchResult.getResultList().size() > 0) {
+//			AuthenticationEntity authenticationE = searchResult.getResultList().get(0);
+//			stateAttribute = authenticationE.getAntiForgeryState();			
+//		}
+		
+		
 
 		logger.debug("Received request with stateParameter: [{}] and authenticationStateAttribute: [{}]", stateParameter, stateAttribute);
 		// Return HTTP-STATUS 401 if anti-forgery state token does not match
@@ -58,7 +72,7 @@ public class AuthenticationCallback {
 		// Update user information in the local database
 		user = updateUserInfo(user.getEmail(), user.getName());
 		// Put the user in the session
-		AuthenticationEntity authenticationEntity = authenticationModel.get(accessToken);
+		AuthenticationEntity authenticationEntity = authenticationModel.getByToken(accessToken);
 		if (authenticationEntity == null) {
 			authenticationEntity = new AuthenticationEntity();
 		}
@@ -66,13 +80,11 @@ public class AuthenticationCallback {
 		authenticationEntity.setAntiForgeryState(stateAttribute);
 		authenticationEntity.setUserId(user.getUserId());
 		authenticationModel.save(authenticationEntity);
-//		user.setAuthenticated(true);
+		user.setAuthenticated(true);
 //		request.getSession().setAttribute("user", user);
 		
 		// Done. Let's redirect the request
-		String userStatusPathParam = user.isNewUser() ? "new-user" : "existing-user";
 		response.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, accessToken);
-		response.sendRedirect("/webui/#/authentication/" + userStatusPathParam);
 	}
 
 	/**

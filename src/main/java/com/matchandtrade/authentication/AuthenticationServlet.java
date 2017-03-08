@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.config.AuthenticationProperties;
-import com.matchandtrade.model.AuthenticationModel;
-import com.matchandtrade.persistence.entity.AuthenticationEntity;
 
 
 @WebServlet(name="authenticationServlet", urlPatterns="/authenticate/*")
@@ -34,8 +32,6 @@ public class AuthenticationServlet extends HttpServlet {
 	private AuthenticationOAuth authenticationOAuth;
 	@Autowired
 	private AuthenticationCallback authenticationCallbakServlet;
-	@Autowired
-	private AuthenticationModel authenticationModel;
 
 	
 	/**
@@ -83,13 +79,9 @@ public class AuthenticationServlet extends HttpServlet {
 	private void redirectToAuthenticationServer(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		// 1. Create an anti-forgery state token
 		String state = generateAntiForgeryToken();
+		request.getSession().setAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString(), state);
 
-		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
-		authenticationEntity.setAntiForgeryState(state);
-		authenticationModel.save(authenticationEntity);
-//		request.getSession().setAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString(), state);
-
-		// 2. Send an authentication request to the OAuth server
+		// 2. Send an authentication request to the Authorization Authority (normally an oAuth server)
 		authenticationOAuth.redirectToAuthorizationAuthority(response, state, authenticationProperties.getClientId(), authenticationProperties.getRedirectURI());
 		logger.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", authenticationProperties.getRedirectURI());
 	}
