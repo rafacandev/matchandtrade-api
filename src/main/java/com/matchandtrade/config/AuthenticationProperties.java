@@ -2,8 +2,42 @@ package com.matchandtrade.config;
 
 public class AuthenticationProperties {
 	
-	public static enum Token {
-		ANTI_FORGERY_STATE
+	public static enum OAuth {
+		ANTI_FORGERY_STATE("anti-forgery-state"),
+		CODE_PARAMETER("code"),
+		STATE_PARAMETER("state");
+		
+		String text;
+		OAuth(String t) {
+			this.text = t;
+		}
+		
+		@Override
+		public String toString() {
+			return this.text;
+		}
+	}
+	
+	public enum Action {
+		AUTHENTICATE, CALLBACK, SIGNOUT;
+		public static Action get(String s) {
+			Action result = null;
+			switch (s) {
+			case "authenticate":
+				result = Action.AUTHENTICATE;
+				break;
+			case "sign-out":
+				result = Action.SIGNOUT;
+				break;
+			case "callback":
+				result = Action.CALLBACK;
+				break;			
+			default:
+				// There is no default value
+				break;
+			}
+			return result;
+		}
 	}
 	
 	public static final String AUTHENTICATION_HEADER = "Authentication";

@@ -12,13 +12,12 @@ import javax.persistence.Table;
 public class AuthenticationEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	public enum Field {
-		authenticationId, userId, token, antiForgeryState
+		authenticationId, userId, token
 	}
 
 	private Integer authenticationId;
 	private Integer userId;
 	private String token;
-	private String antiForgeryState;
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -40,11 +39,6 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 		} else if (!userId.equals(other.userId))
 			return false;
 		return true;
-	}
-
-	@Column(name = "anti_forgery_state", length = 300, nullable = true, unique = false)
-	public String getAntiForgeryState() {
-		return antiForgeryState;
 	}
 
 	@Id
@@ -71,10 +65,6 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 		result = prime * result + ((token == null) ? 0 : token.hashCode());
 		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
-	}
-
-	public void setAntiForgeryState(String antiForgeryState) {
-		this.antiForgeryState = antiForgeryState;
 	}
 
 	public void setAuthenticationId(Integer authenticationId) {

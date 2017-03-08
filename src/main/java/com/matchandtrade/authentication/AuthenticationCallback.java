@@ -11,9 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.common.Pagination;
-import com.matchandtrade.common.SearchCriteria;
-import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.model.UserModel;
@@ -35,22 +32,11 @@ public class AuthenticationCallback {
 	private AuthenticationModel authenticationModel;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 3. Confirm anti-forgery state token
-		String stateParameter = request.getParameter("state");
-		String stateAttribute = (String) request.getSession().getAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString());
-		
-//		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-//		searchCriteria.addCriterion(AuthenticationEntity.Field.antiForgeryState, stateParameter);
-//		SearchResult<AuthenticationEntity> searchResult = authenticationModel.search(searchCriteria);
-//		String stateAttribute = null;
-//		if (searchResult.getResultList().size() > 0) {
-//			AuthenticationEntity authenticationE = searchResult.getResultList().get(0);
-//			stateAttribute = authenticationE.getAntiForgeryState();			
-//		}
-		
-		
-
+		// oAuth Step 3. Confirm anti-forgery state token
+		String stateParameter = request.getParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString());
+		String stateAttribute = (String) request.getSession().getAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
 		logger.debug("Received request with stateParameter: [{}] and authenticationStateAttribute: [{}]", stateParameter, stateAttribute);
+		
 		// Return HTTP-STATUS 401 if anti-forgery state token does not match
 		if (stateAttribute == null || !stateAttribute.equals(stateParameter)) {
 			response.setStatus(401);
@@ -58,17 +44,27 @@ public class AuthenticationCallback {
 			return;
 		}
 		
-		// 4. Exchange code for access token and ID token
+		// oAuth Step 4. Exchange code for access token and ID token
 		String accessToken = authenticationOAuth.obtainAccessToken(
-				request.getParameter("code"),
+				request.getParameter(AuthenticationProperties.OAuth.CODE_PARAMETER.toString()),
 				authenticationProperties.getClientId(),
 				authenticationProperties.getClientSecret(),
 				authenticationProperties.getRedirectURI());
 		
-		// 5. Obtain user information from the ID token
+		// oAuth Step 5. Obtain user information from the ID token
 		UserAuthentication user = authenticationOAuth.obtainUserInformation(accessToken);
 		
-		// 6. Authenticate the user
+		// oAuth Step 6. Authenticate the user
+		persistAuthentication(stateAttribute, accessToken, user);
+		
+		// Done. Add authentication header to response
+		response.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, accessToken);
+	}
+
+	/*
+	 * Persists authentication details
+	 */
+	private void persistAuthentication(String stateAttribute, String accessToken, UserAuthentication user) {
 		// Update user information in the local database
 		user = updateUserInfo(user.getEmail(), user.getName());
 		// Put the user in the session
@@ -77,14 +73,9 @@ public class AuthenticationCallback {
 			authenticationEntity = new AuthenticationEntity();
 		}
 		authenticationEntity.setToken(accessToken);
-		authenticationEntity.setAntiForgeryState(stateAttribute);
 		authenticationEntity.setUserId(user.getUserId());
 		authenticationModel.save(authenticationEntity);
 		user.setAuthenticated(true);
-//		request.getSession().setAttribute("user", user);
-		
-		// Done. Let's redirect the request
-		response.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, accessToken);
 	}
 
 	/**

@@ -36,21 +36,23 @@ public class AuthenticationServlet extends HttpServlet {
 	
 	/**
 	 * Delegates the request to the correct action.
-	 * If request.getRequestURI() ends in 'sign-out' it ends the session.
-	 * Otherwise proceeds with the regular user authentication process.
+	 * If {@coderequest.getRequestURI()} ends in 'sign-out' it ends the session.
+	 * If {@coderequest.getRequestURI()} ends in 'authenticate' it redirect to the Authentication Authority.
+	 * If {@coderequest.getRequestURI()} ends in 'callback' it delegates to {@code AuthenticationCallback.doGet()}.
+	 * Otherwise returns {@code Response.Status.NOT_FOUND}
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		AuthenticationAction targetAction = getAuthenticationAction(request);
+		AuthenticationProperties.Action targetAction = getAuthenticationAction(request);
 		logger.debug("Performing Authentication Action {} for requet [{}].", targetAction, request.getRequestURI());
 		if (targetAction == null) {
 			response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
-		} else if (targetAction == AuthenticationAction.SIGNOUT) {
+		} else if (targetAction == AuthenticationProperties.Action.SIGNOUT) {
 			signOut(request, response);
 			response.setStatus(Response.Status.RESET_CONTENT.getStatusCode());
-		} else if (targetAction == AuthenticationAction.AUTHENTICATE) {
+		} else if (targetAction == AuthenticationProperties.Action.AUTHENTICATE) {
 			redirectToAuthenticationServer(request, response);
-		} else if (targetAction == AuthenticationAction.CALLBACK) {
+		} else if (targetAction == AuthenticationProperties.Action.CALLBACK) {
 			authenticationCallbakServlet.doGet(request, response);
 		}
 	}
@@ -60,10 +62,10 @@ public class AuthenticationServlet extends HttpServlet {
 	}
 
 	/**
-	 * Returns the corresponding AuthenticationAction for this request
+	 * Returns the corresponding action for this request
 	 */
-	AuthenticationAction getAuthenticationAction(HttpServletRequest request) {
-		AuthenticationAction result = null;
+	AuthenticationProperties.Action getAuthenticationAction(HttpServletRequest request) {
+		AuthenticationProperties.Action result = null;
 		String requestUri = request.getRequestURI();
 		// Remove tailing slash if any
 		if (requestUri.lastIndexOf("/") == requestUri.length()-1) {
@@ -72,16 +74,16 @@ public class AuthenticationServlet extends HttpServlet {
 		
 		int lastPathIndex = requestUri.lastIndexOf("/");
 		String lastPath = requestUri.substring(lastPathIndex+1);
-		result = AuthenticationAction.get(lastPath);
+		result = AuthenticationProperties.Action.get(lastPath);
 		return result;
 	}
 
 	private void redirectToAuthenticationServer(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-		// 1. Create an anti-forgery state token
+		// oAuth Step 1. Create an anti-forgery state token
 		String state = generateAntiForgeryToken();
-		request.getSession().setAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString(), state);
+		request.getSession().setAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString(), state);
 
-		// 2. Send an authentication request to the Authorization Authority (normally an oAuth server)
+		// oAuth Step 2. Send an authentication request to the Authorization Authority
 		authenticationOAuth.redirectToAuthorizationAuthority(response, state, authenticationProperties.getClientId(), authenticationProperties.getRedirectURI());
 		logger.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", authenticationProperties.getRedirectURI());
 	}
