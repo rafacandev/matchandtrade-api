@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.model.UserModel;
+import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 
 
@@ -23,6 +24,13 @@ public class Authorization {
 		if (userAuthentication == null) {
 			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
 		} else if (userAuthentication.getUserId() == null) {
+			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
+		}
+	}
+	public void doBasicAuthorization(AuthenticationEntity authentication) {
+		if (authentication == null) {
+			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
+		} else if (authentication.getUserId() == null) {
 			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
 		}
 	}
@@ -54,6 +62,11 @@ public class Authorization {
 		UserEntity userEntity = userModel.get(userAuthentication.getUserId());
 		validateIdentity(userEntity, userId);
 		return userEntity;
+	}
+	public void validateIdentityAndDoBasicAuthorization(AuthenticationEntity authentication, Integer userId) {
+		doBasicAuthorization(authentication);
+		UserEntity userEntity = userModel.get(authentication.getUserId());
+		validateIdentity(userEntity, userId);
 	}
 	
 }

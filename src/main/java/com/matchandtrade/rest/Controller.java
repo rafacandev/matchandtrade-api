@@ -42,6 +42,11 @@ public class Controller {
         return result;
 	}
 	
+	public AuthenticationEntity getAuthentication() {
+		String authenticationHeader = httpRequest.getHeader(AuthenticationProperties.AUTHENTICATION_HEADER);
+		return authenticationModel.getByToken(authenticationHeader);
+	}
+	
 	public void setHttpServletRequest(HttpServletRequest httpRequest) {
 		this.httpRequest = httpRequest;
 	}
