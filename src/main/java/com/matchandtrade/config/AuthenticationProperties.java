@@ -5,7 +5,8 @@ public class AuthenticationProperties {
 	public static enum OAuth {
 		ANTI_FORGERY_STATE("anti-forgery-state"),
 		CODE_PARAMETER("code"),
-		STATE_PARAMETER("state");
+		STATE_PARAMETER("state"),
+		AUTHORIZATION_HEADER("Authorization");
 		
 		String text;
 		OAuth(String t) {
@@ -39,8 +40,6 @@ public class AuthenticationProperties {
 			return result;
 		}
 	}
-	
-	public static final String AUTHENTICATION_HEADER = "Authorization";
 	
 	private String clientId;
 	private String clientSecret;

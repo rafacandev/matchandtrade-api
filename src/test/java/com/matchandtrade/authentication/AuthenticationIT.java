@@ -47,12 +47,12 @@ public class AuthenticationIT {
 		
 		// Make request to AuthenticationCallback
 		MockHttpServletResponse responseCallback = new MockHttpServletResponse();
-		authenticationCallback.doGet(requestCallback, responseCallback);
+		authenticationCallback.authenticate(requestCallback, responseCallback);
 
 		// Mock request/response for UserController
 		MockHttpServletRequest requestUserController = new MockHttpServletRequest();
-		String authenticationHeader = responseCallback.getHeader(AuthenticationProperties.AUTHENTICATION_HEADER);
-		requestUserController.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, authenticationHeader);
+		String authenticationHeader = responseCallback.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
+		requestUserController.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), authenticationHeader);
 		
 		AuthenticationEntity authenticationEntity = authenticationModel.getByToken(authenticationHeader);
 		userController.setHttpServletRequest(requestUserController);

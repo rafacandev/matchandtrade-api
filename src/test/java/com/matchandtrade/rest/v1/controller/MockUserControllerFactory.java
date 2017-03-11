@@ -50,7 +50,7 @@ public class MockUserControllerFactory {
 		authenticationModel.save(authenticationEntity);
 		
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, authenticationEntity.getToken());
+		request.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), authenticationEntity.getToken());
 
 		MockUserController result = new MockUserController(authorization, userModel, userTranformer, userValidator, authenticationModel);
 		result.setHttpServletRequest(request);

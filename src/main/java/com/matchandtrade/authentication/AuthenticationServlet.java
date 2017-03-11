@@ -31,7 +31,7 @@ public class AuthenticationServlet extends HttpServlet {
 	@Autowired
 	private AuthenticationOAuth authenticationOAuth;
 	@Autowired
-	private AuthenticationCallback authenticationCallbakServlet;
+	private AuthenticationCallback authenticationCallbak;
 
 	
 	/**
@@ -53,7 +53,7 @@ public class AuthenticationServlet extends HttpServlet {
 		} else if (targetAction == AuthenticationProperties.Action.AUTHENTICATE) {
 			redirectToAuthenticationServer(request, response);
 		} else if (targetAction == AuthenticationProperties.Action.CALLBACK) {
-			authenticationCallbakServlet.doGet(request, response);
+			authenticationCallbak.authenticate(request, response);
 		}
 	}
 

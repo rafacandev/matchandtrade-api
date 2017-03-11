@@ -31,7 +31,7 @@ public class AuthenticationCallback {
 	@Autowired
 	private AuthenticationModel authenticationModel;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// oAuth Step 3. Confirm anti-forgery state token
 		String stateParameter = request.getParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString());
 		String antiForgeryState = (String) request.getSession().getAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
@@ -57,8 +57,10 @@ public class AuthenticationCallback {
 		// oAuth Step 6. Authenticate the user
 		persistAuthentication(antiForgeryState, accessToken, user);
 		
-		// Done. Add authentication header to response
-		response.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, accessToken);
+		// Assign the accessToken to the Authorization header
+		response.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
+		// Write the Authorization header to the response body
+		response.getWriter().print(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER + ": " + accessToken);
 	}
 
 	/*

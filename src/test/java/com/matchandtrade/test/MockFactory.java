@@ -53,13 +53,13 @@ public class MockFactory {
 	public MockHttpServletRequest getHttpRequestWithAuthenticatedUser(UserAuthentication userAuthentication) {
 		MockHttpServletRequest result = new MockHttpServletRequest();
 		result.getSession().setAttribute("user", userAuthentication);
-		result.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, userAuthentication.getUserId());
+		result.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), userAuthentication.getUserId());
 		return result;
 	}
 
 	public MockHttpServletRequest getAuthenticatedRequest(AuthenticationEntity authenticationEntity) {
 		MockHttpServletRequest result = new MockHttpServletRequest();
-		result.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, authenticationEntity.getToken());
+		result.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), authenticationEntity.getToken());
 		return result;
 	}
 

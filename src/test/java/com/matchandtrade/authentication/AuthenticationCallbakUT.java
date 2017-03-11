@@ -33,7 +33,7 @@ public class AuthenticationCallbakUT {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setParameter("state", "differentState");
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		authenticationCallbakServlet.doGet(request, response);
+		authenticationCallbakServlet.authenticate(request, response);
 		assertEquals(401, response.getStatus());
 		assertNull(request.getSession(false));
 	}
@@ -49,8 +49,8 @@ public class AuthenticationCallbakUT {
 		Mockito.when(authenticationOAuthMock.obtainUserInformation("accessTokenMock")).thenReturn(sessionUserAuthentication);
 		authenticationCallbakServlet.setAuthenticationOAuth(authenticationOAuthMock);
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		authenticationCallbakServlet.doGet(request, response);
-		String authenticationHeader = response.getHeader(AuthenticationProperties.AUTHENTICATION_HEADER);
+		authenticationCallbakServlet.authenticate(request, response);
+		String authenticationHeader = response.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
 		assertEquals("accessTokenMock", authenticationHeader);
 	}
 	
