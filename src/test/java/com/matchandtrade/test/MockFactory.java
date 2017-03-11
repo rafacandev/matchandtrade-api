@@ -1,5 +1,6 @@
 package com.matchandtrade.test;
 
+import org.apache.http.client.AuthenticationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.rest.v1.controller.UserController;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.test.random.UserRandom;
 

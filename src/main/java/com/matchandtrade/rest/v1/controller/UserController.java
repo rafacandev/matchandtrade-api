@@ -23,13 +23,13 @@ import com.matchandtrade.rest.v1.validator.UserValidator;
 public class UserController extends Controller {
 
 	@Autowired
-	private Authorization authorization;
+	Authorization authorization;
 	@Autowired
-	private UserModel userModel;
+	UserModel userModel;
 	@Autowired
-	private UserValidator userValidador;
+	UserValidator userValidador;
 	@Autowired
-	private UserTransformer userTransformer;
+	UserTransformer userTransformer;
 
 	@RequestMapping(path="/{userId}", method=RequestMethod.GET)
 	public UserJson get(@PathVariable("userId") Integer userId) {

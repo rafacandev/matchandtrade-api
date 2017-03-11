@@ -13,7 +13,7 @@ import com.matchandtrade.persistence.entity.AuthenticationEntity;
 public class Controller {
 
 	@Autowired
-	private AuthenticationModel authenticationModel;
+	protected AuthenticationModel authenticationModel;
 	@Autowired
 	private HttpServletRequest httpRequest;
 	

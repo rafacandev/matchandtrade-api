@@ -5,15 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.model.UserModel;
-import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.rest.v1.controller.MockUserControllerFactory.MockUserController;
 import com.matchandtrade.rest.v1.json.UserJson;
-import com.matchandtrade.test.MockFactory;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.StringRandom;
 
@@ -22,31 +18,27 @@ import com.matchandtrade.test.random.StringRandom;
 public class UserControllerSearchIT {
 	
 	@Autowired
-	private UserModel userModel;
-	@Autowired
-	private UserController userController;
-	@Autowired
-	private MockFactory mockFactory;
-	private UserEntity userEntity;
+	private MockUserControllerFactory mockUserControllerFactory;
+	private MockUserController fixture;
+
 	
 	@Before
 	public void before() {
-		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
-		MockHttpServletRequest httpRequest = mockFactory.getHttpRequestWithAuthenticatedUser(userAuthentication);
-		userController.setHttpServletRequest(httpRequest);
-		userEntity = userModel.get(userAuthentication.getUserId());
+		if (fixture == null) {
+			fixture = mockUserControllerFactory.getMockUserController();
+		}
 	}
 	
 	@Test
 	public void searchPositive() {
-		SearchResult<UserJson> response = userController.get(0, 5, userEntity.getEmail());
+		SearchResult<UserJson> response = fixture.get(0, 5, fixture.userEntity.getEmail());
 		UserJson responseContent = response.getResultList().get(0);
-		Assert.assertEquals(userEntity.getEmail(), responseContent.getEmail());
+		Assert.assertEquals(fixture.userEntity.getEmail(), responseContent.getEmail());
 	}
 	
 	@Test
 	public void searchNegative() {
-		SearchResult<UserJson> response = userController.get(0, 5, StringRandom.nextString());
+		SearchResult<UserJson> response = fixture.get(0, 5, StringRandom.nextString());
 		Assert.assertTrue(response.getResultList().isEmpty());
 	}
 

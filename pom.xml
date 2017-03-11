@@ -243,8 +243,8 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<configuration>
 				<!-- Commenting out parallel until RestController classes can be run in parallel -->
-<!-- 					<parallel>suites</parallel> -->
-<!-- 					<threadCount>4</threadCount> -->
+					<parallel>suites</parallel>
+					<threadCount>4</threadCount>
 					<excludes>
 						<exclude>**/*Test.java</exclude>
 						<exclude>**/*UT.java</exclude>
