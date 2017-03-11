@@ -40,9 +40,9 @@ public class AppConfiguration {
 	@Bean
 	public AuthenticationProperties authenticationProperties() {
 		AuthenticationProperties result = new AuthenticationProperties();
-		result.setClientId("clientIdProperty");
-		result.setClientSecret("clientSecretProperty");
-		result.setRedirectURI("http://localhost:8080/authenticate/callback");
+		result.setClientId(properties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_ID));
+		result.setClientSecret(properties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_SECRET));
+		result.setRedirectURI(properties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_REDIRECT_URL));
 		return result;
 	}
 
