@@ -40,7 +40,7 @@ public class AuthenticationProperties {
 		}
 	}
 	
-	public static final String AUTHENTICATION_HEADER = "Authentication";
+	public static final String AUTHENTICATION_HEADER = "Authorization";
 	
 	private String clientId;
 	private String clientSecret;

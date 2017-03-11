@@ -7,8 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	UserControllerGetIT.class,
-	UserControllerPutIT.class,
-	UserControllerSearchIT.class
+	UserControllerPutIT.class
 })
 public class UserControllerSuite {
 
