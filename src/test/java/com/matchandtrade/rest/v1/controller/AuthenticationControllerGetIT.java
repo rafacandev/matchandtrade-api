@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.authorization.AuthorizationException;
-import com.matchandtrade.rest.v1.json.UserAuthenticationJson;
+import com.matchandtrade.rest.v1.json.AuthenticationJson;
 import com.matchandtrade.test.MockFactory;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
@@ -26,7 +26,7 @@ public class AuthenticationControllerGetIT {
 	public void getNegative() {
 		MockHttpServletRequest httpRequest = new MockHttpServletRequest();
 		authenticationController.setHttpServletRequest(httpRequest);
-		UserAuthenticationJson response = authenticationController.get();
+		AuthenticationJson response = authenticationController.get();
 		Assert.assertNull(response);
 	}
 	
@@ -35,7 +35,7 @@ public class AuthenticationControllerGetIT {
 		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		MockHttpServletRequest httpRequest = mockFactory.getHttpRequestWithAuthenticatedUser(userAuthentication);
 		authenticationController.setHttpServletRequest(httpRequest);
-		UserAuthenticationJson response = authenticationController.get();
+		AuthenticationJson response = authenticationController.get();
 		Assert.assertEquals(userAuthentication.getUserId(), response.getUserId());
 	}
 	

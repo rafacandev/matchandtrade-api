@@ -14,7 +14,6 @@ import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.rest.v1.controller.UserController;
 import com.matchandtrade.rest.v1.json.UserJson;
-import com.matchandtrade.test.MockFactory;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
 @RunWith(SpringRunner.class)
@@ -29,8 +28,6 @@ public class AuthenticationIT {
 	private UserController userController;
 	@Autowired
 	private AuthenticationModel authenticationModel;
-	@Autowired
-	private MockFactory mockFactory;
 	
 	@Test
 	public void authenticationPositive() throws Exception {
@@ -44,18 +41,19 @@ public class AuthenticationIT {
 		
 		// Mock request/response for AuthenticationCallback
 		MockHttpServletRequest requestCallback = new MockHttpServletRequest();
-		MockHttpServletResponse responseCallback = new MockHttpServletResponse();
-		String state = (String) requestAuthentication.getSession().getAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString());
-		requestCallback.addParameter("state", state);
-		requestCallback.getSession().setAttribute(AuthenticationProperties.Token.ANTI_FORGERY_STATE.toString(), state);
+		String state = (String) requestAuthentication.getSession().getAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
+		requestCallback.addParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString(), state);
+		requestCallback.getSession().setAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString(), state);
 		
 		// Make request to AuthenticationCallback
+		MockHttpServletResponse responseCallback = new MockHttpServletResponse();
 		authenticationCallback.doGet(requestCallback, responseCallback);
 
 		// Mock request/response for UserController
 		MockHttpServletRequest requestUserController = new MockHttpServletRequest();
 		String authenticationHeader = responseCallback.getHeader(AuthenticationProperties.AUTHENTICATION_HEADER);
 		requestUserController.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, authenticationHeader);
+		
 		AuthenticationEntity authenticationEntity = authenticationModel.getByToken(authenticationHeader);
 		userController.setHttpServletRequest(requestUserController);
 

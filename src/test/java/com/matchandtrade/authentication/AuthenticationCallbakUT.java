@@ -1,9 +1,7 @@
 package com.matchandtrade.authentication;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -44,7 +42,8 @@ public class AuthenticationCallbakUT {
 	public void doGetAtiForgeryTokenPositive() throws ServletException, IOException {
 		UserAuthentication sessionUserAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		MockHttpServletRequest request = mockFactory.getHttpRequestWithAuthenticatedUser(sessionUserAuthentication);
-		request.setParameter("state", MockFactory.AuthenticationValue.ANTI_FORGERY_STATE.toString());
+		request.setParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString(), AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
+		request.getSession().setAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString(), AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
 		AuthenticationOAuth authenticationOAuthMock = Mockito.mock(AuthenticationOAuth.class);
 		Mockito.when(authenticationOAuthMock.obtainAccessToken(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn("accessTokenMock");
 		Mockito.when(authenticationOAuthMock.obtainUserInformation("accessTokenMock")).thenReturn(sessionUserAuthentication);

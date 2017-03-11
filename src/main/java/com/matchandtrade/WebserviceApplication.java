@@ -97,6 +97,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import com.matchandtrade.authentication.AuthenticationServlet;
 import com.matchandtrade.cli.AppCli;
 
+@SuppressWarnings("deprecation")
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={

@@ -13,7 +13,6 @@ import com.matchandtrade.common.Criterion;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
-import com.matchandtrade.persistence.entity.UserEntity;
 
 
 @Component

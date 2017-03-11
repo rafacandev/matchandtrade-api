@@ -16,9 +16,6 @@ import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
 
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 @RestController
 @RequestMapping(path="/rest/v1/trades")
 public class TradeController extends Controller {
@@ -34,8 +31,8 @@ public class TradeController extends Controller {
 
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeJson post(@RequestBody TradeJson requestJson) {
-		// Check authorization for this operation
-		authorization.doBasicAuthorization(getUserAuthentication());
+		// Validate request identity
+		authorization.validateIdentity(getAuthentication());
 		// Validate the request
 		tradeValidador.validatePost(requestJson);
 		// Transform the request
@@ -47,11 +44,10 @@ public class TradeController extends Controller {
 		return result;
 	}
 
-	@ApiResponses(value={@ApiResponse(response=TradeJson.class, message="OK", code=200)})
 	@RequestMapping(path="/{tradeId}", method=RequestMethod.GET)
 	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
-		// Check authorization for this operation
-		authorization.doBasicAuthorization(getUserAuthentication());
+		// Validate request identity
+		authorization.validateIdentity(getAuthentication());
 		// Build SearchCriteria
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
 		searchCriteria.addCriterion(TradeEntity.Field.tradeId, tradeId);

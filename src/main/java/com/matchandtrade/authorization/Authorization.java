@@ -3,7 +3,6 @@ package com.matchandtrade.authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.authentication.UserAuthentication;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -16,57 +15,18 @@ public class Authorization {
 	private UserModel userModel;
 	
 	/**
-	 * Throws <pre>AuthorizationException</pre> if <pre>userAuthentication</pre> or <pre>userAuthentication.userId</pre> is null
-	 * @param userAuthentication
-	 * @return UserEntity instance of <pre>user.userId</pre>
+	 * Throws {@code AuthorizationException} if {@code authenticationEntity} or {@code authenticationEntity.getUserId()} is null
+	 * Throws {@code AuthorizationException} if there is not @ {@code UserEntity} for {@code authenticationEntity.getUserId()}.
+	 * @param authenticationEntity
 	 */
-	public void doBasicAuthorization(UserAuthentication userAuthentication) {
-		if (userAuthentication == null) {
+	public void validateIdentity(AuthenticationEntity authenticationEntity) {
+		if (authenticationEntity == null || authenticationEntity.getUserId() == null) {
 			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
-		} else if (userAuthentication.getUserId() == null) {
-			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
 		}
-	}
-	public void doBasicAuthorization(AuthenticationEntity authentication) {
-		if (authentication == null) {
-			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
-		} else if (authentication.getUserId() == null) {
-			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
-		}
-	}
-	
-	/**
-	 * Throws <pre>AuthorizationException</pre> if user is not <pre>ROLE.ADMINISTRATOR<pre> or
-	 * if <pre>userEntity.userId</pre> is not equals to <pre>userId</pre>.
-	 * @param userEntity
-	 * @param userId
-	 */
-	public void validateIdentity(UserEntity userEntity, Integer userId) {
+		UserEntity userEntity = userModel.get(authenticationEntity.getUserId());
 		if (userEntity == null) {
-			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
-		} else if (userId == null) {
-			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
-		} else if (userEntity.getRole() != UserEntity.Role.ADMINISTRATOR && !userEntity.getUserId().equals(userId)) {
 			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
 		}
 	}
 
-	/**
-	 * Performs <pre>doBasicAuthorization(userAuthentication)</pre> and <pre>validateIdentity(userEntity, userId)</pre>.
-	 * @param userAuthentication
-	 * @param userId
-	 * @return the result of <pre>doBasicAuthorization(userAuthentication)</pre>
-	 */
-	public UserEntity validateIdentityAndDoBasicAuthorization(UserAuthentication userAuthentication, Integer userId) {
-		doBasicAuthorization(userAuthentication);
-		UserEntity userEntity = userModel.get(userAuthentication.getUserId());
-		validateIdentity(userEntity, userId);
-		return userEntity;
-	}
-	public void validateIdentityAndDoBasicAuthorization(AuthenticationEntity authentication, Integer userId) {
-		doBasicAuthorization(authentication);
-		UserEntity userEntity = userModel.get(authentication.getUserId());
-		validateIdentity(userEntity, userId);
-	}
-	
 }

@@ -36,16 +36,16 @@ public class AuthenticationServletUT {
 		requestMock.setRequestURI("http://localhost:8080/authenticate");
 		
 		AuthenticationServlet authenticationServlet = new AuthenticationServlet();
-		AuthenticationAction authenticationAction = authenticationServlet.getAuthenticationAction(requestMock);
-		assertEquals(AuthenticationAction.AUTHENTICATE, authenticationAction);
+		AuthenticationProperties.Action authenticationAction = authenticationServlet.getAuthenticationAction(requestMock);
+		assertEquals(AuthenticationProperties.Action.AUTHENTICATE, authenticationAction);
 		
 		requestMock.setRequestURI("http://localhost:8080/authenticate/");
 		authenticationAction = authenticationServlet.getAuthenticationAction(requestMock);
-		assertEquals(AuthenticationAction.AUTHENTICATE, authenticationAction);
+		assertEquals(AuthenticationProperties.Action.AUTHENTICATE, authenticationAction);
 
 		requestMock.setRequestURI("http://localhost:8080/sign-out");
 		authenticationAction = authenticationServlet.getAuthenticationAction(requestMock);
-		assertEquals(AuthenticationAction.SIGNOUT, authenticationAction);
+		assertEquals(AuthenticationProperties.Action.SIGNOUT, authenticationAction);
 	}
 	
 	@Test

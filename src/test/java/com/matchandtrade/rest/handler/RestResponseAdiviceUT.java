@@ -49,7 +49,7 @@ public class RestResponseAdiviceUT {
 	@Test
 	public void userJsonNegative(){
 		// Test setup
-		UserJson body = UserRandom.next(-1);
+		UserJson body = UserRandom.nextJson(-1);
 		RestResponseAdvice adivice = new RestResponseAdvice();
 		UserJson response = (UserJson) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
 		// Assert the response
@@ -59,7 +59,7 @@ public class RestResponseAdiviceUT {
 	@Test
 	public void userJsonPositive(){
 		// Test setup
-		UserJson body = UserRandom.next(1);
+		UserJson body = UserRandom.nextJson(1);
 		RestResponseAdvice adivice = new RestResponseAdvice();
 		UserJson response = (UserJson) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
 		// Assert the response
@@ -84,7 +84,7 @@ public class RestResponseAdiviceUT {
 	public void searchResultPositive() {
 		// Test setup
 		List<UserJson> resultList = new ArrayList<>();
-		resultList.add(UserRandom.next(1));
+		resultList.add(UserRandom.nextJson(1));
 		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination());
 		RestResponseAdvice adivice = new RestResponseAdvice();
 		// Test execution
@@ -109,7 +109,7 @@ public class RestResponseAdiviceUT {
 		ServerHttpRequest request = Mockito.mock(ServerHttpRequest.class);
 		Mockito.when(request.getURI()).thenReturn(uri);
 		List<UserJson> resultList = new ArrayList<>();
-		resultList.add(UserRandom.next(1));
+		resultList.add(UserRandom.nextJson(1));
 		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination(2,5,1L));
 		// Test execution
 		RestResponseAdvice adivice = new RestResponseAdvice();

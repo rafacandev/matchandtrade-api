@@ -25,7 +25,7 @@ public class UserController extends Controller {
 	@Autowired
 	private Authorization authorization;
 	@Autowired
-	private UserModel model;
+	private UserModel userModel;
 	@Autowired
 	private UserValidator userValidador;
 	@Autowired
@@ -33,10 +33,12 @@ public class UserController extends Controller {
 
 	@RequestMapping(path="/{userId}", method=RequestMethod.GET)
 	public UserJson get(@PathVariable("userId") Integer userId) {
-		// Check authorization for this operation
-		authorization.validateIdentityAndDoBasicAuthorization(getUserAuthentication(), userId);
+		// Validate request identity
+		authorization.validateIdentity(getAuthentication());
+		// Validate the request
+		userValidador.validateGetById(getAuthentication(), userId);
 		// Delegate to model layer
-		UserEntity userEntity = model.get(userId);
+		UserEntity userEntity = userModel.get(userId);
 		// Transform the response
 		UserJson result = UserTransformer.transform(userEntity);
 		return result;
@@ -47,13 +49,14 @@ public class UserController extends Controller {
 			@RequestParam(required=false) Integer _pageNumber,
 			@RequestParam(required=false) Integer _pageSize,
 			@RequestParam String email) {
-		// Check authorization for this operation
-		authorization.doBasicAuthorization(getUserAuthentication());
+		// Validate request identity
+		authorization.validateIdentity(getAuthentication());
 		// Build SearchCriteria
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
+		searchCriteria.addCriterion(UserEntity.Field.userId, getAuthentication().getUserId());
 		searchCriteria.addCriterion(UserEntity.Field.email, email);
 		// Delegate to model layer
-		SearchResult<UserEntity> searchResult = model.search(searchCriteria);
+		SearchResult<UserEntity> searchResult = userModel.search(searchCriteria);
 		// Transform the response
 		SearchResult<UserJson> result = UserTransformer.transform(searchResult);
 		return result;
@@ -61,15 +64,15 @@ public class UserController extends Controller {
 
 	@RequestMapping(path="/{userId}", method=RequestMethod.PUT)
 	public UserJson put(@PathVariable("userId") Integer userId, @RequestBody UserJson requestJson) {
-		// Check authorization for this operation
-		authorization.validateIdentityAndDoBasicAuthorization(getUserAuthentication(), userId);
+		// Validate request identity
+		authorization.validateIdentity(getAuthentication());
 		// Validate the request
 		requestJson.setUserId(userId);
 		userValidador.validatePut(requestJson);
 		// Transform the request
 		UserEntity userEntity = userTransformer.transform(requestJson, true);
 		// Delegate to model layer
-		model.save(userEntity);
+		userModel.save(userEntity);
 		// Transform the response
 		UserJson result = UserTransformer.transform(userEntity);
 		return result;

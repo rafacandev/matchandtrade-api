@@ -34,11 +34,11 @@ public class AuthenticationCallback {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// oAuth Step 3. Confirm anti-forgery state token
 		String stateParameter = request.getParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString());
-		String stateAttribute = (String) request.getSession().getAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
-		logger.debug("Received request with stateParameter: [{}] and authenticationStateAttribute: [{}]", stateParameter, stateAttribute);
+		String antiForgeryState = (String) request.getSession().getAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
+		logger.debug("Received request with stateParameter: [{}] and authenticationStateAttribute: [{}]", stateParameter, antiForgeryState);
 		
 		// Return HTTP-STATUS 401 if anti-forgery state token does not match
-		if (stateAttribute == null || !stateAttribute.equals(stateParameter)) {
+		if (antiForgeryState == null || !antiForgeryState.equals(stateParameter)) {
 			response.setStatus(401);
 			request.getSession().invalidate();
 			return;
@@ -55,7 +55,7 @@ public class AuthenticationCallback {
 		UserAuthentication user = authenticationOAuth.obtainUserInformation(accessToken);
 		
 		// oAuth Step 6. Authenticate the user
-		persistAuthentication(stateAttribute, accessToken, user);
+		persistAuthentication(antiForgeryState, accessToken, user);
 		
 		// Done. Add authentication header to response
 		response.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, accessToken);

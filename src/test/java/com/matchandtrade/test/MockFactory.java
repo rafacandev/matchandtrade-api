@@ -23,19 +23,8 @@ public class MockFactory {
 	@Autowired
 	private UserTransformer userTransformer;
 	
-	public UserAuthentication nextRandomUserAuthentication() {
-		UserEntity userEntity = userTransformer.transform(UserRandom.next());
-		UserAuthentication result = new UserAuthentication();
-		result.setAuthenticated(true);
-		result.setEmail(userEntity.getEmail());
-		result.setName(userEntity.getName());
-		result.setNewUser(true);
-		result.setUserId(userEntity.getUserId());
-		return result;
-	}
-	
 	public UserAuthentication nextRandomUserAuthenticationPersisted() {
-		UserEntity userEntity = userTransformer.transform(UserRandom.next());
+		UserEntity userEntity = userTransformer.transform(UserRandom.nextJson());
 		userModel.save(userEntity);
 
 		UserAuthentication result = new UserAuthentication();
@@ -65,6 +54,28 @@ public class MockFactory {
 		MockHttpServletRequest result = new MockHttpServletRequest();
 		result.getSession().setAttribute("user", userAuthentication);
 		result.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, userAuthentication.getUserId());
+		return result;
+	}
+
+	public MockHttpServletRequest getAuthenticatedRequest(AuthenticationEntity authenticationEntity) {
+		MockHttpServletRequest result = new MockHttpServletRequest();
+		result.addHeader(AuthenticationProperties.AUTHENTICATION_HEADER, authenticationEntity.getToken());
+		return result;
+	}
+
+	public AuthenticationEntity getAuthentication() {
+		UserEntity userEntity = UserRandom.nextEntity();
+		userModel.save(userEntity);
+		AuthenticationEntity result = getAuthentication(userEntity);
+		return result;
+	}
+
+	public AuthenticationEntity getAuthentication(UserEntity userEntity) {
+		userModel.save(userEntity);
+		AuthenticationEntity result = new AuthenticationEntity();
+		result.setUserId(userEntity.getUserId());
+		result.setToken(userEntity.getUserId() + "-" + userEntity.getName() + "-" + userEntity.getEmail());
+		authenticationModel.save(result);
 		return result;
 	}
 	
