@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.authentication.UserAuthentication;
+import com.matchandtrade.authentication.AuthenticationResponseJson;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.test.MockFactory;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -25,7 +25,7 @@ public class TradeControllerGetIT {
 	private MockFactory mockFactory;
 	@Autowired
 	private TradeController tradeController;
-	private UserAuthentication userAuthentication;
+	private AuthenticationResponseJson userAuthentication;
 	private MockHttpServletRequest httpRequest;
 
 	@Before

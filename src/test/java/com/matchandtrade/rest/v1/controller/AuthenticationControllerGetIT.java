@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.authentication.UserAuthentication;
+import com.matchandtrade.authentication.AuthenticationResponseJson;
 import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.rest.v1.json.AuthenticationJson;
 import com.matchandtrade.test.MockFactory;
@@ -32,7 +32,7 @@ public class AuthenticationControllerGetIT {
 	
 	@Test
 	public void getPositive() {
-		UserAuthentication userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
+		AuthenticationResponseJson userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		MockHttpServletRequest httpRequest = mockFactory.getHttpRequestWithAuthenticatedUser(userAuthentication);
 		authenticationController.setHttpServletRequest(httpRequest);
 		AuthenticationJson response = authenticationController.get();

@@ -40,7 +40,7 @@ public class AuthenticationCallbakUT {
 	
 	@Test
 	public void doGetAtiForgeryTokenPositive() throws ServletException, IOException {
-		UserAuthentication sessionUserAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
+		AuthenticationResponseJson sessionUserAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
 		MockHttpServletRequest request = mockFactory.getHttpRequestWithAuthenticatedUser(sessionUserAuthentication);
 		request.setParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString(), AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
 		request.getSession().setAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString(), AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());

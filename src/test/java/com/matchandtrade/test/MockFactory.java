@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.authentication.UserAuthentication;
+import com.matchandtrade.authentication.AuthenticationResponseJson;
 import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.model.UserModel;
@@ -23,12 +23,11 @@ public class MockFactory {
 	@Autowired
 	private UserTransformer userTransformer;
 	
-	public UserAuthentication nextRandomUserAuthenticationPersisted() {
+	public AuthenticationResponseJson nextRandomUserAuthenticationPersisted() {
 		UserEntity userEntity = userTransformer.transform(UserRandom.nextJson());
 		userModel.save(userEntity);
 
-		UserAuthentication result = new UserAuthentication();
-		result.setAuthenticated(true);
+		AuthenticationResponseJson result = new AuthenticationResponseJson();
 		result.setEmail(userEntity.getEmail());
 		result.setName(userEntity.getName());
 		result.setNewUser(true);
@@ -44,13 +43,13 @@ public class MockFactory {
 	}
 
 	public MockHttpServletRequest getHttpRequestWithAuthenticatedUser() {
-		UserAuthentication userAuthentication = nextRandomUserAuthenticationPersisted();
+		AuthenticationResponseJson userAuthentication = nextRandomUserAuthenticationPersisted();
 		MockHttpServletRequest result = new MockHttpServletRequest();
 		result.getSession().setAttribute("user", userAuthentication);
 		return result;
 	}
 	
-	public MockHttpServletRequest getHttpRequestWithAuthenticatedUser(UserAuthentication userAuthentication) {
+	public MockHttpServletRequest getHttpRequestWithAuthenticatedUser(AuthenticationResponseJson userAuthentication) {
 		MockHttpServletRequest result = new MockHttpServletRequest();
 		result.getSession().setAttribute("user", userAuthentication);
 		result.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), userAuthentication.getUserId());

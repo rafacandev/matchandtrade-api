@@ -21,7 +21,7 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
 	public static final String ACCESS_TOKEN = "MockedAccessToken";
-	public static final String EMAIL = "mockedemail@test.com";
+	public static final String EMAIL = "mocked.email@test.com";
 	public static final String NAME = "Mocked Name";
 
 	@Override
@@ -48,12 +48,10 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 	}
 
 	@Override
-	public UserAuthentication obtainUserInformation(String accessToken) throws AuthenticationException {
-		UserAuthentication result = new UserAuthentication();
-		result.setAuthenticated(false);
+	public AuthenticationResponseJson obtainUserInformation(String accessToken) throws AuthenticationException {
+		AuthenticationResponseJson result = new AuthenticationResponseJson();
 		result.setEmail(EMAIL);
 		result.setName(NAME);
-		result.setNewUser(false);
 		return result;
 	}
 

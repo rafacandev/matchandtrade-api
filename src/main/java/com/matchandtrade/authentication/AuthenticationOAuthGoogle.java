@@ -110,7 +110,7 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 	}
 
 	@Override
-	public UserAuthentication obtainUserInformation(String accessToken) throws AuthenticationException {
+	public AuthenticationResponseJson obtainUserInformation(String accessToken) throws AuthenticationException {
 		// Build user information URI
 		URI uri = null;
 		try {
@@ -139,7 +139,7 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 			ObjectMapper jacksonObjectMapper = new ObjectMapper();
 			@SuppressWarnings("unchecked")
 			Map<String,Object> userInfoMap = jacksonObjectMapper.readValue(responseString, Map.class);
-			UserAuthentication result = new UserAuthentication();
+			AuthenticationResponseJson result = new AuthenticationResponseJson();
 			result.setEmail(userInfoMap.get("email").toString());
 			result.setName(userInfoMap.get("name").toString());
 			return result;

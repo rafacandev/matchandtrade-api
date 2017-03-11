@@ -73,7 +73,7 @@ public class AuthenticationOAuthGoogleUT {
 		String name = "nameTest";
 		String response = "{ \"email\": \"" + email + "\", \"name\": \"" + name + "\"}";
 		AuthenticationOAuthGoogle authenticationOAuthGoogleSpy = spyAuthenticationOAuthGoogle(response);
-		UserAuthentication result = authenticationOAuthGoogleSpy.obtainUserInformation("accessToken");
+		AuthenticationResponseJson result = authenticationOAuthGoogleSpy.obtainUserInformation("accessToken");
 		assertEquals(email, result.getEmail());
 		assertEquals(name, result.getName());
 	}
