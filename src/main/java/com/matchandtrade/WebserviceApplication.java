@@ -96,6 +96,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 import com.matchandtrade.authentication.AuthenticationServlet;
 import com.matchandtrade.cli.AppCli;
+import com.matchandtrade.config.AppConfigurationProperties;
 
 @SuppressWarnings("deprecation")
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
@@ -285,8 +286,29 @@ public class WebserviceApplication {
 		if (cli.isInterrupted()) {
 			System.out.println(cli.getCommandLineOutputMessage());
 		} else {
+			displayWelcomeMessage();
 			// Proceed normally
 			SpringApplication.run(WebserviceApplication.class, arguments);
 		}
+	}
+
+	private static void displayWelcomeMessage() {
+		String configFileLocation = System.getProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey());
+		String oAuthImplementation = System.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey());
+		String jdbcUrl = System.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_JDBC_URL.getKey());
+		System.out.println("|===========================================================");
+		System.out.println("| WELCOME TO MATCH AND TRADE WEB");
+		System.out.println("| ");
+		System.out.println("| Configuration file location: " + generateDefaultMessage(configFileLocation));
+		System.out.println("| OAuth implementation: " + generateDefaultMessage(oAuthImplementation));
+		System.out.println("| JDBC Url: " + generateDefaultMessage(jdbcUrl));
+		System.out.println("|===========================================================");
+	}
+
+	private static String generateDefaultMessage(String s) {
+		if (s == null) {
+			return "[NOT FOUND! Using default value.]";
+		}
+		return s;
 	}
 }

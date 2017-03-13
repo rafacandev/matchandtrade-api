@@ -1,7 +1,6 @@
 package com.matchandtrade.config;
 
 import java.beans.PropertyVetoException;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -14,43 +13,40 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @Configuration
 public class AppConfiguration {
 	
-	public static String CONFIG_FILE = "src/config/matchandtrade.properties";
-	
-	private AppConfigurationProperties properties;
-
-	String dataSourceDriverClass = "org.h2.Driver";
-	String dataSourceJdbcUrl = "jdbc:h2:./target/h2db/matchandtrade";
-	String dataSourceUser = "username";
-	String dataSourcePassword = "password";
+	private AppConfigurationProperties appProperties;
 
 	public AppConfiguration() throws FileNotFoundException, IOException {
-		properties = new AppConfigurationProperties(new FileInputStream(CONFIG_FILE));
+		appProperties = new AppConfigurationProperties(System.getProperties());
 	}
 
 	@Bean
 	public ComboPooledDataSource dataSource() throws PropertyVetoException {
 		ComboPooledDataSource result = new ComboPooledDataSource();
-		result.setDriverClass(properties.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_DRIVER_CLASS));
-		result.setJdbcUrl(properties.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_JDBC_URL));
-		result.setPassword(properties.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_PASSWORD));
-		result.setUser(properties.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_USER));
+		result.setDriverClass(appProperties.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_DRIVER_CLASS));
+		result.setJdbcUrl(appProperties.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_JDBC_URL));
+		result.setPassword(appProperties.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_PASSWORD));
+		result.setUser(appProperties.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_USER));
 		return result;
 	}
 	
 	@Bean
 	public AuthenticationProperties authenticationProperties() {
 		AuthenticationProperties result = new AuthenticationProperties();
-		result.setClientId(properties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_ID));
-		result.setClientSecret(properties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_SECRET));
-		result.setRedirectURI(properties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_REDIRECT_URL));
+		result.setClientId(appProperties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_ID));
+		result.setClientSecret(appProperties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_SECRET));
+		result.setRedirectURI(appProperties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_REDIRECT_URL));
 		return result;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Bean
 	public AuthenticationOAuth authenticationOAuth() throws ClassNotFoundException, InstantiationException, ReflectiveOperationException {
-		Class authenticationOAuthClass = Class.forName(properties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS));
+		Class authenticationOAuthClass = Class.forName(appProperties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS));
 		AuthenticationOAuth result = (AuthenticationOAuth) authenticationOAuthClass.newInstance();
 		return result;
+	}
+	
+	public AppConfigurationProperties getAppProperties() {
+		return appProperties;
 	}
 }

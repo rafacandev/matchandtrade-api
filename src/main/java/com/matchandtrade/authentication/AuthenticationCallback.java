@@ -62,6 +62,7 @@ public class AuthenticationCallback {
 		response.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
 		// Write the Authorization header to the response body
 		response.getWriter().print(generateResponseBody(persistedUserInfo, accessToken));
+		response.setContentType("application/json;charset=UTF-8");
 	}
 
 	private String generateResponseBody(AuthenticationResponseJson authenticationResponseJson, String authorizationHeader) {

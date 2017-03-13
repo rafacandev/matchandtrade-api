@@ -1,7 +1,7 @@
 package com.matchandtrade.config;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 public class AppConfigurationProperties {
@@ -10,7 +10,8 @@ public class AppConfigurationProperties {
 		AUTHENTICATION_CLIENT_ID("authentication.client.id","clientIdProperty"),
 		AUTHENTICATION_CLIENT_SECRET("authentication.client.secrete","clientSecretProperty"),
 		AUTHENTICATION_CLIENT_REDIRECT_URL("authentication.redirect.url","http://localhost:8080/authenticate/callback"),
-		AUTHENTICATION_OAUTH_CLASS("authentication.oauth.class","com.matchandtrade.authentication.AuthenticationOAuthGoogle"),
+		AUTHENTICATION_OAUTH_CLASS("authentication.oauth.class","com.matchandtrade.authentication.AuthenticationOAuthExistingUserMock"),
+		CONFIG_FILE("matchandtrade.config.file", "src/config/matchandtrade.properties"),
 		DATA_SOURCE_DRIVER_CLASS("datasource.driver.class", "org.h2.Driver"),
 		DATA_SOURCE_JDBC_URL("datasource.jdbc.url", "jdbc:h2:./target/h2db/matchandtrade"),
 		DATA_SOURCE_PASSWORD("datasource.password", "password"),
@@ -37,8 +38,11 @@ public class AppConfigurationProperties {
 
 	private Properties properties = new Properties();
 
-	public AppConfigurationProperties(InputStream propertiesInputStream) throws IOException {
-		properties.load(propertiesInputStream);
+	public AppConfigurationProperties(Properties appProperties) throws IOException {
+		// Copy the Properties from appProperties to this.properties. Avoid assigning instance directly to avoid changes to the properties from another reference.
+		for (Entry<Object, Object> e : appProperties.entrySet()) {
+			properties.setProperty(e.getKey().toString(), e.getValue().toString());
+		}
 	}
 	
 	public String getProperty(Keys key) {
@@ -48,5 +52,5 @@ public class AppConfigurationProperties {
 		}
 		return result;
 	}
-
+	
 }

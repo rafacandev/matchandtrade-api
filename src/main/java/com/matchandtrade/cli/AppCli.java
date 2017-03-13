@@ -1,10 +1,13 @@
 package com.matchandtrade.cli;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.InvalidParameterException;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -13,14 +16,14 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import com.matchandtrade.config.AppConfiguration;
+import com.matchandtrade.config.AppConfigurationProperties;
 
 public class AppCli {
 	
 	private boolean isInterrupted = false;
 	private String commandLineOutputMessage = "";
 
-	public AppCli(String[] arguments) throws FileNotFoundException {
+	public AppCli(String[] arguments) throws IOException {
 		
 		Options options = new Options();
 
@@ -45,13 +48,19 @@ public class AppCli {
 				String configFilePath = cli.getOptionValue("cf");
 				File configFile = new File(configFilePath);
 				if (!configFile.exists()) {
-					throw new FileNotFoundException("File does not exist: " + configFile.getAbsolutePath());
+					throw new IOException("File does not exist: " + configFile.getAbsolutePath());
 				} else if (configFile.isDirectory()) {
-					throw new FileNotFoundException("The path provided is a directory instead of a valid file: " + configFile.getAbsolutePath());
+					throw new IOException("The path provided is a directory instead of a valid file: " + configFile.getAbsolutePath());
 				} else if (!configFile.isFile()) {
-					throw new FileNotFoundException("The path provided is not a file: " + configFile.getAbsolutePath());
+					throw new IOException("The path provided is not a file: " + configFile.getAbsolutePath());
 				} else {
-					AppConfiguration.CONFIG_FILE = configFilePath;
+					System.setProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey(), configFilePath);
+					// Load the content of the configuration file as system properties
+					Properties additionalProperties = new Properties();
+					additionalProperties.load(new FileInputStream(configFile));
+					for(Entry<Object, Object> e : additionalProperties.entrySet()) {
+						System.setProperty(e.getKey().toString(), e.getValue().toString());
+					}
 				}
 			}
 			
