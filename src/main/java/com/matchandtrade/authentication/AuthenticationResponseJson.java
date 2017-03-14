@@ -1,5 +1,11 @@
 package com.matchandtrade.authentication;
 
+/**
+ * Immutable class to hold authentication values.
+ * 
+ * @author rafael.santos.bra@gmail.com
+ *
+ */
 public class AuthenticationResponseJson {
 
 	private Integer userId;
@@ -7,7 +13,19 @@ public class AuthenticationResponseJson {
 	private String email;
 	private String name;
 	private String authorizationToken;
-	
+
+	public AuthenticationResponseJson(
+			Integer userId,
+			Boolean isNewUser,
+			String email,
+			String name,
+			String authorizationToken) {
+		this.userId = userId;
+		this.isNewUser = isNewUser;
+		this.email = email;
+		this.name = name;
+		this.authorizationToken = authorizationToken;
+	}
 
 	public String getAuthorizationToken() {
 		return authorizationToken;
@@ -27,26 +45,6 @@ public class AuthenticationResponseJson {
 
 	public Boolean isNewUser() {
 		return isNewUser;
-	}
-
-	public void setAuthorizationToken(String authorizationToken) {
-		this.authorizationToken = authorizationToken;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setNewUser(Boolean isNewUser) {
-		this.isNewUser = isNewUser;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
 	}
 
 }

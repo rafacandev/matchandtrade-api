@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
-	public static final String ACCESS_TOKEN = "MockedAccessToken";
-	public static final String EMAIL = "mocked.email@test.com";
-	public static final String NAME = "Mocked Name";
+	public static final String ACCESS_TOKEN = "abcdefg1234567890";
+	public static final String EMAIL = "testing.email@test.com";
+	public static final String NAME = "AuthenticationOAuthExistingUserMock";
 
 	@Override
 	public void redirectToAuthorizationAuthority(HttpServletResponse response, String state, String clientId, String redirectURI) throws AuthenticationException {
@@ -49,9 +49,12 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 
 	@Override
 	public AuthenticationResponseJson obtainUserInformation(String accessToken) throws AuthenticationException {
-		AuthenticationResponseJson result = new AuthenticationResponseJson();
-		result.setEmail(EMAIL);
-		result.setName(NAME);
+		AuthenticationResponseJson result = new AuthenticationResponseJson(
+				null,
+				null,
+				EMAIL,
+				NAME,
+				accessToken);
 		return result;
 	}
 

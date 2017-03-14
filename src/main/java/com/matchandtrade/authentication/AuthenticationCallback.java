@@ -62,15 +62,14 @@ public class AuthenticationCallback {
 		response.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
 		// Write the Authorization header to the response body
 		response.getWriter().print(generateResponseBody(persistedUserInfo, accessToken));
-		response.setContentType("application/json;charset=UTF-8");
 	}
 
 	private String generateResponseBody(AuthenticationResponseJson authenticationResponseJson, String authorizationHeader) {
 		StringBuffer result = new StringBuffer();
 		result.append("{");
-		result.append("\"userId\": \"").append(authenticationResponseJson.getUserId()).append("\",");
-		result.append("\"email\": \"").append(authenticationResponseJson.getEmail()).append("\",");
-		result.append("\"name\": \"").append(authenticationResponseJson.getName()).append("\",");
+		result.append("\"userId\": \"").append(authenticationResponseJson.getUserId()).append("\", ");
+		result.append("\"email\": \"").append(authenticationResponseJson.getEmail()).append("\", ");
+		result.append("\"name\": \"").append(authenticationResponseJson.getName()).append("\", ");
 		result.append("\"authorizationHeader\": \"").append(authorizationHeader).append("\"");
 		result.append("}");
 		return result.toString();
@@ -119,11 +118,12 @@ public class AuthenticationCallback {
 			userModel.save(userEntity);
 			isNewUser = true;
 		}
-		AuthenticationResponseJson result = new AuthenticationResponseJson();
-		result.setUserId(userEntity.getUserId());
-		result.setEmail(userEntity.getEmail());
-		result.setNewUser(isNewUser);
-		result.setName(userEntity.getName());
+		AuthenticationResponseJson result = new AuthenticationResponseJson(
+				userEntity.getUserId(), 
+				isNewUser, 
+				userEntity.getEmail(), 
+				userEntity.getName(), 
+				null);
 		return result;
 	}
 }

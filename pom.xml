@@ -208,7 +208,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>repackage</id>
 						<goals>
 							<!-- Repackage is necessary so we can add this project as dependency for other projects (e.g.: mat-web-test) -->
 							<goal>repackage</goal>
@@ -223,6 +222,9 @@
 						<argument>-cf</argument>
 						<argument>${basedir}/src/config/matchandtrade.properties</argument>
 					</arguments>
+					<configuration>
+						<classifier>exec</classifier>
+					</configuration>
 				</configuration>
 			</plugin>
 

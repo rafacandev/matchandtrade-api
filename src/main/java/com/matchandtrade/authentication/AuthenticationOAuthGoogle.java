@@ -139,9 +139,12 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 			ObjectMapper jacksonObjectMapper = new ObjectMapper();
 			@SuppressWarnings("unchecked")
 			Map<String,Object> userInfoMap = jacksonObjectMapper.readValue(responseString, Map.class);
-			AuthenticationResponseJson result = new AuthenticationResponseJson();
-			result.setEmail(userInfoMap.get("email").toString());
-			result.setName(userInfoMap.get("name").toString());
+			AuthenticationResponseJson result = new AuthenticationResponseJson(
+					null, 
+					null, 
+					userInfoMap.get("email").toString(), 
+					userInfoMap.get("name").toString(), 
+					accessToken);
 			return result;
 		} catch (UnsupportedOperationException | IOException e) {
 			throw new AuthenticationException(e);

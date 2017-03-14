@@ -27,11 +27,12 @@ public class MockFactory {
 		UserEntity userEntity = userTransformer.transform(UserRandom.nextJson());
 		userModel.save(userEntity);
 
-		AuthenticationResponseJson result = new AuthenticationResponseJson();
-		result.setEmail(userEntity.getEmail());
-		result.setName(userEntity.getName());
-		result.setNewUser(true);
-		result.setUserId(userEntity.getUserId());
+		AuthenticationResponseJson result = new AuthenticationResponseJson(
+				userEntity.getUserId(), 
+				true, 
+				userEntity.getEmail(), 
+				userEntity.getName(), 
+				null);
 		
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
 		authenticationEntity.setUserId(userEntity.getUserId());
