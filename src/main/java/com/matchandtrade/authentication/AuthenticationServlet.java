@@ -43,7 +43,7 @@ public class AuthenticationServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		AuthenticationProperties.Action targetAction = getAuthenticationAction(request);
+		AuthenticationProperties.Action targetAction = obtainAuthenticationAction(request);
 		logger.debug("Performing Authentication Action {} for requet [{}].", targetAction, request.getRequestURI());
 		if (targetAction == null) {
 			response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
@@ -64,7 +64,7 @@ public class AuthenticationServlet extends HttpServlet {
 	/**
 	 * Returns the corresponding action for this request
 	 */
-	AuthenticationProperties.Action getAuthenticationAction(HttpServletRequest request) {
+	AuthenticationProperties.Action obtainAuthenticationAction(HttpServletRequest request) {
 		AuthenticationProperties.Action result = null;
 		String requestUri = request.getRequestURI();
 		// Remove tailing slash if any

@@ -36,15 +36,15 @@ public class AuthenticationServletUT {
 		requestMock.setRequestURI("http://localhost:8080/authenticate");
 		
 		AuthenticationServlet authenticationServlet = new AuthenticationServlet();
-		AuthenticationProperties.Action authenticationAction = authenticationServlet.getAuthenticationAction(requestMock);
+		AuthenticationProperties.Action authenticationAction = authenticationServlet.obtainAuthenticationAction(requestMock);
 		assertEquals(AuthenticationProperties.Action.AUTHENTICATE, authenticationAction);
 		
 		requestMock.setRequestURI("http://localhost:8080/authenticate/");
-		authenticationAction = authenticationServlet.getAuthenticationAction(requestMock);
+		authenticationAction = authenticationServlet.obtainAuthenticationAction(requestMock);
 		assertEquals(AuthenticationProperties.Action.AUTHENTICATE, authenticationAction);
 
 		requestMock.setRequestURI("http://localhost:8080/sign-out");
-		authenticationAction = authenticationServlet.getAuthenticationAction(requestMock);
+		authenticationAction = authenticationServlet.obtainAuthenticationAction(requestMock);
 		assertEquals(AuthenticationProperties.Action.SIGNOUT, authenticationAction);
 	}
 	
@@ -68,7 +68,6 @@ public class AuthenticationServletUT {
 		request.setRequestURI("http://localhost:8080/authenticate/sign-out");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		
-		AuthenticationServlet authenticationServlet = new AuthenticationServlet();
 		authenticationServlet.doGet(request, response);
 		
 		assertNull(request.getSession(false));
@@ -80,10 +79,20 @@ public class AuthenticationServletUT {
 		request.setRequestURI("http://localhost:8080/authenticate/invalid");
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		
-		AuthenticationServlet authenticationServlet = new AuthenticationServlet();
 		authenticationServlet.doGet(request, response);
 		
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+	}
+	
+	@Test
+	public void doGetCallback() throws ServletException, IOException, URISyntaxException {
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setRequestURI("http://localhost:8080/authenticate/callback");
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		
+		authenticationServlet.doGet(request, response);
+		
+		assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
 	}
 	
 }

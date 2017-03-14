@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.AppConfiguration;
+import com.matchandtrade.config.AppConfigurationProperties;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
 @RunWith(SpringRunner.class)
@@ -28,6 +29,16 @@ public class AppCliUT {
 		AppCli cli = new AppCli(arguments);
 		assertEquals(true, cli.isInterrupted());
 	}
+	
+	@Test
+	public void configFilePositive() throws IOException {
+		
+		String filePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "matchandtrade.properties";
+		String[] arguments = {"-cf", filePath};
+		new AppCli(arguments);
+		assertEquals(filePath, System.getProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
+	}
+
 	
 	@Test(expected=IOException.class)
 	public void configFileNegativeFileNotFound() throws IOException {
@@ -49,6 +60,13 @@ public class AppCliUT {
 		AppCli cli = new AppCli(arguments);
 		assertEquals(true, cli.isInterrupted());
 		assertTrue(cli.getCommandLineOutputMessage().length()>0);
+	}
+
+	@Test
+	public void empty() throws IOException {
+		String[] arguments = {""};
+		AppCli cli = new AppCli(arguments);
+		assertEquals(false, cli.isInterrupted());
 	}
 
 }

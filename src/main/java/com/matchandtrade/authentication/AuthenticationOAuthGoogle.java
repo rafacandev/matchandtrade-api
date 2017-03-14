@@ -102,8 +102,7 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 		}
 	}
 
-	CloseableHttpResponse httpClientExecute(HttpRequestBase httpRequest, CloseableHttpClient httpClient)
-			throws IOException, ClientProtocolException {
+	CloseableHttpResponse httpClientExecute(HttpRequestBase httpRequest, CloseableHttpClient httpClient) throws IOException, ClientProtocolException {
 		logger.debug("Sending HTTP POST request to {}.", httpRequest.getURI() );
 		CloseableHttpResponse httpResponse = httpClient.execute(httpRequest);
 		return httpResponse;
