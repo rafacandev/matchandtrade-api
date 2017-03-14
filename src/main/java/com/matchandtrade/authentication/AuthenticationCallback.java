@@ -55,7 +55,7 @@ public class AuthenticationCallback {
 		AuthenticationResponseJson userInfoFromAuthenticationAuthority = authenticationOAuth.obtainUserInformation(accessToken);
 		
 		// oAuth Step 6. Authenticate the user
-		AuthenticationResponseJson persistedUserInfo = persistAuthentication(antiForgeryState, accessToken, userInfoFromAuthenticationAuthority);
+		AuthenticationResponseJson persistedUserInfo = updateAuthentication(antiForgeryState, accessToken, userInfoFromAuthenticationAuthority);
 		
 		// Using accessToken as AuthorizationToken since authorization is managed locally instead of the Authentication Authority
 		// Assign the accessToken to the Authorization header
@@ -78,10 +78,7 @@ public class AuthenticationCallback {
 	/*
 	 * Persists authentication details
 	 */
-	private AuthenticationResponseJson persistAuthentication(String stateAttribute, String accessToken, AuthenticationResponseJson user) {
-		// Update user information in the local database
-		AuthenticationResponseJson result = updateUserInfo(user.getEmail(), user.getName());
-		// Put the user in the session
+	private void persistAuthentication(String accessToken, AuthenticationResponseJson result) {
 		AuthenticationEntity authenticationEntity = authenticationModel.getByToken(accessToken);
 		if (authenticationEntity == null) {
 			authenticationEntity = new AuthenticationEntity();
@@ -89,7 +86,6 @@ public class AuthenticationCallback {
 		authenticationEntity.setToken(accessToken);
 		authenticationEntity.setUserId(result.getUserId());
 		authenticationModel.save(authenticationEntity);
-		return result;
 	}
 
 	/**
@@ -98,6 +94,17 @@ public class AuthenticationCallback {
 	 */
 	public void setAuthenticationOAuth(AuthenticationOAuth authenticationOAuth) {
 		this.authenticationOAuth = authenticationOAuth;
+	}
+
+	/*
+	 * Update user and authentication details
+	 */
+	private AuthenticationResponseJson updateAuthentication(String stateAttribute, String accessToken, AuthenticationResponseJson user) {
+		// Persists User info
+		AuthenticationResponseJson result = updateUserInfo(user.getEmail(), user.getName());
+		// Persists Authentication info
+		persistAuthentication(accessToken, result);
+		return result;
 	}
 
 	/**
@@ -114,7 +121,6 @@ public class AuthenticationCallback {
 			userEntity = new UserEntity();
 			userEntity.setEmail(email);
 			userEntity.setName(name);
-			userEntity.setRole(UserEntity.Role.USER);
 			userModel.save(userEntity);
 			isNewUser = true;
 		}

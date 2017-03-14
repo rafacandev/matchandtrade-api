@@ -36,9 +36,9 @@ public class AuthenticationServlet extends HttpServlet {
 	
 	/**
 	 * Delegates the request to the correct action.
-	 * If {@coderequest.getRequestURI()} ends in 'sign-out' it ends the session.
-	 * If {@coderequest.getRequestURI()} ends in 'authenticate' it redirect to the Authentication Authority.
-	 * If {@coderequest.getRequestURI()} ends in 'callback' it delegates to {@code AuthenticationCallback.doGet()}.
+	 * If {@code request.getRequestURI()} ends in 'sign-out' it ends the session.
+	 * If {@code request.getRequestURI()} ends in 'authenticate' it redirect to the Authentication Authority.
+	 * If {@code request.getRequestURI()} ends in 'callback' it delegates to {@code AuthenticationCallback.authenticate()}.
 	 * Otherwise returns {@code Response.Status.NOT_FOUND}
 	 */
 	@Override
@@ -81,6 +81,7 @@ public class AuthenticationServlet extends HttpServlet {
 	private void redirectToAuthenticationServer(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		// oAuth Step 1. Create an anti-forgery state token
 		String state = generateAntiForgeryToken();
+		// TODO remove ANTI_FORGERY_STATE from session
 		request.getSession().setAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString(), state);
 
 		// oAuth Step 2. Send an authentication request to the Authorization Authority
