@@ -12,35 +12,19 @@ import javax.persistence.Table;
 public class AuthenticationEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	public enum Field {
-		authenticationId, userId, token
+		authenticationId, userId, antiForgeryState, token
 	}
 
 	private Integer authenticationId;
 	private Integer userId;
+	private String antiForgeryState;
 	private String token;
 	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AuthenticationEntity other = (AuthenticationEntity) obj;
-		if (token == null) {
-			if (other.token != null)
-				return false;
-		} else if (!token.equals(other.token))
-			return false;
-		if (userId == null) {
-			if (other.userId != null)
-				return false;
-		} else if (!userId.equals(other.userId))
-			return false;
-		return true;
+	@Column(name = "anti_forgery_state", length = 500, nullable = true, unique = true)
+	public String getAntiForgeryState() {
+		return antiForgeryState;
 	}
-
+	
 	@Id
 	@Column(name = "authentication_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,13 +42,8 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 		return userId;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((token == null) ? 0 : token.hashCode());
-		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
-		return result;
+	public void setAntiForgeryState(String antiForgeryState) {
+		this.antiForgeryState = antiForgeryState;
 	}
 
 	public void setAuthenticationId(Integer authenticationId) {

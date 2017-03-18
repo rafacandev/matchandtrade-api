@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.config.AuthenticationProperties;
+import com.matchandtrade.model.AuthenticationModel;
+import com.matchandtrade.persistence.entity.AuthenticationEntity;
 
 
 @WebServlet(name="authenticationServlet", urlPatterns="/authenticate/*")
@@ -32,6 +34,8 @@ public class AuthenticationServlet extends HttpServlet {
 	private AuthenticationOAuth authenticationOAuth;
 	@Autowired
 	private AuthenticationCallback authenticationCallbak;
+	@Autowired
+	private AuthenticationModel authenticationModel;
 
 	
 	/**
@@ -49,7 +53,6 @@ public class AuthenticationServlet extends HttpServlet {
 			response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
 		} else if (targetAction == AuthenticationProperties.Action.SIGNOUT) {
 			signOut(request, response);
-			response.setStatus(Response.Status.RESET_CONTENT.getStatusCode());
 		} else if (targetAction == AuthenticationProperties.Action.AUTHENTICATE) {
 			redirectToAuthenticationServer(request, response);
 		} else if (targetAction == AuthenticationProperties.Action.CALLBACK) {
@@ -81,8 +84,11 @@ public class AuthenticationServlet extends HttpServlet {
 	private void redirectToAuthenticationServer(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		// oAuth Step 1. Create an anti-forgery state token
 		String state = generateAntiForgeryToken();
-		// TODO remove ANTI_FORGERY_STATE from session
-		request.getSession().setAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString(), state);
+		
+		// Persist the state token. This will not be in the session as we want a stateless server.
+		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
+		authenticationEntity.setAntiForgeryState(state);
+		authenticationModel.save(authenticationEntity);
 
 		// oAuth Step 2. Send an authentication request to the Authorization Authority
 		authenticationOAuth.redirectToAuthorizationAuthority(response, state, authenticationProperties.getClientId(), authenticationProperties.getRedirectURI());
@@ -96,6 +102,10 @@ public class AuthenticationServlet extends HttpServlet {
 	private void signOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.debug("Signing out from session id: [{}]", request.getSession().getId());
 		// TODO: Delete authentication details
+		String accessToken = request.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
+		AuthenticationEntity authenticationEntity = authenticationModel.getByToken(accessToken);
+		authenticationModel.delete(authenticationEntity);
 		request.getSession().invalidate();
+		response.setStatus(Response.Status.RESET_CONTENT.getStatusCode());
 	}
 }

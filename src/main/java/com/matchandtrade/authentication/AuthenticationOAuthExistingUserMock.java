@@ -3,6 +3,7 @@ package com.matchandtrade.authentication;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,10 +21,15 @@ import org.slf4j.LoggerFactory;
 public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
-	public static final String ACCESS_TOKEN = "abcdefg1234567890";
 	public static final String EMAIL = "testing.email@test.com";
 	public static final String NAME = "AuthenticationOAuthExistingUserMock";
 
+	private String buidRandomAccessToken() {
+		Random random = new Random();
+		String token = random.nextInt(9999) + "-" +random.nextInt(9999) + "-" +random.nextInt(9999);
+		return token;
+	}
+	
 	@Override
 	public void redirectToAuthorizationAuthority(HttpServletResponse response, String state, String clientId, String redirectURI) throws AuthenticationException {
 		URI uri = null;
@@ -54,14 +60,14 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 				null,
 				EMAIL,
 				NAME,
-				accessToken);
+				buidRandomAccessToken());
 		return result;
 	}
 
 	@Override
 	public String obtainAccessToken(String codeParameter, String clientId, String clientSecret, String redirectURI)
 			throws AuthenticationException {
-		return ACCESS_TOKEN;
+		return buidRandomAccessToken();
 	}
 
 }

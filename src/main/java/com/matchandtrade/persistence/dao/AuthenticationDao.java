@@ -30,6 +30,9 @@ public class AuthenticationDao extends Dao<AuthenticationEntity> {
 			if (c.getField().equals(AuthenticationEntity.Field.token)) {
 				result.add(Restrictions.eq(AuthenticationEntity.Field.token.toString(), c.getValue()));
 			}
+			if (c.getField().equals(AuthenticationEntity.Field.antiForgeryState)) {
+				result.add(Restrictions.eq(AuthenticationEntity.Field.antiForgeryState.toString(), c.getValue()));
+			}
 		}
 		return result;
 	}

@@ -41,9 +41,7 @@ public class AuthenticationIT {
 		
 		// Mock request/response for AuthenticationCallback
 		MockHttpServletRequest requestCallback = new MockHttpServletRequest();
-		String state = (String) requestAuthentication.getSession().getAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
-		requestCallback.addParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString(), state);
-		requestCallback.getSession().setAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString(), state);
+		requestCallback.setParameter("state", obtainStateParameter(responseAuthentication.getRedirectedUrl()));
 		
 		// Make request to AuthenticationCallback
 		MockHttpServletResponse responseCallback = new MockHttpServletResponse();
@@ -59,7 +57,23 @@ public class AuthenticationIT {
 
 		// Make request to UserController
 		UserJson userControllerResponse = userController.get(authenticationEntity.getUserId());
-		assertNotNull(userControllerResponse);
+		assertNotNull(userControllerResponse.getUserId());
+		
+		// Sign-off
+		requestUserController.setRequestURI("http://localhost:8080/sign-out");
+		authenticationServlet.doGet(requestUserController, new MockHttpServletResponse());
+	}
+
+	private String obtainStateParameter(String redirectedUrl) {
+		int begin = redirectedUrl.indexOf("state=");
+		redirectedUrl = redirectedUrl.substring(begin);
+		int end = redirectedUrl.indexOf("&");
+		if (end > 0) {
+			redirectedUrl = redirectedUrl.substring(6, end);
+		} else {
+			redirectedUrl = redirectedUrl.substring(6);
+		}
+		return redirectedUrl;
 	}
 
 }

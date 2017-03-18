@@ -34,11 +34,11 @@ public class AuthenticationCallback {
 	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// oAuth Step 3. Confirm anti-forgery state token
 		String stateParameter = request.getParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString());
-		String antiForgeryState = (String) request.getSession().getAttribute(AuthenticationProperties.OAuth.ANTI_FORGERY_STATE.toString());
-		logger.debug("Received request with stateParameter: [{}] and authenticationStateAttribute: [{}]", stateParameter, antiForgeryState);
-		
-		// Return HTTP-STATUS 401 if anti-forgery state token does not match
-		if (antiForgeryState == null || !antiForgeryState.equals(stateParameter)) {
+		logger.debug("Received request with state parameter: [{}]", stateParameter);
+
+		AuthenticationEntity authenticationEntity = authenticationModel.getByAtiForgeryState(stateParameter);
+		// Return HTTP-STATUS 401 if anti-forgery state token is not found
+		if (authenticationEntity == null) {
 			response.setStatus(401);
 			request.getSession().invalidate();
 			return;
@@ -55,7 +55,8 @@ public class AuthenticationCallback {
 		AuthenticationResponseJson userInfoFromAuthenticationAuthority = authenticationOAuth.obtainUserInformation(accessToken);
 		
 		// oAuth Step 6. Authenticate the user
-		AuthenticationResponseJson persistedUserInfo = updateAuthentication(antiForgeryState, accessToken, userInfoFromAuthenticationAuthority);
+		AuthenticationResponseJson persistedUserInfo = updateUserInfo(userInfoFromAuthenticationAuthority.getEmail(), userInfoFromAuthenticationAuthority.getName());
+		updateAuthenticationInfo(authenticationEntity, persistedUserInfo.getUserId(), accessToken);
 		
 		// Using accessToken as AuthorizationToken since authorization is managed locally instead of the Authentication Authority
 		// Assign the accessToken to the Authorization header
@@ -75,19 +76,6 @@ public class AuthenticationCallback {
 		return result.toString();
 	}
 
-	/*
-	 * Persists authentication details
-	 */
-	private void persistAuthentication(String accessToken, AuthenticationResponseJson result) {
-		AuthenticationEntity authenticationEntity = authenticationModel.getByToken(accessToken);
-		if (authenticationEntity == null) {
-			authenticationEntity = new AuthenticationEntity();
-		}
-		authenticationEntity.setToken(accessToken);
-		authenticationEntity.setUserId(result.getUserId());
-		authenticationModel.save(authenticationEntity);
-	}
-
 	/**
 	 * Sets the AuthenticationOAuth
 	 * @param authenticationOAuth
@@ -97,14 +85,17 @@ public class AuthenticationCallback {
 	}
 
 	/*
-	 * Update user and authentication details
+	 * Update authentication details
 	 */
-	private AuthenticationResponseJson updateAuthentication(String stateAttribute, String accessToken, AuthenticationResponseJson user) {
-		// Persists User info
-		AuthenticationResponseJson result = updateUserInfo(user.getEmail(), user.getName());
+	private void updateAuthenticationInfo(
+			AuthenticationEntity authenticationEntity,
+			Integer userId,
+			String accessToken) {
 		// Persists Authentication info
-		persistAuthentication(accessToken, result);
-		return result;
+		authenticationEntity.setUserId(userId);
+		authenticationEntity.setAntiForgeryState(null);
+		authenticationEntity.setToken(accessToken);
+		authenticationModel.save(authenticationEntity);
 	}
 
 	/**

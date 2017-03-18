@@ -9,7 +9,7 @@ import com.matchandtrade.persistence.entity.Entity;
 
 
 /**
- * Generic DAO class to handle the most common operations performed by every <i>Dao</i>.
+ * Generic DAO class to handle the most common operations performed by every <code>Dao</code>.
  * @author rafael.santos.bra@gmail.com
  */
 public abstract class Dao<T extends Entity> {
@@ -18,9 +18,9 @@ public abstract class Dao<T extends Entity> {
     private SessionFactory sessionFactory;
 
     /**
-     * Returns the <i>Entity</i> for the given <i>id</i>.
+     * Returns the <code>Entity</code> for the given <code>id</code>.
      * @param id
-     * @return <i>Entity</i> for the given <i>id</i>
+     * @return <code>Entity</code> for the given <code>id</code>
      */
     @Transactional
     public T get(Class<T> clazz, Integer id) {
@@ -35,15 +35,29 @@ public abstract class Dao<T extends Entity> {
     Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
+    
+    /**
+     * Deletes <code>entity</code>.
+     * @param entity
+     */
+    @Transactional
+    public void delete(T entity) {
+    	if (entity != null) {
+    		Session session = sessionFactory.getCurrentSession();
+    		session.delete(entity);
+		}
+    }
 
     /**
-     * Saves or updates the <i>entity</i>.
+     * Saves or updates the <code>entity</code>.
      * @param entity
      */
     @Transactional
     public void save(T entity) {
-        Session session = sessionFactory.getCurrentSession();
-        session.saveOrUpdate(entity);
+    	if (entity != null) {
+    		Session session = sessionFactory.getCurrentSession();
+    		session.saveOrUpdate(entity);
+		}
     }
 
 }
