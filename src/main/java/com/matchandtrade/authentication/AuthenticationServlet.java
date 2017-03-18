@@ -95,6 +95,7 @@ public class AuthenticationServlet extends HttpServlet {
 	
 	private void signOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.debug("Signing out from session id: [{}]", request.getSession().getId());
+		// TODO: Delete authentication details
 		request.getSession().invalidate();
 	}
 }

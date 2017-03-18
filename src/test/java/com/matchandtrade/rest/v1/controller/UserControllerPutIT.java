@@ -21,7 +21,6 @@ public class UserControllerPutIT {
 	@Autowired
 	private MockUserControllerFactory mockUserControllerFactory;
 	private MockUserController fixture;
-
 	
 	@Before
 	public void before() {

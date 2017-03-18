@@ -21,13 +21,13 @@ import com.matchandtrade.rest.v1.validator.TradeValidator;
 public class TradeController extends Controller {
 
 	@Autowired
-	private Authorization authorization;
+	Authorization authorization;
 	@Autowired
-	private TradeModel tradeModel;
+	TradeModel tradeModel;
 	@Autowired
-	private TradeValidator tradeValidador;
+	TradeValidator tradeValidador;
 	@Autowired
-	private TradeTransformer tradeTransformer;
+	TradeTransformer tradeTransformer;
 
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeJson post(@RequestBody TradeJson requestJson) {

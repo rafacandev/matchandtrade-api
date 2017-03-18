@@ -7,41 +7,44 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.authorization.Authorization;
 import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.model.AuthenticationModel;
+import com.matchandtrade.model.TradeModel;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.rest.v1.transformer.UserTransformer;
-import com.matchandtrade.rest.v1.validator.UserValidator;
+import com.matchandtrade.rest.v1.transformer.TradeTransformer;
+import com.matchandtrade.rest.v1.validator.TradeValidator;
 import com.matchandtrade.test.random.UserRandom;
 
 /**
- * <b>Warning</b> do not use <code>@Autowired UserController</code> in your tests.
+ * <b>Warning</b> do not use <code>@Autowired TradeController</code> in your tests.
  * UserController (as all classes that inherit from {@code Controller}) uses HttpServletRequest to handle authentication.
  * During integration tests it will be required to mock the HttServletRequest; however, as Controllers are singletons, it will
  * change the state of all classes leading to unpredictable test failures (mostly if tests a executed in multi-thread configuration) 
  * 
  * As a result, it is required to create a new instance of the Controller for every test and configure the dependencies manually,
- * this can be achieved through <code>getMockUserController()</code>. 
+ * this can be achieved through <code>getMockTradeController()</code>. 
  * 
  * @author rafael.santos.bra@gmail.com
  *
  */
 @Component
-public class MockUserControllerFactory {
+public class MockTradeControllerFactory {
 
 	@Autowired
 	Authorization authorization;
 	@Autowired
 	AuthenticationModel authenticationModel;
 	@Autowired
+	TradeModel tradeModel;
+	@Autowired
 	UserModel userModel;
 	@Autowired
-	UserTransformer userTranformer;
+	TradeTransformer userTranformer;
 	@Autowired
-	UserValidator userValidator;
+	TradeValidator userValidator;
 
-	public MockUserController getMockUserController() {
-		MockUserController result = new MockUserController(authorization, userModel, userTranformer, userValidator, authenticationModel);
+	public MockTradeController getMockTradeController() {
+		MockTradeController result = new MockTradeController(authorization, tradeModel, userTranformer, userValidator, authenticationModel);
 
 		UserEntity authenticatedUserEntity = UserRandom.nextEntity();
 		userModel.save(authenticatedUserEntity);
@@ -56,19 +59,24 @@ public class MockUserControllerFactory {
 		request.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), authenticationEntity.getToken());
 
 		result.setHttpServletRequest(request);
-		result.userEntity = authenticatedUserEntity;
+		result.authenticatedUserEntity = authenticatedUserEntity;
 		return result;
 	}
 	
-	public class MockUserController extends UserController {
-		public MockUserController(Authorization authorization, UserModel userModel, UserTransformer userTranformer, UserValidator userValidator, AuthenticationModel authenticationModel) {
+	public class MockTradeController extends TradeController {
+		public MockTradeController(
+				Authorization authorization,
+				TradeModel tradeModel,
+				TradeTransformer TradeTranformer,
+				TradeValidator tradeValidator,
+				AuthenticationModel authenticationModel) {
 			this.authorization = authorization;
-			this.userModel = userModel;
-			this.userTransformer = userTranformer;
-			this.userValidador = userValidator;
 			this.authenticationModel = authenticationModel;
+			this.tradeModel = tradeModel;
+			this.tradeValidador = tradeValidator;
+			this.tradeTransformer = TradeTranformer;
 		}
-		public UserEntity userEntity;
+		public UserEntity authenticatedUserEntity;
 		public AuthenticationEntity authenticationEntity;
 	}
 	

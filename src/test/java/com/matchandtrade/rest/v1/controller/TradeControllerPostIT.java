@@ -7,13 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.authentication.AuthenticationResponseJson;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.validator.ValidationException;
-import com.matchandtrade.test.MockFactory;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeRandom;
 
@@ -22,26 +19,19 @@ import com.matchandtrade.test.random.TradeRandom;
 public class TradeControllerPostIT {
 	
 	@Autowired
-	private MockFactory mockFactory;
+	private static TradeController tradeController;
 	@Autowired
-	private TradeController tradeController;
-	private AuthenticationResponseJson userAuthentication;
-	private MockHttpServletRequest httpRequest;
+	private MockTradeControllerFactory mockTradeControllerFactory;
 
 	@Before
 	public void before() {
-		// Let reuse userAuthentication and httpRequest to avoid unnecessary trips to the persistance layer
-		if (userAuthentication == null) {
-			userAuthentication = mockFactory.nextRandomUserAuthenticationPersisted();
-		}
-		if (httpRequest == null) {
-			httpRequest = mockFactory.getHttpRequestWithAuthenticatedUser(userAuthentication);
+		if (tradeController == null) {
+			tradeController = mockTradeControllerFactory.getMockTradeController();
 		}
 	}
 	
 	@Test
 	public void postPositive() {
-		tradeController.setHttpServletRequest(httpRequest);
 		TradeJson requestJson = TradeRandom.next();
 		TradeJson responseJson = tradeController.post(requestJson);
 		assertNotNull(responseJson.getTradeId());
@@ -50,7 +40,6 @@ public class TradeControllerPostIT {
 	
 	@Test(expected=ValidationException.class)
 	public void postNegativeValidationSameName() {
-		tradeController.setHttpServletRequest(httpRequest);
 		TradeJson requestJson = TradeRandom.next();
 		tradeController.post(requestJson);
 		tradeController.post(requestJson);
@@ -58,7 +47,6 @@ public class TradeControllerPostIT {
 
 	@Test(expected=ValidationException.class)
 	public void postNegativeValidationNameLegth() {
-		tradeController.setHttpServletRequest(httpRequest);
 		TradeJson requestJson = TradeRandom.next();
 		requestJson.setName("ab");
 		tradeController.post(requestJson);
@@ -66,7 +54,6 @@ public class TradeControllerPostIT {
 	
 	@Test(expected=ValidationException.class)
 	public void postNegativeValidationNameMandatory() {
-		tradeController.setHttpServletRequest(httpRequest);
 		TradeJson requestJson = TradeRandom.next();
 		requestJson.setName(null);
 		tradeController.post(requestJson);
