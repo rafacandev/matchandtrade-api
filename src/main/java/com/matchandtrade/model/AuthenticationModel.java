@@ -43,4 +43,21 @@ public class AuthenticationModel {
 		return authenticationDao.search(searchCriteria);
 	}
 
+	@Transactional
+	public AuthenticationEntity getByAtiForgeryState(String antiForgeryState) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
+		searchCriteria.addCriterion(AuthenticationEntity.Field.antiForgeryState, antiForgeryState);
+		SearchResult<AuthenticationEntity> searchResult = search(searchCriteria);
+		if (!searchResult.getResultList().isEmpty()) {
+			return searchResult.getResultList().get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Transactional
+	public void delete(AuthenticationEntity entity) {
+		authenticationDao.delete(entity);
+	}
+
 }

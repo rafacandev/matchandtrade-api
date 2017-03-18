@@ -53,7 +53,7 @@ public class StringRandom {
 	}
 	
 	public static String nextString() {
-		return random.nextInt(9999) + random.nextInt(9999) + random.nextInt(9999) + "";		
+		return random.nextInt(9999) + "-" + random.nextInt(9999) + "-" + random.nextInt(9999);		
 	}
 
 }
