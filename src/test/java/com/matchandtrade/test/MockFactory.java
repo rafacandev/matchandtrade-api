@@ -43,13 +43,6 @@ public class MockFactory {
 		return result;
 	}
 
-	public MockHttpServletRequest getHttpRequestWithAuthenticatedUser() {
-		AuthenticationResponseJson userAuthentication = nextRandomUserAuthenticationPersisted();
-		MockHttpServletRequest result = new MockHttpServletRequest();
-		result.getSession().setAttribute("user", userAuthentication);
-		return result;
-	}
-	
 	public MockHttpServletRequest getHttpRequestWithAuthenticatedUser(AuthenticationResponseJson userAuthentication) {
 		MockHttpServletRequest result = new MockHttpServletRequest();
 		result.getSession().setAttribute("user", userAuthentication);
@@ -57,26 +50,4 @@ public class MockFactory {
 		return result;
 	}
 
-	public MockHttpServletRequest getAuthenticatedRequest(AuthenticationEntity authenticationEntity) {
-		MockHttpServletRequest result = new MockHttpServletRequest();
-		result.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), authenticationEntity.getToken());
-		return result;
-	}
-
-	public AuthenticationEntity getAuthentication() {
-		UserEntity userEntity = UserRandom.nextEntity();
-		userModel.save(userEntity);
-		AuthenticationEntity result = getAuthentication(userEntity);
-		return result;
-	}
-
-	public AuthenticationEntity getAuthentication(UserEntity userEntity) {
-		userModel.save(userEntity);
-		AuthenticationEntity result = new AuthenticationEntity();
-		result.setUserId(userEntity.getUserId());
-		result.setToken(userEntity.getUserId() + "-" + userEntity.getName() + "-" + userEntity.getEmail());
-		authenticationModel.save(result);
-		return result;
-	}
-	
 }
