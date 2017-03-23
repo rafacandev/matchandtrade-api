@@ -7,13 +7,9 @@ import java.util.Properties;
 
 public class PropertiesProvider {
 
-	private Properties appProperties = new Properties();
-	private static PropertiesProvider instance = new PropertiesProvider();
+	private static Properties appProperties = new Properties();
 
-	// Hide public constructor
-	private PropertiesProvider() {}
-
-	public void buildAppProperties(String[] arguments) throws IOException {
+	public static void buildAppProperties(String[] arguments) throws IOException {
 		String configFilePath = null;
 		for (int i = 0; i < arguments.length; i++) {
 			if (arguments[i].equals("-cf")) {
@@ -32,12 +28,8 @@ public class PropertiesProvider {
 		}
 	}
 
-	public static PropertiesProvider getInstance() {
-		return instance;
-	}
-	
 	public static String getServerUrl() {
-		return "http://localhost:" + getInstance().appProperties.getProperty("server.port");
+		return "http://localhost:" + appProperties.getProperty("server.port");
 	}
 	
 }

@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.github.rafasantos</groupId>
-	<artifactId>matchandtrade-doc</artifactId>
+	<groupId>com.github.rafasantos.matchandtrade</groupId>
+	<artifactId>doc-maker</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -48,6 +48,7 @@
 	</dependencies>
 
 	<build>
+		<defaultGoal>package</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -57,7 +58,31 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+		
+			<!-- This plugin will execute MatchAndTradeDocGenerator and generate all the documentation -->
+			<!-- during the package phase. -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>com.github.rafasantos.matchandtrade.doc.executable.MatchAndTradeDocGenerator</mainClass>
+							<arguments>
+								<argument>-cf</argument>
+								<argument>${basedir}/src/config/matchandtrade.properties</argument>
+								<argument>--destination-folder</argument>
+								<argument>${basedir}/target/doc-maker</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>

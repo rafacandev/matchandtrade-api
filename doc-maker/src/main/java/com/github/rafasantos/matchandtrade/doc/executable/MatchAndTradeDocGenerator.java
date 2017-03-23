@@ -2,7 +2,6 @@ package com.github.rafasantos.matchandtrade.doc.executable;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +15,18 @@ import com.github.rafasantos.matchandtrade.doc.generator.rest.RestAuthenticate;
 import com.github.rafasantos.matchandtrade.doc.generator.rest.RestAuthentication;
 import com.matchandtrade.WebserviceApplication;
 
-
-// mvn exec:java -Dexec.mainClass="com.github.rafasantos.matwebtest.DocumentationGenerator"
 public class MatchAndTradeDocGenerator {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MatchAndTradeDocGenerator.class);
 
-	public static void main(String[] args) {
+	public static void main(String[] arguments) {
 		try {
 			logger.info("Starting Match and Trade web server.");
-			startMatchAndTradeWebServer();
+			String destinationFolder = ArgumentBuilder.obtainDestinationFolder(arguments);
+			String[] webArgumentsArray = ArgumentBuilder.buildWebServerArguments(arguments);
+			startMatchAndTradeWebServer(webArgumentsArray);
 			MatchAndTradeDocGenerator mainInstance = new MatchAndTradeDocGenerator();
-			mainInstance.execute();
+			mainInstance.execute(destinationFolder);
 			logger.info("Document generation complete.");
 			System.exit(0);
 		} catch (Exception e) {
@@ -38,12 +37,11 @@ public class MatchAndTradeDocGenerator {
 		}
 	}
 	
-	public void execute() throws IOException {
+	public void execute(String destinationFolder) throws IOException {
 		// Generate README.md
 		String readmeLocation = MatchAndTradeDocGenerator.class.getClassLoader().getResource("doc/README.md").getPath();
 		File readmeFile = new File(readmeLocation);
-		// TODO do not hard code this
-		File readmeDestination = new File("target" + File.separator + "matchandtrade-doc" + File.separator + "README.md");
+		File readmeDestination = new File(destinationFolder + File.separator + "README.md");
 		FileUtils.copyFile(readmeFile, readmeDestination);
 		
 		// TODO Scan all files instead of instantiate one by one manually
@@ -55,25 +53,14 @@ public class MatchAndTradeDocGenerator {
 			t.execute();
 			String tOutput = t.getDocOutput();
 			String tOutputLocation = t.getDocOutputLocation();
-			// TODO Do not hard code this
-			String outputRootLocationString = "target";
-			File tOutputFile = new File(outputRootLocationString + File.separator + "matchandtrade-doc" + File.separator + tOutputLocation);
+			File tOutputFile = new File(destinationFolder + File.separator + tOutputLocation);
 			FileUtils.write(tOutputFile, tOutput, StandardCharsets.UTF_8);
 		}
-		
 	}
 
-	private static void startMatchAndTradeWebServer() throws IOException {
-		String[] arguments = buildArguments();
-		PropertiesProvider.getInstance().buildAppProperties(arguments);
+	private static void startMatchAndTradeWebServer(String[] arguments) throws IOException {
+		PropertiesProvider.buildAppProperties(arguments);
 		WebserviceApplication.main(arguments);
-	}
-
-	private static String[] buildArguments() {
-		URL location = MatchAndTradeDocGenerator.class.getProtectionDomain().getCodeSource().getLocation();
-		String configFilePath = location.getPath() + "matchandtrade.properties";
-		String[] arguments = {"-cf", configFilePath};
-		return arguments;
 	}
 
 }
