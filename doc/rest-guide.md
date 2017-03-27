@@ -6,10 +6,9 @@ Resources
 ---------
 Here is the list of resources available thought the RESTful API.
 
-[Authenticate][1]
-
-[Authentications][2]
-
+* [/authenticate][1]
+* [/authentications][2]
+* [/trades][3]
 
 General Guidelines
 ------------------
@@ -21,7 +20,7 @@ Relationships are treated as resources similarly to what is described on this [p
 ### Pagination
 REST clients should rely on the pagination information which is included in responses with multiple results. Our pagination follows the [LinkHeader][10] specification along with [RFC5988][11]. It works similarly to [GitHub's pagination][9].
 
-When performing a GET to resources that return an array you can pass the query parameters `_pageSize` to indicate the number of records returned in a page and `_pageNumber` to indicate which page number you want to return. Note that page numbers start at number 1.
+When performing a GET to resources that returns an array you can pass the query parameters `_pageSize` to indicate the number of records returned in a page and `_pageNumber` to indicate which page number you want to return. Note that page numbers start at number 1.
 
 Typical Workflow
 ----------------
@@ -30,21 +29,31 @@ Authenticate to the application.
 -----  Request  -----
 GET http://localhost:8081/authenticate
 
------  Response  -----
-HTTP/1.1 200 OK
-Headers: 
-	Authorization: 7900-8720-4678
 
-{"userId": "1", "email": "testing.email@test.com", "name": "AuthenticationOAuthExistingUserMock", "authorizationHeader": "7900-8720-4678"}
+-----  Response  -----
+Status:  HTTP/1.1 200 OK
+Headers:	{Authorization: 3159-7965-6663}
+
+{"userId": "1", "email": "testing.email@test.com", "name": "AuthenticationOAuthExistingUserMock", "authorizationHeader": "3159-7965-6663"}
 ```
 
 Verify the authentication details. Note that you need to pass the `Authorization` header obtained on the previous response. 
-${AUTHENTICATIONS_POSITIVE_SNIPPET}
+```
+-----  Request  -----
+GET http://localhost:8081/rest/v1/authentications/
+Headers:  {Authorization: 3159-7965-6663}
+
+-----  Response  -----
+Status:  HTTP/1.1 200 OK
+
+{"authenticationId":1,"userId":1,"token":"3159-7965-6663"}
+```
 
 
 
 [1]: rest/authenticate.md
 [2]: rest/authentications.md
+[3]: rest/trades.md
 [6]: https://rafaelsantosbra.wordpress.com/2016/10/18/many-to-many-relationships-for-rest-api-with-a-relationship-attribute/ "REST API Many to Many relationship"
 [7]: http://venkat.io/posts/expanding-your-rest-api/ "REST API Expand Resources"
 [8]: https://spring.io/understanding/HATEOAS "Spring HATEOAS"
