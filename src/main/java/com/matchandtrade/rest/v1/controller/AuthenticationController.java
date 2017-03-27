@@ -11,10 +11,10 @@ import com.matchandtrade.rest.v1.json.AuthenticationJson;
 import com.matchandtrade.rest.v1.transformer.AuthenticationTransformer;
 
 @RestController
-@RequestMapping(path = "/rest/v1/authentications")
+@RequestMapping(path = "/rest/v1/authentications/")
 public class AuthenticationController extends Controller {
 
-	@RequestMapping(path = "/", method = RequestMethod.GET)
+	@RequestMapping(path = "", method = RequestMethod.GET)
 	public AuthenticationJson get() {
 		// Get user authentication
 		AuthenticationEntity authenticationEntity = getAuthentication();

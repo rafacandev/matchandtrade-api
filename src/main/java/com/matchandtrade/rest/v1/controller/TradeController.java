@@ -17,7 +17,7 @@ import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
 
 @RestController
-@RequestMapping(path="/rest/v1/trades")
+@RequestMapping(path="/rest/v1/trades/")
 public class TradeController extends Controller {
 
 	@Autowired
@@ -29,7 +29,7 @@ public class TradeController extends Controller {
 	@Autowired
 	TradeTransformer tradeTransformer;
 
-	@RequestMapping(path="/", method=RequestMethod.POST)
+	@RequestMapping(path="", method=RequestMethod.POST)
 	public TradeJson post(@RequestBody TradeJson requestJson) {
 		// Validate request identity
 		authorization.validateIdentity(getAuthentication());
@@ -44,7 +44,7 @@ public class TradeController extends Controller {
 		return result;
 	}
 
-	@RequestMapping(path="/{tradeId}", method=RequestMethod.GET)
+	@RequestMapping(path="{tradeId}", method=RequestMethod.GET)
 	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
 		// Validate request identity
 		authorization.validateIdentity(getAuthentication());
