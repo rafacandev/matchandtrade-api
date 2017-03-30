@@ -1,6 +1,10 @@
 package com.matchandtrade.rest.v1.json;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import com.matchandtrade.rest.JsonLinkSupport;
+import com.matchandtrade.rest.v1.controller.TradeController;
 
 public class TradeJson extends JsonLinkSupport {
 
@@ -25,8 +29,8 @@ public class TradeJson extends JsonLinkSupport {
 
 	@Override
 	public void buildLinks() {
-		// if (getTradeItemId() != null) {
-		// add(linkTo(methodOn(TradeItemController.class).get(getTradeItemId())).withSelfRel());
-		// }
+		if (getTradeId() != null) {
+			add(linkTo(methodOn(TradeController.class).get(getTradeId())).withSelfRel());
+		}
 	}
 }
