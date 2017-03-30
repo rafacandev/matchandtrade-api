@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -18,6 +20,7 @@ public abstract class JsonLinkSupport extends ResourceSupport implements Json {
 	public abstract void buildLinks();
 	
 	@JsonProperty("_links")
+	@JsonInclude(value=Include.NON_EMPTY)
 	@Override
 	public List<Link> getLinks() {
 		return super.getLinks();
