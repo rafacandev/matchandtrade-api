@@ -296,9 +296,10 @@ public class WebserviceApplication {
 		System.out.println("|===========================================================");
 		System.out.println("| WELCOME TO MATCH AND TRADE WEB");
 		System.out.println("| ");
-		System.out.println("| Configuration file location: " + buildDefaultMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
+		System.out.println("| Configuration file: " + buildDefaultMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
 		System.out.println("| OAuth implementation: " + buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
 		System.out.println("| JDBC Url: " + buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
+		System.out.println("| Log file: " + buildDefaultMessage("logging.file"));
 		System.out.println("|===========================================================");
 	}
 
@@ -307,7 +308,12 @@ public class WebserviceApplication {
 		if (s != null && !s.isEmpty()) {
 			property = System.getProperty(s);
 			if (property == null) {
-				return "["+s+"] NOT FOUND! Using default value: " + AppConfigurationProperties.Keys.getKey(s).getDefaultValue();
+				AppConfigurationProperties.Keys key = AppConfigurationProperties.Keys.getKey(s);
+				if (key != null) {
+					return "["+s+"] NOT FOUND! Using default value: " + key.getDefaultValue();
+				} else {
+					return "["+s+"] NOT FOUND!";
+				}
 			}
 		}
 		return property;

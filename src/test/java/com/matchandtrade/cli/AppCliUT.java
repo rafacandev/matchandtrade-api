@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,7 @@ public class AppCliUT {
 	
 	@Test
 	public void configFilePositive() throws IOException {
-		
-		String filePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "matchandtrade.properties";
+		String filePath = this.getClass().getClassLoader().getResource("").getPath() + "../../src/config/matchandtrade.properties";
 		String[] arguments = {"-cf", filePath};
 		new AppCli(arguments);
 		assertEquals(filePath, System.getProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
