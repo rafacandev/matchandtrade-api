@@ -293,22 +293,23 @@ public class WebserviceApplication {
 	}
 
 	private static void displayWelcomeMessage() {
-		String configFileLocation = System.getProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey());
-		String oAuthImplementation = System.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey());
-		String jdbcUrl = System.getProperty(AppConfigurationProperties.Keys.DATA_SOURCE_JDBC_URL.getKey());
 		System.out.println("|===========================================================");
 		System.out.println("| WELCOME TO MATCH AND TRADE WEB");
 		System.out.println("| ");
-		System.out.println("| Configuration file location: " + generateDefaultMessage(configFileLocation));
-		System.out.println("| OAuth implementation: " + generateDefaultMessage(oAuthImplementation));
-		System.out.println("| JDBC Url: " + generateDefaultMessage(jdbcUrl));
+		System.out.println("| Configuration file location: " + buildDefaultMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
+		System.out.println("| OAuth implementation: " + buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
+		System.out.println("| JDBC Url: " + buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
 		System.out.println("|===========================================================");
 	}
 
-	private static String generateDefaultMessage(String s) {
-		if (s == null) {
-			return "[NOT FOUND! Using default value.]";
+	private static String buildDefaultMessage(String s) {
+		String property = null;
+		if (s != null && !s.isEmpty()) {
+			property = System.getProperty(s);
+			if (property == null) {
+				return "["+s+"] NOT FOUND! Using default value: " + AppConfigurationProperties.Keys.getKey(s).getDefaultValue();
+			}
 		}
-		return s;
+		return property;
 	}
 }

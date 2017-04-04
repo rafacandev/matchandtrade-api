@@ -30,6 +30,16 @@ public class AppConfigurationProperties {
 		public String getDefaultValue() {
 			return defaultValue;
 		}
+		public static Keys getKey(String s) {
+			Keys[] k = Keys.values();
+			for (int i = 0; i < k.length; i++) {
+				Keys key = k[i];
+				if (key.getKey().equals(s)) {
+					return key;
+				}
+			}
+			return null;
+		}
 		@Override
 		public String toString() {
 			return key + "=" + defaultValue;
