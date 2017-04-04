@@ -101,10 +101,11 @@ public class AuthenticationServlet extends HttpServlet {
 	
 	private void signOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.debug("Signing out from session id: [{}]", request.getSession().getId());
-		// TODO: Delete authentication details
+		// Delete authentication details
 		String accessToken = request.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
 		AuthenticationEntity authenticationEntity = authenticationModel.getByToken(accessToken);
 		authenticationModel.delete(authenticationEntity);
+		// Invalidate the current session (not required, but good practice overall)
 		request.getSession().invalidate();
 		response.setStatus(Response.Status.RESET_CONTENT.getStatusCode());
 	}

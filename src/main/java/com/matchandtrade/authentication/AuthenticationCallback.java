@@ -58,22 +58,12 @@ public class AuthenticationCallback {
 		AuthenticationResponseJson persistedUserInfo = updateUserInfo(userInfoFromAuthenticationAuthority.getEmail(), userInfoFromAuthenticationAuthority.getName());
 		updateAuthenticationInfo(authenticationEntity, persistedUserInfo.getUserId(), accessToken);
 		
-		// Using accessToken as AuthorizationToken since authorization is managed locally instead of the Authentication Authority
-		// Assign the accessToken to the Authorization header
+		/*
+		 * Using accessToken as AuthorizationToken since authorization is managed locally instead of the Authentication Authority
+		 * Assign the accessToken to the Authorization header
+		 * Returns only the Authorization header, at the moment there is no need for a response body
+		 */
 		response.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
-		// Write the Authorization header to the response body
-		response.getWriter().print(generateResponseBody(persistedUserInfo, accessToken));
-	}
-
-	private String generateResponseBody(AuthenticationResponseJson authenticationResponseJson, String authorizationHeader) {
-		StringBuffer result = new StringBuffer();
-		result.append("{");
-		result.append("\"userId\": \"").append(authenticationResponseJson.getUserId()).append("\", ");
-		result.append("\"email\": \"").append(authenticationResponseJson.getEmail()).append("\", ");
-		result.append("\"name\": \"").append(authenticationResponseJson.getName()).append("\", ");
-		result.append("\"authorizationHeader\": \"").append(authorizationHeader).append("\"");
-		result.append("}");
-		return result.toString();
 	}
 
 	/**
