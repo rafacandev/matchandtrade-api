@@ -30,7 +30,6 @@ public class AuthenticationControllerGetIT {
 		MockAuthenticationController fixture = mockAuthenticationControllerFactory.getMockTradeController();
 		AuthenticationJson response = fixture.get();
 		Assert.assertEquals(fixture.authenticatedUserEntity.getUserId(), response.getUserId());
-		Assert.assertEquals(fixture.authenticationEntity.getToken(), response.getToken());
 	}
 	
 }
