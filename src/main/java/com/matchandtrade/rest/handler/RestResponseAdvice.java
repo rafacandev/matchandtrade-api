@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.handler;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -87,8 +88,8 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 			PaginationHeader paginationHeader = buildPaginationHeader(request, searchResult);
 			// Handle headers
 			handlePaginationHeaders(response, paginationHeader);
-			return body;
 			
+			return searchResult.getResultList();
 		}
 		return body;
 	}
@@ -98,6 +99,7 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		URIBuilder basicUriBuilder = new URIBuilder()
 				.setScheme(request.getURI().getScheme())
 				.setHost(request.getURI().getHost())
+				.setPort(request.getURI().getPort())
 				.setPath(request.getURI().getPath());
 		// Rebuild query parameters without _pageSize and _pageNumber
 		List<NameValuePair> queryParams = URLEncodedUtils.parse(request.getURI(), "UTF-8");

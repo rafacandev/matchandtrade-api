@@ -73,8 +73,8 @@ public class RestResponseAdiviceUT {
 		List<UserJson> resultList = new ArrayList<>();
 		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination());
 		RestResponseAdvice adivice = new RestResponseAdvice();
-		SearchResult<UserJson> response = (SearchResult<UserJson>) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
-		assertTrue(response.getResultList().isEmpty());
+		List<UserJson> response = (List<UserJson>) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
+		assertTrue(response.isEmpty());
 		ServletServerHttpResponse servletResponse = (ServletServerHttpResponse) serverHttpResponse;
 		assertEquals(404, servletResponse.getServletResponse().getStatus());
 	}
@@ -88,8 +88,8 @@ public class RestResponseAdiviceUT {
 		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination());
 		RestResponseAdvice adivice = new RestResponseAdvice();
 		// Test execution
-		SearchResult<UserJson> response = (SearchResult<UserJson>) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
-		UserJson responseUserJson = (UserJson) response.getResultList().get(0);
+		List<UserJson> response = (List<UserJson>) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
+		UserJson responseUserJson = (UserJson) response.get(0);
 		// Assertions
 		assertEquals(resultList.get(0).getEmail(), responseUserJson.getEmail());
 		assertEquals("http://localhost/rest/v1/users/1", responseUserJson.getId().getHref());
