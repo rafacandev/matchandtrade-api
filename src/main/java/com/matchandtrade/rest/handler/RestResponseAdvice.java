@@ -95,42 +95,44 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 	}
 
 	private PaginationHeader buildPaginationHeader(ServerHttpRequest request, SearchResult<Json> searchResult) {
-		// URIBuilder for the basic URI (URL without query params)
-		URIBuilder basicUriBuilder = new URIBuilder()
+		// URIBuilder for the root URI (URL without query params)
+		URIBuilder rootUri = new URIBuilder()
 				.setScheme(request.getURI().getScheme())
 				.setHost(request.getURI().getHost())
 				.setPort(request.getURI().getPort())
 				.setPath(request.getURI().getPath());
-		// Rebuild query parameters without _pageSize and _pageNumber
+		
+		// Build query parameters without _pageSize and _pageNumber
 		List<NameValuePair> queryParams = URLEncodedUtils.parse(request.getURI(), "UTF-8");
+		List<NameValuePair> queryParamsWithoutPagination = new ArrayList<>();
 		for (NameValuePair param : queryParams) {
 			if (!param.getName().equals(Pagination.Parameter.SIZE.toString()) && !param.getName().equals(Pagination.Parameter.NUMBER.toString())) {
-				basicUriBuilder.addParameter(param.getName(), param.getValue());
+				queryParamsWithoutPagination.add(param);
 			}
 		}
-		// Rebuild the URI without _pageSize and _pageNumber
-		String basicUriString = null;
+
+		// Build next and previous page headers
+		String nextPageHeader = null;
+		String previousPageHeader = null;
 		try {
-			basicUriString = basicUriBuilder.build().toString();
+			URIBuilder nextPageUri = new URIBuilder(rootUri.build().toString());
+			nextPageUri.addParameters(queryParamsWithoutPagination);
+			nextPageUri.addParameter(Pagination.Parameter.NUMBER.toString(), String.valueOf(searchResult.getPagination().getNumber() + 1));
+			nextPageHeader = "<" + nextPageUri.toString() + ">; rel=\"nextPage\"";
+			URIBuilder previousPageUri = new URIBuilder(rootUri.build().toString());
+			previousPageUri.addParameters(queryParamsWithoutPagination);
+			previousPageUri.addParameter(Pagination.Parameter.NUMBER.toString(), String.valueOf(searchResult.getPagination().getNumber() + 1));
+			previousPageHeader = "<" + nextPageUri.toString() + ">; rel=\"previousPage\"";
 		} catch (URISyntaxException e) {
-			logger.warn("Unable to build URI.", e);
+			logger.error("Unable to build pagination link header URI. Exception message: {}", e.getMessage(), e);
 		}
-		// Build nextPage, previousPage query strings
-		String paginationStartString = "<" + basicUriString + (queryParams.isEmpty() ? "" : "&") + Pagination.Parameter.NUMBER + "="; 
-		String nextPage = paginationStartString 
-				+ (searchResult.getPagination().getNumber() + 1)
-				+ "&_pageSize=" + (searchResult.getPagination().getSize())
-				+ ">; rel=\"nextPage\"";
-		String previousPage = paginationStartString 
-				+ (searchResult.getPagination().getNumber() - 1)
-				+ "&_pageSize=" + (searchResult.getPagination().getSize())
-				+ ">; rel=\"previousPage\"";
+		
 		// Build the result
 		PaginationHeader result = new PaginationHeader();
 		String totalCount = String.valueOf(searchResult.getPagination().getTotal());
 		result.totalCount = totalCount;
-		result.nextPage = nextPage;
-		result.previousPage = previousPage;
+		result.nextPage = nextPageHeader;
+		result.previousPage = previousPageHeader;
 		return result;
 	}
 
