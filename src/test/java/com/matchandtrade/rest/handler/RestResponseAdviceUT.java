@@ -30,7 +30,7 @@ import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class RestResponseAdiviceUT {
+public class RestResponseAdviceUT {
 	
 	private ServerHttpResponse serverHttpResponse = new ServletServerHttpResponse(new MockHttpServletResponse());
 	private ServerHttpRequest serverHttpResquest = new ServletServerHttpRequest(new MockHttpServletRequest());
@@ -116,8 +116,8 @@ public class RestResponseAdiviceUT {
 		adivice.beforeBodyWrite(body, null, null, null, request, serverHttpResponse);
 		// Assertions
 		List<String> links = serverHttpResponse.getHeaders().get("Link");
-		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageNumber=3&_pageSize=5>; rel=\"nextPage\""));
-		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageNumber=1&_pageSize=5>; rel=\"previousPage\""));
+		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageSize=5&_pageNumber=3>; rel=\"nextPage\""));
+		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageSize=5&_pageNumber=3>; rel=\"previousPage\""));
 		List<String> totalCount = serverHttpResponse.getHeaders().get("X-Pagination-Total-Count");
 		assertEquals(1, totalCount.size());
 		assertTrue(totalCount.contains("1"));

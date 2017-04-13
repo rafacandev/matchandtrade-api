@@ -104,10 +104,10 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		
 		// Build query parameters without _pageSize and _pageNumber
 		List<NameValuePair> queryParams = URLEncodedUtils.parse(request.getURI(), "UTF-8");
-		List<NameValuePair> queryParamsWithoutPagination = new ArrayList<>();
+		List<NameValuePair> queryParamsWithoutPageNumber = new ArrayList<>();
 		for (NameValuePair param : queryParams) {
-			if (!param.getName().equals(Pagination.Parameter.SIZE.toString()) && !param.getName().equals(Pagination.Parameter.NUMBER.toString())) {
-				queryParamsWithoutPagination.add(param);
+			if (!param.getName().equals(Pagination.Parameter.NUMBER.toString())) {
+				queryParamsWithoutPageNumber.add(param);
 			}
 		}
 
@@ -116,11 +116,11 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		String previousPageHeader = null;
 		try {
 			URIBuilder nextPageUri = new URIBuilder(rootUri.build().toString());
-			nextPageUri.addParameters(queryParamsWithoutPagination);
+			nextPageUri.addParameters(queryParamsWithoutPageNumber);
 			nextPageUri.addParameter(Pagination.Parameter.NUMBER.toString(), String.valueOf(searchResult.getPagination().getNumber() + 1));
 			nextPageHeader = "<" + nextPageUri.toString() + ">; rel=\"nextPage\"";
 			URIBuilder previousPageUri = new URIBuilder(rootUri.build().toString());
-			previousPageUri.addParameters(queryParamsWithoutPagination);
+			previousPageUri.addParameters(queryParamsWithoutPageNumber);
 			previousPageUri.addParameter(Pagination.Parameter.NUMBER.toString(), String.valueOf(searchResult.getPagination().getNumber() + 1));
 			previousPageHeader = "<" + nextPageUri.toString() + ">; rel=\"previousPage\"";
 		} catch (URISyntaxException e) {
