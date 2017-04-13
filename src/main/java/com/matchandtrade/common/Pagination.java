@@ -22,7 +22,7 @@ public class Pagination {
 	}
 	
 	private int size = 10;
-	private int number = 0;
+	private int number = 1;
 	private long total = 0;
 
 	public Pagination() {

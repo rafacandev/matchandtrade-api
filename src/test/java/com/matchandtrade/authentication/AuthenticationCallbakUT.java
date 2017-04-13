@@ -29,8 +29,6 @@ public class AuthenticationCallbakUT {
 	@Autowired
 	private MockFactory mockFactory;
 	
-	private static final String ACCESS_TOKEN = AuthenticationCallbakUT.class.getName() + "ACCESS_TOKEN";
-	
 	@Test
 	public void doGetAtiForgeryTokenNegative() throws ServletException, IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest();
@@ -47,11 +45,11 @@ public class AuthenticationCallbakUT {
 		AuthenticationResponseJson sessionUserAuthentication = mockFactory.nextRandomUserAuthenticationPersisted(antiForgeryState);
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), ACCESS_TOKEN);
+		request.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), antiForgeryState);
 		request.setParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString(), antiForgeryState);
 		
 		AuthenticationOAuth authenticationOAuthMock = Mockito.mock(AuthenticationOAuth.class);
-		Mockito.when(authenticationOAuthMock.obtainAccessToken(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(ACCESS_TOKEN);
+		Mockito.when(authenticationOAuthMock.obtainAccessToken(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(antiForgeryState);
 		Mockito.when(authenticationOAuthMock.obtainUserInformation(Mockito.any())).thenReturn(sessionUserAuthentication);
 		authenticationCallbakServlet.setAuthenticationOAuth(authenticationOAuthMock);
 		
@@ -59,7 +57,7 @@ public class AuthenticationCallbakUT {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		authenticationCallbakServlet.authenticate(request, response);
 		String authenticationHeader = response.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
-		assertEquals(ACCESS_TOKEN, authenticationHeader);
+		assertEquals(antiForgeryState, authenticationHeader);
 	}
 	
 }

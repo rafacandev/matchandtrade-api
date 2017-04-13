@@ -64,7 +64,7 @@ public class SearchDao<T extends Entity> {
 	}
     
 	private static void applyPaginationToCriteria(Pagination pagination, Criteria criteria) {
-		int firstResult = pagination.getSize() * (pagination.getNumber());
+		int firstResult = pagination.getSize() * (pagination.getNumber() -1);
 		criteria.setFirstResult(firstResult);
 		criteria.setMaxResults(pagination.getSize());
 	}
