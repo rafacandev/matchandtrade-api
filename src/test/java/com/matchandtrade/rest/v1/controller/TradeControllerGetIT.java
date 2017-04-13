@@ -3,6 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeRandom;
@@ -39,9 +41,19 @@ public class TradeControllerGetIT {
 	}
 
 	@Test
+	public void getPositiveParameters() {
+		TradeJson requestJson = TradeRandom.next();
+		TradeJson responseJsonPost = tradeController.post(requestJson);
+		SearchResult<TradeJson> responseJsonGet = tradeController.get(requestJson.getName(), null, null);
+		assertTrue(responseJsonGet.getResultList().contains(responseJsonPost));
+	}
+	
+	@Test
 	public void getNegative() {
 		TradeJson responseJsonGet = tradeController.get(-1);
 		assertNull(responseJsonGet);
 	}
+	
+	
 
 }

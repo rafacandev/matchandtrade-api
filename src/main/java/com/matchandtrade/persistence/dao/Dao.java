@@ -12,7 +12,7 @@ import com.matchandtrade.persistence.entity.Entity;
  * Generic DAO class to handle the most common operations performed by every <code>Dao</code>.
  * @author rafael.santos.bra@gmail.com
  */
-public abstract class Dao<T extends Entity> {
+public class Dao<T extends Entity> {
 
     @Autowired
     private SessionFactory sessionFactory;
