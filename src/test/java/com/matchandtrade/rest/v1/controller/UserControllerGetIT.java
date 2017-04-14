@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.v1.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,12 @@ public class UserControllerGetIT {
 	public void getPositive() {
 		UserJson response = fixture.get(fixture.userEntity.getUserId());
 		assertEquals(fixture.userEntity.getUserId(), response.getUserId());
+	}
+
+	@Test(expected=AuthorizationException.class)
+	public void getNegative() {
+		UserJson response = fixture.get(-1);
+		assertNull(response);
 	}
 
 }

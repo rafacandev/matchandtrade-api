@@ -2,7 +2,15 @@ package com.matchandtrade.common;
 
 import java.util.List;
 
+/**
+ * Holds data resulting from a search.
+ * 
+ * @author rafael.santos.bra@gmail.com
+ *
+ * @param <T>
+ */
 public class SearchResult<T> {
+
 	private Pagination pagination;
 	private List<T> resultList;
 	
@@ -17,14 +25,6 @@ public class SearchResult<T> {
 	
 	public List<T> getResultList() {
 		return resultList;
-	}
-
-	public void setPagination(Pagination pagination) {
-		this.pagination = pagination;
-	}
-
-	public void setResultList(List<T> resultList) {
-		this.resultList = resultList;
 	}
 
 }

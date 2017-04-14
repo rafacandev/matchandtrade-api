@@ -1,5 +1,11 @@
 package com.matchandtrade.common;
 
+/**
+ * A criterion, typically used with {@code SearchCriteria}
+ * 
+ * @author rafael.santos.bra@gmail.com
+ *
+ */
 public class Criterion {
 	private Object field;
 	private Object value;
@@ -15,14 +21,6 @@ public class Criterion {
 
 	public Object getValue() {
 		return value;
-	}
-
-	public void setField(Object field) {
-		this.field = field;
-	}
-
-	public void setValue(Object value) {
-		this.value = value;
 	}
 
 }
