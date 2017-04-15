@@ -20,22 +20,22 @@ import com.matchandtrade.test.random.TradeRandom;
 @TestingDefaultAnnotations
 public class TradeControllerGetIT {
 	
-	private TradeController tradeController;
+	private TradeController fixture;
 	@Autowired
-	private MockTradeControllerFactory mockTradeControllerFactory;
-
+	private MockControllerFactory mockControllerFactory;
+	
 	@Before
 	public void before() {
-		if (tradeController == null) {
-			tradeController = mockTradeControllerFactory.getMockTradeController();
+		if (fixture == null) {
+			fixture = mockControllerFactory.getTradeController();
 		}
 	}
 
 	@Test
 	public void getPositive() {
 		TradeJson requestJson = TradeRandom.next();
-		TradeJson responseJsonPost = tradeController.post(requestJson);
-		TradeJson responseJsonGet = tradeController.get(responseJsonPost.getTradeId());
+		TradeJson responseJsonPost = fixture.post(requestJson);
+		TradeJson responseJsonGet = fixture.get(responseJsonPost.getTradeId());
 		assertNotNull(responseJsonGet.getTradeId());
 		assertEquals(requestJson.getName(), responseJsonGet.getName());
 	}
@@ -43,17 +43,15 @@ public class TradeControllerGetIT {
 	@Test
 	public void getPositiveParameters() {
 		TradeJson requestJson = TradeRandom.next();
-		TradeJson responseJsonPost = tradeController.post(requestJson);
-		SearchResult<TradeJson> responseJsonGet = tradeController.get(requestJson.getName(), null, null);
+		TradeJson responseJsonPost = fixture.post(requestJson);
+		SearchResult<TradeJson> responseJsonGet = fixture.get(requestJson.getName(), null, null);
 		assertTrue(responseJsonGet.getResultList().contains(responseJsonPost));
 	}
 	
 	@Test
 	public void getNegative() {
-		TradeJson responseJsonGet = tradeController.get(-1);
+		TradeJson responseJsonGet = fixture.get(-1);
 		assertNull(responseJsonGet);
 	}
-	
-	
 
 }

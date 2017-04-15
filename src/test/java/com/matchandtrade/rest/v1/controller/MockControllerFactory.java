@@ -3,11 +3,15 @@ package com.matchandtrade.rest.v1.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.matchandtrade.authorization.Authorization;
 import com.matchandtrade.model.AuthenticationModel;
+import com.matchandtrade.model.TradeModel;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.v1.transformer.TradeTransformer;
+import com.matchandtrade.rest.v1.validator.TradeValidator;
 import com.matchandtrade.test.random.UserRandom;
 
 /**
@@ -26,7 +30,7 @@ import com.matchandtrade.test.random.UserRandom;
 public class MockControllerFactory {
 
 	@Autowired
-	AuthenticationModel authenticationModel;
+	AuthenticationModel aModel;
 	@Autowired
 	UserModel userModel;
 
@@ -46,7 +50,7 @@ public class MockControllerFactory {
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
 		authenticationEntity.setToken("MocControllerFactory#userId: " + authenticatedUserEntity.getUserId());
 		authenticationEntity.setUserId(authenticatedUserEntity.getUserId());
-		authenticationModel.save(authenticationEntity);
+		aModel.save(authenticationEntity);
 		
 		
 		AuthenticationController result = new AuthenticationController();
@@ -59,10 +63,38 @@ public class MockControllerFactory {
 		public MockAuthenticationProvider(AuthenticationEntity authenticationEntity) {
 			this.authenticationEntity = authenticationEntity;
 		}
+		public MockAuthenticationProvider() {
+			UserEntity authenticatedUserEntity = UserRandom.nextEntity();
+			userModel.save(authenticatedUserEntity);
+			AuthenticationEntity authenticationEntity = new AuthenticationEntity();
+			authenticationEntity.setToken("MocControllerFactory#userId: " + authenticatedUserEntity.getUserId());
+			authenticationEntity.setUserId(authenticatedUserEntity.getUserId());
+			aModel.save(authenticationEntity);
+			this.authenticationEntity = authenticationEntity;
+		}
+		
 		@Override
 		public AuthenticationEntity getAuthentication() {
 			return authenticationEntity;
 		}
+	}
+
+	@Autowired
+	Authorization authorization;
+	@Autowired
+	TradeModel tradeModel;
+	@Autowired
+	TradeValidator tradeValidador;
+	@Autowired
+	TradeTransformer tradeTransformer;
+	public TradeController getTradeController() {
+		TradeController result = new TradeController();
+		result.authorization = authorization;
+		result.tradeModel = tradeModel;
+		result.tradeTransformer = tradeTransformer;
+		result.tradeValidador = tradeValidador;
+		result.authenticationProvider = new MockAuthenticationProvider();
+		return result;
 	}
 	
 }

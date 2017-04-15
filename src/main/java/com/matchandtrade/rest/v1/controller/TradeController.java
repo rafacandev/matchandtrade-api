@@ -12,28 +12,30 @@ import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.model.TradeModel;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.rest.Controller;
+import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
 
 @RestController
 @RequestMapping(path="/rest/v1/trades")
-public class TradeController extends Controller {
+public class TradeController {
 
 	@Autowired
 	Authorization authorization;
+	@Autowired
+	AuthenticationProvider authenticationProvider;
 	@Autowired
 	TradeModel tradeModel;
 	@Autowired
 	TradeValidator tradeValidador;
 	@Autowired
 	TradeTransformer tradeTransformer;
-
+	
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeJson post(@RequestBody TradeJson requestJson) {
 		// Validate request identity
-		authorization.validateIdentity(getAuthentication());
+		authorization.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		tradeValidador.validatePost(requestJson);
 		// Transform the request
@@ -48,7 +50,7 @@ public class TradeController extends Controller {
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
 	public SearchResult<TradeJson> get(String name, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
-		authorization.validateIdentity(getAuthentication());
+		authorization.validateIdentity(authenticationProvider.getAuthentication());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (name != null) {
 			searchCriteria.addCriterion(TradeEntity.Field.name, name);
@@ -63,7 +65,7 @@ public class TradeController extends Controller {
 	@RequestMapping(path="/{tradeId}", method=RequestMethod.GET)
 	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
 		// Validate request identity
-		authorization.validateIdentity(getAuthentication());
+		authorization.validateIdentity(authenticationProvider.getAuthentication());
 		// Delegate to model layer
 		TradeEntity searchResult = tradeModel.get(tradeId);
 		// Transform the response

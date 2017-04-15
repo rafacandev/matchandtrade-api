@@ -18,22 +18,22 @@ import com.matchandtrade.test.random.TradeRandom;
 @TestingDefaultAnnotations
 public class TradeControllerPostIT {
 	
+	private TradeController fixture;
+	
 	@Autowired
-	private static TradeController tradeController;
-	@Autowired
-	private MockTradeControllerFactory mockTradeControllerFactory;
+	private MockControllerFactory mockControllerFactory;
 
 	@Before
 	public void before() {
-		if (tradeController == null) {
-			tradeController = mockTradeControllerFactory.getMockTradeController();
+		if (fixture == null) {
+			fixture = mockControllerFactory.getTradeController();
 		}
 	}
 	
 	@Test
 	public void postPositive() {
 		TradeJson requestJson = TradeRandom.next();
-		TradeJson responseJson = tradeController.post(requestJson);
+		TradeJson responseJson = fixture.post(requestJson);
 		assertNotNull(responseJson.getTradeId());
 		assertEquals(requestJson.getName(), responseJson.getName());
 	}
@@ -41,22 +41,22 @@ public class TradeControllerPostIT {
 	@Test(expected=ValidationException.class)
 	public void postNegativeValidationSameName() {
 		TradeJson requestJson = TradeRandom.next();
-		tradeController.post(requestJson);
-		tradeController.post(requestJson);
+		fixture.post(requestJson);
+		fixture.post(requestJson);
 	}
 
 	@Test(expected=ValidationException.class)
 	public void postNegativeValidationNameLegth() {
 		TradeJson requestJson = TradeRandom.next();
 		requestJson.setName("ab");
-		tradeController.post(requestJson);
+		fixture.post(requestJson);
 	}	
 	
 	@Test(expected=ValidationException.class)
 	public void postNegativeValidationNameMandatory() {
 		TradeJson requestJson = TradeRandom.next();
 		requestJson.setName(null);
-		tradeController.post(requestJson);
+		fixture.post(requestJson);
 	}	
 
 }
