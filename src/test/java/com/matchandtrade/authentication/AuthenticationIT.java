@@ -1,7 +1,5 @@
 package com.matchandtrade.authentication;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +9,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.model.AuthenticationModel;
-import com.matchandtrade.persistence.entity.AuthenticationEntity;
-import com.matchandtrade.rest.v1.controller.UserController;
-import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
 @RunWith(SpringRunner.class)
@@ -25,9 +20,8 @@ public class AuthenticationIT {
 	@Autowired
 	private AuthenticationCallback authenticationCallback;
 	@Autowired
-	private UserController userController;
-	@Autowired
 	private AuthenticationModel authenticationModel;
+	
 	
 	@Test
 	public void authenticationPositive() throws Exception {
@@ -47,21 +41,13 @@ public class AuthenticationIT {
 		MockHttpServletResponse responseCallback = new MockHttpServletResponse();
 		authenticationCallback.authenticate(requestCallback, responseCallback);
 
-		// Mock request/response for UserController
-		MockHttpServletRequest requestUserController = new MockHttpServletRequest();
+		// Assert if authentication was stored correctly
 		String authenticationHeader = responseCallback.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
-		requestUserController.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), authenticationHeader);
-		
-		AuthenticationEntity authenticationEntity = authenticationModel.getByToken(authenticationHeader);
-		userController.setHttpServletRequest(requestUserController);
-
-		// Make request to UserController
-		UserJson userControllerResponse = userController.get(authenticationEntity.getUserId());
-		assertNotNull(userControllerResponse.getUserId());
+		authenticationModel.getByToken(authenticationHeader);
 		
 		// Sign-off
-		requestUserController.setRequestURI("http://localhost:8080/sign-out");
-		authenticationServlet.doGet(requestUserController, new MockHttpServletResponse());
+		requestCallback.setRequestURI("http://localhost:8080/sign-out");
+		authenticationServlet.doGet(requestCallback, new MockHttpServletResponse());
 	}
 
 	private String obtainStateParameter(String redirectedUrl) {

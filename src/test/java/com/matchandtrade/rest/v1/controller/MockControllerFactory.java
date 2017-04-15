@@ -11,7 +11,9 @@ import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
+import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
+import com.matchandtrade.rest.v1.validator.UserValidator;
 import com.matchandtrade.test.random.UserRandom;
 
 /**
@@ -44,6 +46,10 @@ public class MockControllerFactory {
 	TradeValidator tradeValidador;
 	@Autowired
 	TradeTransformer tradeTransformer;
+	@Autowired
+	UserValidator userValidador;
+	@Autowired
+	UserTransformer userTransformer;
 	
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
@@ -74,6 +80,16 @@ public class MockControllerFactory {
 		result.tradeModel = tradeModel;
 		result.tradeTransformer = tradeTransformer;
 		result.tradeValidador = tradeValidador;
+		result.authenticationProvider = new MockAuthenticationProvider();
+		return result;
+	}
+	
+	public UserController getUserController() {
+		UserController result = new UserController();
+		result.authorization = authorization;
+		result.userModel = userModel;
+		result.userTransformer = userTransformer;
+		result.userValidador = userValidador;
 		result.authenticationProvider = new MockAuthenticationProvider();
 		return result;
 	}

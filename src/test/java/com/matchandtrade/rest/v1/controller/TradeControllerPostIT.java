@@ -19,7 +19,6 @@ import com.matchandtrade.test.random.TradeRandom;
 public class TradeControllerPostIT {
 	
 	private TradeController fixture;
-	
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 
