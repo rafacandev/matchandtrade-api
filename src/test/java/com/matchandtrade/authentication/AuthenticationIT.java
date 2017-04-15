@@ -8,7 +8,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.AuthenticationProperties;
-import com.matchandtrade.model.AuthenticationModel;
+import com.matchandtrade.repository.AuthenticationRespository;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
 @RunWith(SpringRunner.class)
@@ -20,7 +20,7 @@ public class AuthenticationIT {
 	@Autowired
 	private AuthenticationCallback authenticationCallback;
 	@Autowired
-	private AuthenticationModel authenticationModel;
+	private AuthenticationRespository authenticationRepository;
 	
 	
 	@Test
@@ -43,7 +43,7 @@ public class AuthenticationIT {
 
 		// Assert if authentication was stored correctly
 		String authenticationHeader = responseCallback.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
-		authenticationModel.getByToken(authenticationHeader);
+		authenticationRepository.getByToken(authenticationHeader);
 		
 		// Sign-off
 		requestCallback.setRequestURI("http://localhost:8080/sign-out");

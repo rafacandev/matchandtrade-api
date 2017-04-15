@@ -8,8 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.repository.UserRespository;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.validator.ValidationException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -23,7 +23,7 @@ public class UserControllerPutIT {
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
-	private UserModel userModel;
+	private UserRespository userRepository;
 	
 	@Before
 	public void before() {
@@ -41,7 +41,7 @@ public class UserControllerPutIT {
 	
 	@Test
 	public void putPositive() {
-		UserEntity userEntity = userModel.get(fixture.authenticationProvider.getAuthentication().getUserId());
+		UserEntity userEntity = userRepository.get(fixture.authenticationProvider.getAuthentication().getUserId());
 		UserJson requestJson = UserRandom.nextJson();
 		// Need to keep the same email as per validation rules
 		requestJson.setEmail(userEntity.getEmail());

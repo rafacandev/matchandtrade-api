@@ -1,7 +1,7 @@
-package com.matchandtrade.model;
+package com.matchandtrade.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.common.Pagination;
@@ -10,8 +10,8 @@ import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.dao.UserDao;
 import com.matchandtrade.persistence.entity.UserEntity;
 
-@Component
-public class UserModel {
+@Repository
+public class UserRespository {
 
 	@Autowired
 	UserDao userDao;

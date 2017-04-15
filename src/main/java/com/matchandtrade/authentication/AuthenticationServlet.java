@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.config.AuthenticationProperties;
-import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
+import com.matchandtrade.repository.AuthenticationRespository;
 
 
 @WebServlet(name="authenticationServlet", urlPatterns="/authenticate/*")
@@ -35,7 +35,7 @@ public class AuthenticationServlet extends HttpServlet {
 	@Autowired
 	private AuthenticationCallback authenticationCallbak;
 	@Autowired
-	private AuthenticationModel authenticationModel;
+	private AuthenticationRespository authenticationRepository;
 
 	
 	/**
@@ -88,7 +88,7 @@ public class AuthenticationServlet extends HttpServlet {
 		// Persist the state token. This will not be in the session as we want a stateless server.
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
 		authenticationEntity.setAntiForgeryState(state);
-		authenticationModel.save(authenticationEntity);
+		authenticationRepository.save(authenticationEntity);
 
 		// oAuth Step 2. Send an authentication request to the Authorization Authority
 		authenticationOAuth.redirectToAuthorizationAuthority(response, state, authenticationProperties.getClientId(), authenticationProperties.getRedirectURI());
@@ -103,8 +103,8 @@ public class AuthenticationServlet extends HttpServlet {
 		logger.debug("Signing out from session id: [{}]", request.getSession().getId());
 		// Delete authentication details
 		String accessToken = request.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
-		AuthenticationEntity authenticationEntity = authenticationModel.getByToken(accessToken);
-		authenticationModel.delete(authenticationEntity);
+		AuthenticationEntity authenticationEntity = authenticationRepository.getByToken(accessToken);
+		authenticationRepository.delete(authenticationEntity);
 		// Invalidate the current session (not required, but good practice overall)
 		request.getSession().invalidate();
 		response.setStatus(Response.Status.RESET_CONTENT.getStatusCode());

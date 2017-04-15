@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.Authorization;
-import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.repository.UserRespository;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
@@ -23,7 +23,7 @@ public class UserController {
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
-	UserModel userModel;
+	UserRespository userRepository;
 	@Autowired
 	UserValidator userValidador;
 	@Autowired
@@ -35,8 +35,8 @@ public class UserController {
 		authorization.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		userValidador.validateGetById(authenticationProvider.getAuthentication(), userId);
-		// Delegate to model layer
-		UserEntity userEntity = userModel.get(userId);
+		// Delegate to Repository layer
+		UserEntity userEntity = userRepository.get(userId);
 		// Transform the response
 		UserJson result = UserTransformer.transform(userEntity);
 		return result;
@@ -51,8 +51,8 @@ public class UserController {
 		userValidador.validatePut(requestJson);
 		// Transform the request
 		UserEntity userEntity = userTransformer.transform(requestJson, true);
-		// Delegate to model layer
-		userModel.save(userEntity);
+		// Delegate to Repository layer
+		userRepository.save(userEntity);
 		// Transform the response
 		UserJson result = UserTransformer.transform(userEntity);
 		return result;

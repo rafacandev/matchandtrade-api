@@ -6,15 +6,15 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.model.TradeModel;
 import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.rest.v1.json.TradeJson;
 
 @Component
 public class TradeValidator {
 
 	@Autowired
-	private TradeModel tradeModel;
+	private TradeRepository tradeRepository;
 	
 	/**
 	 * {@code TradeJson.name} is mandatory, unique and must contain at least 3 characters.
@@ -28,7 +28,7 @@ public class TradeValidator {
 		}
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(TradeEntity.Field.name, json.getName());
-		SearchResult<TradeEntity> searchResult = tradeModel.search(searchCriteria);
+		SearchResult<TradeEntity> searchResult = tradeRepository.search(searchCriteria);
 		if (searchResult.getResultList().size() > 0) {
 			throw new ValidationException(ValidationException.ErrorType.UNIQUE_PARAMETER, tradeJsonNameConstraint);
 		}

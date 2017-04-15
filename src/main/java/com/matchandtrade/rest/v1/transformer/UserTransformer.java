@@ -3,20 +3,20 @@ package com.matchandtrade.rest.v1.transformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.repository.UserRespository;
 import com.matchandtrade.rest.v1.json.UserJson;
 
 @Component
 public class UserTransformer {
 	
 	@Autowired
-	private UserModel userModel;
+	private UserRespository userRepository;
 
 	public UserEntity transform(UserJson json, boolean loadEntity) {
 		UserEntity result;
 		if (loadEntity) {
-			result = userModel.get(json.getUserId());
+			result = userRepository.get(json.getUserId());
 		} else {
 			result = new UserEntity();
 		}

@@ -1,7 +1,7 @@
-package com.matchandtrade.model;
+package com.matchandtrade.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.common.SearchCriteria;
@@ -9,8 +9,8 @@ import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.dao.TradeDao;
 import com.matchandtrade.persistence.entity.TradeEntity;
 
-@Component
-public class TradeModel {
+@Repository
+public class TradeRepository {
 
 	@Autowired
 	private TradeDao tradeDao;

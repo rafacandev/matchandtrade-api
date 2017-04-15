@@ -7,20 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.model.TradeModel;
 import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.rest.v1.json.TradeJson;
 
 @Component
 public class TradeTransformer {
 
 	@Autowired
-	private TradeModel tradeModel;
+	private TradeRepository tradeRepository;
 
 	public TradeEntity transform(TradeJson json, boolean loadEntity) {
 		TradeEntity result;
 		if (loadEntity) {
-			result = tradeModel.get(json.getTradeId());
+			result = tradeRepository.get(json.getTradeId());
 		} else {
 			result = new TradeEntity();
 		}

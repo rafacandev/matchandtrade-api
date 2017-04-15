@@ -7,21 +7,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 import com.matchandtrade.config.AuthenticationProperties;
-import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
+import com.matchandtrade.repository.AuthenticationRespository;
 
 @Component
 @RequestScope
 public class AuthenticationProvider {
 
 	@Autowired
-	protected AuthenticationModel authenticationModel;
+	protected AuthenticationRespository authenticationRepository;
 	@Autowired
 	private HttpServletRequest httpRequest;
 	
 	public AuthenticationEntity getAuthentication() {
 		String authenticationHeader = httpRequest.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
-		return authenticationModel.getByToken(authenticationHeader);
+		return authenticationRepository.getByToken(authenticationHeader);
 	}
 
 }

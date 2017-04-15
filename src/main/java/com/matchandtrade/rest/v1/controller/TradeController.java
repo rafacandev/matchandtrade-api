@@ -10,8 +10,8 @@ import com.matchandtrade.authorization.Authorization;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.model.TradeModel;
 import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
@@ -26,7 +26,7 @@ public class TradeController {
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
-	TradeModel tradeModel;
+	TradeRepository tradeRepository;
 	@Autowired
 	TradeValidator tradeValidador;
 	@Autowired
@@ -40,8 +40,8 @@ public class TradeController {
 		tradeValidador.validatePost(requestJson);
 		// Transform the request
 		TradeEntity tradeEntity = tradeTransformer.transform(requestJson, false);
-		// Delegate to model layer
-		tradeModel.save(tradeEntity);
+		// Delegate to Repository layer
+		tradeRepository.save(tradeEntity);
 		// Transform the response
 		TradeJson result = TradeTransformer.transform(tradeEntity);
 		return result;
@@ -55,8 +55,8 @@ public class TradeController {
 		if (name != null) {
 			searchCriteria.addCriterion(TradeEntity.Field.name, name);
 		}
-		// Delegate to model layer
-		SearchResult<TradeEntity> searchResult = tradeModel.search(searchCriteria);
+		// Delegate to Repository layer
+		SearchResult<TradeEntity> searchResult = tradeRepository.search(searchCriteria);
 		// Transform the response
 		SearchResult<TradeJson> result = TradeTransformer.transform(searchResult);
 		return result;
@@ -66,8 +66,8 @@ public class TradeController {
 	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
 		// Validate request identity
 		authorization.validateIdentity(authenticationProvider.getAuthentication());
-		// Delegate to model layer
-		TradeEntity searchResult = tradeModel.get(tradeId);
+		// Delegate to Repository layer
+		TradeEntity searchResult = tradeRepository.get(tradeId);
 		// Transform the response
 		TradeJson result = TradeTransformer.transform(searchResult);
 		return result;

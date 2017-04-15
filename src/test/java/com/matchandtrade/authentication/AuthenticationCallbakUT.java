@@ -16,10 +16,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.AuthenticationProperties;
-import com.matchandtrade.model.AuthenticationModel;
-import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.repository.AuthenticationRespository;
+import com.matchandtrade.repository.UserRespository;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.StringRandom;
@@ -32,9 +32,9 @@ public class AuthenticationCallbakUT {
 	@Autowired
 	private AuthenticationCallback authenticationCallbakServlet;
 	@Autowired
-	private AuthenticationModel authenticationModel;
+	private AuthenticationRespository authenticationRepository;
 	@Autowired
-	private UserModel userModel;
+	private UserRespository userRepository;
 	@Autowired
 	private UserTransformer userTransformer;
 	
@@ -71,7 +71,7 @@ public class AuthenticationCallbakUT {
 	
 	private AuthenticationResponseJson nextRandomUserAuthenticationPersisted(String antiForgeryState) {
 		UserEntity userEntity = userTransformer.transform(UserRandom.nextJson());
-		userModel.save(userEntity);
+		userRepository.save(userEntity);
 		AuthenticationResponseJson result = new AuthenticationResponseJson(
 				userEntity.getUserId(), 
 				true, 
@@ -82,7 +82,7 @@ public class AuthenticationCallbakUT {
 		authenticationEntity.setUserId(userEntity.getUserId());
 		authenticationEntity.setToken(userEntity.getUserId().toString());
 		authenticationEntity.setAntiForgeryState(antiForgeryState);
-		authenticationModel.save(authenticationEntity);
+		authenticationRepository.save(authenticationEntity);
 		return result;
 	}
 	

@@ -5,9 +5,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.repository.UserRespository;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.StringRandom;
 
@@ -18,7 +18,7 @@ public class AuthorizationIT {
 	@Autowired
 	private Authorization authorization;
 	@Autowired
-	private UserModel userModel;
+	private UserRespository userRepository;
 	
 	@Test(expected=AuthorizationException.class)
 	public void validateIdentityNegativeNull() {
@@ -37,7 +37,7 @@ public class AuthorizationIT {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setEmail(StringRandom.nextEmail());
 		userEntity.setName(StringRandom.nextName());
-		userModel.save(userEntity);
+		userRepository.save(userEntity);
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
 		authenticationEntity.setUserId(userEntity.getUserId());
 		authorization.validateIdentity(authenticationEntity);

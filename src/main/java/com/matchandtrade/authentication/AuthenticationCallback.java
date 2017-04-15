@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.config.AuthenticationProperties;
-import com.matchandtrade.model.AuthenticationModel;
-import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.repository.AuthenticationRespository;
+import com.matchandtrade.repository.UserRespository;
 
 @Component
 public class AuthenticationCallback {
@@ -27,16 +27,16 @@ public class AuthenticationCallback {
 	@Autowired
 	private AuthenticationOAuth authenticationOAuth;
 	@Autowired
-	private UserModel userModel;
+	private UserRespository userRepository;
 	@Autowired
-	private AuthenticationModel authenticationModel;
+	private AuthenticationRespository authenticationRepository;
 
 	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// oAuth Step 3. Confirm anti-forgery state token
 		String stateParameter = request.getParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString());
 		logger.debug("Received request with state parameter: [{}]", stateParameter);
 
-		AuthenticationEntity authenticationEntity = authenticationModel.getByAtiForgeryState(stateParameter);
+		AuthenticationEntity authenticationEntity = authenticationRepository.getByAtiForgeryState(stateParameter);
 		// Return HTTP-STATUS 401 if anti-forgery state token is not found
 		if (authenticationEntity == null) {
 			response.setStatus(401);
@@ -85,7 +85,7 @@ public class AuthenticationCallback {
 		authenticationEntity.setUserId(userId);
 		authenticationEntity.setAntiForgeryState(null);
 		authenticationEntity.setToken(accessToken);
-		authenticationModel.save(authenticationEntity);
+		authenticationRepository.save(authenticationEntity);
 	}
 
 	/**
@@ -96,13 +96,13 @@ public class AuthenticationCallback {
 	 * @return updated User.
 	 */
 	private AuthenticationResponseJson updateUserInfo(String email, String name) {
-		UserEntity userEntity = userModel.get(email);
+		UserEntity userEntity = userRepository.get(email);
 		boolean isNewUser = false;
 		if (userEntity == null) {
 			userEntity = new UserEntity();
 			userEntity.setEmail(email);
 			userEntity.setName(name);
-			userModel.save(userEntity);
+			userRepository.save(userEntity);
 			isNewUser = true;
 		}
 		AuthenticationResponseJson result = new AuthenticationResponseJson(
