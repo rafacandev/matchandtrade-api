@@ -229,106 +229,6 @@
 				</configuration>
 			</plugin>
 
-
-			<!-- Testing Code Coverage -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${org.jacoco.version}</version>
-				<executions>
-					<!-- Prepares the property pointing to the JaCoCo runtime agent which is passed as VM argument when Maven the Surefire plugin is executed. -->
-					<execution>
-						<id>pre-unit-test</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-							<destFile>${project.reporting.outputDirectory}/jacoco-ut.exec</destFile>
-							<!-- Sets the name of the property containing the settings for JaCoCo runtime agent. -->
-							<propertyName>surefireArgLine</propertyName>
-						</configuration>
-					</execution>
-					<!-- Ensures that the code coverage report for unit tests is created after unit tests have been run. -->
-					<execution>
-						<id>post-unit-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-							<dataFile>${project.reporting.outputDirectory}/jacoco-ut.exec</dataFile>
-							<!-- Sets the output directory for the code coverage report. -->
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-						</configuration>
-					</execution>
-
-					<!-- Prepares the property pointing to the JaCoCo runtime agent which is passed as VM argument when Maven the Failsafe plugin is executed. -->
-					<execution>
-						<id>pre-integration-test</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-							<destFile>${project.reporting.outputDirectory}/jacoco-it.exec</destFile>
-							<!-- Sets the name of the property containing the settings for JaCoCo runtime agent. -->
-							<propertyName>failsafeArgLine</propertyName>
-						</configuration>
-					</execution>
-					<!-- Ensures that the code coverage report for integration tests after integration tests have been run. -->
-					<execution>
-						<id>post-integration-test</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-							<dataFile>${project.reporting.outputDirectory}/jacoco-it.exec</dataFile>
-							<!-- Sets the output directory for the code coverage report. -->
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-						</configuration>
-					</execution>
-
-					<!-- Merge both Unit Tests + Integration Tests in a single dataFile -->
-					<execution>
-						<id>merge-data-file</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>merge</goal>
-						</goals>
-						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-							<destFile>${project.reporting.outputDirectory}/jacoco-merge.exec</destFile>
-							<fileSets>
-								<fileSet>
-									<directory>${project.reporting.outputDirectory}</directory>
-									<include>*.exec</include>
-								</fileSet>
-							</fileSets>
-						</configuration>
-					</execution>
-					
-					<!-- Generates a merged report from <id>merge-data-file</id> -->
-					<execution>
-						<id>report-merge</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-							<dataFile>${project.reporting.outputDirectory}/jacoco-merge.exec</dataFile>
-							<!-- Sets the output directory for the code coverage report. -->
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco-merge</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
 			<!-- Unit Tests will test classes ending in *UT -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -350,9 +250,6 @@
 					<includes>
 						<include>**/*UT.java</include>
 					</includes>
-					<!-- -Xverify:none may reduce startup time. No need to verify bytecode on the test phase -->
-					<!-- ${surefireArgLine} jacoco instrumentation -->
-					<argLine>-Xverify:none ${surefireArgLine}</argLine>
 				</configuration>
 			</plugin>
 
@@ -370,9 +267,6 @@
 					<includes>
 						<include>**/*Suite.java</include>
 					</includes>
-					<!-- -Xverify:none may reduce startup time. No need to verify bitecode on the test phase -->
-					<!-- ${surefireArgLine} jacoco instrumentation -->
-					<argLine>-Xverify:none ${failsafeArgLine}</argLine>
 				</configuration>
 			</plugin>
 		</plugins>

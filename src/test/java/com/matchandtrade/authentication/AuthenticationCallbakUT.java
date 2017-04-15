@@ -16,9 +16,14 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.AuthenticationProperties;
-import com.matchandtrade.test.MockFactory;
+import com.matchandtrade.model.AuthenticationModel;
+import com.matchandtrade.model.UserModel;
+import com.matchandtrade.persistence.entity.AuthenticationEntity;
+import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.StringRandom;
+import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
@@ -27,7 +32,12 @@ public class AuthenticationCallbakUT {
 	@Autowired
 	private AuthenticationCallback authenticationCallbakServlet;
 	@Autowired
-	private MockFactory mockFactory;
+	private AuthenticationModel authenticationModel;
+	@Autowired
+	private UserModel userModel;
+	@Autowired
+	private UserTransformer userTransformer;
+	
 	
 	@Test
 	public void doGetAtiForgeryTokenNegative() throws ServletException, IOException {
@@ -42,7 +52,7 @@ public class AuthenticationCallbakUT {
 	@Test
 	public void doGetAtiForgeryTokenPositive() throws ServletException, IOException {
 		String antiForgeryState = StringRandom.nextString();
-		AuthenticationResponseJson sessionUserAuthentication = mockFactory.nextRandomUserAuthenticationPersisted(antiForgeryState);
+		AuthenticationResponseJson sessionUserAuthentication = nextRandomUserAuthenticationPersisted(antiForgeryState);
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), antiForgeryState);
@@ -53,11 +63,27 @@ public class AuthenticationCallbakUT {
 		Mockito.when(authenticationOAuthMock.obtainUserInformation(Mockito.any())).thenReturn(sessionUserAuthentication);
 		authenticationCallbakServlet.setAuthenticationOAuth(authenticationOAuthMock);
 		
-		
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		authenticationCallbakServlet.authenticate(request, response);
 		String authenticationHeader = response.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
 		assertEquals(antiForgeryState, authenticationHeader);
+	}
+	
+	private AuthenticationResponseJson nextRandomUserAuthenticationPersisted(String antiForgeryState) {
+		UserEntity userEntity = userTransformer.transform(UserRandom.nextJson());
+		userModel.save(userEntity);
+		AuthenticationResponseJson result = new AuthenticationResponseJson(
+				userEntity.getUserId(), 
+				true, 
+				userEntity.getEmail(), 
+				userEntity.getName(), 
+				StringRandom.nextString());
+		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
+		authenticationEntity.setUserId(userEntity.getUserId());
+		authenticationEntity.setToken(userEntity.getUserId().toString());
+		authenticationEntity.setAntiForgeryState(antiForgeryState);
+		authenticationModel.save(authenticationEntity);
+		return result;
 	}
 	
 }
