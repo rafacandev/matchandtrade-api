@@ -15,13 +15,16 @@ import com.matchandtrade.rest.v1.validator.TradeValidator;
 import com.matchandtrade.test.random.UserRandom;
 
 /**
- * <b>Warning</b> do not use <code>@Autowired AuthenticationController</code> in your tests.
- * Controller classes uses HttpServletRequest to handle authentication and 
- * during integration tests it will be required to mock the HttServletRequest; however, as Controllers are singletons, it will
- * change the state of all classes leading to unpredictable test failures (mostly if tests a executed in multi-thread configuration) 
+ * <b>Warning</b> do not use <code>@Autowired *Controller</code> in your tests.
+ * Controller classes uses ScopeRequest; so the container will creates an instance per request.
+ * Integration tests do run in a container hence treat each controller as singleton.
  * 
- * As a result, it is required to create a new instance of the Controller for every test and configure the dependencies manually,
- * this can be achieved through <code>getMockAuthenticationController()</code>. 
+ * Treating controllers as singleton may cause testing leakage because they need to
+ * access the HttpServletRequest to handle authentication.
+ * 
+ * As a result, it is required to create a new instance of the {@code *Controller}
+ * for every test and configure the dependencies manually,
+ * this can be achieved through {@code MockControllerFactory.get*Controller()} 
  * 
  * @author rafael.santos.bra@gmail.com
  *
@@ -30,55 +33,9 @@ import com.matchandtrade.test.random.UserRandom;
 public class MockControllerFactory {
 
 	@Autowired
-	AuthenticationModel aModel;
-	@Autowired
 	UserModel userModel;
-
-	
-	public class MockAuthenticationController extends AuthenticationController {
-		public MockAuthenticationController(AuthenticationModel authenticationModel) {
-			this.authenticationModel = authenticationModel;
-		}
-		public AuthenticationModel authenticationModel;
-		public UserEntity authenticatedUserEntity;
-		public AuthenticationEntity authenticationEntity;
-	}
-	
-	public AuthenticationController getAuthenticationController() {
-		UserEntity authenticatedUserEntity = UserRandom.nextEntity();
-		userModel.save(authenticatedUserEntity);
-		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
-		authenticationEntity.setToken("MocControllerFactory#userId: " + authenticatedUserEntity.getUserId());
-		authenticationEntity.setUserId(authenticatedUserEntity.getUserId());
-		aModel.save(authenticationEntity);
-		
-		
-		AuthenticationController result = new AuthenticationController();
-		result.authenticationProvider = new MockAuthenticationProvider(authenticationEntity);
-		return result;
-	}
-	
-	public class MockAuthenticationProvider extends AuthenticationProvider {
-		public AuthenticationEntity authenticationEntity;
-		public MockAuthenticationProvider(AuthenticationEntity authenticationEntity) {
-			this.authenticationEntity = authenticationEntity;
-		}
-		public MockAuthenticationProvider() {
-			UserEntity authenticatedUserEntity = UserRandom.nextEntity();
-			userModel.save(authenticatedUserEntity);
-			AuthenticationEntity authenticationEntity = new AuthenticationEntity();
-			authenticationEntity.setToken("MocControllerFactory#userId: " + authenticatedUserEntity.getUserId());
-			authenticationEntity.setUserId(authenticatedUserEntity.getUserId());
-			aModel.save(authenticationEntity);
-			this.authenticationEntity = authenticationEntity;
-		}
-		
-		@Override
-		public AuthenticationEntity getAuthentication() {
-			return authenticationEntity;
-		}
-	}
-
+	@Autowired
+	AuthenticationModel authentModel;
 	@Autowired
 	Authorization authorization;
 	@Autowired
@@ -87,6 +44,30 @@ public class MockControllerFactory {
 	TradeValidator tradeValidador;
 	@Autowired
 	TradeTransformer tradeTransformer;
+	
+	private class MockAuthenticationProvider extends AuthenticationProvider {
+		public AuthenticationEntity authenticationEntity;
+		public MockAuthenticationProvider() {
+			UserEntity authenticatedUserEntity = UserRandom.nextEntity();
+			userModel.save(authenticatedUserEntity);
+			AuthenticationEntity authenticationEntity = new AuthenticationEntity();
+			authenticationEntity.setToken("MocControllerFactory#userId: " + authenticatedUserEntity.getUserId());
+			authenticationEntity.setUserId(authenticatedUserEntity.getUserId());
+			authentModel.save(authenticationEntity);
+			this.authenticationEntity = authenticationEntity;
+		}
+		@Override
+		public AuthenticationEntity getAuthentication() {
+			return authenticationEntity;
+		}
+	}
+
+	public AuthenticationController getAuthenticationController() {
+		AuthenticationController result = new AuthenticationController();
+		result.authenticationProvider = new MockAuthenticationProvider();
+		return result;
+	}
+
 	public TradeController getTradeController() {
 		TradeController result = new TradeController();
 		result.authorization = authorization;
@@ -96,5 +77,5 @@ public class MockControllerFactory {
 		result.authenticationProvider = new MockAuthenticationProvider();
 		return result;
 	}
-	
+
 }
