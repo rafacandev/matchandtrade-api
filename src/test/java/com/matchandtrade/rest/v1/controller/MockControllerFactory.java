@@ -1,14 +1,13 @@
 package com.matchandtrade.rest.v1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.model.AuthenticationModel;
 import com.matchandtrade.model.UserModel;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.test.random.UserRandom;
 
 /**
@@ -24,39 +23,46 @@ import com.matchandtrade.test.random.UserRandom;
  *
  */
 @Component
-public class MockAuthenticationControllerFactory {
+public class MockControllerFactory {
 
 	@Autowired
 	AuthenticationModel authenticationModel;
 	@Autowired
 	UserModel userModel;
 
-	public MockAuthenticationController getMockTradeController() {
-		MockAuthenticationController result = new MockAuthenticationController(authenticationModel);
-
-		UserEntity authenticatedUserEntity = UserRandom.nextEntity();
-		userModel.save(authenticatedUserEntity);
-		
-		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
-		authenticationEntity.setToken("MockUserControllerFactory - userId: " + authenticatedUserEntity.getUserId());
-		authenticationEntity.setUserId(authenticatedUserEntity.getUserId());
-		authenticationModel.save(authenticationEntity);
-		result.authenticationEntity = authenticationEntity;
-		
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), authenticationEntity.getToken());
-
-		result.setHttpServletRequest(request);
-		result.authenticatedUserEntity = authenticatedUserEntity;
-		return result;
-	}
 	
 	public class MockAuthenticationController extends AuthenticationController {
 		public MockAuthenticationController(AuthenticationModel authenticationModel) {
 			this.authenticationModel = authenticationModel;
 		}
+		public AuthenticationModel authenticationModel;
 		public UserEntity authenticatedUserEntity;
 		public AuthenticationEntity authenticationEntity;
+	}
+	
+	public AuthenticationController getAuthenticationController() {
+		UserEntity authenticatedUserEntity = UserRandom.nextEntity();
+		userModel.save(authenticatedUserEntity);
+		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
+		authenticationEntity.setToken("MocControllerFactory#userId: " + authenticatedUserEntity.getUserId());
+		authenticationEntity.setUserId(authenticatedUserEntity.getUserId());
+		authenticationModel.save(authenticationEntity);
+		
+		
+		AuthenticationController result = new AuthenticationController();
+		result.authenticationProvider = new MockAuthenticationProvider(authenticationEntity);
+		return result;
+	}
+	
+	public class MockAuthenticationProvider extends AuthenticationProvider {
+		public AuthenticationEntity authenticationEntity;
+		public MockAuthenticationProvider(AuthenticationEntity authenticationEntity) {
+			this.authenticationEntity = authenticationEntity;
+		}
+		@Override
+		public AuthenticationEntity getAuthentication() {
+			return authenticationEntity;
+		}
 	}
 	
 }
