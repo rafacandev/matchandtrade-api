@@ -16,19 +16,16 @@ public class UserValidator {
 	private UserRespository userRepository;
 
 	/**
-	 * <i>UserJson.email</i> cannot change on PUT operations.
+	 * {@code UserJson.email} cannot change on PUT operations.
 	 * @param userId
 	 * @param json
 	 */
 	public void validatePut(UserJson json) {
 		UserEntity userEntity = userRepository.get(json.getUserId());
-		if (json.getEmail() == null || userEntity == null || !json.getEmail().equals(userEntity.getEmail())) {
+		if (json.getEmail() == null || userEntity == null || !json.getEmail().equalsIgnoreCase(userEntity.getEmail())) {
 			throw new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, "Cannot update User.email on PUT operations.");
 		}
 	}
-	
-	// TODO validatePost. email uniqueness
-	
 	
 	public void validateGetById(AuthenticationEntity authenticationEntity, Integer userId) {
 		if (!authenticationEntity.getUserId().equals(userId)) {

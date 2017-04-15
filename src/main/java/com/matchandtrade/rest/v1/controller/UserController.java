@@ -47,6 +47,7 @@ public class UserController {
 		// Validate request identity
 		authorization.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
+		// The id send on the payload is ignored
 		requestJson.setUserId(userId);
 		userValidador.validatePut(requestJson);
 		// Transform the request
