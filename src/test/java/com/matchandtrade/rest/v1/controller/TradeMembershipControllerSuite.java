@@ -6,7 +6,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	TradeMembershipControllerPostIT.class
+	TradeMembershipControllerPostIT.class,
+	TradeMembershipControllerGetIT.class
 })
 public class TradeMembershipControllerSuite {
 
