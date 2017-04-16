@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.UserRespository;
+import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.v1.json.UserJson;
 
 @Component
 public class UserTransformer {
 	
 	@Autowired
-	private UserRespository userRepository;
+	private UserRepository userRepository;
 
 	public UserEntity transform(UserJson json, boolean loadEntity) {
 		UserEntity result;

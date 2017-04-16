@@ -5,14 +5,14 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.UserRespository;
+import com.matchandtrade.repository.UserRepository;
 
 
 @Component
 public class Authorization {
 
 	@Autowired
-	private UserRespository userRepository;
+	private UserRepository userRepository;
 	
 	/**
 	 * Throws {@code AuthorizationException} if {@code authenticationEntity} or {@code authenticationEntity.getUserId()} is null

@@ -19,7 +19,7 @@ import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.AuthenticationRespository;
-import com.matchandtrade.repository.UserRespository;
+import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.StringRandom;
@@ -34,7 +34,7 @@ public class AuthenticationCallbakUT {
 	@Autowired
 	private AuthenticationRespository authenticationRepository;
 	@Autowired
-	private UserRespository userRepository;
+	private UserRepository userRepository;
 	@Autowired
 	private UserTransformer userTransformer;
 	

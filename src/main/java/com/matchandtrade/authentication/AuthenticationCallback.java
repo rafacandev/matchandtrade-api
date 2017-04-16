@@ -15,7 +15,7 @@ import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.AuthenticationRespository;
-import com.matchandtrade.repository.UserRespository;
+import com.matchandtrade.repository.UserRepository;
 
 @Component
 public class AuthenticationCallback {
@@ -27,7 +27,7 @@ public class AuthenticationCallback {
 	@Autowired
 	private AuthenticationOAuth authenticationOAuth;
 	@Autowired
-	private UserRespository userRepository;
+	private UserRepository userRepository;
 	@Autowired
 	private AuthenticationRespository authenticationRepository;
 

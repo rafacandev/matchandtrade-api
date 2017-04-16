@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.Authorization;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.UserRespository;
+import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
@@ -23,7 +23,7 @@ public class UserController {
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
-	UserRespository userRepository;
+	UserRepository userRepository;
 	@Autowired
 	UserValidator userValidador;
 	@Autowired

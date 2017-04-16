@@ -31,7 +31,10 @@ public class TradeController {
 	TradeValidator tradeValidador;
 	@Autowired
 	TradeTransformer tradeTransformer;
-	
+
+	//==============================
+	// TODO Make authenticated user the owner of the trade
+	//==============================
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeJson post(@RequestBody TradeJson requestJson) {
 		// Validate request identity

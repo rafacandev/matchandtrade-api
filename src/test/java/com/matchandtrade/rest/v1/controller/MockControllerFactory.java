@@ -7,11 +7,14 @@ import com.matchandtrade.authorization.Authorization;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.AuthenticationRespository;
+import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.repository.TradeRepository;
-import com.matchandtrade.repository.UserRespository;
+import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.v1.transformer.TradeMembershipTransformer;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
+import com.matchandtrade.rest.v1.validator.TradeMembershipValidator;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
 import com.matchandtrade.rest.v1.validator.UserValidator;
 import com.matchandtrade.test.random.UserRandom;
@@ -35,7 +38,7 @@ import com.matchandtrade.test.random.UserRandom;
 public class MockControllerFactory {
 
 	@Autowired
-	UserRespository userRepository;
+	UserRepository userRepository;
 	@Autowired
 	AuthenticationRespository authentRepository;
 	@Autowired
@@ -50,6 +53,14 @@ public class MockControllerFactory {
 	UserValidator userValidador;
 	@Autowired
 	UserTransformer userTransformer;
+	@Autowired
+	AuthenticationProvider authenticationProvider;
+	@Autowired
+	TradeMembershipRepository tradeMembershipRepository;
+	@Autowired
+	TradeMembershipValidator tradeMembershipValidador;
+	@Autowired
+	TradeMembershipTransformer tradeMembershipTransformer;
 	
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
@@ -87,10 +98,20 @@ public class MockControllerFactory {
 	public UserController getUserController() {
 		UserController result = new UserController();
 		result.authorization = authorization;
+		result.authenticationProvider = new MockAuthenticationProvider();
 		result.userRepository = userRepository;
 		result.userTransformer = userTransformer;
 		result.userValidador = userValidador;
+		return result;
+	}
+	
+	public TradeMembershipController getTradeMembershipController() {
+		TradeMembershipController result = new TradeMembershipController();
+		result.authorization = authorization;
 		result.authenticationProvider = new MockAuthenticationProvider();
+		result.tradeMembershipRepository = tradeMembershipRepository;
+		result.tradeMembershipTransformer = tradeMembershipTransformer;
+		result.tradeMembershipValidador = tradeMembershipValidador;
 		return result;
 	}
 

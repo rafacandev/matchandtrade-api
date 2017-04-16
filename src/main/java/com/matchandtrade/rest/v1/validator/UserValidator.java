@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.authorization.AuthorizationException;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.UserRespository;
+import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.v1.json.UserJson;
 
 @Component
 public class UserValidator {
 
 	@Autowired
-	private UserRespository userRepository;
+	private UserRepository userRepository;
 
 	/**
 	 * {@code UserJson.email} cannot change on PUT operations.

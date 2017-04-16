@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.UserRespository;
+import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.StringRandom;
 
@@ -18,7 +18,7 @@ public class AuthorizationIT {
 	@Autowired
 	private Authorization authorization;
 	@Autowired
-	private UserRespository userRepository;
+	private UserRepository userRepository;
 	
 	@Test(expected=AuthorizationException.class)
 	public void validateIdentityNegativeNull() {

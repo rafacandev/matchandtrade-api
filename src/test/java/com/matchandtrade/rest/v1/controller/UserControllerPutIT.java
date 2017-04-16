@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.UserRespository;
+import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.validator.ValidationException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -23,7 +23,7 @@ public class UserControllerPutIT {
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
-	private UserRespository userRepository;
+	private UserRepository userRepository;
 	
 	@Before
 	public void before() {

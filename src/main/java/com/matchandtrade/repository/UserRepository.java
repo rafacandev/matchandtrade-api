@@ -11,7 +11,7 @@ import com.matchandtrade.persistence.dao.UserDao;
 import com.matchandtrade.persistence.entity.UserEntity;
 
 @Repository
-public class UserRespository {
+public class UserRepository {
 
 	@Autowired
 	UserDao userDao;
