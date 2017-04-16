@@ -56,5 +56,28 @@ public class TradeMembershipControllerGetIT {
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(postResponse.getTradeId(), postResponse.getUserId(), null, null);
 		assertTrue(getResponse.getResultList().contains(postResponse));
 	}
+
+	@Test
+	public void getPositiveAll() {
+		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
+		TradeMembershipJson postResponse = fixture.post(postRequest);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, 999999);
+		assertTrue(getResponse.getResultList().contains(postResponse));
+	}
+		
+	@Test
+	public void getPositiveParametersUserId() {
+		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
+		TradeMembershipJson postResponse = fixture.post(postRequest);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, postResponse.getUserId(), null, null);
+		assertTrue(getResponse.getResultList().contains(postResponse));
+	}
 	
+	@Test
+	public void getPositiveParametersTradeId() {
+		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
+		TradeMembershipJson postResponse = fixture.post(postRequest);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(postResponse.getTradeId(), null, null, null);
+		assertTrue(getResponse.getResultList().contains(postResponse));
+	}
 }
