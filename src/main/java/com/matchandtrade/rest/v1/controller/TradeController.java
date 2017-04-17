@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.matchandtrade.authorization.Authorization;
+import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
@@ -36,7 +36,7 @@ public class TradeController {
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeJson post(@RequestBody TradeJson requestJson) {
 		// Validate request identity
-		Authorization.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		tradeValidador.validatePost(requestJson);
 		// Transform the request
@@ -58,7 +58,7 @@ public class TradeController {
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
 	public SearchResult<TradeJson> get(String name, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
-		Authorization.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (name != null) {
 			searchCriteria.addCriterion(TradeEntity.Field.name, name);
@@ -73,7 +73,7 @@ public class TradeController {
 	@RequestMapping(path="/{tradeId}", method=RequestMethod.GET)
 	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
 		// Validate request identity
-		Authorization.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Delegate to Repository layer
 		TradeEntity searchResult = tradeRepository.get(tradeId);
 		// Transform the response

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.matchandtrade.authorization.Authorization;
+import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
@@ -30,7 +30,7 @@ public class UserController {
 	@RequestMapping(path="{userId}", method=RequestMethod.GET)
 	public UserJson get(@PathVariable("userId") Integer userId) {
 		// Validate request identity
-		Authorization.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		userValidador.validateGetById(authenticationProvider.getAuthentication(), userId);
 		// Delegate to Repository layer
@@ -43,7 +43,7 @@ public class UserController {
 	@RequestMapping(path="{userId}", method=RequestMethod.PUT)
 	public UserJson put(@PathVariable("userId") Integer userId, @RequestBody UserJson requestJson) {
 		// Validate request identity
-		Authorization.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		// The id send on the payload is ignored
 		requestJson.setUserId(userId);

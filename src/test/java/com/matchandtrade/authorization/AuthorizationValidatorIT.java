@@ -13,21 +13,20 @@ import com.matchandtrade.test.random.StringRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class AuthorizationIT {
+public class AuthorizationValidatorIT {
 
 	@Autowired
 	private UserRepository userRepository;
 	
 	@Test(expected=AuthorizationException.class)
 	public void validateIdentityNegativeNull() {
-		Authorization.validateIdentity(null);
+		AuthorizationValidator.validateIdentity(null);
 	}
 	
 	@Test(expected=AuthorizationException.class)
 	public void validateIdentityNegativeInvalidUser() {
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
-		authenticationEntity.setAuthenticationId(-1);
-		Authorization.validateIdentity(authenticationEntity);
+		AuthorizationValidator.validateIdentity(authenticationEntity);
 	}
 	
 	public void validateIdentityPositive() {
@@ -37,7 +36,7 @@ public class AuthorizationIT {
 		userRepository.save(userEntity);
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
 		authenticationEntity.setUser(userEntity);
-		Authorization.validateIdentity(authenticationEntity);
+		AuthorizationValidator.validateIdentity(authenticationEntity);
 	}
 	
 }

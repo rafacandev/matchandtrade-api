@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.matchandtrade.authorization.Authorization;
+import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
@@ -33,7 +33,7 @@ public class TradeMembershipController {
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeMembershipJson post(@RequestBody TradeMembershipJson requestJson) {
 		// Validate request identity
-		Authorization.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		tradeMembershipValidador.validatePost(requestJson);
 		// Transform the request
@@ -48,7 +48,7 @@ public class TradeMembershipController {
 	@RequestMapping(path="/{tradeMembershipId}", method=RequestMethod.GET)
 	public TradeMembershipJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId) {
 		// Validate request identity
-		Authorization.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Delegate to Repository layer
 		TradeMembershipEntity searchResult = tradeMembershipRepository.get(tradeMembershipId);
 		// Transform the response
@@ -59,7 +59,7 @@ public class TradeMembershipController {
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
 	public SearchResult<TradeMembershipJson> get(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
-		Authorization.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (userId != null) {
 			searchCriteria.addCriterion(TradeMembershipEntity.Field.userId, userId);
