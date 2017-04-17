@@ -35,8 +35,8 @@ public class UserControllerGetIT {
 	
 	@Test
 	public void getPositive() {
-		UserJson response = fixture.get(fixture.authenticationProvider.getAuthentication().getUserId());
-		assertEquals(fixture.authenticationProvider.getAuthentication().getUserId(), response.getUserId());
+		UserJson response = fixture.get(fixture.authenticationProvider.getAuthentication().getUser().getUserId());
+		assertEquals(fixture.authenticationProvider.getAuthentication().getUser().getUserId(), response.getUserId());
 	}
 
 }

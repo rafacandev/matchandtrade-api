@@ -1,12 +1,12 @@
 package com.matchandtrade.authentication;
 
 /**
- * Immutable class to hold authentication values.
+ * Immutable POJO to hold authentication values.
  * 
  * @author rafael.santos.bra@gmail.com
  *
  */
-public class AuthenticationResponseJson {
+public class AuthenticationResponsePojo {
 
 	private Integer userId;
 	private Boolean isNewUser;
@@ -14,7 +14,7 @@ public class AuthenticationResponseJson {
 	private String name;
 	private String authorizationToken;
 
-	public AuthenticationResponseJson(
+	public AuthenticationResponsePojo(
 			Integer userId,
 			Boolean isNewUser,
 			String email,

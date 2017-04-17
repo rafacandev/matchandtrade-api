@@ -16,21 +16,18 @@ import com.matchandtrade.test.random.StringRandom;
 public class AuthorizationIT {
 
 	@Autowired
-	private Authorization authorization;
-	@Autowired
 	private UserRepository userRepository;
 	
 	@Test(expected=AuthorizationException.class)
 	public void validateIdentityNegativeNull() {
-		authorization.validateIdentity(null);
+		Authorization.validateIdentity(null);
 	}
 	
 	@Test(expected=AuthorizationException.class)
 	public void validateIdentityNegativeInvalidUser() {
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
 		authenticationEntity.setAuthenticationId(-1);
-		authenticationEntity.setUserId(-1);
-		authorization.validateIdentity(authenticationEntity);
+		Authorization.validateIdentity(authenticationEntity);
 	}
 	
 	public void validateIdentityPositive() {
@@ -39,8 +36,8 @@ public class AuthorizationIT {
 		userEntity.setName(StringRandom.nextName());
 		userRepository.save(userEntity);
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
-		authenticationEntity.setUserId(userEntity.getUserId());
-		authorization.validateIdentity(authenticationEntity);
+		authenticationEntity.setUser(userEntity);
+		Authorization.validateIdentity(authenticationEntity);
 	}
 	
 }

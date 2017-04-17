@@ -28,7 +28,7 @@ public class UserValidator {
 	}
 	
 	public void validateGetById(AuthenticationEntity authenticationEntity, Integer userId) {
-		if (!authenticationEntity.getUserId().equals(userId)) {
+		if (!authenticationEntity.getUser().getUserId().equals(userId)) {
 			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
 		}
 	}

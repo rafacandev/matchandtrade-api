@@ -52,10 +52,10 @@ public class AuthenticationCallback {
 				authenticationProperties.getRedirectURI());
 		
 		// oAuth Step 5. Obtain user information from the ID token
-		AuthenticationResponseJson userInfoFromAuthenticationAuthority = authenticationOAuth.obtainUserInformation(accessToken);
+		AuthenticationResponsePojo userInfoFromAuthenticationAuthority = authenticationOAuth.obtainUserInformation(accessToken);
 		
 		// oAuth Step 6. Authenticate the user
-		AuthenticationResponseJson persistedUserInfo = updateUserInfo(userInfoFromAuthenticationAuthority.getEmail(), userInfoFromAuthenticationAuthority.getName());
+		AuthenticationResponsePojo persistedUserInfo = updateUserInfo(userInfoFromAuthenticationAuthority.getEmail(), userInfoFromAuthenticationAuthority.getName());
 		updateAuthenticationInfo(authenticationEntity, persistedUserInfo.getUserId(), accessToken);
 		
 		/*
@@ -82,7 +82,7 @@ public class AuthenticationCallback {
 			Integer userId,
 			String accessToken) {
 		// Persists Authentication info
-		authenticationEntity.setUserId(userId);
+		authenticationEntity.setUser(userRepository.get(userId));
 		authenticationEntity.setAntiForgeryState(null);
 		authenticationEntity.setToken(accessToken);
 		authenticationRepository.save(authenticationEntity);
@@ -95,7 +95,7 @@ public class AuthenticationCallback {
 	 * 
 	 * @return updated User.
 	 */
-	private AuthenticationResponseJson updateUserInfo(String email, String name) {
+	private AuthenticationResponsePojo updateUserInfo(String email, String name) {
 		UserEntity userEntity = userRepository.get(email);
 		boolean isNewUser = false;
 		if (userEntity == null) {
@@ -105,7 +105,7 @@ public class AuthenticationCallback {
 			userRepository.save(userEntity);
 			isNewUser = true;
 		}
-		AuthenticationResponseJson result = new AuthenticationResponseJson(
+		AuthenticationResponsePojo result = new AuthenticationResponsePojo(
 				userEntity.getUserId(), 
 				isNewUser, 
 				userEntity.getEmail(), 

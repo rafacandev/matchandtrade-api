@@ -54,8 +54,8 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 	}
 
 	@Override
-	public AuthenticationResponseJson obtainUserInformation(String accessToken) throws AuthenticationException {
-		AuthenticationResponseJson result = new AuthenticationResponseJson(
+	public AuthenticationResponsePojo obtainUserInformation(String accessToken) throws AuthenticationException {
+		AuthenticationResponsePojo result = new AuthenticationResponsePojo(
 				null,
 				null,
 				EMAIL,

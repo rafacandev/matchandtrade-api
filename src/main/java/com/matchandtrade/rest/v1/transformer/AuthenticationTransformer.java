@@ -10,7 +10,7 @@ public class AuthenticationTransformer {
 			return null;
 		}
 		AuthenticationJson result = new AuthenticationJson();
-		result.setUserId(entity.getUserId());
+		result.setUserId(entity.getUser().getUserId());
 		return result;
 	}
 	

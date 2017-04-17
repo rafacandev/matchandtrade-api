@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,10 +18,20 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 	}
 
 	private Integer authenticationId;
-	private Integer userId;
 	private String antiForgeryState;
 	private String token;
+	private UserEntity user;
 	
+	@ManyToOne
+	@JoinColumn(name="user_id")
+	public UserEntity getUser() {
+		return user;
+	}
+
+	public void setUser(UserEntity user) {
+		this.user = user;
+	}
+
 	@Column(name = "anti_forgery_state", length = 500, nullable = true, unique = true)
 	public String getAntiForgeryState() {
 		return antiForgeryState;
@@ -37,11 +49,6 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 		return token;
 	}
 
-	@Column(name = "user_id", nullable = true, unique = false)
-	public Integer getUserId() {
-		return userId;
-	}
-
 	public void setAntiForgeryState(String antiForgeryState) {
 		this.antiForgeryState = antiForgeryState;
 	}
@@ -52,10 +59,6 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 
 	public void setToken(String token) {
 		this.token = token;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
 	}
 
 }

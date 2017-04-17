@@ -10,7 +10,7 @@ public interface AuthenticationOAuth {
 			String clientSecret,
 			String redirectURI) throws AuthenticationException;
 
-	public AuthenticationResponseJson obtainUserInformation(String accessToken) throws AuthenticationException;
+	public AuthenticationResponsePojo obtainUserInformation(String accessToken) throws AuthenticationException;
 	
 	public void redirectToAuthorizationAuthority(
 			HttpServletResponse response,

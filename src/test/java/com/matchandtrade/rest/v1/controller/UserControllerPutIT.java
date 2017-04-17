@@ -41,7 +41,7 @@ public class UserControllerPutIT {
 	
 	@Test
 	public void putPositive() {
-		UserEntity userEntity = userRepository.get(fixture.authenticationProvider.getAuthentication().getUserId());
+		UserEntity userEntity = userRepository.get(fixture.authenticationProvider.getAuthentication().getUser().getUserId());
 		UserJson requestJson = UserRandom.nextJson();
 		// Need to keep the same email as per validation rules
 		requestJson.setEmail(userEntity.getEmail());

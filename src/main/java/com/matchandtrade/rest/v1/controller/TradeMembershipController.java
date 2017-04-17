@@ -22,8 +22,6 @@ import com.matchandtrade.rest.v1.validator.TradeMembershipValidator;
 public class TradeMembershipController {
 
 	@Autowired
-	Authorization authorization;
-	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
 	TradeMembershipRepository tradeMembershipRepository;
@@ -35,7 +33,7 @@ public class TradeMembershipController {
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeMembershipJson post(@RequestBody TradeMembershipJson requestJson) {
 		// Validate request identity
-		authorization.validateIdentity(authenticationProvider.getAuthentication());
+		Authorization.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		tradeMembershipValidador.validatePost(requestJson);
 		// Transform the request
@@ -50,7 +48,7 @@ public class TradeMembershipController {
 	@RequestMapping(path="/{tradeMembershipId}", method=RequestMethod.GET)
 	public TradeMembershipJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId) {
 		// Validate request identity
-		authorization.validateIdentity(authenticationProvider.getAuthentication());
+		Authorization.validateIdentity(authenticationProvider.getAuthentication());
 		// Delegate to Repository layer
 		TradeMembershipEntity searchResult = tradeMembershipRepository.get(tradeMembershipId);
 		// Transform the response
@@ -61,7 +59,7 @@ public class TradeMembershipController {
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
 	public SearchResult<TradeMembershipJson> get(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
-		authorization.validateIdentity(authenticationProvider.getAuthentication());
+		Authorization.validateIdentity(authenticationProvider.getAuthentication());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (userId != null) {
 			searchCriteria.addCriterion(TradeMembershipEntity.Field.userId, userId);

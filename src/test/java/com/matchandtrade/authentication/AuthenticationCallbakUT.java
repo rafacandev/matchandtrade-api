@@ -52,7 +52,7 @@ public class AuthenticationCallbakUT {
 	@Test
 	public void doGetAtiForgeryTokenPositive() throws ServletException, IOException {
 		String antiForgeryState = StringRandom.nextString();
-		AuthenticationResponseJson sessionUserAuthentication = nextRandomUserAuthenticationPersisted(antiForgeryState);
+		AuthenticationResponsePojo sessionUserAuthentication = nextRandomUserAuthenticationPersisted(antiForgeryState);
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), antiForgeryState);
@@ -69,17 +69,17 @@ public class AuthenticationCallbakUT {
 		assertEquals(antiForgeryState, authenticationHeader);
 	}
 	
-	private AuthenticationResponseJson nextRandomUserAuthenticationPersisted(String antiForgeryState) {
+	private AuthenticationResponsePojo nextRandomUserAuthenticationPersisted(String antiForgeryState) {
 		UserEntity userEntity = userTransformer.transform(UserRandom.nextJson());
 		userRepository.save(userEntity);
-		AuthenticationResponseJson result = new AuthenticationResponseJson(
+		AuthenticationResponsePojo result = new AuthenticationResponsePojo(
 				userEntity.getUserId(), 
 				true, 
 				userEntity.getEmail(), 
 				userEntity.getName(), 
 				StringRandom.nextString());
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
-		authenticationEntity.setUserId(userEntity.getUserId());
+		authenticationEntity.setUser(userEntity);
 		authenticationEntity.setToken(userEntity.getUserId().toString());
 		authenticationEntity.setAntiForgeryState(antiForgeryState);
 		authenticationRepository.save(authenticationEntity);
