@@ -105,6 +105,8 @@ public class AuthenticationServlet extends HttpServlet {
 		String accessToken = request.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
 		AuthenticationEntity authenticationEntity = authenticationRepository.getByToken(accessToken);
 		authenticationRepository.delete(authenticationEntity);
+		// TODO remove authentication header
+		
 		// Invalidate the current session (not required, but good practice overall)
 		request.getSession().invalidate();
 		response.setStatus(Response.Status.RESET_CONTENT.getStatusCode());

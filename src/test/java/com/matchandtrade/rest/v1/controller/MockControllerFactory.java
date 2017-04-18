@@ -84,10 +84,11 @@ public class MockControllerFactory {
 
 	public TradeController getTradeController() {
 		TradeController result = new TradeController();
+		result.authenticationProvider = new MockAuthenticationProvider();
 		result.tradeRepository = tradeRepository;
 		result.tradeTransformer = tradeTransformer;
 		result.tradeValidador = tradeValidador;
-		result.authenticationProvider = new MockAuthenticationProvider();
+		result.tradeMembershipRepository = tradeMembershipRepository;
 		return result;
 	}
 	

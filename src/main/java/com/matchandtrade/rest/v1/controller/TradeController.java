@@ -11,6 +11,7 @@ import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
@@ -43,13 +44,12 @@ public class TradeController {
 		TradeEntity tradeEntity = tradeTransformer.transform(requestJson, false);
 		// Delegate to Repository layer
 		tradeRepository.save(tradeEntity);
-		//==============================
-		// TODO Make authenticated user the owner of the trade
-		//==============================
-//		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();
-//		tradeMembershipEntity.setTrade(tradeEntity);
-//		tradeMembershipEntity.setUser(user);
-//		tradeMembershipRepository.save(entity);
+		// Make authenticated user the owner of the trade
+		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();
+		tradeMembershipEntity.setTrade(tradeEntity);
+		tradeMembershipEntity.setUser(authenticationProvider.getAuthentication().getUser());
+		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
+		tradeMembershipRepository.save(tradeMembershipEntity);
 		// Transform the response
 		TradeJson result = TradeTransformer.transform(tradeEntity);
 		return result;

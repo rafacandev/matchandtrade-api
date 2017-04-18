@@ -1,3 +1,4 @@
+
 package com.matchandtrade.authentication;
 
 import java.io.IOException;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
-	public static final String EMAIL = "testing.email@test.com";
 	public static final String NAME = "AuthenticationOAuthExistingUserMock";
 
 	private String buidRandomAccessToken() {
@@ -58,7 +58,7 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 		AuthenticationResponsePojo result = new AuthenticationResponsePojo(
 				null,
 				null,
-				EMAIL,
+				System.currentTimeMillis() + "@test.com",
 				NAME,
 				buidRandomAccessToken());
 		return result;

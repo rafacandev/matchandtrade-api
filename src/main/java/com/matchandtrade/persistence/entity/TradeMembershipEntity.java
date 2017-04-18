@@ -32,6 +32,7 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	private Integer tradeMembershipId;
 	private TradeEntity trade;
 	private UserEntity user;
+	private Type type;
 
 	@OneToOne
 	@JoinColumn(name="trade_id")
@@ -46,6 +47,11 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 		return tradeMembershipId;
 	}
 
+	@Column(name="type")
+	public Type getType() {
+		return type;
+	}
+
 	@OneToOne
 	@JoinColumn(name="user_id")
 	public UserEntity getUser() {
@@ -58,6 +64,10 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 
 	public void setTradeMembershipId(Integer tradeMembershipId) {
 		this.tradeMembershipId = tradeMembershipId;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public void setUser(UserEntity user) {
