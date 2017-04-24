@@ -54,6 +54,28 @@ public class TradeController {
 		TradeJson result = TradeTransformer.transform(tradeEntity);
 		return result;
 	}
+	
+	@RequestMapping(path="/{tradeId}", method=RequestMethod.PUT)
+	public TradeJson put(@PathVariable Integer tradeId, @RequestBody TradeJson requestJson) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		requestJson.setTradeId(tradeId);
+		tradeValidador.validatePut(requestJson, authenticationProvider.getAuthentication().getUser());
+		// Transform the request
+		TradeEntity tradeEntity = tradeTransformer.transform(requestJson, false);
+		// Delegate to Repository layer
+		tradeRepository.save(tradeEntity);
+		// Make authenticated user the owner of the trade
+		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();
+		tradeMembershipEntity.setTrade(tradeEntity);
+		tradeMembershipEntity.setUser(authenticationProvider.getAuthentication().getUser());
+		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
+		tradeMembershipRepository.save(tradeMembershipEntity);
+		// Transform the response
+		TradeJson result = TradeTransformer.transform(tradeEntity);
+		return result;
+	}
 
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
 	public SearchResult<TradeJson> get(String name, Integer _pageNumber, Integer _pageSize) {
