@@ -62,4 +62,17 @@ public class TradeValidator {
 		}
 		validatePost(json);
 	}
+	
+	@Transactional
+	public void validateDelete(Integer tradeId) {
+		if (tradeId == null) {
+			throw new ValidationException(ValidationException.ErrorType.MANDATORY_PARAMETER, "tradeId is mandatory.");
+		}
+		
+		TradeEntity tradeEntity = tradeRepository.get(tradeId);
+		if (tradeEntity == null) {
+			throw new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, "Did not find a Trade with tradeId: " + tradeId);
+		}
+	}
+
 }

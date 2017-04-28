@@ -13,6 +13,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -122,5 +124,16 @@ public class RestResponseAdviceUT {
 		assertEquals(1, totalCount.size());
 		assertTrue(totalCount.contains("1"));
 	}
+	
+	@Test
+	public void voidResponseEntity(){
+		// Test setup
+		RestResponseAdvice adivice = new RestResponseAdvice();
+		ResponseEntity<Void> body = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		ResponseEntity<Void> response = (ResponseEntity<Void>) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
+		// Assert the response
+		assertEquals(204, response.getStatusCode().value());
+	}
+
 
 }

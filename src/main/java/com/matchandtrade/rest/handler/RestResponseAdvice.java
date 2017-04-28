@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -91,6 +92,12 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 			
 			return searchResult.getResultList();
 		}
+		
+		if (body instanceof HttpStatus) {
+			HttpStatus status = (HttpStatus) body;
+			response.setStatusCode(status);
+		}
+		
 		return body;
 	}
 
