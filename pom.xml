@@ -154,7 +154,6 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>${com.h2database.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -169,7 +168,6 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>${org.apache.httpcomponents.httpclient}</version>
 		</dependency>
 
 		<!-- Apache Commons CLI -->
