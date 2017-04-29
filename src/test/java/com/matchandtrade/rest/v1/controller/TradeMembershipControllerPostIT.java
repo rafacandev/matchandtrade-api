@@ -51,4 +51,15 @@ public class TradeMembershipControllerPostIT {
 		requestJson.setTradeId(-1);
 		fixture.post(requestJson);
 	}
+	
+	/*
+	 * "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.
+	 */
+	@Test(expected=RestException.class)
+	public void postNegativeUniqueTradeIdAndUserId() {
+		TradeMembershipJson requestJson = tradeMembershipRandom.nextJson();
+		fixture.post(requestJson);
+		fixture.post(requestJson);
+	}
+
 }

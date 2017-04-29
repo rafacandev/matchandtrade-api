@@ -20,4 +20,5 @@ public class TradeMembershipDao extends Dao<TradeMembershipEntity> {
 	public SearchResult<TradeMembershipEntity> search(SearchCriteria searchCriteria) {
 		return searchableDao.search(searchCriteria, criteriaBuilder);
 	}
+
 }

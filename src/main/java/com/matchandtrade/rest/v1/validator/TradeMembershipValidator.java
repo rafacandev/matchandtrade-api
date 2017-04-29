@@ -46,4 +46,11 @@ public class TradeMembershipValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.");
 		}
 	}
+
+	public void validateDelete(Integer tradeMembershipId) {
+		TradeMembershipEntity tm = tradeMembershipRepository.get(tradeMembershipId);
+		if (tm == null) {
+			throw new RestException(HttpStatus.NOT_FOUND);
+		}
+	}
 }

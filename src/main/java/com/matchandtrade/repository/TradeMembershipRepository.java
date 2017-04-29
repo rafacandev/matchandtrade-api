@@ -30,4 +30,10 @@ public class TradeMembershipRepository {
 		return tradeMembershipDao.search(searchCriteria);
 	}
 
+	@Transactional
+	public void delete(Integer tradeMembershipId) {
+		TradeMembershipEntity tm = get(tradeMembershipId);
+		tradeMembershipDao.delete(tm);
+	}
+
 }

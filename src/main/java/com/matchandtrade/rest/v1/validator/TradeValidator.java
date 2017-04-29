@@ -70,10 +70,6 @@ public class TradeValidator {
 	
 	@Transactional
 	public void validateDelete(Integer tradeId) {
-		if (tradeId == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "tradeId is mandatory.");
-		}
-		
 		TradeEntity tradeEntity = tradeRepository.get(tradeId);
 		if (tradeEntity == null) {
 			throw new RestException(HttpStatus.NOT_FOUND);

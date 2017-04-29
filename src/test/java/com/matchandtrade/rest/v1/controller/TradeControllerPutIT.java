@@ -3,7 +3,6 @@ package com.matchandtrade.rest.v1.controller;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ public class TradeControllerPutIT {
 	}
 	
 	@Test
-	@Ignore
 	public void putPositive() {
 		TradeJson randomTrade = TradeRandom.nextJson();
 		TradeJson tradePostResponse = fixture.post(randomTrade);
@@ -42,7 +40,14 @@ public class TradeControllerPutIT {
 	}
 
 	@Test(expected=RestException.class)
-	@Ignore
+	public void putNegativeNotFound() {
+		// Try to PUT a trade that does not exist
+		TradeJson tradePutRequest = TradeRandom.nextJson();
+		tradePutRequest.setTradeId(-1);
+		fixture.put(-1, tradePutRequest);
+	}
+	
+	@Test(expected=RestException.class)
 	public void putNegativeNotTradeOwner() {
 		// Create a new trade. By default the owner is the authenticated user
 		TradeJson tradePostResponse = fixture.post(TradeRandom.nextJson());
@@ -51,8 +56,7 @@ public class TradeControllerPutIT {
 		// Get a new TradeController with new authentication
 		fixture = mockControllerFactory.getTradeController();
 		// Try to PUT as a different (not a trade owner)
-		TradeJson tradePutResponse = fixture.put(tradePostResponse.getTradeId(), tradePostResponse);
-		assertEquals(randomName, tradePutResponse.getName());
+		fixture.put(tradePostResponse.getTradeId(), tradePostResponse);
 	}
 	
 }

@@ -9,36 +9,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.v1.json.TradeJson;
+import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.TradeRandom;
+import com.matchandtrade.test.random.TradeMembershipRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class TradeControllerDeleteIT {
+public class TradeMembershipControllerDeleteIT {
 	
-	private TradeController fixture;
+	private TradeMembershipController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
+	@Autowired
+	private TradeMembershipRandom tradeMembershipRandom;
 	
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeController();
+			fixture = mockControllerFactory.getTradeMembershipController();
 		}
 	}
-
+	
 	@Test
 	public void deletePositive() {
-		TradeJson requestJson = TradeRandom.nextJson();
-		TradeJson responseJsonPost = fixture.post(requestJson);
-		fixture.delete(responseJsonPost.getTradeId());
-		assertNull(fixture.get(responseJsonPost.getTradeId()));
+		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
+		TradeMembershipJson postResponse = fixture.post(postRequest);
+		fixture.delete(postResponse.getTradeMembershipId());
+		TradeMembershipJson getResponse = fixture.get(postResponse.getTradeMembershipId());
+		assertNull(getResponse);
 	}
 	
 	@Test(expected=RestException.class)
-	public void deleteNegativeInvalidTrade() {
+	public void deleteNegative() {
 		fixture.delete(-1);
 	}
-	
+
 }
