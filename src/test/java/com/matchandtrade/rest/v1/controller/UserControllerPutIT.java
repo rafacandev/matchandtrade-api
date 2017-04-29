@@ -10,8 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.UserRepository;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.UserJson;
-import com.matchandtrade.rest.v1.validator.ValidationException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.UserRandom;
 
@@ -32,7 +32,7 @@ public class UserControllerPutIT {
 		}
 	}
 	
-	@Test(expected=ValidationException.class)
+	@Test(expected=RestException.class)
 	public void putNegativeUnauthorizedResource() {
 		// Trying to edit a resource of another user
 		UserJson requestJson = UserRandom.nextJson();

@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.v1.validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.common.Pagination;
@@ -10,6 +11,7 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.repository.UserRepository;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 
 @Component
@@ -31,17 +33,17 @@ public class TradeMembershipValidator {
 	 */
 	public void validatePost(TradeMembershipJson json) {
 		if (userRepository.get(json.getUserId()) == null) {
-			throw new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, "TradeMembership.userId must be valid.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.userId must refer to an existing User.");
 		}
 		if (tradeRepository.get(json.getTradeId()) == null) {
-			throw new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, "TradeMembership.tradeId must be valid.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.tradeId must refer to an existing Trade.");
 		}
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1, 1));
 		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeId, json.getTradeId());
 		searchCriteria.addCriterion(TradeMembershipEntity.Field.userId, json.getUserId());
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
 		if (searchResult.getResultList().size() > 0) {
-			throw new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.");
 		}
 	}
 }

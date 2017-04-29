@@ -9,8 +9,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeJson;
-import com.matchandtrade.rest.v1.validator.ValidationException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeRandom;
 
@@ -37,21 +37,21 @@ public class TradeControllerPostIT {
 		assertEquals(requestJson.getName(), responseJson.getName());
 	}
 	
-	@Test(expected=ValidationException.class)
+	@Test(expected=RestException.class)
 	public void postNegativeValidationSameName() {
 		TradeJson requestJson = TradeRandom.nextJson();
 		fixture.post(requestJson);
 		fixture.post(requestJson);
 	}
 
-	@Test(expected=ValidationException.class)
+	@Test(expected=RestException.class)
 	public void postNegativeValidationNameLegth() {
 		TradeJson requestJson = TradeRandom.nextJson();
 		requestJson.setName("ab");
 		fixture.post(requestJson);
 	}	
 	
-	@Test(expected=ValidationException.class)
+	@Test(expected=RestException.class)
 	public void postNegativeValidationNameMandatory() {
 		TradeJson requestJson = TradeRandom.nextJson();
 		requestJson.setName(null);

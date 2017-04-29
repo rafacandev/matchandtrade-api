@@ -15,7 +15,7 @@ public class RestException extends RuntimeException {
 	}
 
 	public RestException(HttpStatus httpStatus, String description) {
-		super(httpStatus.getReasonPhrase() + " - " + description);
+		super("HTTP Status " + httpStatus.value() + " " + httpStatus.getReasonPhrase() + ": " + description);
 		this.httpStatus = httpStatus;
 		this.description = description;
 	}

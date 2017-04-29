@@ -31,36 +31,39 @@ public class TradeValidator {
 	 * @param json
 	 */
 	public void validatePost(TradeJson json) {
-		String tradeJsonNameConstraint = "Trade.name is mandatory, unique and must contain at least 3 characters.";
 		if (json.getName() == null || json.getName().length() < 3) {
-			throw new ValidationException(ValidationException.ErrorType.MANDATORY_PARAMETER, tradeJsonNameConstraint);
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and must contain at least 3 characters.");
 		}
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(TradeEntity.Field.name, json.getName());
 		SearchResult<TradeEntity> searchResult = tradeRepository.search(searchCriteria);
 		if (searchResult.getResultList().size() > 0) {
-			throw new ValidationException(ValidationException.ErrorType.UNIQUE_PARAMETER, tradeJsonNameConstraint);
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
 		}
 	}
 
+	/**
+	 * Validates if the {@code Trade.tradeId} exists otherwise return status NOT_FOUND
+	 * Validates if authenticated {@code user} is the owner of the trade
+	 * @param json
+	 * @param user
+	 */
 	@Transactional
 	public void validatePut(TradeJson json, UserEntity user) {
-		if (json.getTradeId() == null) {
-			throw new ValidationException(ValidationException.ErrorType.MANDATORY_PARAMETER, "Trade.tradeId is mandatory.");
+		// Validates if the Trade.tradeId exists otherwise return status NOT_FOUND
+		TradeEntity t = tradeRepository.get(json.getTradeId());
+		if (t == null) {
+			throw new RestException(HttpStatus.NOT_FOUND);
 		}
 		
+		// Validates if authenticated user is the owner of the trade
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
 		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeId, json.getTradeId());
 		searchCriteria.addCriterion(TradeMembershipEntity.Field.userId, user.getUserId());
+		searchCriteria.addCriterion(TradeMembershipEntity.Field.type, TradeMembershipEntity.Type.OWNER);
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
-
 		if (searchResult.getResultList().isEmpty()) {
-			throw new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, "Authenticated user is a member of Trade.tradeId: " + json.getTradeId());
-		}
-		
-		TradeMembershipEntity tradeMembershipEntity = searchResult.getResultList().get(0);
-		if (tradeMembershipEntity.getUser().getUserId() != user.getUserId()) {
-			throw new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, "Authenticated user is a member the owner of Trade.tradeId: " + json.getTradeId());
+			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not the owner of Trade.tradeId: " + json.getTradeId());
 		}
 		validatePost(json);
 	}
@@ -68,7 +71,7 @@ public class TradeValidator {
 	@Transactional
 	public void validateDelete(Integer tradeId) {
 		if (tradeId == null) {
-			throw new ValidationException(ValidationException.ErrorType.MANDATORY_PARAMETER, "tradeId is mandatory.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "tradeId is mandatory.");
 		}
 		
 		TradeEntity tradeEntity = tradeRepository.get(tradeId);

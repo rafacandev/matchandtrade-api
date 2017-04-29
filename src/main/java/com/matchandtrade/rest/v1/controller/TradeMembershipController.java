@@ -37,11 +37,12 @@ public class TradeMembershipController {
 		// Validate the request
 		tradeMembershipValidador.validatePost(requestJson);
 		// Transform the request
-		TradeMembershipEntity tradeEntity = tradeMembershipTransformer.transform(requestJson, false);
+		TradeMembershipEntity tradeMembershipEntity = tradeMembershipTransformer.transform(requestJson);
+		tradeMembershipEntity.setType(TradeMembershipEntity.Type.MEMBER);
 		// Delegate to Repository layer
-		tradeMembershipRepository.save(tradeEntity);
+		tradeMembershipRepository.save(tradeMembershipEntity);
 		// Transform the response
-		TradeMembershipJson result = TradeMembershipTransformer.transform(tradeEntity);
+		TradeMembershipJson result = TradeMembershipTransformer.transform(tradeMembershipEntity);
 		return result;
 	}
 	

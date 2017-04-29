@@ -8,8 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
-import com.matchandtrade.rest.v1.validator.ValidationException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 
@@ -38,14 +38,14 @@ public class TradeMembershipControllerPostIT {
 		assertNotNull(responseJson.getTradeMembershipId());
 	}
 	
-	@Test(expected=ValidationException.class)
+	@Test(expected=RestException.class)
 	public void postNegativeInvalidUser() {
 		TradeMembershipJson requestJson = tradeMembershipRandom.nextJson();
 		requestJson.setUserId(-1);
 		fixture.post(requestJson);
 	}
 	
-	@Test(expected=ValidationException.class)
+	@Test(expected=RestException.class)
 	public void postNegativeInvalidTrade() {
 		TradeMembershipJson requestJson = tradeMembershipRandom.nextJson();
 		requestJson.setTradeId(-1);

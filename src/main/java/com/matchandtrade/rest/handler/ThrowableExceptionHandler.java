@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.v1.validator.ValidationException;
 
 @ControllerAdvice
 public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
@@ -24,6 +23,7 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
     ResponseEntity<Object> handleControllerException(HttpServletRequest request, Throwable exception) {
 		// Default is null, which results in no response body
 		Object responseEntityObject = null;
+		
 		// Default is http status 500
     	HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
     	if (exception instanceof RestException) {
@@ -32,14 +32,6 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
     		if (e.getDescription() != null) {
         		responseEntityObject = buildRestErrorJson(e);
 			}
-		} else if (exception instanceof ValidationException) {
-			ValidationException e = (ValidationException) exception;
-			if (e.getErrorType() == ValidationException.ErrorType.RESOURCE_NOT_FOUND) {
-				status = HttpStatus.NOT_FOUND;
-			} else {
-				status = HttpStatus.BAD_REQUEST;
-			}
-			responseEntityObject = buildRestErrorJson(e);
 		} else {
 			logger.error("Error proccessing request to URI: [{}]. Exception message: [{}].", request.getRequestURI(), exception.getMessage(), exception);
 			RestErrorJson restErrorJson = new RestErrorJson();
