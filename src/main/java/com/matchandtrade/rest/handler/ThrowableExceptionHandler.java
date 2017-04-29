@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.matchandtrade.authorization.AuthorizationException;
-import com.matchandtrade.authorization.AuthorizationException.Type;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.validator.ValidationException;
 
@@ -23,38 +21,41 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Throwable.class)
     @ResponseBody
-    ResponseEntity<RestErrorJson> handleControllerException(HttpServletRequest request, Throwable exception) {
-    	RestErrorJson restErrorJson = new RestErrorJson();
+    ResponseEntity<Object> handleControllerException(HttpServletRequest request, Throwable exception) {
+		// Default is null, which results in no response body
+		Object responseEntityObject = null;
+		// Default is http status 500
     	HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
     	if (exception instanceof RestException) {
     		RestException e = (RestException) exception;
     		status = e.getHttpStatus();
-    		e.getErrors().forEach( (k, v) -> {
-    			restErrorJson.getErrors().add(new RestError(k,v));
-    		});
-		} else if (exception instanceof AuthorizationException) {
-			AuthorizationException e = (AuthorizationException) exception;
-    		if (e.getType() == Type.UNAUTHORIZED) {
-				status = HttpStatus.UNAUTHORIZED;
-			} else if (e.getType() == Type.FORBIDDEN) {
-				status = HttpStatus.FORBIDDEN;
+    		if (e.getDescription() != null) {
+        		responseEntityObject = buildRestErrorJson(e);
 			}
-    		restErrorJson.getErrors().add(new RestError(status.toString(), status.getReasonPhrase()));
 		} else if (exception instanceof ValidationException) {
 			ValidationException e = (ValidationException) exception;
-			status = HttpStatus.UNPROCESSABLE_ENTITY;
-			e.getErrors().forEach( (k, v) -> 
-				restErrorJson.getErrors().add(new RestError(k.toString(), v))
-			);
+			if (e.getErrorType() == ValidationException.ErrorType.RESOURCE_NOT_FOUND) {
+				status = HttpStatus.NOT_FOUND;
+			} else {
+				status = HttpStatus.BAD_REQUEST;
+			}
+			responseEntityObject = buildRestErrorJson(e);
 		} else {
 			logger.error("Error proccessing request to URI: [{}]. Exception message: [{}].", request.getRequestURI(), exception.getMessage(), exception);
-			restErrorJson.getErrors().add(new RestError(status.toString(), status.getReasonPhrase()));
+			RestErrorJson restErrorJson = new RestErrorJson();
+			restErrorJson.setMessage("Unknown error. " + status.getReasonPhrase());
+			responseEntityObject = restErrorJson;
 		}
-    	
-    	ResponseEntity<RestErrorJson> entity = new ResponseEntity<>(restErrorJson, status);
+    	ResponseEntity<Object> entity = new ResponseEntity<>(responseEntityObject, status);
     	return entity;
     }
-    
+
+	private Object buildRestErrorJson(Exception e) {
+		Object responseEntityObject;
+		RestErrorJson restErrorJson = new RestErrorJson();
+		restErrorJson.setMessage(e.getMessage());
+		responseEntityObject = restErrorJson;
+		return responseEntityObject;
+	}
 
 }

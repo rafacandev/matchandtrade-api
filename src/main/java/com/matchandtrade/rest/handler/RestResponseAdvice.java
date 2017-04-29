@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -65,15 +64,13 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		// If body is null, then return HttpStatus.NOT_FOUND
 		if (body == null) {
 			response.setStatusCode(HttpStatus.NOT_FOUND);
-			RestErrorJson errorJson = new RestErrorJson();
-			errorJson.getErrors().add(new RestError(HttpStatus.NOT_FOUND.name(), "Did not find any resource for the URI: " + request.getURI()));
-			return errorJson;
+			return null;
 		}
+		
 		logger.debug("Processing body instance of [{}] for URI [{}].", body.getClass(), request.getURI());
 		// If is a JsonLinkSupport, then build its links using Spring HATEOAS.
 		if (body instanceof JsonLinkSupport) {
 			((JsonLinkSupport) body).buildLinks();
-			return body;
 		}
 		/*
 		 * SearchResult is going to be serialized as an JSON array.
@@ -89,15 +86,9 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 			PaginationHeader paginationHeader = buildPaginationHeader(request, searchResult);
 			// Handle headers
 			handlePaginationHeaders(response, paginationHeader);
-			
 			return searchResult.getResultList();
 		}
-		
-		if (body instanceof HttpStatus) {
-			HttpStatus status = (HttpStatus) body;
-			response.setStatusCode(status);
-		}
-		
+
 		return body;
 	}
 

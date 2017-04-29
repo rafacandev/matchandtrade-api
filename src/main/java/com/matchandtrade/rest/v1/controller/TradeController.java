@@ -1,11 +1,11 @@
 package com.matchandtrade.rest.v1.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
@@ -80,14 +80,13 @@ public class TradeController {
 	}
 	
 	@RequestMapping(path="/{tradeId}", method=RequestMethod.DELETE)
-	public HttpStatus delete(@PathVariable Integer tradeId) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@PathVariable Integer tradeId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		tradeValidador.validateDelete(tradeId);
 		// Delegate to Repository layer
 		tradeRepository.delete(tradeId);
-		ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		return HttpStatus.NO_CONTENT;
 	}
 
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)

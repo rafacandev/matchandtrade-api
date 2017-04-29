@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.validator.ValidationException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -36,7 +37,7 @@ public class TradeControllerDeleteIT {
 		assertNull(fixture.get(responseJsonPost.getTradeId()));
 	}
 	
-	@Test(expected=ValidationException.class)
+	@Test(expected=RestException.class)
 	public void deleteNegativeInvalidTrade() {
 		fixture.delete(-1);
 	}

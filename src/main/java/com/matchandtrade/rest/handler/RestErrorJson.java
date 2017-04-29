@@ -1,13 +1,15 @@
 package com.matchandtrade.rest.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RestErrorJson {
+	
+	private String message;
 
-	private List<RestError> errors = new ArrayList<>();
-
-	public List<RestError> getErrors() {
-		return errors;
+	public String getMessage() {
+		return message;
 	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
 }

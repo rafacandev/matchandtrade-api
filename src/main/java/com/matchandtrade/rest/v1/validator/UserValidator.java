@@ -29,7 +29,7 @@ public class UserValidator {
 	
 	public void validateGetById(AuthenticationEntity authenticationEntity, Integer userId) {
 		if (!authenticationEntity.getUser().getUserId().equals(userId)) {
-			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
+			throw new AuthorizationException(AuthorizationException.Type.FORBIDDEN);
 		}
 	}
 }

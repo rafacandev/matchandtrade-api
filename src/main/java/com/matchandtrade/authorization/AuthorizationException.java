@@ -15,7 +15,7 @@ public class AuthorizationException extends RuntimeException {
 	private Type type;
 	
 	public AuthorizationException(Type type) {
-		super("AuthorizationException type: " + type.toString());
+		super("AuthorizationException: " + type.toString());
 		this.type = type;
 	}
 	

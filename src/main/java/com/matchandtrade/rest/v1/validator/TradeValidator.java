@@ -3,6 +3,7 @@ package com.matchandtrade.rest.v1.validator;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.common.Pagination;
@@ -13,6 +14,7 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.repository.TradeRepository;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeJson;
 
 @Component
@@ -71,7 +73,7 @@ public class TradeValidator {
 		
 		TradeEntity tradeEntity = tradeRepository.get(tradeId);
 		if (tradeEntity == null) {
-			throw new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, "Did not find a Trade with tradeId: " + tradeId);
+			throw new RestException(HttpStatus.NOT_FOUND);
 		}
 	}
 

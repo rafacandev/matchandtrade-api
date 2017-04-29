@@ -10,11 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -29,37 +28,31 @@ import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.UserRandom;
 
-
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
 public class RestResponseAdviceUT {
 	
-	private ServerHttpResponse serverHttpResponse = new ServletServerHttpResponse(new MockHttpServletResponse());
-	private ServerHttpRequest serverHttpResquest = new ServletServerHttpRequest(new MockHttpServletRequest());
+	private ServerHttpResponse serverHttpResponse;
+	private ServerHttpRequest serverHttpResquest;
+	
+	@Before
+	public void before() {
+		serverHttpResponse = new ServletServerHttpResponse(new MockHttpServletResponse());
+		serverHttpResquest = new ServletServerHttpRequest(new MockHttpServletRequest());
+	}
 	
 	@Test
-	public void notFound(){
+	public void bodyIsNull(){
 		// Test setup
 		RestResponseAdvice adivice = new RestResponseAdvice();
-		RestErrorJson response = (RestErrorJson) adivice.beforeBodyWrite(null, null, null, null, serverHttpResquest, serverHttpResponse);
+		adivice.beforeBodyWrite(null, null, null, null, serverHttpResquest, serverHttpResponse);
 		// Assert the response
-		assertEquals(1, response.getErrors().size());
 		ServletServerHttpResponse servletResponse = (ServletServerHttpResponse) serverHttpResponse;
 		assertEquals(404, servletResponse.getServletResponse().getStatus());
 	}
 	
 	@Test
-	public void userJsonNegative(){
-		// Test setup
-		UserJson body = UserRandom.nextJson(-1);
-		RestResponseAdvice adivice = new RestResponseAdvice();
-		UserJson response = (UserJson) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
-		// Assert the response
-		assertEquals("http://localhost/rest/v1/users/" + body.getUserId(), response.getId().getHref());
-	}
-
-	@Test
-	public void userJsonPositive(){
+	public void linkSelfPositive(){
 		// Test setup
 		UserJson body = UserRandom.nextJson(1);
 		RestResponseAdvice adivice = new RestResponseAdvice();
@@ -125,15 +118,4 @@ public class RestResponseAdviceUT {
 		assertTrue(totalCount.contains("1"));
 	}
 	
-	@Test
-	public void voidResponseEntity(){
-		// Test setup
-		RestResponseAdvice adivice = new RestResponseAdvice();
-		ResponseEntity<Void> body = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		ResponseEntity<Void> response = (ResponseEntity<Void>) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
-		// Assert the response
-		assertEquals(204, response.getStatusCode().value());
-	}
-
-
 }

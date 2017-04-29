@@ -1,6 +1,9 @@
 package com.matchandtrade.authorization;
 
+import org.springframework.http.HttpStatus;
+
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
+import com.matchandtrade.rest.RestException;
 
 public class AuthorizationValidator {
 
@@ -10,7 +13,7 @@ public class AuthorizationValidator {
 	 */
 	public static void validateIdentity(AuthenticationEntity authenticationEntity) {
 		if (authenticationEntity == null || authenticationEntity.getUser() == null) {
-			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
+			throw new RestException(HttpStatus.UNAUTHORIZED);
 		}
 	}
 

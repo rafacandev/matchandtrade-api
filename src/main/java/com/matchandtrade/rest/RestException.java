@@ -1,30 +1,27 @@
 package com.matchandtrade.rest;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 
 public class RestException extends RuntimeException {
+
 	private static final long serialVersionUID = 4093425867051566908L;
 
-	private Map<String, String> errors = new HashMap<>();
+	private String description;
 	private HttpStatus httpStatus;
 	
-	public RestException(HttpStatus httpStatus, String errorKey, String errorMessage) {
-		super("RestException with httpStatus: " + httpStatus.toString() + " - " + httpStatus.getReasonPhrase() + "; errorKey: " + errorKey + "; errorMessage: " + errorMessage);
+	public RestException(HttpStatus httpStatus) {
+		super(httpStatus.getReasonPhrase());
 		this.httpStatus = httpStatus;
-		this.errors.put(errorKey, errorMessage);
 	}
 
-	public RestException(HttpStatus httpStatus) {
-		super("RestException with httpStatus: " + httpStatus.toString() + " - " + httpStatus.getReasonPhrase() + ".");
+	public RestException(HttpStatus httpStatus, String description) {
+		super(httpStatus.getReasonPhrase() + " - " + description);
 		this.httpStatus = httpStatus;
-		this.errors.put(httpStatus.toString(), httpStatus.getReasonPhrase());
+		this.description = description;
 	}
 	
-	public Map<String, String> getErrors() {
-		return errors;
+	public String getDescription() {
+		return description;
 	}
 	
 	public HttpStatus getHttpStatus() {

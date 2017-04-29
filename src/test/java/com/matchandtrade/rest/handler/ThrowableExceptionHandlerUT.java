@@ -1,15 +1,16 @@
 package com.matchandtrade.rest.handler;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.matchandtrade.authorization.AuthorizationException;
-import com.matchandtrade.authorization.AuthorizationException.Type;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.validator.ValidationException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -17,59 +18,49 @@ import com.matchandtrade.test.TestingDefaultAnnotations;
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
 public class ThrowableExceptionHandlerUT extends ResponseEntityExceptionHandler {
-
+	
 	@Test
-	public void forbidden() {
+	public void restException() {
+		HttpServletRequest request = new MockHttpServletRequest("GET", "http://localhost/ThrowableExceptionHandlerUT");
 		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
-		AuthorizationException e = new AuthorizationException(Type.FORBIDDEN);
-		ResponseEntity<RestErrorJson> response = throwableExceptionHandler.handleControllerException(null, e);
-		
+		RestException e = new RestException(HttpStatus.FORBIDDEN);
+		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(request, e);
 		Assert.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-		Assert.assertEquals("403", response.getBody().getErrors().iterator().next().getKey());
 	}
 	
 	@Test
-	public void unauthorized() {
+	public void runtimeException() {
+		HttpServletRequest request = new MockHttpServletRequest("GET", "http://localhost/ThrowableExceptionHandlerUT");
 		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
-		AuthorizationException e = new AuthorizationException(Type.UNAUTHORIZED);
-		ResponseEntity<RestErrorJson> response = throwableExceptionHandler.handleControllerException(null, e);
-		
-		Assert.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-		Assert.assertEquals("401", response.getBody().getErrors().iterator().next().getKey());
-	}
-	
-	@Test
-	public void restExceptionBadGateway() {
-		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
-		RestException e = new RestException(HttpStatus.BAD_GATEWAY);
-		ResponseEntity<RestErrorJson> response = throwableExceptionHandler.handleControllerException(null, e);
-		
-		Assert.assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
-		Assert.assertEquals("502", response.getBody().getErrors().iterator().next().getKey());
+		RuntimeException e = new RuntimeException("TEST EXCEPTION");
+		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(request, e);
+		Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 	}
 	
 	@Test
 	public void restExceptionMultipleErrors() {
 		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
-		RestException e = new RestException(HttpStatus.CONFLICT, "firstErrorKey", "firstErrorMessage");
-		e.getErrors().put("secondErrorKey", "secondErrorMessage");
-		ResponseEntity<RestErrorJson> response = throwableExceptionHandler.handleControllerException(null, e);
-		
+		RestException e = new RestException(HttpStatus.CONFLICT);
+		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(null, e);
 		Assert.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-		Assert.assertEquals(2, response.getBody().getErrors().size());
 	}
 
 	@Test
-	public void validationException() {
+	public void validationExceptionBadRequest() {
 		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
 		String errorMessage = "Testing Invalid Operation";
 		ValidationException e = new ValidationException(ValidationException.ErrorType.INVALID_OPERATION, errorMessage);
-		ResponseEntity<RestErrorJson> response = throwableExceptionHandler.handleControllerException(null, e);
-		
-		Assert.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
-		RestError error = response.getBody().getErrors().iterator().next();
-		Assert.assertEquals(errorMessage, error.getDescription());
-		Assert.assertEquals(ValidationException.ErrorType.INVALID_OPERATION.toString(), error.getKey());
+		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(null, e);
+		Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}	
+	
+	@Test
+	public void validationExceptionResourceNotFound() {
+		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
+		String errorMessage = "Testing Invalid Operation";
+		ValidationException e = new ValidationException(ValidationException.ErrorType.RESOURCE_NOT_FOUND, errorMessage);
+		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(null, e);
+		Assert.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 	}	
 	
 }
