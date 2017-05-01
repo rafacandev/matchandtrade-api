@@ -10,6 +10,7 @@ import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.v1.transformer.TradeMembershipTransformer;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
@@ -58,6 +59,8 @@ public class MockControllerFactory {
 	TradeMembershipValidator tradeMembershipValidador;
 	@Autowired
 	TradeMembershipTransformer tradeMembershipTransformer;
+	@Autowired
+	TradeMembershipService tradeMembershipService;
 	
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
@@ -107,6 +110,7 @@ public class MockControllerFactory {
 		result.tradeMembershipRepository = tradeMembershipRepository;
 		result.tradeMembershipTransformer = tradeMembershipTransformer;
 		result.tradeMembershipValidador = tradeMembershipValidador;
+		result.tradeMembershipService = tradeMembershipService;
 		return result;
 	}
 

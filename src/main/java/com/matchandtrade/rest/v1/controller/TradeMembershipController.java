@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
-import com.matchandtrade.common.Pagination;
-import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 import com.matchandtrade.rest.v1.transformer.TradeMembershipTransformer;
 import com.matchandtrade.rest.v1.validator.TradeMembershipValidator;
@@ -31,6 +30,8 @@ public class TradeMembershipController {
 	TradeMembershipValidator tradeMembershipValidador;
 	@Autowired
 	TradeMembershipTransformer tradeMembershipTransformer;
+	@Autowired
+	TradeMembershipService tradeMembershipService;
 	
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeMembershipJson post(@RequestBody TradeMembershipJson requestJson) {
@@ -40,9 +41,8 @@ public class TradeMembershipController {
 		tradeMembershipValidador.validatePost(requestJson);
 		// Transform the request
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipTransformer.transform(requestJson);
-		tradeMembershipEntity.setType(TradeMembershipEntity.Type.MEMBER);
-		// Delegate to Repository layer
-		tradeMembershipRepository.save(tradeMembershipEntity);
+		// Delegate to Service layer
+		tradeMembershipService.create(tradeMembershipEntity);
 		// Transform the response
 		TradeMembershipJson result = TradeMembershipTransformer.transform(tradeMembershipEntity);
 		return result;
@@ -52,8 +52,8 @@ public class TradeMembershipController {
 	public TradeMembershipJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Delegate to Repository layer
-		TradeMembershipEntity searchResult = tradeMembershipRepository.get(tradeMembershipId);
+		// Delegate to Service layer
+		TradeMembershipEntity searchResult = tradeMembershipService.get(tradeMembershipId);
 		// Transform the response
 		TradeMembershipJson result = TradeMembershipTransformer.transform(searchResult);
 		return result;
@@ -63,16 +63,8 @@ public class TradeMembershipController {
 	public SearchResult<TradeMembershipJson> get(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
-		if (userId != null) {
-			searchCriteria.addCriterion(TradeMembershipEntity.Field.userId, userId);
-		}
-		if (tradeId != null) {
-			searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeId, tradeId);
-		}
-		
-		// Delegate to Repository layer
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
+		// Delegate to Service layer
+		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.search(tradeId, userId, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<TradeMembershipJson> result = TradeMembershipTransformer.transform(searchResult);
 		return result;
@@ -84,8 +76,8 @@ public class TradeMembershipController {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		tradeMembershipValidador.validateDelete(tradeMembershipId);
-		// Delegate to Repository layer
-		tradeMembershipRepository.delete(tradeMembershipId);
+		// Delegate to Service layer
+		tradeMembershipService.delete(tradeMembershipId);
 	}
 	
 }
