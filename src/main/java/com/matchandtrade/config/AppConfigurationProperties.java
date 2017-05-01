@@ -10,7 +10,7 @@ public class AppConfigurationProperties {
 		AUTHENTICATION_CLIENT_ID("authentication.client.id","clientIdProperty"),
 		AUTHENTICATION_CLIENT_SECRET("authentication.client.secrete","clientSecretProperty"),
 		AUTHENTICATION_CLIENT_REDIRECT_URL("authentication.redirect.url","http://localhost:8080/authenticate/callback"),
-		AUTHENTICATION_OAUTH_CLASS("authentication.oauth.class","com.matchandtrade.authentication.AuthenticationOAuthExistingUserMock"),
+		AUTHENTICATION_OAUTH_CLASS("authentication.oauth.class","com.matchandtrade.authentication.AuthenticationOAuthNewUserMock"),
 		CONFIG_FILE("matchandtrade.config.file", "config/matchandtrade.properties"),
 		DATA_SOURCE_DRIVER_CLASS("datasource.driver.class", "org.h2.Driver"),
 		DATA_SOURCE_JDBC_URL("datasource.jdbc.url", "jdbc:h2:./target/h2db/matchandtrade"),

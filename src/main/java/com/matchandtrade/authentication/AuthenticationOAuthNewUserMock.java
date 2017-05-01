@@ -19,10 +19,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author rafael.santos.bra@gmail.com
  */
-public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth {
+public class AuthenticationOAuthNewUserMock implements AuthenticationOAuth {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
-	public static final String NAME = "AuthenticationOAuthExistingUserMock";
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthNewUserMock.class);
 
 	private String buidRandomAccessToken() {
 		Random random = new Random();
@@ -55,11 +54,14 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 
 	@Override
 	public AuthenticationResponsePojo obtainUserInformation(String accessToken) throws AuthenticationException {
+		long now = System.currentTimeMillis();
+		String email = now + "@test.com";
+		String name = now + "AuthenticationOAuthNewUserMock";
 		AuthenticationResponsePojo result = new AuthenticationResponsePojo(
 				null,
-				null,
-				System.currentTimeMillis() + "@test.com",
-				NAME,
+				true,
+				email,
+				name,
 				buidRandomAccessToken());
 		return result;
 	}
