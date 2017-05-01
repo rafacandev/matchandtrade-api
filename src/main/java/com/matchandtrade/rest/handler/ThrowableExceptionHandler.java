@@ -35,7 +35,7 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
 		} else {
 			logger.error("Error proccessing request to URI: [{}]. Exception message: [{}].", request.getRequestURI(), exception.getMessage(), exception);
 			RestErrorJson restErrorJson = new RestErrorJson();
-			restErrorJson.setMessage("Unknown error. " + status.getReasonPhrase());
+			restErrorJson.setDescription("Unknown error. " + status.getReasonPhrase());
 			responseEntityObject = restErrorJson;
 		}
     	ResponseEntity<Object> entity = new ResponseEntity<>(responseEntityObject, status);
@@ -43,11 +43,11 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 	private Object buildRestErrorJson(Exception e) {
-		Object responseEntityObject;
+		Object result;
 		RestErrorJson restErrorJson = new RestErrorJson();
-		restErrorJson.setMessage(e.getMessage());
-		responseEntityObject = restErrorJson;
-		return responseEntityObject;
+		restErrorJson.setDescription(e.getMessage());
+		result = restErrorJson;
+		return result;
 	}
 
 }

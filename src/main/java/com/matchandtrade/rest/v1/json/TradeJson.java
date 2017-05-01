@@ -37,29 +37,4 @@ public class TradeJson extends JsonLinkSupport {
 		}
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((tradeId == null) ? 0 : tradeId.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		TradeJson other = (TradeJson) obj;
-		if (tradeId == null) {
-			if (other.tradeId != null)
-				return false;
-		} else if (!tradeId.equals(other.tradeId))
-			return false;
-		return true;
-	}
-	
 }
