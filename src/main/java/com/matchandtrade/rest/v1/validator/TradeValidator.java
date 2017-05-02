@@ -76,9 +76,9 @@ public class TradeValidator {
 		}
 	}
 
-	public void validateGet(String name) {
-		if (name == null || name.isEmpty()) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is required.");
+	public void validateGet(Integer _pageSize) {
+		if (_pageSize != null && _pageSize > 50) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "_pageSize cannot be bigger than 50.");
 		}
 	}
 
