@@ -77,9 +77,7 @@ public class TradeValidator {
 	}
 
 	public void validateGet(Integer _pageSize) {
-		if (_pageSize != null && _pageSize > 50) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "_pageSize cannot be bigger than 50.");
-		}
+		PaginationValidator.validatePageSize(_pageSize);
 	}
 
 }
