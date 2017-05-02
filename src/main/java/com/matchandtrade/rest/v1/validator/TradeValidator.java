@@ -76,4 +76,10 @@ public class TradeValidator {
 		}
 	}
 
+	public void validateGet(String name) {
+		if (name == null || name.isEmpty()) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is required.");
+		}
+	}
+
 }

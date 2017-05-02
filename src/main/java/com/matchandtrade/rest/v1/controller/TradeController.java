@@ -9,14 +9,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
-import com.matchandtrade.common.Pagination;
-import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
@@ -32,9 +29,9 @@ public class TradeController {
 	@Autowired
 	TradeValidator tradeValidador;
 	@Autowired
-	TradeTransformer tradeTransformer;
+	TradeService tradeService;
 	@Autowired
-	TradeMembershipRepository tradeMembershipRepository;
+	TradeTransformer tradeTransformer;
 
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	public TradeJson post(@RequestBody TradeJson requestJson) {
@@ -43,15 +40,9 @@ public class TradeController {
 		// Validate the request
 		tradeValidador.validatePost(requestJson);
 		// Transform the request
-		TradeEntity tradeEntity = tradeTransformer.transform(requestJson, false);
-		// Delegate to Repository layer
-		tradeRepository.save(tradeEntity);
-		// Make authenticated user the owner of the trade
-		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();
-		tradeMembershipEntity.setTrade(tradeEntity);
-		tradeMembershipEntity.setUser(authenticationProvider.getAuthentication().getUser());
-		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
-		tradeMembershipRepository.save(tradeMembershipEntity);
+		TradeEntity tradeEntity = tradeTransformer.transform(requestJson);
+		// Delegate to Service layer
+		tradeService.create(tradeEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
 		TradeJson result = TradeTransformer.transform(tradeEntity);
 		return result;
@@ -65,15 +56,9 @@ public class TradeController {
 		requestJson.setTradeId(tradeId);
 		tradeValidador.validatePut(requestJson, authenticationProvider.getAuthentication().getUser());
 		// Transform the request
-		TradeEntity tradeEntity = tradeTransformer.transform(requestJson, false);
-		// Delegate to Repository layer
-		tradeRepository.save(tradeEntity);
-		// Make authenticated user the owner of the trade
-		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();
-		tradeMembershipEntity.setTrade(tradeEntity);
-		tradeMembershipEntity.setUser(authenticationProvider.getAuthentication().getUser());
-		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
-		tradeMembershipRepository.save(tradeMembershipEntity);
+		TradeEntity tradeEntity = tradeTransformer.transform(requestJson);
+		// Delegate to Service layer
+		tradeService.update(tradeEntity);
 		// Transform the response
 		TradeJson result = TradeTransformer.transform(tradeEntity);
 		return result;
@@ -85,20 +70,18 @@ public class TradeController {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		tradeValidador.validateDelete(tradeId);
-		// Delegate to Repository layer
-		tradeRepository.delete(tradeId);
+		// Delegate to Service layer
+		tradeService.delete(tradeId);
 	}
 
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
 	public SearchResult<TradeJson> get(String name, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
-		if (name != null) {
-			searchCriteria.addCriterion(TradeEntity.Field.name, name);
-		}
-		// Delegate to Repository layer
-		SearchResult<TradeEntity> searchResult = tradeRepository.search(searchCriteria);
+		// Validate the request
+		tradeValidador.validateGet(name);
+		// Delegate to Service layer
+		SearchResult<TradeEntity> searchResult = tradeService.search(name, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<TradeJson> result = TradeTransformer.transform(searchResult);
 		return result;
@@ -109,7 +92,7 @@ public class TradeController {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Delegate to Repository layer
-		TradeEntity searchResult = tradeRepository.get(tradeId);
+		TradeEntity searchResult = tradeService.get(tradeId);
 		// Transform the response
 		TradeJson result = TradeTransformer.transform(searchResult);
 		return result;

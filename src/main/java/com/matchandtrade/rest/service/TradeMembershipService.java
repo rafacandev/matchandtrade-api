@@ -15,12 +15,11 @@ public class TradeMembershipService {
 	@Autowired
 	private TradeMembershipRepository tradeMembershipRepository;
 	
-	public TradeMembershipEntity create(TradeMembershipEntity tradeMembership) {
+	public void create(TradeMembershipEntity tradeMembership) {
 		// Rule, when creating a new TradeMembership it's Type is MEMBER by default
 		tradeMembership.setType(TradeMembershipEntity.Type.MEMBER);
 		// Delegate to RepositoryLayer
 		tradeMembershipRepository.save(tradeMembership);
-		return tradeMembership;
 	}
 
 	public void delete(Integer tradeMembershipId) {

@@ -53,4 +53,10 @@ public class TradeMembershipValidator {
 			throw new RestException(HttpStatus.NOT_FOUND);
 		}
 	}
+
+	public void validateGet(Integer tradeId, Integer userId) {
+		if (tradeId == null && userId == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "tradeId or userId is required.");
+		}
+	}
 }

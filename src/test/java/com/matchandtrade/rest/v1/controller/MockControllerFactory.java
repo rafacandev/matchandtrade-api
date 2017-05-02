@@ -11,6 +11,7 @@ import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.TradeMembershipService;
+import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.transformer.TradeMembershipTransformer;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
@@ -38,29 +39,29 @@ import com.matchandtrade.test.random.UserRandom;
 public class MockControllerFactory {
 
 	@Autowired
-	UserRepository userRepository;
+	private AuthenticationRespository authentRepository;
 	@Autowired
-	AuthenticationRespository authentRepository;
+	private TradeMembershipRepository tradeMembershipRepository;
 	@Autowired
-	TradeRepository tradeRepository;
+	private TradeMembershipService tradeMembershipService;
 	@Autowired
-	TradeValidator tradeValidador;
+	private TradeMembershipTransformer tradeMembershipTransformer;
 	@Autowired
-	TradeTransformer tradeTransformer;
+	private TradeMembershipValidator tradeMembershipValidador;
 	@Autowired
-	UserValidator userValidador;
+	private TradeRepository tradeRepository;
 	@Autowired
-	UserTransformer userTransformer;
+	private TradeService tradeService;
 	@Autowired
-	AuthenticationProvider authenticationProvider;
+	private TradeTransformer tradeTransformer;
 	@Autowired
-	TradeMembershipRepository tradeMembershipRepository;
+	private TradeValidator tradeValidador;
 	@Autowired
-	TradeMembershipValidator tradeMembershipValidador;
+	private UserRepository userRepository;
 	@Autowired
-	TradeMembershipTransformer tradeMembershipTransformer;
+	private UserTransformer userTransformer;
 	@Autowired
-	TradeMembershipService tradeMembershipService;
+	private UserValidator userValidador;
 	
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
@@ -91,16 +92,7 @@ public class MockControllerFactory {
 		result.tradeRepository = tradeRepository;
 		result.tradeTransformer = tradeTransformer;
 		result.tradeValidador = tradeValidador;
-		result.tradeMembershipRepository = tradeMembershipRepository;
-		return result;
-	}
-	
-	public UserController getUserController() {
-		UserController result = new UserController();
-		result.authenticationProvider = new MockAuthenticationProvider();
-		result.userRepository = userRepository;
-		result.userTransformer = userTransformer;
-		result.userValidador = userValidador;
+		result.tradeService = tradeService;
 		return result;
 	}
 	
@@ -111,6 +103,15 @@ public class MockControllerFactory {
 		result.tradeMembershipTransformer = tradeMembershipTransformer;
 		result.tradeMembershipValidador = tradeMembershipValidador;
 		result.tradeMembershipService = tradeMembershipService;
+		return result;
+	}
+	
+	public UserController getUserController() {
+		UserController result = new UserController();
+		result.authenticationProvider = new MockAuthenticationProvider();
+		result.userRepository = userRepository;
+		result.userTransformer = userTransformer;
+		result.userValidador = userValidador;
 		return result;
 	}
 

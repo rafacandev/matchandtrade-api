@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeMembershipRandom;
@@ -57,7 +58,7 @@ public class TradeMembershipControllerGetIT {
 		assertTrue(getResponse.getResultList().contains(postResponse));
 	}
 
-	@Test
+	@Test(expected=RestException.class)
 	public void getPositiveAll() {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
