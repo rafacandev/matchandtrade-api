@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.rest.v1.validator.UserValidator;
@@ -21,11 +21,11 @@ public class UserController {
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
-	UserRepository userRepository;
-	@Autowired
 	UserValidator userValidador;
 	@Autowired
 	UserTransformer userTransformer;
+	@Autowired
+	UserService userService;
 
 	@RequestMapping(path="{userId}", method=RequestMethod.GET)
 	public UserJson get(@PathVariable("userId") Integer userId) {
@@ -34,7 +34,7 @@ public class UserController {
 		// Validate the request
 		userValidador.validateGetById(authenticationProvider.getAuthentication(), userId);
 		// Delegate to Repository layer
-		UserEntity userEntity = userRepository.get(userId);
+		UserEntity userEntity = userService.get(userId);
 		// Transform the response
 		UserJson result = UserTransformer.transform(userEntity);
 		return result;
@@ -45,13 +45,12 @@ public class UserController {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		// The id send on the payload is ignored
 		requestJson.setUserId(userId);
 		userValidador.validatePut(requestJson);
 		// Transform the request
 		UserEntity userEntity = userTransformer.transform(requestJson, true);
-		// Delegate to Repository layer
-		userRepository.save(userEntity);
+		// Delegate to Service layer
+		userService.update(userEntity);
 		// Transform the response
 		UserJson result = UserTransformer.transform(userEntity);
 		return result;
