@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationException;
+import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.v1.json.AuthenticationJson;
@@ -20,9 +21,11 @@ public class AuthenticationController {
 	
 	@RequestMapping(path = "", method = RequestMethod.GET)
 	public AuthenticationJson get() {
-		// Get user authentication
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Get authentication object
 		AuthenticationEntity authenticationEntity = authenticationProvider.getAuthentication();
-		// Throw AuthorizationException if there is no UserAuthentication. User is not authenticated.
+		// Throw AuthorizationException if there is no UserAuthentication meaning that the user is not authenticated.
 		if (authenticationEntity == null) {
 			throw new AuthorizationException(AuthorizationException.Type.UNAUTHORIZED);
 		}

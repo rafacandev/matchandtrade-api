@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.authorization.AuthorizationException;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.AuthenticationJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
@@ -19,9 +19,9 @@ public class AuthenticationControllerGetIT {
 	@Autowired
 	MockControllerFactory mockControllerFactory;
 	
-	@Test(expected=AuthorizationException.class)
+	@Test(expected=RestException.class)
 	public void getNegative() {
-		// Should fail as there is not authenticated user
+		// Should fail as there is no authenticated user
 		fixture.get();
 	}
 	
