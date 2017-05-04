@@ -43,9 +43,11 @@ public class AuthenticationOAuthNewUserMock implements AuthenticationOAuth {
 		} catch (URISyntaxException e) {
 			logger.error("Error building authentication URI.", e);
 		}
-		logger.info("Redirecting to {}", uri.toString());
 		try {
-			response.sendRedirect(uri.toString());
+			if (uri != null) {
+				logger.info("Redirecting to {}", uri.toString());
+				response.sendRedirect(uri.toString());
+			}
 		} catch (IOException e) {
 			logger.error("Error redirecting to Authorization Authority.", e);
 			throw new AuthenticationException(e);

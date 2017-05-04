@@ -166,6 +166,7 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 			        .build();
 		} catch (URISyntaxException e) {
 			logger.error("Error building redirect URI to authorizationAuthority.", e);
+			throw new AuthenticationException(e);
 		}
 		try {
 			logger.debug("Redirecting to authorization authority at URL {}.", uri.toURL());
