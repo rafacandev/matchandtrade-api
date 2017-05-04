@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.authorization.AuthorizationException;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
@@ -27,7 +27,7 @@ public class UserControllerGetIT {
 		}
 	}
 	
-	@Test(expected=AuthorizationException.class)
+	@Test(expected=RestException.class)
 	public void getNegativeUnauthorized() {
 		// The database is not supposed to hold negative userId. Therefore is a safe assumption to say that it will throw AuthorizationException
 		fixture.get(-1);
