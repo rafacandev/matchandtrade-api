@@ -31,7 +31,7 @@ public class ItemControllerPostIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getItemController();
+			fixture = mockControllerFactory.getItemController(true);
 		}
 	}
 	

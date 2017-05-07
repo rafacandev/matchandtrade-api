@@ -34,4 +34,5 @@ public class AuthenticationController {
 		AuthenticationJson result = AuthenticationTransformer.transform(authenticationEntity);
 		return result;
 	}
+
 }

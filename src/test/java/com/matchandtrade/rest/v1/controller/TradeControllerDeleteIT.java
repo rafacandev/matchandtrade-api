@@ -24,7 +24,7 @@ public class TradeControllerDeleteIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeController();
+			fixture = mockControllerFactory.getTradeController(true);
 		}
 	}
 

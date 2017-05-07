@@ -25,7 +25,7 @@ public class TradeControllerPutIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeController();
+			fixture = mockControllerFactory.getTradeController(true);
 		}
 	}
 	
@@ -54,7 +54,7 @@ public class TradeControllerPutIT {
 		String randomName = "Name after PUT " + StringRandom.nextName();
 		tradePostResponse.setName(randomName);
 		// Get a new TradeController with new authentication
-		fixture = mockControllerFactory.getTradeController();
+		fixture = mockControllerFactory.getTradeController(false);
 		// Try to PUT as a different (not a trade owner)
 		fixture.put(tradePostResponse.getTradeId(), tradePostResponse);
 	}

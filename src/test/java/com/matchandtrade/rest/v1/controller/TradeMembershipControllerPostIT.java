@@ -27,7 +27,7 @@ public class TradeMembershipControllerPostIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeMembershipController();
+			fixture = mockControllerFactory.getTradeMembershipController(true);
 		}
 	}
 	

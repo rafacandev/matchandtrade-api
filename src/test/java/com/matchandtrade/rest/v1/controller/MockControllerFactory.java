@@ -6,23 +6,8 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.AuthenticationRespository;
-import com.matchandtrade.repository.ItemRepository;
-import com.matchandtrade.repository.TradeMembershipRepository;
-import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
-import com.matchandtrade.rest.service.ItemService;
-import com.matchandtrade.rest.service.TradeMembershipService;
-import com.matchandtrade.rest.service.TradeService;
-import com.matchandtrade.rest.service.UserService;
-import com.matchandtrade.rest.v1.transformer.ItemTransformer;
-import com.matchandtrade.rest.v1.transformer.TradeMembershipTransformer;
-import com.matchandtrade.rest.v1.transformer.TradeTransformer;
-import com.matchandtrade.rest.v1.transformer.UserTransformer;
-import com.matchandtrade.rest.v1.validator.ItemValidator;
-import com.matchandtrade.rest.v1.validator.TradeMembershipValidator;
-import com.matchandtrade.rest.v1.validator.TradeValidator;
-import com.matchandtrade.rest.v1.validator.UserValidator;
 import com.matchandtrade.test.random.UserRandom;
 
 /**
@@ -46,37 +31,18 @@ public class MockControllerFactory {
 	@Autowired
 	private AuthenticationRespository authentRepository;
 	@Autowired
-	private ItemRepository itemRepository;
+	private AuthenticationController authenticationController;
 	@Autowired
-	private ItemService itemService;
+	private ItemController itemController;
+	private MockAuthenticationProvider lastMockAuthenticationProvider;
 	@Autowired
-	private ItemTransformer itemTransformer;
+	private TradeController tradeController;
 	@Autowired
-	private ItemValidator itemValidator;
+	private TradeMembershipController tradeMembershipController;
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
-	@Autowired
-	private TradeMembershipService tradeMembershipService;
-	@Autowired
-	private TradeMembershipTransformer tradeMembershipTransformer;
-	@Autowired
-	private TradeMembershipValidator tradeMembershipValidador;
-	@Autowired
-	private TradeRepository tradeRepository;
-	@Autowired
-	private TradeService tradeService;
-	@Autowired
-	private TradeTransformer tradeTransformer;
-	@Autowired
-	private TradeValidator tradeValidador;
+	private UserController userController;
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private UserTransformer userTransformer;
-	@Autowired
-	private UserValidator userValidador;
 
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
@@ -94,46 +60,37 @@ public class MockControllerFactory {
 			return authenticationEntity;
 		}
 	}
+	
+	private MockAuthenticationProvider buildAuthenticationProvider(boolean reusePreviousAuthentication) {
+		if (lastMockAuthenticationProvider == null || !reusePreviousAuthentication) {
+			lastMockAuthenticationProvider = new MockAuthenticationProvider();
+		}
+		return lastMockAuthenticationProvider;
+	}
 
-	public AuthenticationController getAuthenticationController() {
-		AuthenticationController result = new AuthenticationController();
-		result.authenticationProvider = new MockAuthenticationProvider();
-		return result;
+	public AuthenticationController getAuthenticationController(boolean reusePreviousAuthentication) {
+		authenticationController.authenticationProvider = buildAuthenticationProvider(false);
+		return authenticationController;
 	}
-	public ItemController getItemController() {
-		ItemController result = new ItemController();
-		result.itemRepository = itemRepository;
-		result.itemService = itemService;
-		result.authenticationProvider = new MockAuthenticationProvider();
-		result.itemTransformer = itemTransformer;
-		result.itemValidator = itemValidator;
-		return result;
+	
+	public ItemController getItemController(boolean reusePreviousAuthentication) {
+		itemController.authenticationProvider = buildAuthenticationProvider(false);
+		return itemController;
 	}
-	public TradeController getTradeController() {
-		TradeController result = new TradeController();
-		result.authenticationProvider = new MockAuthenticationProvider();
-		result.tradeRepository = tradeRepository;
-		result.tradeTransformer = tradeTransformer;
-		result.tradeValidador = tradeValidador;
-		result.tradeService = tradeService;
-		return result;
+	
+	public TradeController getTradeController(boolean reusePreviousAuthentication) {
+		tradeController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return tradeController;
 	}
-	public TradeMembershipController getTradeMembershipController() {
-		TradeMembershipController result = new TradeMembershipController();
-		result.authenticationProvider = new MockAuthenticationProvider();
-		result.tradeMembershipRepository = tradeMembershipRepository;
-		result.tradeMembershipTransformer = tradeMembershipTransformer;
-		result.tradeMembershipValidador = tradeMembershipValidador;
-		result.tradeMembershipService = tradeMembershipService;
-		return result;
+	
+	public TradeMembershipController getTradeMembershipController(boolean reusePreviousAuthentication) {
+		tradeMembershipController.authenticationProvider = buildAuthenticationProvider(false);
+		return tradeMembershipController;
 	}
-	public UserController getUserController() {
-		UserController result = new UserController();
-		result.authenticationProvider = new MockAuthenticationProvider();
-		result.userService = userService;
-		result.userTransformer = userTransformer;
-		result.userValidador = userValidador;
-		return result;
+	
+	public UserController getUserController(boolean reusePreviousAuthentication) {
+		userController.authenticationProvider = buildAuthenticationProvider(false);
+		return userController;
 	}
 
 }

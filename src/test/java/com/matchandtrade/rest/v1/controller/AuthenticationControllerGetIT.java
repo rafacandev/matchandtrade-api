@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.AuthenticationJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
@@ -15,19 +14,11 @@ import com.matchandtrade.test.TestingDefaultAnnotations;
 public class AuthenticationControllerGetIT {
 
 	@Autowired
-	AuthenticationController fixture;
-	@Autowired
-	MockControllerFactory mockControllerFactory;
-	
-	@Test(expected=RestException.class)
-	public void getNegative() {
-		// Should fail as there is no authenticated user
-		fixture.get();
-	}
+	private MockControllerFactory mockControllerFactory;
 	
 	@Test
 	public void getPositive() {
-		AuthenticationController authenticatedFixture = mockControllerFactory.getAuthenticationController();
+		AuthenticationController authenticatedFixture = mockControllerFactory.getAuthenticationController(true);
 		AuthenticationJson response = authenticatedFixture.get();
 		Assert.assertEquals(authenticatedFixture.authenticationProvider.getAuthentication().getUser().getUserId(), response.getUserId());
 	}
