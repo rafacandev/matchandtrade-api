@@ -29,7 +29,7 @@ public class HibernateConfiguration {
 	public Properties hibernateProperties() {
 		Properties properties = new Properties();
 		// Logging
-		properties.setProperty("hibernate.show_sql", "true");
+		properties.setProperty("hibernate.show_sql", "false");
 		properties.setProperty("hibernate.format_sql", "false");
 		// Advanced options
 		properties.setProperty("hibernate.default_entity_mode", "pojo");
