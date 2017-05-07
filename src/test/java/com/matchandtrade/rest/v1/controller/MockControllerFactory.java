@@ -46,6 +46,14 @@ public class MockControllerFactory {
 	@Autowired
 	private AuthenticationRespository authentRepository;
 	@Autowired
+	private ItemRepository itemRepository;
+	@Autowired
+	private ItemService itemService;
+	@Autowired
+	private ItemTransformer itemTransformer;
+	@Autowired
+	private ItemValidator itemValidator;
+	@Autowired
 	private TradeMembershipRepository tradeMembershipRepository;
 	@Autowired
 	private TradeMembershipService tradeMembershipService;
@@ -64,12 +72,12 @@ public class MockControllerFactory {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
+	private UserService userService;
+	@Autowired
 	private UserTransformer userTransformer;
 	@Autowired
 	private UserValidator userValidador;
-	@Autowired
-	private UserService userService;
-	
+
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
 		public MockAuthenticationProvider() {
@@ -92,7 +100,15 @@ public class MockControllerFactory {
 		result.authenticationProvider = new MockAuthenticationProvider();
 		return result;
 	}
-
+	public ItemController getItemController() {
+		ItemController result = new ItemController();
+		result.itemRepository = itemRepository;
+		result.itemService = itemService;
+		result.authenticationProvider = new MockAuthenticationProvider();
+		result.itemTransformer = itemTransformer;
+		result.itemValidator = itemValidator;
+		return result;
+	}
 	public TradeController getTradeController() {
 		TradeController result = new TradeController();
 		result.authenticationProvider = new MockAuthenticationProvider();
@@ -102,7 +118,6 @@ public class MockControllerFactory {
 		result.tradeService = tradeService;
 		return result;
 	}
-	
 	public TradeMembershipController getTradeMembershipController() {
 		TradeMembershipController result = new TradeMembershipController();
 		result.authenticationProvider = new MockAuthenticationProvider();
@@ -112,31 +127,12 @@ public class MockControllerFactory {
 		result.tradeMembershipService = tradeMembershipService;
 		return result;
 	}
-	
 	public UserController getUserController() {
 		UserController result = new UserController();
 		result.authenticationProvider = new MockAuthenticationProvider();
 		result.userService = userService;
 		result.userTransformer = userTransformer;
 		result.userValidador = userValidador;
-		return result;
-	}
-
-	@Autowired
-	ItemRepository itemRepository;
-	@Autowired
-	ItemService itemService;
-	@Autowired
-	ItemTransformer itemTransformer;
-	@Autowired
-	ItemValidator itemValidator;
-	public ItemController getItemController() {
-		ItemController result = new ItemController();
-		result.itemRepository = itemRepository;
-		result.itemService = itemService;
-		result.authenticationProvider = new MockAuthenticationProvider();
-		result.itemTransformer = itemTransformer;
-		result.itemValidator = itemValidator;
 		return result;
 	}
 
