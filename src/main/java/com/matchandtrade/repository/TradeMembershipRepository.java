@@ -17,7 +17,8 @@ public class TradeMembershipRepository {
 
 	@Transactional
 	public TradeMembershipEntity get(Integer tradeMembershipId) {
-		return tradeMembershipDao.get(TradeMembershipEntity.class, tradeMembershipId);
+		TradeMembershipEntity result = tradeMembershipDao.get(TradeMembershipEntity.class, tradeMembershipId);
+		return result;
 	}
 
 	@Transactional

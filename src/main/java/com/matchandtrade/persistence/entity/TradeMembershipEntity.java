@@ -1,11 +1,15 @@
 package com.matchandtrade.persistence.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -32,6 +36,8 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	private Integer tradeMembershipId;
 	private TradeEntity trade;
 	private UserEntity user;
+	private Set<ItemEntity> items = new HashSet<>();
+	
 	private Type type;
 
 	@OneToOne
@@ -73,4 +79,14 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	public void setUser(UserEntity user) {
 		this.user = user;
 	}
+
+	@OneToMany
+	public Set<ItemEntity> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<ItemEntity> items) {
+		this.items = items;
+	}
+	
 }

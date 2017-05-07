@@ -6,16 +6,20 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.AuthenticationRespository;
+import com.matchandtrade.repository.ItemRepository;
 import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.ItemService;
 import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.service.UserService;
+import com.matchandtrade.rest.v1.transformer.ItemTransformer;
 import com.matchandtrade.rest.v1.transformer.TradeMembershipTransformer;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
+import com.matchandtrade.rest.v1.validator.ItemValidator;
 import com.matchandtrade.rest.v1.validator.TradeMembershipValidator;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
 import com.matchandtrade.rest.v1.validator.UserValidator;
@@ -115,6 +119,24 @@ public class MockControllerFactory {
 		result.userService = userService;
 		result.userTransformer = userTransformer;
 		result.userValidador = userValidador;
+		return result;
+	}
+
+	@Autowired
+	ItemRepository itemRepository;
+	@Autowired
+	ItemService itemService;
+	@Autowired
+	ItemTransformer itemTransformer;
+	@Autowired
+	ItemValidator itemValidator;
+	public ItemController getItemController() {
+		ItemController result = new ItemController();
+		result.itemRepository = itemRepository;
+		result.itemService = itemService;
+		result.authenticationProvider = new MockAuthenticationProvider();
+		result.itemTransformer = itemTransformer;
+		result.itemValidator = itemValidator;
 		return result;
 	}
 

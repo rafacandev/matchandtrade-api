@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.repository.UserRepository;
@@ -29,4 +30,16 @@ public class TradeMembershipRandom {
 		result.setUserId(userEntity.getUserId());
 		return result;
 	}
+	
+	public TradeMembershipEntity nextEntity() {
+		UserEntity userEntity = UserRandom.nextEntity();
+		userRepository.save(userEntity);
+		TradeEntity tradeEntity = tradeRandom.nextEntity();
+		tradeRepository.save(tradeEntity);
+		TradeMembershipEntity result = new TradeMembershipEntity();
+		result.setTrade(tradeEntity);
+		result.setUser(userEntity);
+		return result;
+	}
+	
 }
