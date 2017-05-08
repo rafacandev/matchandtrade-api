@@ -20,12 +20,11 @@ public class ItemRandom {
 	private TradeMembershipRepository tradeMembershipRepository;
 
 	@Transactional
-	public ItemJson nextJson(Integer tradeMembershipId) {
+	public ItemJson nextJson(TradeMembershipEntity tradeMembership) {
 		ItemEntity itemEntity = new ItemEntity();
 		itemEntity.setName(StringRandom.nextName());
 		itemRepository.save(itemEntity);
-		TradeMembershipEntity tmEntity = tradeMembershipRepository.get(tradeMembershipId);
-		tmEntity.getItems().add(itemEntity);
+		tradeMembership.getItems().add(itemEntity);
 		ItemJson result = ItemTransformer.transform(itemEntity);
 		return result;
 	}
