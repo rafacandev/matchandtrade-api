@@ -45,6 +45,27 @@ public class ItemControllerPostIT {
 		item.setName(StringRandom.nextName());
 		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
 	}
+	
+	@Test(expected=RestException.class)
+	public void postNegativeNameIsNull() {
+		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
+		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
+		tradeMembershipRepository.save(tradeMemberhipEntity);
+		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity);
+		item.setName(null);
+		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
+	}
+	
+	@Test(expected=RestException.class)
+	public void postNegativeUserNotAssociatedWithTradeMembership() {
+		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
+		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
+		tradeMembershipRepository.save(tradeMemberhipEntity);
+		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity);
+		item.setName(StringRandom.nextName());
+		fixture = mockControllerFactory.getItemController(false);
+		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
+	}
 
 	@Test(expected = RestException.class)
 	public void postNegativeCannotHaveDuplicatedName() {
@@ -86,4 +107,5 @@ public class ItemControllerPostIT {
 		item.setName(StringRandom.nextName());
 		fixture.post(-1, item);
 	}
+	
 }
