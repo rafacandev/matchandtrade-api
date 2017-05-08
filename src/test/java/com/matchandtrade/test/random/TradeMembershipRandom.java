@@ -42,4 +42,13 @@ public class TradeMembershipRandom {
 		return result;
 	}
 	
+	public TradeMembershipEntity nextEntity(UserEntity user) {
+		TradeEntity tradeEntity = tradeRandom.nextEntity();
+		tradeRepository.save(tradeEntity);
+		TradeMembershipEntity result = new TradeMembershipEntity();
+		result.setTrade(tradeEntity);
+		result.setUser(user);
+		return result;
+	}
+
 }

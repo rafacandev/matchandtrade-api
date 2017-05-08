@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.entity.ItemEntity;
-import com.matchandtrade.repository.ItemRepository;
-import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.ItemService;
 import com.matchandtrade.rest.v1.json.ItemJson;
@@ -24,16 +22,9 @@ public class ItemController {
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
-	ItemRepository itemRepository;
+	private ItemService itemService;
 	@Autowired
-	ItemValidator itemValidator;
-	@Autowired
-	TradeMembershipRepository tradeMembershipRepository;
-	@Autowired
-	ItemTransformer itemTransformer;
-	
-	@Autowired
-	ItemService itemService;
+	private ItemValidator itemValidator;
 
 	@RequestMapping(path = "/{tradeMembershipId}/items", method = RequestMethod.POST)
 	public ItemJson post(@PathVariable Integer tradeMembershipId, @RequestBody ItemJson requestJson) {
@@ -48,4 +39,16 @@ public class ItemController {
 		return ItemTransformer.transform(itemEntity);
 	}
 
+	@RequestMapping(path="/{tradeMembershipId}/items/{itemId}", method=RequestMethod.GET)
+	public ItemJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("itemId") Integer itemId) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, itemId);
+		// Delegate to Repository layer
+		ItemEntity itemEntity = itemService.get(itemId);
+		// Transform the response
+		return ItemTransformer.transform(itemEntity);
+	}
+	
 }

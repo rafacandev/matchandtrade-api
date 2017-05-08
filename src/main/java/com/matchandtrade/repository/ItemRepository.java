@@ -14,8 +14,14 @@ public class ItemRepository {
 	private ItemDao itemDao;
 
 	@Transactional
+	public ItemEntity get(Integer itemId) {
+		return itemDao.get(ItemEntity.class, itemId);
+	}
+	
+	@Transactional
 	public void save(ItemEntity entity) {
 		itemDao.save(entity);
 	}
+
 
 }

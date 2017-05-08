@@ -31,8 +31,7 @@ public class AuthenticationController {
 			throw new RestException(HttpStatus.UNAUTHORIZED);
 		}
 		// Transform the response
-		AuthenticationJson result = AuthenticationTransformer.transform(authenticationEntity);
-		return result;
+		return AuthenticationTransformer.transform(authenticationEntity);
 	}
 
 }

@@ -24,5 +24,10 @@ public class ItemService {
 		tradeMembershipEntity.getItems().add(itemEntity);
 		tradeMembershipRepository.save(tradeMembershipEntity);
 	}
+
+	@Transactional
+	public ItemEntity get(Integer itemId) {
+		return itemRepository.get(itemId);
+	}
 	
 }

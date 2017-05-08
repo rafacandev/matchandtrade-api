@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.repository.ItemRepository;
-import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.rest.v1.json.ItemJson;
 import com.matchandtrade.rest.v1.transformer.ItemTransformer;
 
@@ -16,8 +15,6 @@ public class ItemRandom {
 	
 	@Autowired
 	private ItemRepository itemRepository;
-	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
 
 	@Transactional
 	public ItemJson nextJson(TradeMembershipEntity tradeMembership) {
@@ -28,6 +25,11 @@ public class ItemRandom {
 		ItemJson result = ItemTransformer.transform(itemEntity);
 		return result;
 	}
-
+	
+	public static ItemEntity nextEntity() {
+		ItemEntity result = new ItemEntity();
+		result.setName(StringRandom.nextName());
+		return result;
+	}
 
 }

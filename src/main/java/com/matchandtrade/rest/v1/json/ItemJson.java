@@ -2,9 +2,9 @@ package com.matchandtrade.rest.v1.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.matchandtrade.rest.JsonLinkSupport;
+import com.matchandtrade.rest.Json;
 
-public class ItemJson extends JsonLinkSupport {
+public class ItemJson implements Json{
 
 	private String name;
 	private Integer itemId;
@@ -25,11 +25,7 @@ public class ItemJson extends JsonLinkSupport {
 	public void setItemId(Integer itemId) {
 		this.itemId = itemId;
 	}
-
-	@Override
-	public void buildLinks() {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	// TODO: Add link support
 
 }
