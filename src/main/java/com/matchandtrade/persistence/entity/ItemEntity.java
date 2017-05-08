@@ -18,7 +18,7 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 	private Integer itemId;
 	private String name;
 
-	@Column(name = "name", length = 150, nullable = false, unique = true)
+	@Column(name = "name", length = 150, nullable = false, unique = false)
 	public String getName() {
 		return name;
 	}
@@ -37,5 +37,5 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 	public void setItemId(Integer itemId) {
 		this.itemId = itemId;
 	}
-	
+
 }

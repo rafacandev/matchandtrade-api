@@ -45,4 +45,15 @@ public class ItemControllerPostIT {
 		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
 	}
 
+	@Test
+	public void postNegativeCannotHaveDuplicatedName() {
+		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
+		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
+		tradeMembershipRepository.save(tradeMemberhipEntity);
+		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity.getTradeMembershipId());
+		item.setName(StringRandom.nextName());
+		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
+		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
+	}
+
 }
