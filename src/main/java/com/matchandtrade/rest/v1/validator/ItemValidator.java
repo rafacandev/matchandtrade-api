@@ -35,7 +35,7 @@ public class ItemValidator {
 	 * @param tradeMembershipId
 	 * @param json
 	 */
-	public void validateGet(Integer userId, Integer tradeMembershipId, Integer itemId) {
+	public void validateGet(Integer userId, Integer tradeMembershipId) {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepository.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
