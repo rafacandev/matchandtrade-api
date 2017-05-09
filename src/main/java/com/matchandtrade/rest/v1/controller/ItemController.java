@@ -53,13 +53,13 @@ public class ItemController {
 	}
 
 	@RequestMapping(path={"/{tradeMembershipId}/items/", "/{tradeMembershipId}/items"}, method=RequestMethod.GET)
-	public SearchResult<ItemJson> get(@PathVariable("tradeMembershipId") Integer tradeMembershipId) {
+	public SearchResult<ItemJson> get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, String name, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId);
 		// Delegate to Repository layer
-		SearchResult<ItemEntity> searchResult = itemService.getAll(tradeMembershipId);
+		SearchResult<ItemEntity> searchResult = itemService.getAll(tradeMembershipId, name, _pageNumber, _pageSize);
 		// Transform the response
 		return ItemTransformer.transform(searchResult);
 	}

@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.matchandtrade.common.SearchCriteria;
+import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.dao.ItemDao;
 import com.matchandtrade.persistence.entity.ItemEntity;
 
@@ -22,6 +24,9 @@ public class ItemRepository {
 	public void save(ItemEntity entity) {
 		itemDao.save(entity);
 	}
-
-
+	
+	@Transactional
+	public SearchResult<ItemEntity> query(SearchCriteria searchCriteria) {
+		return itemDao.query(searchCriteria);
+	}
 }

@@ -1,13 +1,11 @@
 package com.matchandtrade.rest.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.common.Pagination;
+import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -36,12 +34,13 @@ public class ItemService {
 	}
 
 	@Transactional
-	public SearchResult<ItemEntity> getAll(Integer tradeMembershipId) {
-		// TODO This is incorrect. We need to transform in a proper search criteria
-		TradeMembershipEntity tm = tradeMembershipRepository.get(tradeMembershipId);
-		List<ItemEntity> items = new ArrayList<>();
-		items.addAll(tm.getItems());
-		return new SearchResult<>(items, new Pagination(1,1));
+	public SearchResult<ItemEntity> getAll(Integer tradeMembershipId, String name, Integer _pageNumber, Integer _pageSize) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
+		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeMembershipId, tradeMembershipId);
+		if (name != null) {
+			searchCriteria.addCriterion(ItemEntity.Field.name, name);
+		}
+		return itemRepository.query(searchCriteria);
 	}
 	
 }

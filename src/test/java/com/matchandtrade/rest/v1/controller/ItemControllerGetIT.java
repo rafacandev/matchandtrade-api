@@ -69,7 +69,7 @@ public class ItemControllerGetIT {
 		tradeMemberhipEntity.getItems().add(item3);
 		tradeMembershipRepository.save(tradeMemberhipEntity);
 		// GET /trade-memberships/{tradeMembershipId}/items/
-		SearchResult<ItemJson> response = fixture.get(tradeMemberhipEntity.getTradeMembershipId());
+		SearchResult<ItemJson> response = fixture.get(tradeMemberhipEntity.getTradeMembershipId(), null, null, null);
 		assertEquals(3, response.getResultList().size());
 	}
 
