@@ -34,6 +34,7 @@ public class TradeController {
 	TradeTransformer tradeTransformer;
 
 	@RequestMapping(path="/", method=RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
 	public TradeJson post(@RequestBody TradeJson requestJson) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());

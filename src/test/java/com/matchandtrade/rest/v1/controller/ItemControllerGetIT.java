@@ -1,11 +1,13 @@
 package com.matchandtrade.rest.v1.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.common.SearchResult;
@@ -50,7 +52,28 @@ public class ItemControllerGetIT {
 		tradeMemberhipEntity.getItems().add(itemEntity);
 		tradeMembershipRepository.save(tradeMemberhipEntity);
 		// GET /trade-memberships/{tradeMembershipId}/items/{itemId}
-		fixture.get(tradeMemberhipEntity.getTradeMembershipId(), itemEntity.getItemId());
+		ItemJson response = fixture.get(tradeMemberhipEntity.getTradeMembershipId(), itemEntity.getItemId());
+		assertNotNull(response);
+	}
+
+	@Test
+	public void positiveSearchByName() {
+		// Create itemEntity
+		ItemEntity itemEntity = ItemRandom.nextEntity();
+		itemRepository.save(itemEntity);
+		// Add the itemEntity to a TradeMembership
+		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		tradeMemberhipEntity.getItems().add(itemEntity);
+		tradeMembershipRepository.save(tradeMemberhipEntity);
+		// GET /trade-memberships/{tradeMembershipId}/items/{itemId}
+		SearchResult<ItemJson> response = fixture.get(tradeMemberhipEntity.getTradeMembershipId(), itemEntity.getName(), null, null);
+		assertEquals(itemEntity.getName(), response.getResultList().get(0).getName());
+		for (ItemJson i : response.getResultList()) {
+			System.out.println(i.getLinks().size());
+			for(Link l : i.getLinks()) {
+				System.out.println(l.getHref());
+			}
+		}
 	}
 
 	@Test
@@ -71,6 +94,14 @@ public class ItemControllerGetIT {
 		// GET /trade-memberships/{tradeMembershipId}/items/
 		SearchResult<ItemJson> response = fixture.get(tradeMemberhipEntity.getTradeMembershipId(), null, null, null);
 		assertEquals(3, response.getResultList().size());
+		
+		for (ItemJson i : response.getResultList()) {
+			System.out.println(i.getLinks().size());
+			for(Link l : i.getLinks()) {
+				System.out.println(l.getHref());
+			}
+		}
+		
 	}
 
 	

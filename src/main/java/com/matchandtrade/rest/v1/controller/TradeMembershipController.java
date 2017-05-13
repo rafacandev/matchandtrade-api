@@ -34,6 +34,7 @@ public class TradeMembershipController {
 	TradeMembershipService tradeMembershipService;
 	
 	@RequestMapping(path="/", method=RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
 	public TradeMembershipJson post(@RequestBody TradeMembershipJson requestJson) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());

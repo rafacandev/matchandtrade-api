@@ -34,7 +34,7 @@ public class ItemService {
 	}
 
 	@Transactional
-	public SearchResult<ItemEntity> getAll(Integer tradeMembershipId, String name, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<ItemEntity> search(Integer tradeMembershipId, String name, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeMembershipId, tradeMembershipId);
 		if (name != null) {

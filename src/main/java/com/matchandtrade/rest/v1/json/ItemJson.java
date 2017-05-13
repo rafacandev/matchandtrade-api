@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.matchandtrade.rest.Json;
 
-public class ItemJson implements Json{
+public class ItemJson extends JsonLinkable {
 
 	private String name;
 	private Integer itemId;
@@ -25,7 +25,5 @@ public class ItemJson implements Json{
 	public void setItemId(Integer itemId) {
 		this.itemId = itemId;
 	}
-	
-	// TODO: Add link support
 
 }

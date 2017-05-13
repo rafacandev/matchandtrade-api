@@ -1,10 +1,12 @@
 package com.matchandtrade.rest.v1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
@@ -13,6 +15,7 @@ import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.ItemService;
 import com.matchandtrade.rest.v1.json.ItemJson;
+import com.matchandtrade.rest.v1.link.ItemLinkAssember;
 import com.matchandtrade.rest.v1.transformer.ItemTransformer;
 import com.matchandtrade.rest.v1.validator.ItemValidator;
 
@@ -28,6 +31,7 @@ public class ItemController {
 	private ItemValidator itemValidator;
 
 	@RequestMapping(path = "/{tradeMembershipId}/items", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
 	public ItemJson post(@PathVariable Integer tradeMembershipId, @RequestBody ItemJson requestJson) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
@@ -37,7 +41,11 @@ public class ItemController {
 		ItemEntity itemEntity = ItemTransformer.transform(requestJson);
 		// Delegate to Service layer
 		itemService.create(tradeMembershipId, itemEntity);
-		return ItemTransformer.transform(itemEntity);
+		// Transform the response
+		ItemJson response = ItemTransformer.transform(itemEntity);
+		// Assemble links
+		ItemLinkAssember.assemble(response, tradeMembershipId);
+		return response;
 	}
 
 	@RequestMapping(path="/{tradeMembershipId}/items/{itemId}", method=RequestMethod.GET)
@@ -49,7 +57,10 @@ public class ItemController {
 		// Delegate to Repository layer
 		ItemEntity itemEntity = itemService.get(itemId);
 		// Transform the response
-		return ItemTransformer.transform(itemEntity);
+		ItemJson response = ItemTransformer.transform(itemEntity);
+		// Assemble links
+		ItemLinkAssember.assemble(response, tradeMembershipId);
+		return response;
 	}
 
 	@RequestMapping(path={"/{tradeMembershipId}/items/", "/{tradeMembershipId}/items"}, method=RequestMethod.GET)
@@ -59,9 +70,12 @@ public class ItemController {
 		// Validate the request
 		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId);
 		// Delegate to Repository layer
-		SearchResult<ItemEntity> searchResult = itemService.getAll(tradeMembershipId, name, _pageNumber, _pageSize);
+		SearchResult<ItemEntity> searchResult = itemService.search(tradeMembershipId, name, _pageNumber, _pageSize);
 		// Transform the response
-		return ItemTransformer.transform(searchResult);
+		SearchResult<ItemJson> response = ItemTransformer.transform(searchResult);
+		// Assemble links
+		ItemLinkAssember.assemble(response, tradeMembershipId);
+		return response;
 	}
 	
 }
