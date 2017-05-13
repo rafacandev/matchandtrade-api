@@ -16,7 +16,9 @@ public class ItemLinkAssember {
 	private ItemLinkAssember() {}
 
 	public static void assemble(ItemJson json, Integer tradeMembershipId) {
-		json.getLinks().add(linkTo(methodOn(ItemController.class).get(tradeMembershipId, json.getItemId())).withSelfRel());
+		if (json != null) {
+			json.getLinks().add(linkTo(methodOn(ItemController.class).get(tradeMembershipId, json.getItemId())).withSelfRel());
+		}
 	}
 
 	public static void assemble(SearchResult<ItemJson> response, Integer tradeMembershipId) {

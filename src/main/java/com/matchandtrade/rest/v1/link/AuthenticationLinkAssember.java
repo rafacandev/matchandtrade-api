@@ -15,7 +15,9 @@ public class AuthenticationLinkAssember {
 	private AuthenticationLinkAssember() {}
 
 	public static void assemble(AuthenticationJson json) {
-		json.getLinks().add(linkTo(methodOn(AuthenticationController.class).get()).withSelfRel());
+		if (json != null) {
+			json.getLinks().add(linkTo(methodOn(AuthenticationController.class).get()).withSelfRel());
+		}
 	}
 
 }

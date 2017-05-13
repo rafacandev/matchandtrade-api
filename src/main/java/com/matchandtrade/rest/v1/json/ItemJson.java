@@ -2,9 +2,9 @@ package com.matchandtrade.rest.v1.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.matchandtrade.rest.Json;
+import com.matchandtrade.rest.JsonLinkSupport;
 
-public class ItemJson extends JsonLinkable {
+public class ItemJson extends JsonLinkSupport {
 
 	private String name;
 	private Integer itemId;

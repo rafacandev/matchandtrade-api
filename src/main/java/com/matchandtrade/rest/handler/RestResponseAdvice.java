@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.rest.Json;
-import com.matchandtrade.rest.JsonLinkSupport;
 
 /**
  * This <i>ResponseBodyAdvice</i> handles HATEOAS and response status codes.
@@ -77,7 +76,9 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		if (body instanceof SearchResult) {
 			// Handle SearchResult
 			SearchResult<Json> searchResult = (SearchResult) body;
-			handleSearchResult(searchResult, response);
+			if (searchResult.getResultList().isEmpty()) {
+				response.setStatusCode(HttpStatus.NOT_FOUND);
+			}
 			// Build pagination header
 			PaginationHeader paginationHeader = buildPaginationHeader(request, searchResult);
 			// Handle headers
@@ -134,19 +135,6 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		response.getHeaders().add("X-Pagination-Total-Count", paginationHeader.totalCount);
 		response.getHeaders().add("Link", paginationHeader.nextPage);
 		response.getHeaders().add("Link", paginationHeader.previousPage);
-	}
-
-	private void handleSearchResult(SearchResult<Json> searchResult, ServerHttpResponse response) {
-		if (searchResult.getResultList().isEmpty()) {
-			response.setStatusCode(HttpStatus.NOT_FOUND);
-		} else {
-			for (Json j : searchResult.getResultList()) {
-				if (j instanceof JsonLinkSupport) {
-					JsonLinkSupport jAsJsonLinkSupport = (JsonLinkSupport) j;
-					jAsJsonLinkSupport.buildLinks();
-				}
-			}
-		}
 	}
 
 	@Override
