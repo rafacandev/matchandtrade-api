@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class SearchCriteria {
 
-	private List<Criterion> criteria = new ArrayList<Criterion>();
+	private List<Criterion> criteria = new ArrayList<>();
 	private Pagination pagination;
 	
 	public SearchCriteria(Pagination pagination) {

@@ -1,5 +1,7 @@
 package com.matchandtrade;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration;
@@ -270,21 +272,21 @@ import com.matchandtrade.config.AppConfigurationProperties;
 })
 public class WebserviceApplication {
 	
-	public static void main(String[] arguments) {
-		// TODO: Create an abstraction to handle Console outputs instead of use System.err or System.out
+	private static final Logger LOGGER = LoggerFactory.getLogger("plainTextLogger");
+	
+	public static void main(String[] arguments) throws Throwable {
 		// Handles the command line options.
 		AppCli cli = null;
 		try {
 			cli = new AppCli(arguments);
-		} catch (Throwable t) {
-			System.err.println("Not able to start application! " + t.getMessage());
-			System.err.println("Exiting the application with error code [1]. Not able to process command line options.");
-			System.exit(1);
+		} catch (Exception e) {
+			LOGGER.info("Not able to start application! ", e.getMessage());
+			throw(e);
 		}
 		
 		// If line output message is interrupted; then, display message 
 		if (cli.isInterrupted()) {
-			System.out.println(cli.getCommandLineOutputMessage());
+			LOGGER.info(cli.getCommandLineOutputMessage());
 		} else {
 			displayWelcomeMessage();
 			// Proceed normally
@@ -293,14 +295,18 @@ public class WebserviceApplication {
 	}
 
 	private static void displayWelcomeMessage() {
-		System.out.println("|===========================================================");
-		System.out.println("| WELCOME TO MATCH AND TRADE WEB");
-		System.out.println("| ");
-		System.out.println("| Configuration file: " + buildDefaultMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
-		System.out.println("| OAuth implementation: " + buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
-		System.out.println("| JDBC Url: " + buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
-		System.out.println("| Log file: " + buildDefaultMessage("logging.file"));
-		System.out.println("|===========================================================");
+		LOGGER.info("/===========================================================");
+		LOGGER.info("| WELCOME TO MATCH AND TRADE WEB");
+		LOGGER.info("| ");
+		String msg = buildDefaultMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey());
+		LOGGER.info("| Configuration file: {}", msg);
+		msg = buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey());
+		LOGGER.info("| OAuth implementation: {}", msg);
+		msg = buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey());
+		LOGGER.info("| JDBC Url: {}", msg);
+		msg = buildDefaultMessage("logging.file");
+		LOGGER.info("| Log file: {}", msg);
+		LOGGER.info("\\===========================================================");
 	}
 
 	private static String buildDefaultMessage(String s) {

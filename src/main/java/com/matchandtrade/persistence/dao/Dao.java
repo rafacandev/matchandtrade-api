@@ -25,7 +25,7 @@ public class Dao<T extends Entity> {
     @Transactional
     public T get(Class<T> clazz, Integer id) {
         Session session = sessionFactory.getCurrentSession();
-        return (T) session.get(clazz, id);
+        return session.get(clazz, id);
     }
 
     /**

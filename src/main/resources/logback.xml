@@ -14,11 +14,22 @@
 		</encoder>
 	</appender>
 
+	<appender name="PLAINOUTPUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger level="INFO" name="plainTextLogger" additivity="false">
+		<appender-ref ref="PLAINOUTPUT" />
+	</logger>
+
 	<logger level="inherited" name="com.matchandtrade" />
 
 	<root level="${logging.level.root:-info}">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
+		<appender-ref ref="PLAINOUTPUT" />
 	</root>
 
 </configuration>
