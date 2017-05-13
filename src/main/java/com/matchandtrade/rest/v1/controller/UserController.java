@@ -11,6 +11,7 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.UserJson;
+import com.matchandtrade.rest.v1.link.UserLinkAssember;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.rest.v1.validator.UserValidator;
 
@@ -36,8 +37,10 @@ public class UserController {
 		// Delegate to Repository layer
 		UserEntity userEntity = userService.get(userId);
 		// Transform the response
-		UserJson result = UserTransformer.transform(userEntity);
-		return result;
+		UserJson response = UserTransformer.transform(userEntity);
+		// Assemble links
+		UserLinkAssember.assemble(response);
+		return response;
 	}
 	
 	@RequestMapping(path="{userId}", method=RequestMethod.PUT)
@@ -52,7 +55,9 @@ public class UserController {
 		// Delegate to Service layer
 		userService.update(userEntity);
 		// Transform the response
-		UserJson result = UserTransformer.transform(userEntity);
-		return result;
+		UserJson response = UserTransformer.transform(userEntity);
+		// Assemble links
+		UserLinkAssember.assemble(response);
+		return response;
 	}
 }

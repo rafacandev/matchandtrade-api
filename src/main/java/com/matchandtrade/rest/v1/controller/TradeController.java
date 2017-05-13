@@ -15,6 +15,7 @@ import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
+import com.matchandtrade.rest.v1.link.TradeLinkAssember;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
 
@@ -45,8 +46,10 @@ public class TradeController {
 		// Delegate to Service layer
 		tradeService.create(tradeEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
-		TradeJson result = TradeTransformer.transform(tradeEntity);
-		return result;
+		TradeJson response = TradeTransformer.transform(tradeEntity);
+		// Assemble links
+		TradeLinkAssember.assemble(response);
+		return response;
 	}
 	
 	@RequestMapping(path="/{tradeId}", method=RequestMethod.PUT)
@@ -61,8 +64,10 @@ public class TradeController {
 		// Delegate to Service layer
 		tradeService.update(tradeEntity);
 		// Transform the response
-		TradeJson result = TradeTransformer.transform(tradeEntity);
-		return result;
+		TradeJson response = TradeTransformer.transform(tradeEntity);
+		// Assemble links
+		TradeLinkAssember.assemble(response);
+		return response;
 	}
 	
 	@RequestMapping(path="/{tradeId}", method=RequestMethod.DELETE)
@@ -84,8 +89,10 @@ public class TradeController {
 		// Delegate to Service layer
 		SearchResult<TradeEntity> searchResult = tradeService.search(name, _pageNumber, _pageSize);
 		// Transform the response
-		SearchResult<TradeJson> result = TradeTransformer.transform(searchResult);
-		return result;
+		SearchResult<TradeJson> response = TradeTransformer.transform(searchResult);
+		// Assemble links
+		TradeLinkAssember.assemble(response);
+		return response;
 	}
 	
 	@RequestMapping(path="/{tradeId}", method=RequestMethod.GET)
@@ -93,9 +100,11 @@ public class TradeController {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Delegate to Repository layer
-		TradeEntity searchResult = tradeService.get(tradeId);
+		TradeEntity tradeEntity = tradeService.get(tradeId);
 		// Transform the response
-		TradeJson result = TradeTransformer.transform(searchResult);
-		return result;
+		TradeJson response = TradeTransformer.transform(tradeEntity);
+		// Assemble links
+		TradeLinkAssember.assemble(response);
+		return response;
 	}
 }

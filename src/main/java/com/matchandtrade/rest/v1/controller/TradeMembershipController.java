@@ -15,6 +15,7 @@ import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
+import com.matchandtrade.rest.v1.link.TradeMembershipLinkAssember;
 import com.matchandtrade.rest.v1.transformer.TradeMembershipTransformer;
 import com.matchandtrade.rest.v1.validator.TradeMembershipValidator;
 
@@ -45,8 +46,10 @@ public class TradeMembershipController {
 		// Delegate to Service layer
 		tradeMembershipService.create(tradeMembershipEntity);
 		// Transform the response
-		TradeMembershipJson result = TradeMembershipTransformer.transform(tradeMembershipEntity);
-		return result;
+		TradeMembershipJson response = TradeMembershipTransformer.transform(tradeMembershipEntity);
+		// Assemble links
+		TradeMembershipLinkAssember.assemble(response);
+		return response;
 	}
 	
 	@RequestMapping(path="/{tradeMembershipId}", method=RequestMethod.GET)
@@ -56,8 +59,10 @@ public class TradeMembershipController {
 		// Delegate to Service layer
 		TradeMembershipEntity searchResult = tradeMembershipService.get(tradeMembershipId);
 		// Transform the response
-		TradeMembershipJson result = TradeMembershipTransformer.transform(searchResult);
-		return result;
+		TradeMembershipJson response = TradeMembershipTransformer.transform(searchResult);
+		// Assemble links
+		TradeMembershipLinkAssember.assemble(response);		
+		return response;
 	}
 	
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
@@ -69,8 +74,10 @@ public class TradeMembershipController {
 		// Delegate to Service layer
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.search(tradeId, userId, _pageNumber, _pageSize);
 		// Transform the response
-		SearchResult<TradeMembershipJson> result = TradeMembershipTransformer.transform(searchResult);
-		return result;
+		SearchResult<TradeMembershipJson> response = TradeMembershipTransformer.transform(searchResult);
+		// Assemble links
+		TradeMembershipLinkAssember.assemble(response);		
+		return response;
 	}
 	
 	@RequestMapping(path="/{tradeMembershipId}", method=RequestMethod.DELETE)

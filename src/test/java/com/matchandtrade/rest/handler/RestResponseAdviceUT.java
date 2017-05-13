@@ -51,16 +51,6 @@ public class RestResponseAdviceUT {
 		assertEquals(404, servletResponse.getServletResponse().getStatus());
 	}
 	
-	@Test
-	public void linkSelfPositive(){
-		// Test setup
-		UserJson body = UserRandom.nextJson(1);
-		RestResponseAdvice adivice = new RestResponseAdvice();
-		UserJson response = (UserJson) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
-		// Assert the response
-		assertEquals("http://localhost/rest/v1/users/" + body.getUserId(), response.getId().getHref());
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void searchResultNegative() {
@@ -87,7 +77,6 @@ public class RestResponseAdviceUT {
 		UserJson responseUserJson = (UserJson) response.get(0);
 		// Assertions
 		assertEquals(resultList.get(0).getEmail(), responseUserJson.getEmail());
-		assertEquals("http://localhost/rest/v1/users/1", responseUserJson.getId().getHref());
 	}
 	
 	@Test

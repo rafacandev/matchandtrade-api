@@ -1,14 +1,9 @@
 package com.matchandtrade.rest.v1.json;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.matchandtrade.rest.JsonLinkSupport;
-import com.matchandtrade.rest.v1.controller.UserController;
 
-public class UserJson extends JsonLinkSupport {
+public class UserJson extends JsonLinkable {
 
 	private String email;
 	private String name;
@@ -39,10 +34,4 @@ public class UserJson extends JsonLinkSupport {
 		this.email = email;
 	}
 	
-	@Override
-	public void buildLinks() {
-		if (getUserId() != null) {
-			add(linkTo(methodOn(UserController.class).get(getUserId())).withSelfRel());
-		}
-	}
 }

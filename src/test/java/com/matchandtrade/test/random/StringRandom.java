@@ -18,21 +18,24 @@ public class StringRandom {
 	};
 	
 	private static String[] noums = {
-			"call",
-			"calorie",
-			"camera",
-			"camp",
-			"campaign",
-			"cancer",
-			"candidate",
-			"candle",
-			"cane",
+			"time", "year", "people", "way", "day", "man", "thing", "woman", "life", "child",
+			"world", "school", "state", "family", "student", "group", "country", "problem", "hand", "part",
+			"place", "case", "week", "company", "system", "program", "question", "work", "government", "number",
+			"night", "point", "home", "water", "room", "mother", "area", "money", "story", "fact",
+			"month", "lot", "right", "study", "book", "eye", "job", "word", "business", "issue",
+			"side", "kind", "head", "house", "service", "friend", "father", "power", "hour", "game",
+			"line", "end", "member", "law", "car", "city", "community", "name", "president", "team",
+			"minute", "idea", "kid", "body", "information", "back", "parent", "face", "others", "level",
+			"office", "door", "health", "person", "art", "war", "history", "party", "result", "change",
+			"morning", "reason", "research", "girl", "guy", "moment", "air", "teacher", "force", "education"
 	};
 	
 	private static String[] prepositions = {
 		"with",
 		"plus",
-		"and"
+		"and",
+		"of",
+		"for"
 	};
 	
 	private static Random random = new Random();
@@ -44,14 +47,14 @@ public class StringRandom {
 	}
 
 	public static String nextDescription() {
+		int aPosition = random.nextInt(adjectives.length);
+		int nPosition = random.nextInt(noums.length);
 		int pPosition = random.nextInt(prepositions.length);
-		return nextName() + " " + prepositions[pPosition] + " " + nextName() + " - " + random.nextInt(99999);
+		return adjectives[aPosition] + " " + noums[nPosition] + " " + prepositions[pPosition] + " " + adjectives[aPosition] + " " + noums[nPosition];
 	}
 	
 	public static String nextEmail() {
-		int aPosition = random.nextInt(adjectives.length);
-		int nPosition = random.nextInt(noums.length);
-		return adjectives[aPosition] + noums[nPosition] + "-" + random.nextInt(99999) + "@random.com";
+		return nextName() + "@random.com";
 	}
 	
 	public static String nextString() {

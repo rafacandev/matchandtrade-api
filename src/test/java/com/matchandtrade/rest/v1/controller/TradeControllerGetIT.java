@@ -45,7 +45,7 @@ public class TradeControllerGetIT {
 		TradeJson requestJson = TradeRandom.nextJson();
 		TradeJson responseJsonPost = fixture.post(requestJson);
 		SearchResult<TradeJson> responseJsonGet = fixture.get(requestJson.getName(), null, null);
-		assertTrue(responseJsonGet.getResultList().contains(responseJsonPost));
+		assertEquals(responseJsonPost.getName(), responseJsonGet.getResultList().get(0).getName());
 	}
 	
 	@Test

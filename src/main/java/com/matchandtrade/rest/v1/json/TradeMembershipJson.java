@@ -2,17 +2,12 @@ package com.matchandtrade.rest.v1.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.matchandtrade.rest.JsonLinkSupport;
 
-public class TradeMembershipJson extends JsonLinkSupport {
+public class TradeMembershipJson extends JsonLinkable {
 
 	private Integer tradeMembershipId;
 	private Integer userId;
 	private Integer tradeId;
-
-	@Override
-	public void buildLinks() {
-	}
 
 	public Integer getTradeId() {
 		return tradeId;

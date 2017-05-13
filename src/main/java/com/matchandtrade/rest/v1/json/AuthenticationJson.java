@@ -1,8 +1,6 @@
 package com.matchandtrade.rest.v1.json;
 
-import com.matchandtrade.rest.Json;
-
-public class AuthenticationJson implements Json {
+public class AuthenticationJson extends JsonLinkable {
 
 	private Integer userId;
 

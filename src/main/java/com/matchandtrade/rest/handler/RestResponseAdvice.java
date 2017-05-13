@@ -68,10 +68,6 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		}
 		
 		logger.debug("Processing body instance of [{}] for URI [{}].", body.getClass(), request.getURI());
-		// If is a JsonLinkSupport, then build its links using Spring HATEOAS.
-		if (body instanceof JsonLinkSupport) {
-			((JsonLinkSupport) body).buildLinks();
-		}
 		/*
 		 * SearchResult is going to be serialized as an JSON array.
 		 * Also, build SearchResult.getResultList() links using Spring HATEOAS.

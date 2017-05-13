@@ -55,7 +55,8 @@ public class TradeMembershipControllerGetIT {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(postResponse.getTradeId(), postResponse.getUserId(), null, null);
-		assertTrue(getResponse.getResultList().contains(postResponse));
+		assertEquals(postResponse.getTradeId(), getResponse.getResultList().get(0).getTradeId());
+		assertEquals(postResponse.getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
 
 	@Test(expected=RestException.class)
@@ -63,7 +64,8 @@ public class TradeMembershipControllerGetIT {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, 999999);
-		assertTrue(getResponse.getResultList().contains(postResponse));
+		assertEquals(postResponse.getTradeId(), getResponse.getResultList().get(0).getTradeId());
+		assertEquals(postResponse.getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
 		
 	@Test
@@ -71,7 +73,8 @@ public class TradeMembershipControllerGetIT {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, postResponse.getUserId(), null, null);
-		assertTrue(getResponse.getResultList().contains(postResponse));
+		assertEquals(postResponse.getTradeId(), getResponse.getResultList().get(0).getTradeId());
+		assertEquals(postResponse.getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
 	
 	@Test
@@ -79,6 +82,7 @@ public class TradeMembershipControllerGetIT {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(postResponse.getTradeId(), null, null, null);
-		assertTrue(getResponse.getResultList().contains(postResponse));
+		assertEquals(postResponse.getTradeId(), getResponse.getResultList().get(0).getTradeId());
+		assertEquals(postResponse.getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
 }

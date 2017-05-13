@@ -11,6 +11,7 @@ import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.AuthenticationJson;
+import com.matchandtrade.rest.v1.link.AuthenticationLinkAssember;
 import com.matchandtrade.rest.v1.transformer.AuthenticationTransformer;
 
 @RestController
@@ -31,7 +32,10 @@ public class AuthenticationController {
 			throw new RestException(HttpStatus.UNAUTHORIZED);
 		}
 		// Transform the response
-		return AuthenticationTransformer.transform(authenticationEntity);
+		AuthenticationJson response = AuthenticationTransformer.transform(authenticationEntity);
+		// Assemble links
+		AuthenticationLinkAssember.assemble(response);
+		return response;
 	}
 
 }
