@@ -1,26 +1,29 @@
-package com.matchandtrade.persistence.dao;
+package com.matchandtrade.repository;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.entity.Entity;
 
 
 /**
- * Generic DAO class to handle the most common operations performed by every <code>Dao</code>.
+ * Basic generic repository class to handle the most basic operations: get, delete, save.
+ * 
  * @author rafael.santos.bra@gmail.com
  */
-public class Dao<T extends Entity> {
+@Repository
+public class BasicRepository<T extends Entity> {
 
     @Autowired
     private SessionFactory sessionFactory;
 
     /**
-     * Returns the <code>Entity</code> for the given <code>id</code>.
+     * Returns the {@code Entity} for the given {@code id}.
      * @param id
-     * @return <code>Entity</code> for the given <code>id</code>
+     * @return {@code Entity} for the given {@code id}
      */
     @Transactional
     public T get(Class<T> clazz, Integer id) {
@@ -37,7 +40,7 @@ public class Dao<T extends Entity> {
     }
     
     /**
-     * Deletes <code>entity</code>.
+     * Deletes an {@code Entity}.
      * @param entity
      */
     @Transactional
@@ -49,7 +52,7 @@ public class Dao<T extends Entity> {
     }
 
     /**
-     * Saves or updates the <code>entity</code>.
+     * Saves or updates the {@code Entity}.
      * @param entity
      */
     @Transactional

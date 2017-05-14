@@ -7,14 +7,30 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.persistence.dao.AuthenticationDao;
+import com.matchandtrade.persistence.criteria.AuthenticationCriteriaBuilder;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 
 @Repository
 public class AuthenticationRespository {
 
 	@Autowired
-	private AuthenticationDao authenticationDao;
+	private BasicRepository<AuthenticationEntity> authenticationDao;
+	@Autowired
+	private SearchableRepository<AuthenticationEntity> searchableRepository;
+	@Autowired
+	private AuthenticationCriteriaBuilder criteriaBuilder;
+
+	@Transactional
+	public AuthenticationEntity getByAtiForgeryState(String antiForgeryState) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
+		searchCriteria.addCriterion(AuthenticationEntity.Field.antiForgeryState, antiForgeryState);
+		SearchResult<AuthenticationEntity> searchResult = search(searchCriteria);
+		if (!searchResult.getResultList().isEmpty()) {
+			return searchResult.getResultList().get(0);
+		} else {
+			return null;
+		}
+	}
 
 	@Transactional
 	public AuthenticationEntity getByToken(String token) {
@@ -35,19 +51,7 @@ public class AuthenticationRespository {
 
 	@Transactional
 	public SearchResult<AuthenticationEntity> search(SearchCriteria searchCriteria) {
-		return authenticationDao.search(searchCriteria);
-	}
-
-	@Transactional
-	public AuthenticationEntity getByAtiForgeryState(String antiForgeryState) {
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(AuthenticationEntity.Field.antiForgeryState, antiForgeryState);
-		SearchResult<AuthenticationEntity> searchResult = search(searchCriteria);
-		if (!searchResult.getResultList().isEmpty()) {
-			return searchResult.getResultList().get(0);
-		} else {
-			return null;
-		}
+		return searchableRepository.search(searchCriteria, criteriaBuilder);
 	}
 
 	@Transactional

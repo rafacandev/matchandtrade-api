@@ -6,27 +6,32 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.persistence.dao.ItemDao;
+import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 
 @Repository
 public class ItemRepository {
-
+	
 	@Autowired
-	private ItemDao itemDao;
+	private BasicRepository<ItemEntity> basicRepository;
+	@Autowired
+	private QueryableRepository<ItemEntity> queryableRepository;
+	@Autowired
+	private ItemQueryBuilder queryBuilder;
 
 	@Transactional
 	public ItemEntity get(Integer itemId) {
-		return itemDao.get(ItemEntity.class, itemId);
+		return basicRepository.get(ItemEntity.class, itemId);
+	}
+
+	@Transactional
+	public SearchResult<ItemEntity> query(SearchCriteria searchCriteria) {
+		return queryableRepository.query(searchCriteria, queryBuilder);
 	}
 	
 	@Transactional
 	public void save(ItemEntity entity) {
-		itemDao.save(entity);
+		basicRepository.save(entity);
 	}
 	
-	@Transactional
-	public SearchResult<ItemEntity> query(SearchCriteria searchCriteria) {
-		return itemDao.query(searchCriteria);
-	}
 }

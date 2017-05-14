@@ -1,10 +1,10 @@
-package com.matchandtrade.persistence.dao;
+package com.matchandtrade.repository;
 
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.transform.RootEntityResultTransformer;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
@@ -13,11 +13,12 @@ import com.matchandtrade.persistence.criteria.QueryBuilder;
 import com.matchandtrade.persistence.entity.Entity;
 
 /**
- * Generic DAO class with ability to query entities.
+ * Generic repository class with ability to query entities.
+ * 
  * @author rafael.santos.bra@gmail.com
  */
-@Component
-public class QueryDao<T extends Entity> {
+@Repository
+public class QueryableRepository<T extends Entity> {
 	
     /**
 	 * Apply pagination value to the criteria

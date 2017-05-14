@@ -1,11 +1,11 @@
-package com.matchandtrade.persistence.dao;
+package com.matchandtrade.repository;
 
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.transform.RootEntityResultTransformer;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
@@ -14,11 +14,12 @@ import com.matchandtrade.persistence.criteria.CriteriaBuilder;
 import com.matchandtrade.persistence.entity.Entity;
 
 /**
- * Generic DAO class with ability to search entities.
+ * Generic repository class with ability to search for entities.
+ * 
  * @author rafael.santos.bra@gmail.com
  */
-@Component
-public class SearchDao<T extends Entity> {
+@Repository
+public class SearchableRepository<T extends Entity> {
 
 	/**
 	 * Apply pagination value to the criteria
@@ -67,7 +68,7 @@ public class SearchDao<T extends Entity> {
 		// Firstly, count how many records the searchCriteria returns. Important for pagination purposes
 		Criteria countCriteria = criteriaBuilder.buildSearchCriteria(searchCriteria);
 		// Set pagination total
-		long rowCount = SearchDao.rowCount(countCriteria);
+		long rowCount = rowCount(countCriteria);
 		searchCriteria.getPagination().setTotal(rowCount);
 		
 		// Secondly, query the database with the proper pagination.

@@ -6,35 +6,38 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.persistence.dao.TradeMembershipDao;
+import com.matchandtrade.persistence.criteria.TradeMembershipCriteriaBuilder;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 
 @Repository
 public class TradeMembershipRepository {
 
 	@Autowired
-	private TradeMembershipDao tradeMembershipDao;
-
-	@Transactional
-	public TradeMembershipEntity get(Integer tradeMembershipId) {
-		TradeMembershipEntity result = tradeMembershipDao.get(TradeMembershipEntity.class, tradeMembershipId);
-		return result;
-	}
-
-	@Transactional
-	public void save(TradeMembershipEntity entity) {
-		tradeMembershipDao.save(entity);
-	}
-	
-	@Transactional
-	public SearchResult<TradeMembershipEntity> search(SearchCriteria searchCriteria) {
-		return tradeMembershipDao.search(searchCriteria);
-	}
+	private BasicRepository<TradeMembershipEntity> basicRepository;
+	@Autowired
+	private TradeMembershipCriteriaBuilder criteriaBuilder;
+	@Autowired
+	private SearchableRepository<TradeMembershipEntity> searchableResposity;
 
 	@Transactional
 	public void delete(Integer tradeMembershipId) {
 		TradeMembershipEntity tm = get(tradeMembershipId);
-		tradeMembershipDao.delete(tm);
+		basicRepository.delete(tm);
+	}
+
+	@Transactional
+	public TradeMembershipEntity get(Integer tradeMembershipId) {
+		return basicRepository.get(TradeMembershipEntity.class, tradeMembershipId);
+	}
+
+	@Transactional
+	public void save(TradeMembershipEntity entity) {
+		basicRepository.save(entity);
+	}
+	
+	@Transactional
+	public SearchResult<TradeMembershipEntity> search(SearchCriteria searchCriteria) {
+		return searchableResposity.search(searchCriteria, criteriaBuilder);
 	}
 
 }
