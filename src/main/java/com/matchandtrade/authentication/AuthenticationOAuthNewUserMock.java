@@ -25,8 +25,7 @@ public class AuthenticationOAuthNewUserMock implements AuthenticationOAuth {
 
 	private String buidRandomAccessToken() {
 		Random random = new Random();
-		String token = random.nextInt(9999) + "-" +random.nextInt(9999) + "-" +random.nextInt(9999);
-		return token;
+		return random.nextInt(9999) + "-" +random.nextInt(9999) + "-" +random.nextInt(9999);
 	}
 	
 	@Override
@@ -45,7 +44,7 @@ public class AuthenticationOAuthNewUserMock implements AuthenticationOAuth {
 		}
 		try {
 			if (uri != null) {
-				logger.info("Redirecting to {}", uri.toString());
+				logger.info("Redirecting to {}", uri);
 				response.sendRedirect(uri.toString());
 			}
 		} catch (IOException e) {
@@ -59,13 +58,12 @@ public class AuthenticationOAuthNewUserMock implements AuthenticationOAuth {
 		long now = System.currentTimeMillis();
 		String email = now + "@test.com";
 		String name = now + "AuthenticationOAuthNewUserMock";
-		AuthenticationResponsePojo result = new AuthenticationResponsePojo(
+		return new AuthenticationResponsePojo(
 				null,
 				true,
 				email,
 				name,
 				buidRandomAccessToken());
-		return result;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.matchandtrade.authentication;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,9 +19,10 @@ import com.matchandtrade.repository.AuthenticationRespository;
 import com.matchandtrade.repository.UserRepository;
 
 @Component
-public class AuthenticationCallback {
-	
-	private final Logger logger = LoggerFactory.getLogger(AuthenticationCallback.class);
+public class AuthenticationCallback implements Serializable {
+
+	private static final long serialVersionUID = 6742828244957421933L;
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationCallback.class);
 	
 	@Autowired
 	private AuthenticationProperties authenticationProperties;
@@ -105,12 +107,11 @@ public class AuthenticationCallback {
 			userRepository.save(userEntity);
 			isNewUser = true;
 		}
-		AuthenticationResponsePojo result = new AuthenticationResponsePojo(
+		return new AuthenticationResponsePojo(
 				userEntity.getUserId(), 
 				isNewUser, 
 				userEntity.getEmail(), 
 				userEntity.getName(), 
 				null);
-		return result;
 	}
 }

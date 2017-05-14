@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 
-	private final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthGoogle.class);
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthGoogle.class);
 	
 	/**
 	 * Extracts the access token from the response string.
@@ -41,8 +41,7 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 		ObjectMapper jacksonObjectMapper = new ObjectMapper();
 		@SuppressWarnings("unchecked")
 		Map<String,Object> accessMap = jacksonObjectMapper.readValue(responseString, Map.class);
-		String accessToken = (String) accessMap.get("access_token");
-		return accessToken;
+		return (String) accessMap.get("access_token");
 	}
 	
 	/**
@@ -98,14 +97,14 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 			}
 			return accessToken;
 		} catch (UnsupportedOperationException | IOException e) {
+			logger.debug("Unable to obtain access token.", e);
 			throw new AuthenticationException("Not able to obtain access token. " + e.getMessage());
 		}
 	}
 
 	CloseableHttpResponse httpClientExecute(HttpRequestBase httpRequest, CloseableHttpClient httpClient) throws IOException, ClientProtocolException {
 		logger.debug("Sending HTTP POST request to {}.", httpRequest.getURI() );
-		CloseableHttpResponse httpResponse = httpClient.execute(httpRequest);
-		return httpResponse;
+		return httpClient.execute(httpRequest);
 	}
 
 	@Override
@@ -138,13 +137,12 @@ public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 			ObjectMapper jacksonObjectMapper = new ObjectMapper();
 			@SuppressWarnings("unchecked")
 			Map<String,Object> userInfoMap = jacksonObjectMapper.readValue(responseString, Map.class);
-			AuthenticationResponsePojo result = new AuthenticationResponsePojo(
+			return new AuthenticationResponsePojo(
 					null, 
 					null, 
 					userInfoMap.get("email").toString(), 
 					userInfoMap.get("name").toString(), 
 					accessToken);
-			return result;
 		} catch (UnsupportedOperationException | IOException e) {
 			throw new AuthenticationException(e);
 		}

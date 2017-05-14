@@ -6,12 +6,13 @@ public class RestException extends RuntimeException {
 
 	private static final long serialVersionUID = 4093425867051566908L;
 
-	private String description;
-	private HttpStatus httpStatus;
+	private final String description;
+	private final HttpStatus httpStatus;
 	
 	public RestException(HttpStatus httpStatus) {
 		super(httpStatus.getReasonPhrase());
 		this.httpStatus = httpStatus;
+		this.description = null;
 	}
 
 	public RestException(HttpStatus httpStatus, String description) {

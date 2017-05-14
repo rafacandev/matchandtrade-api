@@ -2,7 +2,7 @@ package com.matchandtrade.config;
 
 public class AuthenticationProperties {
 	
-	public static enum OAuth {
+	public enum OAuth {
 		ANTI_FORGERY_STATE("anti-forgery-state"),
 		CODE_PARAMETER("code"),
 		STATE_PARAMETER("state"),

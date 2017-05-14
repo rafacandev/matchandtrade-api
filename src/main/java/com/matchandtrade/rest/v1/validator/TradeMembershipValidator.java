@@ -42,7 +42,7 @@ public class TradeMembershipValidator {
 		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeId, json.getTradeId());
 		searchCriteria.addCriterion(TradeMembershipEntity.Field.userId, json.getUserId());
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
-		if (searchResult.getResultList().size() > 0) {
+		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.");
 		}
 	}

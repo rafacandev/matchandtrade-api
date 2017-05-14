@@ -29,7 +29,7 @@
 	<root level="${logging.level.root:-info}">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
-		<appender-ref ref="PLAINOUTPUT" />
+<!-- 		<appender-ref ref="PLAINOUTPUT" /> -->
 	</root>
 
 </configuration>

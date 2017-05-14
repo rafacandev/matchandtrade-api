@@ -40,10 +40,9 @@ public class AppConfiguration {
 
 	@SuppressWarnings("rawtypes")
 	@Bean
-	public AuthenticationOAuth authenticationOAuth() throws ClassNotFoundException, InstantiationException, ReflectiveOperationException {
+	public AuthenticationOAuth authenticationOAuth() throws ReflectiveOperationException {
 		Class authenticationOAuthClass = Class.forName(appProperties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS));
-		AuthenticationOAuth result = (AuthenticationOAuth) authenticationOAuthClass.newInstance();
-		return result;
+		return (AuthenticationOAuth) authenticationOAuthClass.newInstance();
 	}
 	
 	public AppConfigurationProperties getAppProperties() {

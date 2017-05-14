@@ -7,6 +7,9 @@ import com.matchandtrade.rest.RestException;
 
 public class AuthorizationValidator {
 
+	// Utility classes should not have public constructors
+	private AuthorizationValidator() {}
+	
 	/**
 	 * Throws {@code AuthorizationException} if {@code authenticationEntity} or {@code authenticationEntity.getUser()} is null
 	 * @param authenticationEntity

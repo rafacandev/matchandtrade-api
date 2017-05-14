@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 import com.matchandtrade.rest.RestException;
 
 public class PaginationValidator {
+	
+	// Utility classes should not have public constructors
+	private PaginationValidator() {}
 
 	public static void validatePageSize(Integer _pageSize) {
 		if (_pageSize != null && _pageSize > 50) {

@@ -1,5 +1,7 @@
 package com.matchandtrade.persistence.criteria;
 
+import java.io.Serializable;
+
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -11,9 +13,11 @@ import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 
 @Component
-public class AuthenticationCriteriaBuilder implements CriteriaBuilder {
+public class AuthenticationCriteriaBuilder implements CriteriaBuilder, Serializable {
 
-    @Autowired
+	private static final long serialVersionUID = -6171272708318857032L;
+	
+	@Autowired
     private SessionFactory sessionFactory;
 
     @Override

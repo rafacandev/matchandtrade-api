@@ -39,8 +39,7 @@ public class TradeMembershipService {
 			searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeId, tradeId);
 		}
 		// Delegate to Repository layer
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
-		return searchResult;
+		return tradeMembershipRepository.search(searchCriteria);
 	}
 	
 }

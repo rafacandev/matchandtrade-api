@@ -3,14 +3,14 @@ package com.matchandtrade.rest.v1.transformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.rest.v1.json.ItemJson;
 
-@Component
 public class ItemTransformer {
+	
+	// Utility classes should not have public constructors
+	private ItemTransformer() {}
 
 	public static ItemEntity transform(ItemJson json) {
 		ItemEntity result = new ItemEntity();
@@ -27,7 +27,7 @@ public class ItemTransformer {
 	}
 
 	public static SearchResult<ItemJson> transform(SearchResult<ItemEntity> searchResult) {
-		List<ItemJson> resultList = new ArrayList<ItemJson>();
+		List<ItemJson> resultList = new ArrayList<>();
 		for (ItemEntity e : searchResult.getResultList()) {
 			resultList.add(transform(e));
 		}

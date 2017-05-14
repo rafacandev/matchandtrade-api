@@ -26,7 +26,7 @@ import com.matchandtrade.repository.AuthenticationRespository;
 public class AuthenticationServlet extends HttpServlet {
 	private static final long serialVersionUID = 373664290851751809L;
 	
-	private final Logger logger = LoggerFactory.getLogger(AuthenticationServlet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationServlet.class);
 	
 	@Autowired
 	private AuthenticationProperties authenticationProperties;
@@ -48,15 +48,19 @@ public class AuthenticationServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		AuthenticationProperties.Action targetAction = obtainAuthenticationAction(request);
-		logger.debug("Performing Authentication Action {} for requet [{}].", targetAction, request.getRequestURI());
-		if (targetAction == null) {
-			response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
-		} else if (targetAction == AuthenticationProperties.Action.SIGNOUT) {
-			signOut(request, response);
-		} else if (targetAction == AuthenticationProperties.Action.AUTHENTICATE) {
-			redirectToAuthenticationServer(request, response);
-		} else if (targetAction == AuthenticationProperties.Action.CALLBACK) {
-			authenticationCallbak.authenticate(request, response);
+		LOGGER.debug("Performing Authentication Action {} for requet [{}].", targetAction, request.getRequestURI());
+		try {
+			if (targetAction == null) {
+				response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
+			} else if (targetAction == AuthenticationProperties.Action.SIGNOUT) {
+				signOut(request, response);
+			} else if (targetAction == AuthenticationProperties.Action.AUTHENTICATE) {
+				redirectToAuthenticationServer(response);
+			} else if (targetAction == AuthenticationProperties.Action.CALLBACK) {
+				authenticationCallbak.authenticate(request, response);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error when performing a GET /authenticate/.", e);
 		}
 	}
 
@@ -71,17 +75,17 @@ public class AuthenticationServlet extends HttpServlet {
 		AuthenticationProperties.Action result = null;
 		String requestUri = request.getRequestURI();
 		// Remove tailing slash if any
-		if (requestUri.lastIndexOf("/") == requestUri.length()-1) {
+		if (requestUri.lastIndexOf('/') == requestUri.length()-1) {
 			requestUri = requestUri.substring(0, requestUri.length()-1);
 		}
 		
-		int lastPathIndex = requestUri.lastIndexOf("/");
+		int lastPathIndex = requestUri.lastIndexOf('/');
 		String lastPath = requestUri.substring(lastPathIndex+1);
 		result = AuthenticationProperties.Action.get(lastPath);
 		return result;
 	}
 
-	private void redirectToAuthenticationServer(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+	private void redirectToAuthenticationServer(HttpServletResponse response) throws AuthenticationException {
 		// oAuth Step 1. Create an anti-forgery state token
 		String state = generateAntiForgeryToken();
 		
@@ -92,7 +96,7 @@ public class AuthenticationServlet extends HttpServlet {
 
 		// oAuth Step 2. Send an authentication request to the Authorization Authority
 		authenticationOAuth.redirectToAuthorizationAuthority(response, state, authenticationProperties.getClientId(), authenticationProperties.getRedirectURI());
-		logger.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", authenticationProperties.getRedirectURI());
+		LOGGER.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", authenticationProperties.getRedirectURI());
 	}
 	
 	public void setAuthenticationOAuth(AuthenticationOAuth authenticationOAuth) {
@@ -100,12 +104,11 @@ public class AuthenticationServlet extends HttpServlet {
 	}
 	
 	private void signOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		logger.debug("Signing out from session id: [{}]", request.getSession().getId());
+		LOGGER.debug("Signing out from session id: [{}]", request.getSession().getId());
 		// Delete authentication details
 		String accessToken = request.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
 		AuthenticationEntity authenticationEntity = authenticationRepository.getByToken(accessToken);
 		authenticationRepository.delete(authenticationEntity);
-		// TODO remove authentication header
 		
 		// Invalidate the current session (not required, but good practice overall)
 		request.getSession().invalidate();
