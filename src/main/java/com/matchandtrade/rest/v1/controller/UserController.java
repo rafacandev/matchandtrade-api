@@ -17,7 +17,7 @@ import com.matchandtrade.rest.v1.validator.UserValidator;
 
 @RestController
 @RequestMapping(path="/rest/v1/users/")
-public class UserController {
+public class UserController implements Controller {
 
 	@Autowired
 	AuthenticationProvider authenticationProvider;
@@ -34,7 +34,7 @@ public class UserController {
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		userValidador.validateGetById(authenticationProvider.getAuthentication(), userId);
-		// Delegate to Repository layer
+		// Delegate to service
 		UserEntity userEntity = userService.get(userId);
 		// Transform the response
 		UserJson response = UserTransformer.transform(userEntity);
@@ -48,7 +48,7 @@ public class UserController {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		requestJson.setUserId(userId);
+		requestJson.setUserId(userId); // Always get the id from the URL when working on PUT methods
 		userValidador.validatePut(requestJson);
 		// Transform the request
 		UserEntity userEntity = userTransformer.transform(requestJson, true);

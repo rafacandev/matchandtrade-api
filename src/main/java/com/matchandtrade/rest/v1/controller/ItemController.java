@@ -21,7 +21,7 @@ import com.matchandtrade.rest.v1.validator.ItemValidator;
 
 @RestController
 @RequestMapping(path = "/rest/v1/trade-memberships")
-public class ItemController {
+public class ItemController implements Controller {
 
 	@Autowired
 	AuthenticationProvider authenticationProvider;
@@ -39,7 +39,7 @@ public class ItemController {
 		itemValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, requestJson);
 		// Transform the request
 		ItemEntity itemEntity = ItemTransformer.transform(requestJson);
-		// Delegate to Service layer
+		// Delegate to service layer
 		itemService.create(tradeMembershipId, itemEntity);
 		// Transform the response
 		ItemJson response = ItemTransformer.transform(itemEntity);
@@ -54,7 +54,7 @@ public class ItemController {
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId);
-		// Delegate to Repository layer
+		// Delegate to service layer
 		ItemEntity itemEntity = itemService.get(itemId);
 		// Transform the response
 		ItemJson response = ItemTransformer.transform(itemEntity);
@@ -69,7 +69,7 @@ public class ItemController {
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId);
-		// Delegate to Repository layer
+		// Delegate to service layer
 		SearchResult<ItemEntity> searchResult = itemService.search(tradeMembershipId, name, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<ItemJson> response = ItemTransformer.transform(searchResult);

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
@@ -21,12 +20,10 @@ import com.matchandtrade.rest.v1.validator.TradeMembershipValidator;
 
 @RestController
 @RequestMapping(path="/rest/v1/trade-memberships")
-public class TradeMembershipController {
+public class TradeMembershipController implements Controller {
 
 	@Autowired
 	AuthenticationProvider authenticationProvider;
-	@Autowired
-	TradeMembershipRepository tradeMembershipRepository;
 	@Autowired
 	TradeMembershipValidator tradeMembershipValidador;
 	@Autowired
@@ -43,7 +40,7 @@ public class TradeMembershipController {
 		tradeMembershipValidador.validatePost(requestJson);
 		// Transform the request
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipTransformer.transform(requestJson);
-		// Delegate to Service layer
+		// Delegate to service layer
 		tradeMembershipService.create(tradeMembershipEntity);
 		// Transform the response
 		TradeMembershipJson response = TradeMembershipTransformer.transform(tradeMembershipEntity);
@@ -56,7 +53,8 @@ public class TradeMembershipController {
 	public TradeMembershipJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Delegate to Service layer
+		// Validate the request - Nothing to validate
+		// Delegate to service layer
 		TradeMembershipEntity searchResult = tradeMembershipService.get(tradeMembershipId);
 		// Transform the response
 		TradeMembershipJson response = TradeMembershipTransformer.transform(searchResult);

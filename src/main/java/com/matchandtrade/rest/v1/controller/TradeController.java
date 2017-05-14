@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
@@ -21,12 +20,10 @@ import com.matchandtrade.rest.v1.validator.TradeValidator;
 
 @RestController
 @RequestMapping(path="/rest/v1/trades")
-public class TradeController {
+public class TradeController implements Controller {
 
 	@Autowired
 	AuthenticationProvider authenticationProvider;
-	@Autowired
-	TradeRepository tradeRepository;
 	@Autowired
 	TradeValidator tradeValidador;
 	@Autowired
@@ -43,7 +40,7 @@ public class TradeController {
 		tradeValidador.validatePost(requestJson);
 		// Transform the request
 		TradeEntity tradeEntity = tradeTransformer.transform(requestJson);
-		// Delegate to Service layer
+		// Delegate to service layer
 		tradeService.create(tradeEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
 		TradeJson response = TradeTransformer.transform(tradeEntity);
@@ -57,11 +54,11 @@ public class TradeController {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		requestJson.setTradeId(tradeId);
+		requestJson.setTradeId(tradeId); // Always get the id from the URL when working on PUT methods
 		tradeValidador.validatePut(requestJson, authenticationProvider.getAuthentication().getUser());
 		// Transform the request
 		TradeEntity tradeEntity = tradeTransformer.transform(requestJson);
-		// Delegate to Service layer
+		// Delegate to service layer
 		tradeService.update(tradeEntity);
 		// Transform the response
 		TradeJson response = TradeTransformer.transform(tradeEntity);
@@ -75,8 +72,9 @@ public class TradeController {
 	public void delete(@PathVariable Integer tradeId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
 		tradeValidador.validateDelete(tradeId);
-		// Delegate to Service layer
+		// Delegate to service layer
 		tradeService.delete(tradeId);
 	}
 
@@ -98,6 +96,7 @@ public class TradeController {
 	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request - Nothing to validate
 		// Delegate to Repository layer
 		TradeEntity tradeEntity = tradeService.get(tradeId);
 		// Transform the response

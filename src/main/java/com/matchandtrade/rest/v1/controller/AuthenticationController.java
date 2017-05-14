@@ -1,22 +1,19 @@
 package com.matchandtrade.rest.v1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
-import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
-import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.AuthenticationJson;
 import com.matchandtrade.rest.v1.link.AuthenticationLinkAssember;
 import com.matchandtrade.rest.v1.transformer.AuthenticationTransformer;
 
 @RestController
 @RequestMapping(path = "/rest/v1/authentications/")
-public class AuthenticationController {
+public class AuthenticationController implements Controller {
 
 	@Autowired
 	AuthenticationProvider authenticationProvider;
@@ -25,14 +22,10 @@ public class AuthenticationController {
 	public AuthenticationJson get() {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Get authentication object
-		AuthenticationEntity authenticationEntity = authenticationProvider.getAuthentication();
-		// Throw RestException HttpStatus.UNAUTHORIZED if there is no UserAuthentication meaning that the user is not authenticated
-		if (authenticationEntity == null) {
-			throw new RestException(HttpStatus.UNAUTHORIZED);
-		}
+		// Validate the request - Nothing to validate
+		// Delegate to service layer - Nothing to delegate
 		// Transform the response
-		AuthenticationJson response = AuthenticationTransformer.transform(authenticationEntity);
+		AuthenticationJson response = AuthenticationTransformer.transform(authenticationProvider.getAuthentication());
 		// Assemble links
 		AuthenticationLinkAssember.assemble(response);
 		return response;
