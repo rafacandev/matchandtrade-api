@@ -51,8 +51,6 @@ public class AppCli {
 					throw new IOException("File does not exist: " + configFile.getAbsolutePath());
 				} else if (configFile.isDirectory()) {
 					throw new IOException("The path provided is a directory instead of a valid file: " + configFile.getAbsolutePath());
-				} else if (!configFile.isFile()) {
-					throw new IOException("The path provided is not a file: " + configFile.getAbsolutePath());
 				} else {
 					System.setProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey(), configFile.getAbsolutePath());
 					// Load the content of the configuration file as system properties

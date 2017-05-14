@@ -69,8 +69,7 @@ public class TradeMembershipController {
 	public SearchResult<TradeMembershipJson> get(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Validate the request
-		tradeMembershipValidador.validateGet(_pageSize);
+		// Validate the request - Nothing to validate
 		// Delegate to Service layer
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.search(tradeId, userId, _pageNumber, _pageSize);
 		// Transform the response

@@ -31,7 +31,7 @@ public class TradeControllerGetIT {
 	}
 
 	@Test
-	public void getPositive() {
+	public void get() {
 		TradeJson requestJson = TradeRandom.nextJson();
 		TradeJson responseJsonPost = fixture.post(requestJson);
 		TradeJson responseJsonGet = fixture.get(responseJsonPost.getTradeId());
@@ -40,7 +40,7 @@ public class TradeControllerGetIT {
 	}
 
 	@Test
-	public void getPositiveParameters() {
+	public void getByName() {
 		TradeJson requestJson = TradeRandom.nextJson();
 		TradeJson responseJsonPost = fixture.post(requestJson);
 		SearchResult<TradeJson> responseJsonGet = fixture.get(requestJson.getName(), null, null);
@@ -48,7 +48,7 @@ public class TradeControllerGetIT {
 	}
 	
 	@Test
-	public void getNegative() {
+	public void getInvalid() {
 		TradeJson responseJsonGet = fixture.get(-1);
 		assertNull(responseJsonGet);
 	}

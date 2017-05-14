@@ -37,7 +37,7 @@ public class TradeValidator {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(TradeEntity.Field.name, json.getName());
 		SearchResult<TradeEntity> searchResult = tradeRepository.search(searchCriteria);
-		if (searchResult.getResultList().size() > 0) {
+		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
 		}
 	}
@@ -74,10 +74,6 @@ public class TradeValidator {
 		if (tradeEntity == null) {
 			throw new RestException(HttpStatus.NOT_FOUND);
 		}
-	}
-
-	public void validateGet(Integer _pageSize) {
-		PaginationValidator.validatePageSize(_pageSize);
 	}
 
 }

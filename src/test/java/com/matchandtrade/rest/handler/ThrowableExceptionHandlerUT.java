@@ -19,12 +19,21 @@ import com.matchandtrade.test.TestingDefaultAnnotations;
 public class ThrowableExceptionHandlerUT extends ResponseEntityExceptionHandler {
 	
 	@Test
-	public void restException() {
+	public void restExceptionWithoutDescription() {
 		HttpServletRequest request = new MockHttpServletRequest("GET", "http://localhost/ThrowableExceptionHandlerUT");
 		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
 		RestException e = new RestException(HttpStatus.FORBIDDEN);
 		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(request, e);
 		Assert.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+	}
+
+	@Test
+	public void restExceptionWithDescription() {
+		HttpServletRequest request = new MockHttpServletRequest("GET", "http://localhost/ThrowableExceptionHandlerUT");
+		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
+		RestException e = new RestException(HttpStatus.ALREADY_REPORTED, "ThrowableExceptionHandlerUT.restExceptionWithDescription()");
+		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(request, e);
+		Assert.assertEquals(HttpStatus.ALREADY_REPORTED, response.getStatusCode());
 	}
 	
 	@Test
@@ -34,14 +43,6 @@ public class ThrowableExceptionHandlerUT extends ResponseEntityExceptionHandler 
 		RuntimeException e = new RuntimeException("TEST EXCEPTION");
 		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(request, e);
 		Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-	}
-	
-	@Test
-	public void restExceptionMultipleErrors() {
-		ThrowableExceptionHandler throwableExceptionHandler = new ThrowableExceptionHandler();
-		RestException e = new RestException(HttpStatus.CONFLICT);
-		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(null, e);
-		Assert.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
 	}
 	
 }

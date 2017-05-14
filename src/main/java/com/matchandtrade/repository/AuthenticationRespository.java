@@ -17,11 +17,6 @@ public class AuthenticationRespository {
 	private AuthenticationDao authenticationDao;
 
 	@Transactional
-	public AuthenticationEntity get(Integer authenticationId) {
-		return authenticationDao.get(AuthenticationEntity.class, authenticationId);
-	}
-
-	@Transactional
 	public AuthenticationEntity getByToken(String token) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(AuthenticationEntity.Field.token, token);

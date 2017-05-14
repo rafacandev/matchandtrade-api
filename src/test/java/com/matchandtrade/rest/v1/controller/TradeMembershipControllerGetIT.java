@@ -2,6 +2,7 @@ package com.matchandtrade.rest.v1.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class TradeMembershipControllerGetIT {
 	}
 	
 	@Test
-	public void getPositive() {
+	public void get() {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
 		TradeMembershipJson getResponse = fixture.get(postResponse.getTradeMembershipId());
@@ -44,13 +45,13 @@ public class TradeMembershipControllerGetIT {
 	}
 	
 	@Test
-	public void getNegativeInvalidTradeMembershipId() {
+	public void getInvalidTradeMembershipId() {
 		TradeMembershipJson response = fixture.get(-1);
 		assertNull(response);
 	}
 	
 	@Test
-	public void getPositiveParameters() {
+	public void getByTradeIdAndUserId() {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(postResponse.getTradeId(), postResponse.getUserId(), null, null);
@@ -58,17 +59,25 @@ public class TradeMembershipControllerGetIT {
 		assertEquals(postResponse.getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
 
-	@Test(expected=RestException.class)
-	public void getPositiveAll() {
+	@Test
+	public void getAll() {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
-		TradeMembershipJson postResponse = fixture.post(postRequest);
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, 999999);
-		assertEquals(postResponse.getTradeId(), getResponse.getResultList().get(0).getTradeId());
-		assertEquals(postResponse.getUserId(), getResponse.getResultList().get(0).getUserId());
+		fixture.post(postRequest);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, null);
+		assertTrue(getResponse.getResultList().size() > 0);
 	}
+	
+	@Test(expected=RestException.class)
+	public void getInvalidPageSize() {
+		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
+		fixture.post(postRequest);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, 51);
+		assertTrue(getResponse.getResultList().size() > 0);
+	}
+
 		
 	@Test
-	public void getPositiveParametersUserId() {
+	public void getByUserId() {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, postResponse.getUserId(), null, null);
@@ -77,7 +86,7 @@ public class TradeMembershipControllerGetIT {
 	}
 	
 	@Test
-	public void getPositiveParametersTradeId() {
+	public void getByTradeId() {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(postResponse.getTradeId(), null, null, null);

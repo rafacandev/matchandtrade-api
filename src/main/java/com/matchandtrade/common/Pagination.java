@@ -1,5 +1,9 @@
 package com.matchandtrade.common;
 
+import org.springframework.http.HttpStatus;
+
+import com.matchandtrade.rest.RestException;
+
 /**
  * POJO to keep pagination values.
  * @author rafael.santos.bra@gmail.com
@@ -34,6 +38,10 @@ public class Pagination {
 			this.number = number;
 		}
 		if (size != null) {
+			if (size > 50) {
+				// TODO Create a PaginationException
+				throw new RestException(HttpStatus.BAD_REQUEST, "_pageSize cannot be bigger than 50.");
+			}
 			this.size = size;
 		}
 	}
@@ -52,13 +60,6 @@ public class Pagination {
 	public int getSize() {
 		return size;
 	}
-	/**
-	 * Set the page size.
-	 * @param size
-	 */
-	public void setSize(int size) {
-		this.size = size;
-	}
 	
 	/**
 	 * Get the page number starting on zero.
@@ -66,13 +67,6 @@ public class Pagination {
 	 */
 	public int getNumber() {
 		return number;
-	}
-	/**
-	 * Set the page number.
-	 * @param number
-	 */
-	public void setNumber(int number) {
-		this.number = number;
 	}
 	
 	/**

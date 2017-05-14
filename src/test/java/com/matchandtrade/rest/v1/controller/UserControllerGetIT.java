@@ -27,16 +27,16 @@ public class UserControllerGetIT {
 		}
 	}
 	
-	@Test(expected=RestException.class)
-	public void getNegativeUnauthorized() {
-		// The database is not supposed to hold negative userId. Therefore is a safe assumption to say that it will throw AuthorizationException
-		fixture.get(-1);
-	}
-	
 	@Test
-	public void getPositive() {
+	public void get() {
 		UserJson response = fixture.get(fixture.authenticationProvider.getAuthentication().getUser().getUserId());
 		assertEquals(fixture.authenticationProvider.getAuthentication().getUser().getUserId(), response.getUserId());
+	}
+	
+	@Test(expected=RestException.class)
+	public void getUnauthorized() {
+		// The database is not supposed to hold negative userId. Therefore is a safe assumption to say that it will throw AuthorizationException
+		fixture.get(-1);
 	}
 
 }
