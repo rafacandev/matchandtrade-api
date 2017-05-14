@@ -1,6 +1,5 @@
 package com.matchandtrade.test.random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.TradeEntity;
@@ -9,9 +8,6 @@ import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 
 @Component
 public class TradeRandom {
-	
-	@Autowired
-	private TradeTransformer tradeTransformer;
 	
 	public static TradeJson nextJson() {
 		TradeJson result = new TradeJson();
@@ -27,7 +23,7 @@ public class TradeRandom {
 	}
 	
 	public TradeEntity nextEntity() {
-		return tradeTransformer.transform(nextJson());
+		return TradeTransformer.transform(nextJson());
 	}
 
 }

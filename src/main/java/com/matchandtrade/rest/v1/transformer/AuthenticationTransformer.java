@@ -9,9 +9,6 @@ public class AuthenticationTransformer {
 	private AuthenticationTransformer() {}
 	
 	public static AuthenticationJson transform(AuthenticationEntity entity) {
-		if (entity == null) {
-			return null;
-		}
 		AuthenticationJson result = new AuthenticationJson();
 		result.setUserId(entity.getUser().getUserId());
 		return result;

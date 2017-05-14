@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
@@ -17,27 +16,17 @@ import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 public class TradeMembershipTransformer {
 
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
-	@Autowired
 	private UserRepository userRepository;
 	@Autowired
 	private TradeRepository tradeRepository;
 
-	public TradeMembershipEntity transform(TradeMembershipJson json, boolean loadEntity) {
+	public TradeMembershipEntity transform(TradeMembershipJson json) {
 		TradeMembershipEntity result;
-		if (loadEntity) {
-			result = tradeMembershipRepository.get(json.getTradeMembershipId());
-		} else {
-			result = new TradeMembershipEntity();
-		}
+		result = new TradeMembershipEntity();
 		result.setTradeMembershipId(json.getTradeMembershipId());
 		result.setTrade(tradeRepository.get(json.getTradeId()));
 		result.setUser(userRepository.get(json.getUserId()));
 		return result;
-	}
-
-	public TradeMembershipEntity transform(TradeMembershipJson json) {
-		return transform(json, false);
 	}
 
 	public static TradeMembershipJson transform(TradeMembershipEntity entity) {
@@ -46,15 +35,15 @@ public class TradeMembershipTransformer {
 		}
 		TradeMembershipJson result = new TradeMembershipJson();
 		result.setTradeMembershipId(entity.getTradeMembershipId());
-		if (entity.getTrade() != null) {
-			result.setTradeId(entity.getTrade().getTradeId());
-		} else {
+		if (entity.getTrade() == null) {
 			result.setTradeId(null);
-		}
-		if (entity.getUser() != null) {
-			result.setUserId(entity.getUser().getUserId());
 		} else {
+			result.setTradeId(entity.getTrade().getTradeId());
+		}
+		if (entity.getUser() == null) {
 			result.setUserId(null);
+		} else {
+			result.setUserId(entity.getUser().getUserId());
 		}
 		return result;
 	}

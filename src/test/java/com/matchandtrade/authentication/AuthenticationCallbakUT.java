@@ -35,9 +35,6 @@ public class AuthenticationCallbakUT {
 	private AuthenticationRespository authenticationRepository;
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private UserTransformer userTransformer;
-	
 	
 	@Test
 	public void doGetAtiForgeryTokenNegative() throws ServletException, IOException {
@@ -70,7 +67,7 @@ public class AuthenticationCallbakUT {
 	}
 	
 	private AuthenticationResponsePojo nextRandomUserAuthenticationPersisted(String antiForgeryState) {
-		UserEntity userEntity = userTransformer.transform(UserRandom.nextJson());
+		UserEntity userEntity = UserTransformer.transform(UserRandom.nextJson());
 		userRepository.save(userEntity);
 		AuthenticationResponsePojo result = new AuthenticationResponsePojo(
 				userEntity.getUserId(), 

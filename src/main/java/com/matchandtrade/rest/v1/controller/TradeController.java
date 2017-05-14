@@ -28,8 +28,6 @@ public class TradeController implements Controller {
 	TradeValidator tradeValidador;
 	@Autowired
 	TradeService tradeService;
-	@Autowired
-	TradeTransformer tradeTransformer;
 
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -39,7 +37,7 @@ public class TradeController implements Controller {
 		// Validate the request
 		tradeValidador.validatePost(requestJson);
 		// Transform the request
-		TradeEntity tradeEntity = tradeTransformer.transform(requestJson);
+		TradeEntity tradeEntity = TradeTransformer.transform(requestJson);
 		// Delegate to service layer
 		tradeService.create(tradeEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
@@ -57,7 +55,7 @@ public class TradeController implements Controller {
 		requestJson.setTradeId(tradeId); // Always get the id from the URL when working on PUT methods
 		tradeValidador.validatePut(requestJson, authenticationProvider.getAuthentication().getUser());
 		// Transform the request
-		TradeEntity tradeEntity = tradeTransformer.transform(requestJson);
+		TradeEntity tradeEntity = TradeTransformer.transform(requestJson);
 		// Delegate to service layer
 		tradeService.update(tradeEntity);
 		// Transform the response

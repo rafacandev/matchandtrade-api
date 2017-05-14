@@ -24,8 +24,6 @@ public class UserController implements Controller {
 	@Autowired
 	UserValidator userValidador;
 	@Autowired
-	UserTransformer userTransformer;
-	@Autowired
 	UserService userService;
 
 	@RequestMapping(path="{userId}", method=RequestMethod.GET)
@@ -51,7 +49,7 @@ public class UserController implements Controller {
 		requestJson.setUserId(userId); // Always get the id from the URL when working on PUT methods
 		userValidador.validatePut(requestJson);
 		// Transform the request
-		UserEntity userEntity = userTransformer.transform(requestJson, true);
+		UserEntity userEntity = UserTransformer.transform(requestJson);
 		// Delegate to Service layer
 		userService.update(userEntity);
 		// Transform the response
