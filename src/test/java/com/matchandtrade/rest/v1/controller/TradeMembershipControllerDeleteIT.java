@@ -31,7 +31,7 @@ public class TradeMembershipControllerDeleteIT {
 	}
 	
 	@Test
-	public void deletePositive() {
+	public void delete() {
 		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
 		TradeMembershipJson postResponse = fixture.post(postRequest);
 		fixture.delete(postResponse.getTradeMembershipId());
@@ -40,7 +40,7 @@ public class TradeMembershipControllerDeleteIT {
 	}
 	
 	@Test(expected=RestException.class)
-	public void deleteNegative() {
+	public void deleteInvalidTrades() {
 		fixture.delete(-1);
 	}
 

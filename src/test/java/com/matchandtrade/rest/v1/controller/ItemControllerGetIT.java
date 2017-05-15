@@ -43,7 +43,7 @@ public class ItemControllerGetIT {
 	}
 
 	@Test
- 	public void positiveGetOne() {
+ 	public void getOne() {
 		// Create itemEntity
 		ItemEntity itemEntity = ItemRandom.nextEntity();
 		itemRepository.save(itemEntity);
@@ -57,7 +57,7 @@ public class ItemControllerGetIT {
 	}
 
 	@Test
-	public void positiveSearchByName() {
+	public void getByName() {
 		// Create itemEntity
 		ItemEntity itemEntity = ItemRandom.nextEntity();
 		itemRepository.save(itemEntity);
@@ -77,7 +77,7 @@ public class ItemControllerGetIT {
 	}
 
 	@Test
- 	public void positiveGetAll() {
+ 	public void getAll() {
 		// Create itemEntity
 		ItemEntity item1 = ItemRandom.nextEntity();
 		itemRepository.save(item1);
@@ -94,19 +94,11 @@ public class ItemControllerGetIT {
 		// GET /trade-memberships/{tradeMembershipId}/items/
 		SearchResult<ItemJson> response = fixture.get(tradeMemberhipEntity.getTradeMembershipId(), null, null, null);
 		assertEquals(3, response.getResultList().size());
-		
-		for (ItemJson i : response.getResultList()) {
-			System.out.println(i.getLinks().size());
-			for(Link l : i.getLinks()) {
-				System.out.println(l.getHref());
-			}
-		}
-		
 	}
 
 	
 	@Test(expected = RestException.class)
- 	public void negativeUserNotAssociatedWithTradeMembership() {
+ 	public void getUserNotAssociatedWithTradeMembership() {
 		// Create itemEntity
 		ItemEntity itemEntity = ItemRandom.nextEntity();
 		itemRepository.save(itemEntity);
@@ -120,7 +112,7 @@ public class ItemControllerGetIT {
 	}
 
 	@Test(expected = RestException.class)
- 	public void negativeTradeMembershipNotFound() {
+ 	public void getTradeMembershipNotFound() {
 		// Create itemEntity
 		ItemEntity itemEntity = ItemRandom.nextEntity();
 		itemRepository.save(itemEntity);

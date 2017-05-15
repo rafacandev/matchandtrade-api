@@ -30,17 +30,16 @@ public class TradeControllerPutIT {
 	}
 	
 	@Test
-	public void putPositive() {
+	public void put() {
 		TradeJson randomTrade = TradeRandom.nextJson();
 		TradeJson tradePostResponse = fixture.post(randomTrade);
-		String randomName = "Name after PUT " + StringRandom.nextName();
-		tradePostResponse.setName(randomName);
+		tradePostResponse.setName("Name after PUT " + StringRandom.nextName());
 		TradeJson tradePutResponse = fixture.put(tradePostResponse.getTradeId(), tradePostResponse);
-		assertEquals(randomName, tradePutResponse.getName());
+		assertEquals(tradePostResponse.getName(), tradePutResponse.getName());
 	}
 
 	@Test(expected=RestException.class)
-	public void putNegativeNotFound() {
+	public void putNotFound() {
 		// Try to PUT a trade that does not exist
 		TradeJson tradePutRequest = TradeRandom.nextJson();
 		tradePutRequest.setTradeId(-1);
@@ -48,7 +47,7 @@ public class TradeControllerPutIT {
 	}
 	
 	@Test(expected=RestException.class)
-	public void putNegativeNotTradeOwner() {
+	public void putNotTradeOwner() {
 		// Create a new trade. By default the owner is the authenticated user
 		TradeJson tradePostResponse = fixture.post(TradeRandom.nextJson());
 		String randomName = "Name after PUT " + StringRandom.nextName();

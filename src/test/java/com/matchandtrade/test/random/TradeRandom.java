@@ -22,7 +22,7 @@ public class TradeRandom {
 		return result;
 	}
 	
-	public TradeEntity nextEntity() {
+	public static TradeEntity nextEntity() {
 		return TradeTransformer.transform(nextJson());
 	}
 

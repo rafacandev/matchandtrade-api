@@ -69,12 +69,12 @@ public class MockControllerFactory {
 	}
 
 	public AuthenticationController getAuthenticationController(boolean reusePreviousAuthentication) {
-		authenticationController.authenticationProvider = buildAuthenticationProvider(false);
+		authenticationController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return authenticationController;
 	}
 	
 	public ItemController getItemController(boolean reusePreviousAuthentication) {
-		itemController.authenticationProvider = buildAuthenticationProvider(false);
+		itemController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return itemController;
 	}
 	
@@ -84,12 +84,12 @@ public class MockControllerFactory {
 	}
 	
 	public TradeMembershipController getTradeMembershipController(boolean reusePreviousAuthentication) {
-		tradeMembershipController.authenticationProvider = buildAuthenticationProvider(false);
+		tradeMembershipController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return tradeMembershipController;
 	}
 	
 	public UserController getUserController(boolean reusePreviousAuthentication) {
-		userController.authenticationProvider = buildAuthenticationProvider(false);
+		userController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return userController;
 	}
 

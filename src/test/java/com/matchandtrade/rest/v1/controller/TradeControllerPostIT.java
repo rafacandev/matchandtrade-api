@@ -30,7 +30,7 @@ public class TradeControllerPostIT {
 	}
 	
 	@Test
-	public void postPositive() {
+	public void post() {
 		TradeJson requestJson = TradeRandom.nextJson();
 		TradeJson responseJson = fixture.post(requestJson);
 		assertNotNull(responseJson.getTradeId());
@@ -38,21 +38,28 @@ public class TradeControllerPostIT {
 	}
 	
 	@Test(expected=RestException.class)
-	public void postNegativeValidationSameName() {
+	public void postValidationSameName() {
 		TradeJson requestJson = TradeRandom.nextJson();
 		fixture.post(requestJson);
 		fixture.post(requestJson);
 	}
 
 	@Test(expected=RestException.class)
-	public void postNegativeValidationNameLegth() {
+	public void postValidationNameTooShort() {
 		TradeJson requestJson = TradeRandom.nextJson();
 		requestJson.setName("ab");
 		fixture.post(requestJson);
 	}	
+
+	@Test(expected=RestException.class)
+	public void postValidationNameTooLong() {
+		TradeJson requestJson = TradeRandom.nextJson();
+		requestJson.setName("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901");
+		fixture.post(requestJson);
+	}	
 	
 	@Test(expected=RestException.class)
-	public void postNegativeValidationNameMandatory() {
+	public void postValidationNameMandatory() {
 		TradeJson requestJson = TradeRandom.nextJson();
 		requestJson.setName(null);
 		fixture.post(requestJson);

@@ -32,15 +32,8 @@ public class UserControllerPutIT {
 		}
 	}
 	
-	@Test(expected=RestException.class)
-	public void putNegativeUnauthorizedResource() {
-		// Trying to edit a resource of another user
-		UserJson requestJson = UserRandom.nextJson();
-		fixture.put(-1, requestJson);
-	}	
-	
 	@Test
-	public void putPositive() {
+	public void put() {
 		UserEntity userEntity = userRepository.get(fixture.authenticationProvider.getAuthentication().getUser().getUserId());
 		UserJson requestJson = UserRandom.nextJson();
 		// Need to keep the same email as per validation rules
@@ -48,5 +41,10 @@ public class UserControllerPutIT {
 		UserJson responseJson = fixture.put(userEntity.getUserId(), requestJson);
 		assertEquals(requestJson.getName(), responseJson.getName());
 	}
+	
+	@Test(expected=RestException.class)
+	public void putUnauthorized() {
+		fixture.put(-1, new UserJson());
+	}	
 
 }

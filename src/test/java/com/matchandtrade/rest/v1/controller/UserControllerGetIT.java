@@ -35,7 +35,6 @@ public class UserControllerGetIT {
 	
 	@Test(expected=RestException.class)
 	public void getUnauthorized() {
-		// The database is not supposed to hold negative userId. Therefore is a safe assumption to say that it will throw AuthorizationException
 		fixture.get(-1);
 	}
 

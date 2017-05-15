@@ -32,21 +32,21 @@ public class TradeMembershipControllerPostIT {
 	}
 	
 	@Test
-	public void postPositive() {
+	public void post() {
 		TradeMembershipJson requestJson = tradeMembershipRandom.nextJson();
 		TradeMembershipJson responseJson = fixture.post(requestJson);
 		assertNotNull(responseJson.getTradeMembershipId());
 	}
 	
 	@Test(expected=RestException.class)
-	public void postNegativeInvalidUser() {
+	public void postInvalidUser() {
 		TradeMembershipJson requestJson = tradeMembershipRandom.nextJson();
 		requestJson.setUserId(-1);
 		fixture.post(requestJson);
 	}
 	
 	@Test(expected=RestException.class)
-	public void postNegativeInvalidTrade() {
+	public void postInvalidTrade() {
 		TradeMembershipJson requestJson = tradeMembershipRandom.nextJson();
 		requestJson.setTradeId(-1);
 		fixture.post(requestJson);
@@ -56,7 +56,7 @@ public class TradeMembershipControllerPostIT {
 	 * "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.
 	 */
 	@Test(expected=RestException.class)
-	public void postNegativeUniqueTradeIdAndUserId() {
+	public void postUniqueTradeIdAndUserId() {
 		TradeMembershipJson requestJson = tradeMembershipRandom.nextJson();
 		fixture.post(requestJson);
 		fixture.post(requestJson);

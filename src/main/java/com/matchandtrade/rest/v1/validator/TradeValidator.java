@@ -31,8 +31,8 @@ public class TradeValidator {
 	 * @param json
 	 */
 	public void validatePost(TradeJson json) {
-		if (json.getName() == null || json.getName().length() < 3) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and must contain at least 3 characters.");
+		if (json.getName() == null || json.getName().length() < 3 || json.getName().length() > 150) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and must be between 3 and 150 characters in length.");
 		}
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(TradeEntity.Field.name, json.getName());
