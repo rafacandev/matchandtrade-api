@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -25,7 +26,6 @@ public class TradeMembershipControllerGetIT {
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
-	
 
 	@Before
 	public void before() {
@@ -36,61 +36,57 @@ public class TradeMembershipControllerGetIT {
 	
 	@Test
 	public void get() {
-		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
-		TradeMembershipJson postResponse = fixture.post(postRequest);
-		TradeMembershipJson getResponse = fixture.get(postResponse.getTradeMembershipId());
-		assertEquals(postResponse.getTradeMembershipId(), getResponse.getTradeMembershipId());
-		assertEquals(postRequest.getTradeId(), getResponse.getTradeId());
-		assertEquals(postRequest.getUserId(), getResponse.getUserId());
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeMembershipJson response = fixture.get(existingTradeMembership.getTradeMembershipId());
+		assertEquals(existingTradeMembership.getTradeMembershipId(), response.getTradeMembershipId());
+		assertEquals(existingTradeMembership.getTrade().getTradeId(), response.getTradeId());
+		assertEquals(existingTradeMembership.getUser().getUserId(), response.getUserId());
+	}
+	
+	@Test
+	public void getAll() {
+		tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, null);
+		assertTrue(getResponse.getResultList().size() > 0);
+	}
+	
+	@Test
+	public void getByTradeId() {
+		fixture = mockControllerFactory.getTradeMembershipController(false);
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(existingTradeMembership.getTrade().getTradeId(), null, null, null);
+		assertEquals(existingTradeMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
+		assertEquals(existingTradeMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
+	}
+
+	@Test
+	public void getByTradeIdAndUserId() {
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(existingTradeMembership.getTrade().getTradeId(), existingTradeMembership.getUser().getUserId(), null, null);
+		assertEquals(existingTradeMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
+		assertEquals(existingTradeMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
+	}
+	
+	@Test
+	public void getByUserId() {
+		fixture = mockControllerFactory.getTradeMembershipController(false);
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, existingTradeMembership.getUser().getUserId(), null, null);
+		assertEquals(existingTradeMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
+		assertEquals(existingTradeMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
+	}
+
+		
+	@Test(expected=RestException.class)
+	public void getInvalidPageSize() {
+		tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, 51);
+		assertTrue(getResponse.getResultList().size() > 0);
 	}
 	
 	@Test
 	public void getInvalidTradeMembershipId() {
 		TradeMembershipJson response = fixture.get(-1);
 		assertNull(response);
-	}
-	
-	@Test
-	public void getByTradeIdAndUserId() {
-		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
-		TradeMembershipJson postResponse = fixture.post(postRequest);
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(postResponse.getTradeId(), postResponse.getUserId(), null, null);
-		assertEquals(postResponse.getTradeId(), getResponse.getResultList().get(0).getTradeId());
-		assertEquals(postResponse.getUserId(), getResponse.getResultList().get(0).getUserId());
-	}
-
-	@Test
-	public void getAll() {
-		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
-		fixture.post(postRequest);
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, null);
-		assertTrue(getResponse.getResultList().size() > 0);
-	}
-	
-	@Test(expected=RestException.class)
-	public void getInvalidPageSize() {
-		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
-		fixture.post(postRequest);
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, 51);
-		assertTrue(getResponse.getResultList().size() > 0);
-	}
-
-		
-	@Test
-	public void getByUserId() {
-		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
-		TradeMembershipJson postResponse = fixture.post(postRequest);
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, postResponse.getUserId(), null, null);
-		assertEquals(postResponse.getTradeId(), getResponse.getResultList().get(0).getTradeId());
-		assertEquals(postResponse.getUserId(), getResponse.getResultList().get(0).getUserId());
-	}
-	
-	@Test
-	public void getByTradeId() {
-		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
-		TradeMembershipJson postResponse = fixture.post(postRequest);
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(postResponse.getTradeId(), null, null, null);
-		assertEquals(postResponse.getTradeId(), getResponse.getResultList().get(0).getTradeId());
-		assertEquals(postResponse.getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
 }

@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ItemJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
-import com.matchandtrade.test.random.StringRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 
 @RunWith(SpringRunner.class)
@@ -23,11 +21,7 @@ public class ItemControllerPostIT {
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
-	private ItemRandom itemRandom;
-	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
-	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
 
 	@Before
 	public void before() {
@@ -38,74 +32,55 @@ public class ItemControllerPostIT {
 
 	@Test
 	public void post() {
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
-		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity);
-		item.setName(StringRandom.nextName());
-		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
+		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemJson item = ItemRandom.nextJson();
+		fixture.post(existingTradeMemberhip.getTradeMembershipId(), item);
+	}
+	
+	@Test(expected = RestException.class)
+	public void postCannotHaveDuplicatedName() {
+		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemJson item = ItemRandom.nextJson();
+		fixture.post(existingTradeMemberhip.getTradeMembershipId(), item);
+		fixture.post(existingTradeMemberhip.getTradeMembershipId(), item);
 	}
 	
 	@Test(expected=RestException.class)
-	public void postNegativeNameIsNull() {
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
-		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity);
+	public void postNameIsNull() {
+		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemJson item = ItemRandom.nextJson();
 		item.setName(null);
-		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
-	}
-	
-	@Test(expected=RestException.class)
-	public void postNegativeUserNotAssociatedWithTradeMembership() {
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
-		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity);
-		item.setName(StringRandom.nextName());
-		fixture = mockControllerFactory.getItemController(false);
-		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
+		fixture.post(existingTradeMemberhip.getTradeMembershipId(), item);
 	}
 
 	@Test(expected = RestException.class)
-	public void postNegativeCannotHaveDuplicatedName() {
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
-		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity);
-		item.setName(StringRandom.nextName());
-		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
-		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
+	public void postNameTooLong() {
+		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemJson item = ItemRandom.nextJson();
+		item.setName("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901");
+		fixture.post(existingTradeMemberhip.getTradeMembershipId(), item);
 	}
 	
 	@Test(expected = RestException.class)
-	public void postNegativeShortName() {
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
-		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity);
+	public void postNameTooShort() {
+		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemJson item = ItemRandom.nextJson();
 		item.setName("ab");
-		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
+		fixture.post(existingTradeMemberhip.getTradeMembershipId(), item);
 	}
 
 	@Test(expected = RestException.class)
-	public void postNegativeLongName() {
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
-		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity);
-		item.setName("151-characters-long-151-characters-long-151-characters-long-151-characters-long-151-characters-long-151-characters-long-151-characters-long-151-charact");
-		fixture.post(tradeMemberhipEntity.getTradeMembershipId(), item);
-	}
-
-	@Test(expected = RestException.class)
-	public void postNegativeTradeMembershipNotFound() {
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity();
-		tradeMemberhipEntity.setUser(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		ItemJson item = itemRandom.nextJson(tradeMemberhipEntity);
-		item.setName(StringRandom.nextName());
+	public void postTradeMembershipNotFound() {
+		ItemJson item = ItemRandom.nextJson();
 		fixture.post(-1, item);
+	}
+
+	@Test(expected=RestException.class)
+	public void postUserNotAssociatedWithTradeMembership() {
+		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemJson item = ItemRandom.nextJson();
+		fixture = mockControllerFactory.getItemController(false);
+		fixture.post(existingTradeMemberhip.getTradeMembershipId(), item);
 	}
 	
 }

@@ -7,14 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.common.SearchResult;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.ItemRepository;
-import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ItemJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -27,13 +24,11 @@ public class ItemControllerGetIT {
 
 	private ItemController fixture;
 	@Autowired
+	private ItemRandom itemRandom;
+	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
-	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
-	@Autowired
-	private ItemRepository itemRepository;
 
 	@Before
 	public void before() {
@@ -43,81 +38,44 @@ public class ItemControllerGetIT {
 	}
 
 	@Test
- 	public void getOne() {
-		// Create itemEntity
-		ItemEntity itemEntity = ItemRandom.nextEntity();
-		itemRepository.save(itemEntity);
-		// Add the itemEntity to a TradeMembership
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMemberhipEntity.getItems().add(itemEntity);
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		// GET /trade-memberships/{tradeMembershipId}/items/{itemId}
-		ItemJson response = fixture.get(tradeMemberhipEntity.getTradeMembershipId(), itemEntity.getItemId());
+	public void getAllFromTradeMembership() {
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		itemRandom.nextPersistedEntity(existingTradeMembership);
+		itemRandom.nextPersistedEntity(existingTradeMembership);
+		itemRandom.nextPersistedEntity(existingTradeMembership);
+		SearchResult<ItemJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), null, null, null);
+		assertEquals(3, response.getResultList().size());
+	}
+
+	@Test
+	public void getById() {
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
+		ItemJson response = fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getItemId());
 		assertNotNull(response);
 	}
 
 	@Test
 	public void getByName() {
-		// Create itemEntity
-		ItemEntity itemEntity = ItemRandom.nextEntity();
-		itemRepository.save(itemEntity);
-		// Add the itemEntity to a TradeMembership
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMemberhipEntity.getItems().add(itemEntity);
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		// GET /trade-memberships/{tradeMembershipId}/items/{itemId}
-		SearchResult<ItemJson> response = fixture.get(tradeMemberhipEntity.getTradeMembershipId(), itemEntity.getName(), null, null);
-		assertEquals(itemEntity.getName(), response.getResultList().get(0).getName());
-		for (ItemJson i : response.getResultList()) {
-			System.out.println(i.getLinks().size());
-			for(Link l : i.getLinks()) {
-				System.out.println(l.getHref());
-			}
-		}
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
+		SearchResult<ItemJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getName(), null, null);
+		assertEquals(existingItem.getName(), response.getResultList().get(0).getName());
 	}
-
-	@Test
- 	public void getAll() {
-		// Create itemEntity
-		ItemEntity item1 = ItemRandom.nextEntity();
-		itemRepository.save(item1);
-		ItemEntity item2 = ItemRandom.nextEntity();
-		itemRepository.save(item2);
-		ItemEntity item3 = ItemRandom.nextEntity();
-		itemRepository.save(item3);
-		// Add the itemEntity to a TradeMembership
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMemberhipEntity.getItems().add(item1);
-		tradeMemberhipEntity.getItems().add(item2);
-		tradeMemberhipEntity.getItems().add(item3);
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		// GET /trade-memberships/{tradeMembershipId}/items/
-		SearchResult<ItemJson> response = fixture.get(tradeMemberhipEntity.getTradeMembershipId(), null, null, null);
-		assertEquals(3, response.getResultList().size());
-	}
-
 	
 	@Test(expected = RestException.class)
- 	public void getUserNotAssociatedWithTradeMembership() {
-		// Create itemEntity
-		ItemEntity itemEntity = ItemRandom.nextEntity();
-		itemRepository.save(itemEntity);
-		// Add the itemEntity to a TradeMembership
-		TradeMembershipEntity tradeMemberhipEntity = tradeMembershipRandom.nextEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeMemberhipEntity.getItems().add(itemEntity);
-		tradeMembershipRepository.save(tradeMemberhipEntity);
-		// GET /trade-memberships/{tradeMembershipId}/items
-		fixture = mockControllerFactory.getItemController(false);
-		fixture.get(tradeMemberhipEntity.getTradeMembershipId(), itemEntity.getItemId());
+ 	public void getTradeMembershipNotFound() {
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
+		fixture.get(-1, existingItem.getItemId());
 	}
 
 	@Test(expected = RestException.class)
- 	public void getTradeMembershipNotFound() {
-		// Create itemEntity
-		ItemEntity itemEntity = ItemRandom.nextEntity();
-		itemRepository.save(itemEntity);
-		// GET /trade-memberships/{tradeMembershipId}/items
-		fixture.get(-1, itemEntity.getItemId());
+ 	public void getUserNotAssociatedWithTradeMembership() {
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
+		fixture = mockControllerFactory.getItemController(false);
+		fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getItemId());
 	}
 
 }

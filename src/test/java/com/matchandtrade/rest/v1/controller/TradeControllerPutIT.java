@@ -8,10 +8,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeJson;
+import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.StringRandom;
 import com.matchandtrade.test.random.TradeRandom;
 
 @RunWith(SpringRunner.class)
@@ -21,6 +22,8 @@ public class TradeControllerPutIT {
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	private TradeController fixture;
+	@Autowired
+	private TradeRandom tradeRandom;
 
 	@Before
 	public void before() {
@@ -31,31 +34,26 @@ public class TradeControllerPutIT {
 	
 	@Test
 	public void put() {
-		TradeJson randomTrade = TradeRandom.nextJson();
-		TradeJson tradePostResponse = fixture.post(randomTrade);
-		tradePostResponse.setName("Name after PUT " + StringRandom.nextName());
-		TradeJson tradePutResponse = fixture.put(tradePostResponse.getTradeId(), tradePostResponse);
-		assertEquals(tradePostResponse.getName(), tradePutResponse.getName());
+		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeJson tradeRequest = TradeTransformer.transform(existingTrade);
+		tradeRequest.setName(tradeRequest.getName() + " - Name after PUT");
+		TradeJson tradeResponse = fixture.put(tradeRequest.getTradeId(), tradeRequest);
+		assertEquals(tradeRequest.getName(), tradeResponse.getName());
 	}
 
 	@Test(expected=RestException.class)
 	public void putNotFound() {
 		// Try to PUT a trade that does not exist
 		TradeJson tradePutRequest = TradeRandom.nextJson();
-		tradePutRequest.setTradeId(-1);
 		fixture.put(-1, tradePutRequest);
 	}
 	
 	@Test(expected=RestException.class)
 	public void putNotTradeOwner() {
-		// Create a new trade. By default the owner is the authenticated user
-		TradeJson tradePostResponse = fixture.post(TradeRandom.nextJson());
-		String randomName = "Name after PUT " + StringRandom.nextName();
-		tradePostResponse.setName(randomName);
-		// Get a new TradeController with new authentication
-		fixture = mockControllerFactory.getTradeController(false);
-		// Try to PUT as a different (not a trade owner)
-		fixture.put(tradePostResponse.getTradeId(), tradePostResponse);
+		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeJson tradeRequest = TradeTransformer.transform(existingTrade);
+		mockControllerFactory.getTradeController(false);
+		fixture.put(tradeRequest.getTradeId(), tradeRequest);
 	}
 	
 }

@@ -8,8 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 
@@ -32,11 +32,9 @@ public class TradeMembershipControllerDeleteIT {
 	
 	@Test
 	public void delete() {
-		TradeMembershipJson postRequest = tradeMembershipRandom.nextJson();
-		TradeMembershipJson postResponse = fixture.post(postRequest);
-		fixture.delete(postResponse.getTradeMembershipId());
-		TradeMembershipJson getResponse = fixture.get(postResponse.getTradeMembershipId());
-		assertNull(getResponse);
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		fixture.delete(existingTradeMembership.getTradeMembershipId());
+		assertNull(fixture.get(existingTradeMembership.getTradeMembershipId()));
 	}
 	
 	@Test(expected=RestException.class)

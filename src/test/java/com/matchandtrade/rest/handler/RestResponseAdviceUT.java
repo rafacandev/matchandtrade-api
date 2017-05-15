@@ -69,7 +69,9 @@ public class RestResponseAdviceUT {
 	public void searchResultPositive() {
 		// Test setup
 		List<UserJson> resultList = new ArrayList<>();
-		resultList.add(UserRandom.nextJson(1));
+		UserJson userJson = UserRandom.nextJson();
+		userJson.setUserId(1);
+		resultList.add(userJson);
 		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination());
 		RestResponseAdvice adivice = new RestResponseAdvice();
 		// Test execution
@@ -93,7 +95,9 @@ public class RestResponseAdviceUT {
 		ServerHttpRequest request = Mockito.mock(ServerHttpRequest.class);
 		Mockito.when(request.getURI()).thenReturn(uri);
 		List<UserJson> resultList = new ArrayList<>();
-		resultList.add(UserRandom.nextJson(1));
+		UserJson userJson = UserRandom.nextJson();
+		userJson.setUserId(1);
+		resultList.add(userJson);
 		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination(2,5,1L));
 		// Test execution
 		RestResponseAdvice adivice = new RestResponseAdvice();

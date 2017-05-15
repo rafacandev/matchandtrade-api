@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeRandom;
@@ -22,6 +23,8 @@ public class TradeControllerGetIT {
 	private TradeController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
+	@Autowired
+	private TradeRandom tradeRandom;
 	
 	@Before
 	public void before() {
@@ -32,25 +35,23 @@ public class TradeControllerGetIT {
 
 	@Test
 	public void get() {
-		TradeJson requestJson = TradeRandom.nextJson();
-		TradeJson responseJsonPost = fixture.post(requestJson);
-		TradeJson responseJsonGet = fixture.get(responseJsonPost.getTradeId());
-		assertNotNull(responseJsonGet.getTradeId());
-		assertEquals(requestJson.getName(), responseJsonGet.getName());
+		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeJson response = fixture.get(existingTrade.getTradeId());
+		assertNotNull(response.getTradeId());
+		assertEquals(existingTrade.getName(), response.getName());
 	}
 
 	@Test
 	public void getByName() {
-		TradeJson requestJson = TradeRandom.nextJson();
-		TradeJson responseJsonPost = fixture.post(requestJson);
-		SearchResult<TradeJson> responseJsonGet = fixture.get(requestJson.getName(), null, null);
-		assertEquals(responseJsonPost.getName(), responseJsonGet.getResultList().get(0).getName());
+		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		SearchResult<TradeJson> response = fixture.get(existingTrade.getName(), null, null);
+		assertEquals(existingTrade.getName(), response.getResultList().get(0).getName());
 	}
 	
 	@Test
 	public void getInvalid() {
-		TradeJson responseJsonGet = fixture.get(-1);
-		assertNull(responseJsonGet);
+		TradeJson response = fixture.get(-1);
+		assertNull(response);
 	}
 
 }

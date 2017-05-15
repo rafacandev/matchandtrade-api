@@ -6,48 +6,30 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.TradeRepository;
-import com.matchandtrade.repository.UserRepository;
-import com.matchandtrade.rest.v1.json.TradeMembershipJson;
+import com.matchandtrade.repository.TradeMembershipRepository;
 
 @Component
 public class TradeMembershipRandom {
 	
 	@Autowired
-	private UserRepository userRepository;
+	private TradeMembershipRepository tradeMembershipRepository;
 	@Autowired
 	private TradeRandom tradeRandom;
-	@Autowired
-	private TradeRepository tradeRepository;
 	
-	public TradeMembershipJson nextJson() {
-		UserEntity userEntity = UserRandom.nextEntity();
-		userRepository.save(userEntity);
-		TradeEntity tradeEntity = tradeRandom.nextEntity();
-		tradeRepository.save(tradeEntity);
-		TradeMembershipJson result = new TradeMembershipJson();
-		result.setTradeId(tradeEntity.getTradeId());
-		result.setUserId(userEntity.getUserId());
+	public TradeMembershipEntity nextEntity(UserEntity tradeOwner) {
+		TradeEntity tradeEntity = tradeRandom.nextPersistedEntity(tradeOwner);
+		TradeMembershipEntity result = new TradeMembershipEntity();
+		result.setUser(tradeOwner);
+		result.setTrade(tradeEntity);
 		return result;
 	}
 	
-	public TradeMembershipEntity nextEntity() {
-		UserEntity userEntity = UserRandom.nextEntity();
-		userRepository.save(userEntity);
-		TradeEntity tradeEntity = tradeRandom.nextEntity();
-		tradeRepository.save(tradeEntity);
+	public TradeMembershipEntity nextPersistedEntity(UserEntity tradeOwner) {
+		TradeEntity tradeEntity = tradeRandom.nextPersistedEntity(tradeOwner);
 		TradeMembershipEntity result = new TradeMembershipEntity();
+		result.setUser(tradeOwner);
 		result.setTrade(tradeEntity);
-		result.setUser(userEntity);
-		return result;
-	}
-	
-	public TradeMembershipEntity nextEntity(UserEntity user) {
-		TradeEntity tradeEntity = tradeRandom.nextEntity();
-		tradeRepository.save(tradeEntity);
-		TradeMembershipEntity result = new TradeMembershipEntity();
-		result.setTrade(tradeEntity);
-		result.setUser(user);
+		tradeMembershipRepository.save(result);
 		return result;
 	}
 

@@ -2,11 +2,11 @@ package com.matchandtrade.test.random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.repository.ItemRepository;
+import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.rest.v1.json.ItemJson;
 import com.matchandtrade.rest.v1.transformer.ItemTransformer;
 
@@ -15,20 +15,24 @@ public class ItemRandom {
 	
 	@Autowired
 	private ItemRepository itemRepository;
+	@Autowired
+	private TradeMembershipRepository tradeMembershipRepository;
 
-	@Transactional
-	public ItemJson nextJson(TradeMembershipEntity tradeMembership) {
-		ItemEntity itemEntity = new ItemEntity();
-		itemEntity.setName(StringRandom.nextName());
-		itemRepository.save(itemEntity);
-		tradeMembership.getItems().add(itemEntity);
-		ItemJson result = ItemTransformer.transform(itemEntity);
+	public static ItemEntity nextEntity() {
+		return ItemTransformer.transform(nextJson());
+	}
+	
+	public static ItemJson nextJson() {
+		ItemJson result = new ItemJson();
+		result.setName(StringRandom.nextName());
 		return result;
 	}
 	
-	public static ItemEntity nextEntity() {
-		ItemEntity result = new ItemEntity();
-		result.setName(StringRandom.nextName());
+	public ItemEntity nextPersistedEntity(TradeMembershipEntity tradeMembership) {
+		ItemEntity result = nextEntity();
+		itemRepository.save(result);
+		tradeMembership.getItems().add(result);
+		tradeMembershipRepository.save(tradeMembership);
 		return result;
 	}
 
