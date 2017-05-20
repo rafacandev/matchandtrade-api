@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.repository.ItemRepository;
 import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.rest.v1.json.ItemJson;
@@ -17,6 +18,8 @@ public class ItemRandom {
 	private ItemRepository itemRepository;
 	@Autowired
 	private TradeMembershipRepository tradeMembershipRepository;
+	@Autowired
+	private TradeMembershipRandom tradeMembershipRandom;
 
 	public static ItemEntity nextEntity() {
 		return ItemTransformer.transform(nextJson());
@@ -34,6 +37,11 @@ public class ItemRandom {
 		tradeMembership.getItems().add(result);
 		tradeMembershipRepository.save(tradeMembership);
 		return result;
+	}
+	
+	public ItemEntity nextPersistedEntity(UserEntity tradeOwner) {
+		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(tradeOwner);
+		return nextPersistedEntity(existingTradeMemberhip);
 	}
 
 }

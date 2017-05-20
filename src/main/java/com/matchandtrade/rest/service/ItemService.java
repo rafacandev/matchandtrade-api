@@ -42,5 +42,9 @@ public class ItemService {
 		}
 		return itemRepository.query(searchCriteria);
 	}
+
+	public void update(ItemEntity itemEntity) {
+		itemRepository.save(itemEntity);
+	}
 	
 }

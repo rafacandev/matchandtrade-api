@@ -48,6 +48,24 @@ public class ItemController implements Controller {
 		return response;
 	}
 
+	@RequestMapping(path = "/{tradeMembershipId}/items/{itemId}", method = RequestMethod.PUT)
+	public ItemJson put(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, @RequestBody ItemJson requestJson) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		requestJson.setItemId(itemId); // Always get the id from the URL when working on PUT methods
+		itemValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, itemId, requestJson);
+		// Transform the request
+		ItemEntity itemEntity = ItemTransformer.transform(requestJson);
+		// Delegate to service layer
+		itemService.update(itemEntity);
+		// Transform the response
+		ItemJson response = ItemTransformer.transform(itemEntity);
+		// Assemble links
+		ItemLinkAssember.assemble(response, tradeMembershipId);
+		return response;
+	}
+
 	@RequestMapping(path="/{tradeMembershipId}/items/{itemId}", method=RequestMethod.GET)
 	public ItemJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("itemId") Integer itemId) {
 		// Validate request identity
