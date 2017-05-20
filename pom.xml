@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.matchandtrade</groupId>
-	<artifactId>mat-web</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<artifactId>matchandtrade-web-api</artifactId>
+	<version>0.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>matchandtrade-webservice</name>
+	<name>MatchAndTrade RESTful Web API</name>
 	<description>Match and Trade REST Web Service</description>
 
 	<licenses>
