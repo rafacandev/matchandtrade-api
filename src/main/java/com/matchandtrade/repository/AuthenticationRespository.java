@@ -23,7 +23,7 @@ public class AuthenticationRespository {
 	@Transactional
 	public AuthenticationEntity getByAtiForgeryState(String antiForgeryState) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(AuthenticationEntity.Field.antiForgeryState, antiForgeryState);
+		searchCriteria.addCriterion(AuthenticationCriteriaBuilder.Criterion.antiForgeryState, antiForgeryState);
 		SearchResult<AuthenticationEntity> searchResult = search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			return searchResult.getResultList().get(0);
@@ -35,7 +35,7 @@ public class AuthenticationRespository {
 	@Transactional
 	public AuthenticationEntity getByToken(String token) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(AuthenticationEntity.Field.token, token);
+		searchCriteria.addCriterion(AuthenticationCriteriaBuilder.Criterion.token, token);
 		SearchResult<AuthenticationEntity> searchResult = search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			return searchResult.getResultList().get(0);

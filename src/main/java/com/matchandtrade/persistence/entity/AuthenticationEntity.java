@@ -13,10 +13,6 @@ import javax.persistence.Table;
 @Table(name = "authentication")
 public class AuthenticationEntity implements com.matchandtrade.persistence.entity.Entity {
 
-	public enum Field {
-		authenticationId, userId, antiForgeryState, token
-	}
-
 	private Integer authenticationId;
 	private String antiForgeryState;
 	private String token;
