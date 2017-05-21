@@ -8,6 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ItemJson;
 import com.matchandtrade.rest.v1.transformer.ItemTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -34,10 +35,28 @@ public class ItemControllerPutIT {
 	}
 
 	@Test
-	public void post() {
+	public void put() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
 		ItemJson request = ItemTransformer.transform(existingItem);
 		fixture.put(existingTradeMemberhip.getTradeMembershipId(), request.getItemId(), request);
 	}	
+
+	@Test(expected=RestException.class)
+	public void putItemIdNotFound() {
+		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemJson request = ItemRandom.nextJson();
+		fixture.put(existingTradeMemberhip.getTradeMembershipId(), -1, request);
+	}
+
+	@Test(expected=RestException.class)
+	public void putNoDuplicatedNames() {
+		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
+		ItemEntity existingItem2 = itemRandom.nextPersistedEntity(existingTradeMemberhip);
+		ItemJson request = new ItemJson();
+		request.setName(existingItem.getName());
+		fixture.put(existingTradeMemberhip.getTradeMembershipId(), existingItem2.getItemId(), request);
+	}
+	
 }

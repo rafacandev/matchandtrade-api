@@ -13,6 +13,10 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 @Component
 public class ItemQueryBuilder implements QueryBuilder {
 
+	public enum Criterions {
+		itemIdIsNot
+	}
+	
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -35,7 +39,10 @@ public class ItemQueryBuilder implements QueryBuilder {
 				hql.append(" AND tm.tradeMembershipId = :tradeMembershipId");
 			}
 			if (c.getField().equals(ItemEntity.Field.name)) {
-				hql.append(" AND item.name = :name");
+				hql.append(" AND UPPER(item.name) LIKE UPPER(:name)");
+			}
+			if (c.getField().equals(Criterions.itemIdIsNot)) {
+				hql.append(" AND item.itemId != :itemIdIsNot");
 			}
 		}
 		Query result = sessionFactory.getCurrentSession().createQuery(hql.toString());
@@ -44,7 +51,10 @@ public class ItemQueryBuilder implements QueryBuilder {
 				result.setParameter("tradeMembershipId", c.getValue());
 			}
 			if (c.getField().equals(ItemEntity.Field.name)) {
-				result.setParameter("name", c.getValue());
+				result.setParameter("name", "%"+c.getValue()+"%");
+			}
+			if (c.getField().equals(Criterions.itemIdIsNot)) {
+				result.setParameter("itemIdIsNot", c.getValue());
 			}
 		}
 		return result;

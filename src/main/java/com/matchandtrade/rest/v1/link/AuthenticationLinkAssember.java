@@ -8,10 +8,7 @@ import com.matchandtrade.rest.v1.json.AuthenticationJson;
 
 public class AuthenticationLinkAssember {
 	
-	/*
-	 * Utility classes, which are a collection of static members, are not meant to be instantiated.
-	 * Hence, at least one non-public constructor should be defined.
-	 */
+	// Utility classes, which are a collection of static members, are not meant to be instantiated. Hence, at least one non-public constructor should be defined.
 	private AuthenticationLinkAssember() {}
 
 	public static void assemble(AuthenticationJson json) {

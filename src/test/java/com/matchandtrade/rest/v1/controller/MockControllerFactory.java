@@ -1,7 +1,6 @@
 package com.matchandtrade.rest.v1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
