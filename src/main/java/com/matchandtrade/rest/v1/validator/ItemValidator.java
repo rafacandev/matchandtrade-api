@@ -88,7 +88,7 @@ public class ItemValidator {
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemEntity.Field.name, json.getName());
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
 		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
@@ -121,9 +121,9 @@ public class ItemValidator {
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemEntity.Field.name, json.getName());
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
 		// Required to check if is not the same itemId because to guarantee PUT idempotency
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterions.itemIdIsNot, json.getItemId());
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.itemIdIsNot, json.getItemId());
 		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");

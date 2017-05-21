@@ -11,10 +11,6 @@ import javax.persistence.Table;
 @Table(name = "item")
 public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 	
-	public enum Field {
-		itemId, name
-	}
-	
 	private Integer itemId;
 	private String name;
 
