@@ -22,6 +22,7 @@ public class TradeRandom {
 	public static TradeJson nextJson() {
 		TradeJson result = new TradeJson();
 		result.setName(StringRandom.nextName());
+		result.setState(TradeJson.State.OPEN);
 		return result;
 	}
 
