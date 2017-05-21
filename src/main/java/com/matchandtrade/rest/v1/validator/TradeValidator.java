@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.criteria.TradeCriteriaBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -35,7 +36,7 @@ public class TradeValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and must be between 3 and 150 characters in length.");
 		}
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(TradeEntity.Field.name, json.getName());
+		searchCriteria.addCriterion(TradeCriteriaBuilder.Criterion.name, json.getName());
 		SearchResult<TradeEntity> searchResult = tradeRepository.search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");

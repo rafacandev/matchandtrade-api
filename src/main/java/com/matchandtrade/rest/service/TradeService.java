@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.criteria.TradeCriteriaBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -48,7 +49,7 @@ public class TradeService {
 	public SearchResult<TradeEntity> search(String name, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (name != null) {
-			searchCriteria.addCriterion(TradeEntity.Field.name, name);
+			searchCriteria.addCriterion(TradeCriteriaBuilder.Criterion.name, name);
 		}
 		// Delegate to Repository layer
 		return tradeRepository.search(searchCriteria);
