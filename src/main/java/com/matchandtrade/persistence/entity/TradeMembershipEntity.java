@@ -17,18 +17,6 @@ import javax.persistence.Table;
 @Table(name = "trade_membership")
 public class TradeMembershipEntity implements com.matchandtrade.persistence.entity.Entity {
 	
-	public enum Field {
-		userId("user.userId"), tradeId("trade.tradeId"), tradeMembershipId("membershipId"), type("type");
-		private String text;
-		Field(String text) {
-			this.text = text;
-		}
-		@Override
-		public String toString() {
-			return text;
-		}
-	}
-	
 	public enum Type {
 		OWNER, MEMBER
 	}

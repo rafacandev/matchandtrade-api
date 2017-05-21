@@ -6,13 +6,16 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.common.Criterion;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 
 @Component
 public class TradeMembershipCriteriaBuilder implements CriteriaBuilder {
 
+	public enum Criterion {
+		userId, tradeId, tradeMembershipId, type
+	}
+	
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -20,12 +23,12 @@ public class TradeMembershipCriteriaBuilder implements CriteriaBuilder {
 	public Criteria buildSearchCriteria(SearchCriteria searchCriteria) {
 		Criteria result = sessionFactory.getCurrentSession().createCriteria(TradeMembershipEntity.class);
 		// Add Criterion
-		for (Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(TradeMembershipEntity.Field.tradeId)) {
-				result.add(Restrictions.eq(TradeMembershipEntity.Field.tradeId.toString(), c.getValue()));
+		for (com.matchandtrade.common.Criterion c : searchCriteria.getCriteria()) {
+			if (c.getField().equals(Criterion.tradeId)) {
+				result.add(Restrictions.eq("trade.tradeId", c.getValue()));
 			}
-			if (c.getField().equals(TradeMembershipEntity.Field.userId)) {
-				result.add(Restrictions.eq(TradeMembershipEntity.Field.userId.toString(), c.getValue()));
+			if (c.getField().equals(Criterion.userId)) {
+				result.add(Restrictions.eq("user.userId", c.getValue()));
 			}
 		}
 		return result;

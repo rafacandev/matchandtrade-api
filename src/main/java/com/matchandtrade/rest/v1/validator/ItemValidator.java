@@ -87,7 +87,7 @@ public class ItemValidator {
 		checkIfNameLength(json.getName());
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
 		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
 		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
 		if(!searchResult.getResultList().isEmpty()) {
@@ -120,7 +120,7 @@ public class ItemValidator {
 		}
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
 		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
 		// Required to check if is not the same itemId because to guarantee PUT idempotency
 		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.itemIdIsNot, json.getItemId());

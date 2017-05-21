@@ -31,7 +31,7 @@ public class TradeRepository {
 	@Transactional
 	public void delete(Integer tradeId) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(TradeMembershipEntity.Field.tradeId, tradeId);
+		searchCriteria.addCriterion(TradeMembershipCriteriaBuilder.Criterion.tradeId, tradeId);
 		SearchResult<TradeMembershipEntity> sr = searchableTradeMembershipResposity.search(searchCriteria, tradeMembershipCriteriaBuilder);
 		for (TradeMembershipEntity tm : sr.getResultList()) {
 			basicTradeMembershipRepository.delete(tm);
