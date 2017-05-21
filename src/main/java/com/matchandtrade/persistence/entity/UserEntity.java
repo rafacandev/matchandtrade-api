@@ -13,10 +13,6 @@ import javax.persistence.Table;
 @Table(name = "user")
 public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 	
-	public enum Field {
-		userId, email, name, role, tradeLists
-	}
-	
 	public enum Role {
 		ADMINISTRATOR, USER
 	}

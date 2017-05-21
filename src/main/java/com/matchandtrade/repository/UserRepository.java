@@ -28,7 +28,7 @@ public class UserRepository {
 	@Transactional
 	public UserEntity get(String email) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(UserEntity.Field.email, email);
+		searchCriteria.addCriterion(UserCriteriaBuilder.Criterion.email, email);
 		SearchResult<UserEntity> searchResult = search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			return searchResult.getResultList().get(0);
