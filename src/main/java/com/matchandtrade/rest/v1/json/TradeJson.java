@@ -31,6 +31,7 @@ public class TradeJson extends JsonLinkSupport {
 		this.name = name;
 	}
 
+	@JsonInclude(value=Include.NON_NULL)
 	public void setState(State state) {
 		this.state = state;
 	}

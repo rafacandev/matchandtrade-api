@@ -13,6 +13,9 @@ public class TradeTransformer {
 	private TradeTransformer() {}
 
 	private static State buildState(TradeJson.State state) {
+		if (state == null) {
+			return null;
+		}
 		TradeEntity.State result = null;
 		switch (state) {
 		case CLOSED:
@@ -37,6 +40,9 @@ public class TradeTransformer {
 	}
 
 	private static TradeJson.State buildState(State state) {
+		if (state == null) {
+			return null;
+		}
 		TradeJson.State result = null;
 		switch (state) {
 		case CLOSED:
