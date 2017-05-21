@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class TradeEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	public enum State {
-		OPEN, SUBMITTING_ITEMS, MATCHING_ITEMS, GENERATING_TRADES, CLOSED 
+		SUBMITTING_ITEMS, MATCHING_ITEMS, GENERATING_TRADES, CLOSED 
 	}
 	
 	private Integer tradeId;

@@ -24,7 +24,7 @@ public class TradeService {
 
 	@Transactional
 	public void create(TradeEntity tradeEntity, UserEntity tradeOwner) {
-		tradeEntity.setState(TradeEntity.State.OPEN); // State is OPEN when creating new Trade
+		tradeEntity.setState(TradeEntity.State.SUBMITTING_ITEMS); // State is OPEN when creating new Trade
 		tradeRepository.save(tradeEntity);
 		// Make authenticated user the owner of the trade
 		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();

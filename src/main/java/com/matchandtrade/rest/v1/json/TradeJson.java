@@ -7,7 +7,7 @@ import com.matchandtrade.rest.JsonLinkSupport;
 public class TradeJson extends JsonLinkSupport {
 
 	public enum State {
-		OPEN, SUBMITTING_ITEMS, MATCHING_ITEMS, GENERATING_TRADES, CLOSED 
+		SUBMITTING_ITEMS, MATCHING_ITEMS, GENERATING_TRADES, CLOSED 
 	}
 	
 	private String name;

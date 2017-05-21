@@ -27,9 +27,6 @@ public class TradeTransformer {
 		case MATCHING_ITEMS:
 			result = TradeEntity.State.MATCHING_ITEMS;
 			break;
-		case OPEN:
-			result = TradeEntity.State.OPEN;
-			break;
 		case SUBMITTING_ITEMS:
 			result = TradeEntity.State.SUBMITTING_ITEMS;
 			break;
@@ -53,9 +50,6 @@ public class TradeTransformer {
 			break;
 		case MATCHING_ITEMS:
 			result = TradeJson.State.MATCHING_ITEMS;
-			break;
-		case OPEN:
-			result = TradeJson.State.OPEN;
 			break;
 		case SUBMITTING_ITEMS:
 			result = TradeJson.State.SUBMITTING_ITEMS;
