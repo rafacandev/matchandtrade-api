@@ -41,6 +41,7 @@ public class TradeMembershipControllerGetIT {
 		assertEquals(existingTradeMembership.getTradeMembershipId(), response.getTradeMembershipId());
 		assertEquals(existingTradeMembership.getTrade().getTradeId(), response.getTradeId());
 		assertEquals(existingTradeMembership.getUser().getUserId(), response.getUserId());
+		assertEquals(TradeMembershipJson.Type.OWNER, response.getType());
 	}
 	
 	@Test

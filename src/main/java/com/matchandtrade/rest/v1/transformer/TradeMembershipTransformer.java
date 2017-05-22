@@ -11,6 +11,7 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.repository.UserRepository;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
+import com.matchandtrade.rest.v1.json.TradeMembershipJson.Type;
 
 @Component
 public class TradeMembershipTransformer {
@@ -35,6 +36,7 @@ public class TradeMembershipTransformer {
 		}
 		TradeMembershipJson result = new TradeMembershipJson();
 		result.setTradeMembershipId(entity.getTradeMembershipId());
+		result.setType(buildType(entity.getType()));
 		if (entity.getTrade() == null) {
 			result.setTradeId(null);
 		} else {
@@ -48,6 +50,18 @@ public class TradeMembershipTransformer {
 		return result;
 	}
 	
+	private static Type buildType(TradeMembershipEntity.Type type) {
+		switch (type) {
+		case MEMBER:
+			return Type.MEMBER;
+		case OWNER:
+			return Type.OWNER;
+		default:
+			break;
+		}
+		return null;
+	}
+
 	public static SearchResult<TradeMembershipJson> transform(SearchResult<TradeMembershipEntity> searchResult) {
 		List<TradeMembershipJson> resultList = new ArrayList<>();
 		for(TradeMembershipEntity e : searchResult.getResultList()) {
