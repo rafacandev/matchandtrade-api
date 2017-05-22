@@ -5,16 +5,21 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "trade_membership")
+@Table(name = "trade_membership", uniqueConstraints = @UniqueConstraint(columnNames = {"type", "user_id", "trade_id"}))
 public class TradeMembershipEntity implements com.matchandtrade.persistence.entity.Entity {
 	
 	public enum Type {
@@ -41,7 +46,8 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 		return tradeMembershipId;
 	}
 
-	@Column(name="type")
+	@Enumerated(EnumType.STRING)
+	@Column(name="type", nullable=false)
 	public Type getType() {
 		return type;
 	}
@@ -69,6 +75,7 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	}
 
 	@OneToMany
+	@JoinTable(name = "trade_membership_to_item", joinColumns = @JoinColumn(name = "trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_item__trade_membership_id_fk")), inverseJoinColumns = @JoinColumn(name = "item_id", foreignKey=@ForeignKey(name="trade_membership_to_item__item_id_fk")))
 	public Set<ItemEntity> getItems() {
 		return items;
 	}
