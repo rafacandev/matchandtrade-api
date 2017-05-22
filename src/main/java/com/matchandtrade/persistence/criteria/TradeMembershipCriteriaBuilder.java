@@ -30,6 +30,9 @@ public class TradeMembershipCriteriaBuilder implements CriteriaBuilder {
 			if (c.getField().equals(Criterion.userId)) {
 				result.add(Restrictions.eq("user.userId", c.getValue()));
 			}
+			if (c.getField().equals(Criterion.type)) {
+				result.add(Restrictions.eq("type", c.getValue()));
+			}
 		}
 		return result;
 	}
