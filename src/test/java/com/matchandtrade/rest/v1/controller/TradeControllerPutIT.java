@@ -55,5 +55,15 @@ public class TradeControllerPutIT {
 		mockControllerFactory.getTradeController(false);
 		fixture.put(tradeRequest.getTradeId(), tradeRequest);
 	}
-	
+
+	@Test(expected=RestException.class)
+	public void putDuplicatedName() {
+		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity anotherExistingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeJson request = new TradeJson();
+		request.setName(existingTrade.getName());
+		request.setState(TradeJson.State.SUBMITTING_ITEMS);
+		fixture.put(anotherExistingTrade.getTradeId(), request);
+	}
+
 }

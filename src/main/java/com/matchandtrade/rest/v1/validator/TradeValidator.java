@@ -26,16 +26,24 @@ public class TradeValidator {
 	private TradeRepository tradeRepository;
 	@Autowired
 	private TradeMembershipRepository tradeMembershipRepository;
-	
+
+	/*
+	 * Check if name is mandatory and must be between 3 and 150 characters in length.
+	 */
+	private void checkNameLength(String name) {
+		if (name == null || name.length() < 3 || name.length() > 150) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and must be between 3 and 150 characters in length.");
+		}
+	}
+
 	/**
-	 * {@code TradeJson.name} is mandatory, unique and must contain at least 3 characters.
+	 * Validates if name is mandatory and must be between 3 and 150 characters in length.
+	 * Validates if name is unique.
 	 * @param userId
 	 * @param json
 	 */
 	public void validatePost(TradeJson json) {
-		if (json.getName() == null || json.getName().length() < 3 || json.getName().length() > 150) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and must be between 3 and 150 characters in length.");
-		}
+		checkNameLength(json.getName());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(TradeCriteriaBuilder.Criterion.name, json.getName());
 		SearchResult<TradeEntity> searchResult = tradeRepository.search(searchCriteria);
@@ -44,14 +52,19 @@ public class TradeValidator {
 		}
 	}
 
+
 	/**
-	 * Validates if the {@code Trade.tradeId} exists otherwise return status NOT_FOUND
+	 * Validates if name is mandatory and must be between 3 and 150 characters in length.
+	 * Validates if the {@code Trade.tradeId} exists otherwise return status NOT_FOUND.
 	 * Validates if authenticated {@code user} is the owner of the trade
+	 * Validates if name is unique but not the same which is being updated
 	 * @param json
 	 * @param user
 	 */
 	@Transactional
 	public void validatePut(TradeJson json, UserEntity user) {
+		checkNameLength(json.getName());
+
 		// Validates if the Trade.tradeId exists otherwise return status NOT_FOUND
 		TradeEntity t = tradeRepository.get(json.getTradeId());
 		if (t == null) {
@@ -59,15 +72,23 @@ public class TradeValidator {
 		}
 		
 		// Validates if authenticated user is the owner of the trade
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
-		searchCriteria.addCriterion(TradeMembershipCriteriaBuilder.Criterion.tradeId, json.getTradeId());
-		searchCriteria.addCriterion(TradeMembershipCriteriaBuilder.Criterion.userId, user.getUserId());
-		searchCriteria.addCriterion(TradeMembershipCriteriaBuilder.Criterion.type, TradeMembershipEntity.Type.OWNER);
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
-		if (searchResult.getResultList().isEmpty()) {
+		SearchCriteria searchTradeOwner = new SearchCriteria(new Pagination(1,1));
+		searchTradeOwner.addCriterion(TradeMembershipCriteriaBuilder.Criterion.tradeId, json.getTradeId());
+		searchTradeOwner.addCriterion(TradeMembershipCriteriaBuilder.Criterion.userId, user.getUserId());
+		searchTradeOwner.addCriterion(TradeMembershipCriteriaBuilder.Criterion.type, TradeMembershipEntity.Type.OWNER);
+		SearchResult<TradeMembershipEntity> searchResultTradeOwner = tradeMembershipRepository.search(searchTradeOwner);
+		if (searchResultTradeOwner.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not the owner of Trade.tradeId: " + json.getTradeId());
 		}
-		validatePost(json);
+
+		// Validates if name is unique but not the same which is being updated
+		SearchCriteria searchUniqueName = new SearchCriteria(new Pagination(1,2));
+		searchUniqueName.addCriterion(TradeCriteriaBuilder.Criterion.name, json.getName());
+		SearchResult<TradeEntity> searchResultUniqueName = tradeRepository.search(searchUniqueName);
+		// If results and it is not the same we the updating trade, then name already exists. Otherwise the result belongs to the same trade it is trying to update.
+		if (!searchResultUniqueName.getResultList().isEmpty() && !json.getTradeId().equals(searchResultUniqueName.getResultList().get(0).getTradeId())) {
+				throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
+		}
 	}
 	
 	@Transactional
