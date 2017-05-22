@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user_tb") // Naming as 'user_tb' because the word 'user' is a reserved keyword in many databases 
 public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 	
 	public enum Role {
