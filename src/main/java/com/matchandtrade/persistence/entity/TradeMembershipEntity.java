@@ -30,17 +30,16 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	private Set<ItemEntity> items = new HashSet<>();
 	private TradeEntity trade;
 	private UserEntity user;
-	private WantListEntity wantList;
 	private Type type;
 
 	@OneToMany
-	@JoinTable(name = "trade_membership_to_item", joinColumns = @JoinColumn(name = "trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_item__trade_membership_id_fk")), inverseJoinColumns = @JoinColumn(name = "item_id", foreignKey=@ForeignKey(name="trade_membership_to_item__item_id_fk")))
+	@JoinTable(name = "trade_membership_to_item", joinColumns = @JoinColumn(name = "trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_item_trade_membership_id_fk")), inverseJoinColumns = @JoinColumn(name = "item_id", foreignKey=@ForeignKey(name="trade_membership_to_item_item_id_fk")))
 	public Set<ItemEntity> getItems() {
 		return items;
 	}
 
 	@OneToOne
-	@JoinColumn(name="trade_id", foreignKey = @ForeignKey(name = "trade_membership__trade_id_fk"))
+	@JoinColumn(name="trade_id", foreignKey = @ForeignKey(name = "trade_membership_trade_id_fk"))
 	public TradeEntity getTrade() {
 		return trade;
 	}
@@ -59,15 +58,9 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	}
 
 	@OneToOne
-	@JoinColumn(name="user_id", foreignKey = @ForeignKey(name = "trade_membership__user_id_fk"))
+	@JoinColumn(name="user_id", foreignKey = @ForeignKey(name = "trade_membership_user_id_fk"))
 	public UserEntity getUser() {
 		return user;
-	}
-
-	@OneToOne
-	@JoinColumn(name="want_list_id", foreignKey = @ForeignKey(name = "trade_membership__want_list_id_fk"))
-	public WantListEntity getWantList() {
-		return wantList;
 	}
 
 	public void setItems(Set<ItemEntity> items) {
@@ -90,8 +83,4 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 		this.user = user;
 	}
 
-	public void setWantList(WantListEntity wantList) {
-		this.wantList = wantList;
-	}
-	
 }

@@ -2,6 +2,7 @@ package com.matchandtrade.persistence.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +20,7 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 	private UserEntity user;
 	
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="user_id", foreignKey = @ForeignKey(name = "authentication_user_id_fk"))
 	public UserEntity getUser() {
 		return user;
 	}
