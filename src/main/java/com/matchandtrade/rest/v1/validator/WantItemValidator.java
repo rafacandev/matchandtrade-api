@@ -18,8 +18,43 @@ public class WantItemValidator {
 
 	@Autowired
 	private WantItemRepository wantItemRepository;
-	
+
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is not unique within the same item.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} already exists within the same item.
+	 * @param tradeMembershipId
+	 * @param itemId
+	 * @param request
+	 */
 	public void validatePost(Integer tradeMembershipId, Integer itemId, WantItemJson request) {
+		checkIfPriorityIsUnique(tradeMembershipId, itemId, request);
+		checkIfItemIsUnique(tradeMembershipId, itemId, request);
+	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} already exists within the same item.
+	 * @param tradeMembershipId
+	 * @param itemId
+	 * @param request
+	 */
+	private void checkIfItemIsUnique(Integer tradeMembershipId, Integer itemId, WantItemJson request) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
+		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.itemId, itemId);
+		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.WantItem_item, request.getItem().getItemId());
+		SearchResult<WantItemEntity> searchResult = wantItemRepository.query(searchCriteria);
+		if (!searchResult.getResultList().isEmpty()) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item must be unique within the same Item.");
+		}
+	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is not unique within the same item.
+	 * @param tradeMembershipId
+	 * @param itemId
+	 * @param request
+	 */
+	private void checkIfPriorityIsUnique(Integer tradeMembershipId, Integer itemId, WantItemJson request) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
 		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
 		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.itemId, itemId);

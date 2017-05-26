@@ -11,7 +11,7 @@ import com.matchandtrade.common.SearchCriteria;
 public class WantItemQueryBuilder implements QueryBuilder {
 
 	public enum Criterion {
-		tradeMembershipId, itemId, priority
+		tradeMembershipId, itemId, priority, WantItem_item
 	}
 	
     @Autowired
@@ -49,6 +49,9 @@ public class WantItemQueryBuilder implements QueryBuilder {
 			if (c.getField().equals(Criterion.priority)) {
 				hql.append(" AND wi.priority = :priority");
 			}
+			if (c.getField().equals(Criterion.WantItem_item)) {
+				hql.append(" AND wi.item.itemId = :WantItem_item");
+			}
 		}
 		Query result = sessionFactory.getCurrentSession().createQuery(hql.toString());
 		for (com.matchandtrade.common.Criterion c : searchCriteria.getCriteria()) {
@@ -60,6 +63,9 @@ public class WantItemQueryBuilder implements QueryBuilder {
 			}
 			if (c.getField().equals(Criterion.priority)) {
 				result.setParameter("priority", c.getValue());
+			}
+			if (c.getField().equals(Criterion.WantItem_item)) {
+				result.setParameter("WantItem_item", c.getValue());
 			}
 		}
 		return result;

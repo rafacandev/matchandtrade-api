@@ -99,6 +99,27 @@ public class WantItemControllerPostIT {
 		WantItemJson cubaPriority2 = transform(ItemTransformer.transform(cuba), 1);
 		fixture.post(user1TradeMemberhip.getTradeMembershipId(), alpha.getItemId(), cubaPriority2);
 	}
+
+	@Test(expected=RestException.class)
+	public void postWantItemCannotBeDuplicated() {
+		// Create a trade for a random user
+		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		
+		// Create items for user1 (Greek letters)
+		TradeMembershipEntity user1TradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity alpha = itemRandom.nextPersistedEntity(user1TradeMemberhip);
+		
+		// Create items for user2 (country names)
+		WantItemController controllerAuthenticatedWithUser2 = mockControllerFactory.getWantItemController(false);
+		TradeMembershipEntity user2TradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, controllerAuthenticatedWithUser2.authenticationProvider.getAuthentication().getUser());
+		ItemEntity australia = itemRandom.nextPersistedEntity(user2TradeMemberhip);
+		
+		// User1 wants Australia for Alpha
+		WantItemJson australiaPriority1 = transform(ItemTransformer.transform(australia), 1);
+		WantItemJson australiaPriority2 = transform(ItemTransformer.transform(australia), 2);
+		fixture.post(user1TradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australiaPriority1);
+		fixture.post(user1TradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australiaPriority2);
+	}
 	
 	public static WantItemJson transform(ItemJson item, Integer priority) {
 		WantItemJson result = new WantItemJson();

@@ -13,8 +13,6 @@ import com.matchandtrade.persistence.entity.WantItemEntity;
 public class WantItemRepository {
 	
 	@Autowired
-	private BasicRepository<WantItemEntity> basicRepository;
-	@Autowired
 	private QueryableRepository<WantItemEntity> queryableRepository;
 	@Autowired
 	private WantItemQueryBuilder queryBuilder;
@@ -22,11 +20,6 @@ public class WantItemRepository {
 	@Transactional
 	public SearchResult<WantItemEntity> query(SearchCriteria searchCriteria) {
 		return queryableRepository.query(searchCriteria, queryBuilder);
-	}
-	
-	@Transactional
-	public void save(WantItemEntity entity) {
-		basicRepository.save(entity);
 	}
 	
 }

@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.WantItemEntity;
 import com.matchandtrade.repository.ItemRepository;
-import com.matchandtrade.repository.WantItemRepository;
 
 @Service
 public class WantItemService {
