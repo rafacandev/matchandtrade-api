@@ -43,6 +43,8 @@ public class MockControllerFactory {
 	private UserController userController;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private WantItemController wantItemController;
 
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
@@ -91,6 +93,11 @@ public class MockControllerFactory {
 	public UserController getUserController(boolean reusePreviousAuthentication) {
 		userController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return userController;
+	}
+
+	public WantItemController getWantItemController(boolean reusePreviousAuthentication) {
+		wantItemController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return wantItemController;
 	}
 
 }

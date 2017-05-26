@@ -3,6 +3,7 @@ package com.matchandtrade.persistence.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -34,7 +35,7 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 		return name;
 	}
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "item_to_want_item", joinColumns = @JoinColumn(name = "item_id", foreignKey = @ForeignKey(name = "item_to_want_item_item_id_fk")), inverseJoinColumns = @JoinColumn(name = "want_item_id", foreignKey = @ForeignKey(name = "item_to_want_item_want_item_id_fk")))
 	public Set<WantItemEntity> getWantItems() {
 		return wantItems;

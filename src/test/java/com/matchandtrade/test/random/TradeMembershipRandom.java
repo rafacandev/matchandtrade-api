@@ -35,6 +35,15 @@ public class TradeMembershipRandom {
 		return result;
 	}
 
+	public TradeMembershipEntity nextPersistedEntity(TradeEntity trade, UserEntity tradeOwner) {
+		TradeMembershipEntity result = new TradeMembershipEntity();
+		result.setUser(tradeOwner);
+		result.setTrade(trade);
+		result.setType(TradeMembershipEntity.Type.OWNER);
+		tradeMembershipRepository.save(result);
+		return result;
+	}
+
 	private TradeEntity nextPersistedEntityWithoutOwner() {
 		TradeEntity result = TradeRandom.nextEntity();
 		tradeRepository.save(result);
