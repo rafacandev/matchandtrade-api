@@ -27,6 +27,19 @@ public class WantItemValidator {
 	 * @param request
 	 */
 	public void validatePost(Integer tradeMembershipId, Integer itemId, WantItemJson request) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
+		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.itemId, itemId);
+		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.priority, request.getPriority());
+		SearchResult<WantItemEntity> searchResult = wantItemRepository.query(searchCriteria);
+		if (!searchResult.getResultList().isEmpty()) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.priority must be unique within the same Item.");
+		}
+		
+		
+		
+		
+		
 		checkIfPriorityIsUnique(tradeMembershipId, itemId, request);
 		checkIfItemIsUnique(tradeMembershipId, itemId, request);
 	}

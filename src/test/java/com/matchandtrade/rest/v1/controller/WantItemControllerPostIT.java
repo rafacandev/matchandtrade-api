@@ -120,6 +120,22 @@ public class WantItemControllerPostIT {
 		fixture.post(user1TradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australiaPriority1);
 		fixture.post(user1TradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australiaPriority2);
 	}
+
+	@Test
+	public void postWantItemMustBelongToItemsWithinTrade() {
+		//TODO finish this
+		// Create a trade for a random user
+		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		
+		// Create items for user1 (Greek letters)
+		TradeMembershipEntity user1TradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity alpha = itemRandom.nextPersistedEntity(user1TradeMemberhip);
+		ItemEntity beta = itemRandom.nextPersistedEntity(user1TradeMemberhip);
+		
+		// User1 wants Alpha for Beta
+		WantItemJson alphaPriority1 = transform(ItemTransformer.transform(alpha), 1);
+		fixture.post(user1TradeMemberhip.getTradeMembershipId(), beta.getItemId(), alphaPriority1);
+	}
 	
 	public static WantItemJson transform(ItemJson item, Integer priority) {
 		WantItemJson result = new WantItemJson();
