@@ -23,13 +23,17 @@
 	<logger level="INFO" name="plainTextLogger" additivity="false">
 		<appender-ref ref="PLAINOUTPUT" />
 	</logger>
-
+	
 	<logger level="inherited" name="com.matchandtrade" />
 
 	<root level="${logging.level.root:-info}">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
-<!-- 		<appender-ref ref="PLAINOUTPUT" /> -->
 	</root>
+
+	<!-- DEBUG: Log all SQL DML statements as they are executed -->
+	<logger level="INFO" name="org.hibernate.SQL"/>
+	<!-- TRACE: Log all JDBC parameters -->
+	<logger level="INFO" name="org.hibernate.type"/>
 
 </configuration>

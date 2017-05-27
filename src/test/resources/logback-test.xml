@@ -10,6 +10,11 @@
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 	</root>
+	
+	<!-- DEBUG: Log all SQL DML statements as they are executed -->
+	<logger level="INFO" name="org.hibernate.SQL"/>
+	<!-- TRACE: Log all JDBC parameters -->
+	<logger level="INFO" name="org.hibernate.type"/>
 
 	<!-- Set noisy testing loggers to level=error -->	
     <logger name="org.springframework" level="error" />

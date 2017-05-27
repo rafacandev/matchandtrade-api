@@ -30,7 +30,7 @@ public class HibernateConfiguration {
 		Properties properties = new Properties();
 		// Logging
 		properties.setProperty("hibernate.show_sql", "false");
-		properties.setProperty("hibernate.format_sql", "false");
+		properties.setProperty("hibernate.format_sql", "true");
 		// Advanced options
 		properties.setProperty("hibernate.default_entity_mode", "pojo");
 		// Schema options
