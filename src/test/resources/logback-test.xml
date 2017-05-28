@@ -15,6 +15,10 @@
 	<logger level="INFO" name="org.hibernate.SQL"/>
 	<!-- TRACE: Log all JDBC parameters -->
 	<logger level="INFO" name="org.hibernate.type"/>
+	<!-- TRACE: Log transaction related activity -->
+	<logger level="INFO" name="org.hibernate.transaction"/>
+	<!-- TRACE: Log all second-level cache activity -->
+	<logger level="INFO" name="org.hibernate.cache"/>
 
 	<!-- Set noisy testing loggers to level=error -->	
     <logger name="org.springframework" level="error" />
