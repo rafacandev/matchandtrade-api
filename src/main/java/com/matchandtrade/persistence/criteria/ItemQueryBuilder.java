@@ -11,21 +11,26 @@ import com.matchandtrade.common.SearchCriteria;
 public class ItemQueryBuilder implements QueryBuilder {
 
 	public enum Criterion {
-		itemIdIsNot, tradeMembershipId, name
+		itemIdIsNot, tradeMembershipId, name, tradeId
 	}
 	
     @Autowired
     private SessionFactory sessionFactory;
+    
+    private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tm"
+    		+ " INNER JOIN tm.trade AS trade"
+    		+ " INNER JOIN tm.items AS item"
+    		+ " WHERE 1=1 ";
 
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
-    	StringBuilder hql = new StringBuilder("SELECT COUNT(*) FROM TradeMembershipEntity AS tm INNER JOIN tm.items AS item WHERE 1=1 ");
+    	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
     	return parameterizeQuery(searchCriteria, hql);
     }
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
-    	StringBuilder hql = new StringBuilder("FROM TradeMembershipEntity AS tm INNER JOIN tm.items AS item WHERE 1=1 ");
+    	StringBuilder hql = new StringBuilder(BASIC_HQL);
 		return parameterizeQuery(searchCriteria, hql);
 	}
 
@@ -41,6 +46,9 @@ public class ItemQueryBuilder implements QueryBuilder {
 			if (c.getField().equals(Criterion.itemIdIsNot)) {
 				hql.append(" AND item.itemId != :itemIdIsNot");
 			}
+			if (c.getField().equals(Criterion.tradeId)) {
+				hql.append(" AND trade.tradeId = :tradeId");
+			}
 		}
 		Query result = sessionFactory.getCurrentSession().createQuery(hql.toString());
 		for (com.matchandtrade.common.Criterion c : searchCriteria.getCriteria()) {
@@ -52,6 +60,9 @@ public class ItemQueryBuilder implements QueryBuilder {
 			}
 			if (c.getField().equals(Criterion.itemIdIsNot)) {
 				result.setParameter("itemIdIsNot", c.getValue());
+			}
+			if (c.getField().equals(Criterion.tradeId)) {
+				result.setParameter("tradeId", c.getValue());
 			}
 		}
 		return result;

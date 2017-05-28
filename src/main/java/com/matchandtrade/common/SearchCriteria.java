@@ -22,6 +22,11 @@ public class SearchCriteria {
 		Criterion c = new Criterion(field, value);
 		this.criteria.add(c);
 	}
+
+	public void addCriterion(Object field, Object value, Criterion.Restriction restriction) {
+		Criterion c = new Criterion(field, value, restriction);
+		this.criteria.add(c);
+	}
 	
 	public List<Criterion> getCriteria() {
 		return criteria;

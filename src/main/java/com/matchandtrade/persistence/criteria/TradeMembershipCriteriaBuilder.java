@@ -13,7 +13,7 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 public class TradeMembershipCriteriaBuilder implements CriteriaBuilder {
 
 	public enum Criterion {
-		userId, tradeId, tradeMembershipId, type
+		userId, tradeId, tradeMembershipId, type, itemId
 	}
 	
     @Autowired
@@ -32,6 +32,17 @@ public class TradeMembershipCriteriaBuilder implements CriteriaBuilder {
 			}
 			if (c.getField().equals(Criterion.type)) {
 				result.add(Restrictions.eq("type", c.getValue()));
+			}
+			if (c.getField().equals(Criterion.itemId)) {
+				result.createAlias("items", "item");
+				result.add(Restrictions.eq("item.itemId", c.getValue()));
+			}
+			if (c.getField().equals(Criterion.tradeMembershipId)) {
+				if (c.getRestriction().equals(com.matchandtrade.common.Criterion.Restriction.NOT_EQUALS)) {
+					result.add(Restrictions.ne("tradeMembershipId", c.getValue()));
+				} else if (c.getRestriction().equals(com.matchandtrade.common.Criterion.Restriction.EQUALS)) {
+					result.add(Restrictions.eq("tradeMembershipId", c.getValue()));
+				}
 			}
 		}
 		return result;

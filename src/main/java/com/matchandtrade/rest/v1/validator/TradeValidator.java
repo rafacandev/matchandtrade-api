@@ -32,7 +32,7 @@ public class TradeValidator {
 	 */
 	private void checkNameLength(String name) {
 		if (name == null || name.length() < 3 || name.length() > 150) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and must be between 3 and 150 characters in length.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and its length must be between 3 and 150.");
 		}
 	}
 

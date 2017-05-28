@@ -26,20 +26,19 @@ public class TradeMembershipRandom {
 	}
 
 	public TradeMembershipEntity nextPersistedEntity(UserEntity tradeOwner) {
-		TradeEntity tradeEntity = nextPersistedEntityWithoutOwner();
-		TradeMembershipEntity result = new TradeMembershipEntity();
-		result.setUser(tradeOwner);
-		result.setTrade(tradeEntity);
-		result.setType(TradeMembershipEntity.Type.OWNER);
-		tradeMembershipRepository.save(result);
-		return result;
+		TradeEntity trade = nextPersistedEntityWithoutOwner();
+		return nextPersistedEntity(trade, tradeOwner, TradeMembershipEntity.Type.OWNER);
 	}
 
 	public TradeMembershipEntity nextPersistedEntity(TradeEntity trade, UserEntity tradeOwner) {
+		return nextPersistedEntity(trade, tradeOwner, TradeMembershipEntity.Type.OWNER);
+	}
+
+	public TradeMembershipEntity nextPersistedEntity(TradeEntity trade, UserEntity user, TradeMembershipEntity.Type membershipType) {
 		TradeMembershipEntity result = new TradeMembershipEntity();
-		result.setUser(tradeOwner);
+		result.setUser(user);
 		result.setTrade(trade);
-		result.setType(TradeMembershipEntity.Type.OWNER);
+		result.setType(membershipType);
 		tradeMembershipRepository.save(result);
 		return result;
 	}

@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.matchandtrade.common.Criterion.Restriction;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.persistence.criteria.WantItemQueryBuilder;
-import com.matchandtrade.persistence.entity.WantItemEntity;
+import com.matchandtrade.persistence.criteria.TradeMembershipCriteriaBuilder;
+import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.repository.TradeMembershipRepository;
 import com.matchandtrade.repository.WantItemRepository;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.WantItemJson;
@@ -17,65 +19,94 @@ import com.matchandtrade.rest.v1.json.WantItemJson;
 public class WantItemValidator {
 
 	@Autowired
+	private TradeMembershipRepository tradeMembershipRepository;
+	@Autowired
 	private WantItemRepository wantItemRepository;
-
+	
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is not unique within the same item.
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} already exists within the same item.
+	 * <p>
+	 * Check if {@code desiredItemId} belongs to another {@code TradeMembership} within the same {@code Trade}.
+	 * This will avoid to want an item of a different trade, or to want an item that belongs to the same user (TradeMembership).
+	 * </p>
 	 * @param tradeMembershipId
-	 * @param itemId
-	 * @param request
+	 * @param desiredItemId
 	 */
-	public void validatePost(Integer tradeMembershipId, Integer itemId, WantItemJson request) {
+	private void checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(Integer tradeMembershipId, Integer desiredItemId) {
+		TradeMembershipEntity tradeMembership = tradeMembershipRepository.get(tradeMembershipId);
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
-		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.itemId, itemId);
-		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.priority, request.getPriority());
-		SearchResult<WantItemEntity> searchResult = wantItemRepository.query(searchCriteria);
-		if (!searchResult.getResultList().isEmpty()) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.priority must be unique within the same Item.");
-		}
-		
-		
-		
-		
-		
-		checkIfPriorityIsUnique(tradeMembershipId, itemId, request);
-		checkIfItemIsUnique(tradeMembershipId, itemId, request);
-	}
-
-	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} already exists within the same item.
-	 * @param tradeMembershipId
-	 * @param itemId
-	 * @param request
-	 */
-	private void checkIfItemIsUnique(Integer tradeMembershipId, Integer itemId, WantItemJson request) {
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
-		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.itemId, itemId);
-		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.WantItem_item, request.getItem().getItemId());
-		SearchResult<WantItemEntity> searchResult = wantItemRepository.query(searchCriteria);
-		if (!searchResult.getResultList().isEmpty()) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item must be unique within the same Item.");
+		searchCriteria.addCriterion(TradeMembershipCriteriaBuilder.Criterion.tradeId, tradeMembership.getTrade().getTradeId());
+		searchCriteria.addCriterion(TradeMembershipCriteriaBuilder.Criterion.tradeMembershipId, tradeMembershipId, Restriction.NOT_EQUALS);
+		searchCriteria.addCriterion(TradeMembershipCriteriaBuilder.Criterion.itemId, desiredItemId);
+		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
+		if (searchResult.getResultList().isEmpty()) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item must belong to another TradeMembership within the same Trade.");
 		}
 	}
 
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is not unique within the same item.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} already exists for the Item.
+	 * @param itemId
+	 * @param desiredItemId
+	 */
+	private void checkIfItemIsUnique(Integer itemId, Integer desiredItemId) {
+		int count = wantItemRepository.countItemWantItem(itemId, desiredItemId);
+		if (count > 0) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Item.wantItem.item must be unique within the same Item.");
+		}
+	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} already exists for the Item.
+	 * @param itemId
+	 * @param priority
+	 */
+	private void checkIfItemPriorityExists(Integer itemId, Integer priority) {
+		int count = wantItemRepository.countItemWantItemPriority(itemId, priority);
+		if (count > 0) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.priority must be unique within the same Item.");
+		}
+	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is given and its value must be between 1 and 1000.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} is given and its value must be between 1 and 1000.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item.itemId} is given and its value must be between 1 and 1000.
+	 * @param request
+	 */
+	private void checkRequest(final WantItemJson request) {
+		if (request.getPriority() == null || request.getPriority() < 0 || request.getPriority() > 1000) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.priority is mandatory and its value must be between 1 and 1000");
+		}
+		if (request.getItem() == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item is mandatory");
+		}
+		if (request.getItem().getItemId() == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item.itemId is mandatory");
+		}
+	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is given and its value must be between 1 and 1000.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} is given and its value must be between 1 and 1000.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item.itemId} is given and its value must be between 1 and 1000.
+	 * 
+	 * <p>
+	 * Check if {@code desiredItemId} belongs to another {@code TradeMembership} within the same {@code Trade}.
+	 * This will avoid to want an item of a different trade, or to want an item that belongs to the same user (TradeMembership).
+	 * </p>
+	 * 
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} already exists for the Item.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} already exists for the Item.
+	 * 
 	 * @param tradeMembershipId
 	 * @param itemId
 	 * @param request
 	 */
-	private void checkIfPriorityIsUnique(Integer tradeMembershipId, Integer itemId, WantItemJson request) {
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
-		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.itemId, itemId);
-		searchCriteria.addCriterion(WantItemQueryBuilder.Criterion.priority, request.getPriority());
-		SearchResult<WantItemEntity> searchResult = wantItemRepository.query(searchCriteria);
-		if (!searchResult.getResultList().isEmpty()) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.priority must be unique within the same Item.");
-		}
+	public void validatePost(final Integer tradeMembershipId, final Integer itemId, final WantItemJson request) {
+		checkRequest(request);
+		checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(tradeMembershipId, request.getItem().getItemId());
+		checkIfItemPriorityExists(itemId, request.getPriority());
+		checkIfItemIsUnique(itemId, request.getItem().getItemId());
 	}
 
 }

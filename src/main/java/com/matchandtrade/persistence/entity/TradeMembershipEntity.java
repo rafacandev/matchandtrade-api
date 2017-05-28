@@ -16,10 +16,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "trade_membership", uniqueConstraints = @UniqueConstraint(columnNames = {"type", "user_id", "trade_id"}))
+@Table(name = "trade_membership")
 public class TradeMembershipEntity implements com.matchandtrade.persistence.entity.Entity {
 	
 	public enum Type {
