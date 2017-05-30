@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeCriteriaBuilder;
+import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeMembershipCriteriaBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -22,9 +22,9 @@ public class TradeRepository {
 	@Autowired
 	private SearchableRepository<TradeMembershipEntity> searchableTradeMembershipResposity;
 	@Autowired
-	private SearchableRepository<TradeEntity> searchableTradeResposity;
+	private QueryableRepository<TradeEntity> queryableTradeResposity;
 	@Autowired
-	private TradeCriteriaBuilder tradeCriteriaBuilder;
+	private TradeQueryBuilder tradeCriteriaBuilder;
 	@Autowired
 	private TradeMembershipCriteriaBuilder tradeMembershipCriteriaBuilder;
 
@@ -52,6 +52,6 @@ public class TradeRepository {
 
 	@Transactional
 	public SearchResult<TradeEntity> search(SearchCriteria searchCriteria) {
-		return searchableTradeResposity.search(searchCriteria, tradeCriteriaBuilder);
+		return queryableTradeResposity.query(searchCriteria, tradeCriteriaBuilder);
 	}
 }

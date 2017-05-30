@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeCriteriaBuilder;
+import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeMembershipCriteriaBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -45,7 +45,7 @@ public class TradeValidator {
 	public void validatePost(TradeJson json) {
 		checkNameLength(json.getName());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(TradeCriteriaBuilder.Criterion.name, json.getName());
+		searchCriteria.addCriterion(TradeQueryBuilder.Criterion.name, json.getName());
 		SearchResult<TradeEntity> searchResult = tradeRepository.search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
@@ -83,7 +83,7 @@ public class TradeValidator {
 
 		// Validates if name is unique but not the same which is being updated
 		SearchCriteria searchUniqueName = new SearchCriteria(new Pagination(1,2));
-		searchUniqueName.addCriterion(TradeCriteriaBuilder.Criterion.name, json.getName());
+		searchUniqueName.addCriterion(TradeQueryBuilder.Criterion.name, json.getName());
 		SearchResult<TradeEntity> searchResultUniqueName = tradeRepository.search(searchUniqueName);
 		// If results and it is not the same we the updating trade, then name already exists. Otherwise the result belongs to the same trade it is trying to update.
 		if (!searchResultUniqueName.getResultList().isEmpty() && !json.getTradeId().equals(searchResultUniqueName.getResultList().get(0).getTradeId())) {

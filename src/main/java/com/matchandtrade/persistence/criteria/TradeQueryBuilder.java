@@ -10,15 +10,15 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
-public class AuthenticationQueryBuilder implements QueryBuilder {
+public class TradeQueryBuilder implements QueryBuilder {
 
 	public enum Criterion {
-		token, antiForgeryState
+		name
 	}
 	
-	@Autowired
+    @Autowired
     private SessionFactory sessionFactory;
-    private static final String BASIC_HQL = "FROM AuthenticationEntity authentication";
+    private static final String BASIC_HQL = "FROM TradeEntity trade";
 
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
@@ -36,20 +36,15 @@ public class AuthenticationQueryBuilder implements QueryBuilder {
 		hql.append(" WHERE 1=1");
 		
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.token)) {
-				hql.append(buildClause("authentication.token", "token", c));
-			}
-			if (c.getField().equals(Criterion.antiForgeryState)) {
-				hql.append(buildClause("authentication.antiForgeryState", "antiForgeryState", c));
+			if (c.getField().equals(Criterion.name)) {
+				hql.append(buildClause("UPPER(trade.name)", "name", c));
 			}
 		}
+		
 		Query result = sessionFactory.getCurrentSession().createQuery(hql.toString());
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.token)) {
-				result.setParameter("token", c.getValue());
-			}
-			if (c.getField().equals(Criterion.antiForgeryState)) {
-				result.setParameter("antiForgeryState", c.getValue());
+			if (c.getField().equals(Criterion.name)) {
+				result.setParameter("name", c.getValue().toString().toUpperCase());
 			}
 		}
 		return result;
