@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.UserCriteriaBuilder;
+import com.matchandtrade.persistence.criteria.UserQueryBuilder;
 import com.matchandtrade.persistence.entity.UserEntity;
 
 @Repository
@@ -16,9 +16,9 @@ public class UserRepository {
 	@Autowired
 	private BasicRepository<UserEntity> basicRepository;
 	@Autowired
-	private SearchableRepository<UserEntity> searchableRepository;
+	private QueryableRepository<UserEntity> queryableRepository;
 	@Autowired
-	private UserCriteriaBuilder criteriaBuilder;
+	private UserQueryBuilder criteriaBuilder;
 
 	@Transactional
 	public UserEntity get(Integer userId) {
@@ -28,7 +28,7 @@ public class UserRepository {
 	@Transactional
 	public UserEntity get(String email) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(UserCriteriaBuilder.Criterion.email, email);
+		searchCriteria.addCriterion(UserQueryBuilder.Criterion.email, email);
 		SearchResult<UserEntity> searchResult = search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			return searchResult.getResultList().get(0);
@@ -44,7 +44,7 @@ public class UserRepository {
 
 	@Transactional
 	public SearchResult<UserEntity> search(SearchCriteria searchCriteria) {
-		return searchableRepository.search(searchCriteria, criteriaBuilder);
+		return queryableRepository.query(searchCriteria, criteriaBuilder);
 	}
 
 }
