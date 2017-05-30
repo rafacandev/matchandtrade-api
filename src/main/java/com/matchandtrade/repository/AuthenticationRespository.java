@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.common.Pagination;
 import com.matchandtrade.common.SearchCriteria;
 import com.matchandtrade.common.SearchResult;
-import com.matchandtrade.persistence.criteria.AuthenticationCriteriaBuilder;
+import com.matchandtrade.persistence.criteria.AuthenticationQueryBuilder;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 
 @Repository
@@ -16,14 +16,14 @@ public class AuthenticationRespository {
 	@Autowired
 	private BasicRepository<AuthenticationEntity> authenticationDao;
 	@Autowired
-	private SearchableRepository<AuthenticationEntity> searchableRepository;
+	private QueryableRepository<AuthenticationEntity> searchableRepository;
 	@Autowired
-	private AuthenticationCriteriaBuilder criteriaBuilder;
+	private AuthenticationQueryBuilder criteriaBuilder;
 
 	@Transactional
 	public AuthenticationEntity getByAtiForgeryState(String antiForgeryState) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(AuthenticationCriteriaBuilder.Criterion.antiForgeryState, antiForgeryState);
+		searchCriteria.addCriterion(AuthenticationQueryBuilder.Criterion.antiForgeryState, antiForgeryState);
 		SearchResult<AuthenticationEntity> searchResult = search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			return searchResult.getResultList().get(0);
@@ -35,7 +35,7 @@ public class AuthenticationRespository {
 	@Transactional
 	public AuthenticationEntity getByToken(String token) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(AuthenticationCriteriaBuilder.Criterion.token, token);
+		searchCriteria.addCriterion(AuthenticationQueryBuilder.Criterion.token, token);
 		SearchResult<AuthenticationEntity> searchResult = search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			return searchResult.getResultList().get(0);
@@ -51,7 +51,7 @@ public class AuthenticationRespository {
 
 	@Transactional
 	public SearchResult<AuthenticationEntity> search(SearchCriteria searchCriteria) {
-		return searchableRepository.search(searchCriteria, criteriaBuilder);
+		return searchableRepository.query(searchCriteria, criteriaBuilder);
 	}
 
 	@Transactional
