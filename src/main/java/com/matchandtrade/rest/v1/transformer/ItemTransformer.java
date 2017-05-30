@@ -3,7 +3,7 @@ package com.matchandtrade.rest.v1.transformer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.rest.v1.json.ItemJson;
 

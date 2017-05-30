@@ -1,8 +1,8 @@
 package com.matchandtrade.persistence.criteria;
 
-import com.matchandtrade.common.Criterion;
-import com.matchandtrade.common.Criterion.LogicalOperator;
-import com.matchandtrade.common.Criterion.Restriction;
+import com.matchandtrade.persistence.common.Criterion;
+import com.matchandtrade.persistence.common.Criterion.LogicalOperator;
+import com.matchandtrade.persistence.common.Criterion.Restriction;
 
 public class QueryBuilderUtil {
 

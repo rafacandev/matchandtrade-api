@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.common.SearchCriteria;
+import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
 public class WantItemQueryBuilder implements QueryBuilder {
@@ -37,7 +37,7 @@ public class WantItemQueryBuilder implements QueryBuilder {
 	private Query parameterizeQuery(SearchCriteria searchCriteria, StringBuilder hql) {
 		hql.append(" WHERE 1=1");
 		
-		for (com.matchandtrade.common.Criterion c : searchCriteria.getCriteria()) {
+		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
 			if (c.getField().equals(Criterion.itemId)) {
 				hql.append(buildClause("item.itemId", "itemId", c));
 			}
@@ -46,7 +46,7 @@ public class WantItemQueryBuilder implements QueryBuilder {
 			}
 		}
 		Query result = sessionFactory.getCurrentSession().createQuery(hql.toString());
-		for (com.matchandtrade.common.Criterion c : searchCriteria.getCriteria()) {
+		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
 			if (c.getField().equals(Criterion.itemId)) {
 				result.setParameter("itemId", c.getValue());
 			}

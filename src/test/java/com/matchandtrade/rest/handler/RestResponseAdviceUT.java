@@ -22,8 +22,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.common.Pagination;
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.UserRandom;

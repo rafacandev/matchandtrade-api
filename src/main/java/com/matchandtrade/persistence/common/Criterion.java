@@ -1,4 +1,4 @@
-package com.matchandtrade.common;
+package com.matchandtrade.persistence.common;
 
 /**
  * A criterion, typically used with {@code SearchCriteria}

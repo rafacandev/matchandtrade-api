@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.ItemService;

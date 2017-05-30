@@ -3,7 +3,7 @@ package com.matchandtrade.rest.v1.link;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.rest.v1.controller.TradeController;
 import com.matchandtrade.rest.v1.json.TradeJson;
 

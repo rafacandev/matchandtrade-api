@@ -1,4 +1,4 @@
-package com.matchandtrade.common;
+package com.matchandtrade.persistence.common;
 
 import org.springframework.http.HttpStatus;
 

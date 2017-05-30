@@ -6,7 +6,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.common.SearchCriteria;
+import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 
 @Component
@@ -23,7 +23,7 @@ public class TradeMembershipCriteriaBuilder implements CriteriaBuilder {
 	public Criteria buildSearchCriteria(SearchCriteria searchCriteria) {
 		Criteria result = sessionFactory.getCurrentSession().createCriteria(TradeMembershipEntity.class);
 		// Add Criterion
-		for (com.matchandtrade.common.Criterion c : searchCriteria.getCriteria()) {
+		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
 			if (c.getField().equals(Criterion.tradeId)) {
 				result.add(Restrictions.eq("trade.tradeId", c.getValue()));
 			}
@@ -38,9 +38,9 @@ public class TradeMembershipCriteriaBuilder implements CriteriaBuilder {
 				result.add(Restrictions.eq("item.itemId", c.getValue()));
 			}
 			if (c.getField().equals(Criterion.tradeMembershipId)) {
-				if (c.getRestriction().equals(com.matchandtrade.common.Criterion.Restriction.NOT_EQUALS)) {
+				if (c.getRestriction().equals(com.matchandtrade.persistence.common.Criterion.Restriction.NOT_EQUALS)) {
 					result.add(Restrictions.ne("tradeMembershipId", c.getValue()));
-				} else if (c.getRestriction().equals(com.matchandtrade.common.Criterion.Restriction.EQUALS)) {
+				} else if (c.getRestriction().equals(com.matchandtrade.persistence.common.Criterion.Restriction.EQUALS)) {
 					result.add(Restrictions.eq("tradeMembershipId", c.getValue()));
 				}
 			}

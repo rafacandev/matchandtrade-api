@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.common.SearchCriteria;
+import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
 public class ItemQueryBuilder implements QueryBuilder {
@@ -36,7 +36,7 @@ public class ItemQueryBuilder implements QueryBuilder {
 
 	private Query parameterizeQuery(SearchCriteria searchCriteria, StringBuilder hql) {
 		// Add Criterion
-		for (com.matchandtrade.common.Criterion c : searchCriteria.getCriteria()) {
+		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
 			if (c.getField().equals(Criterion.tradeMembershipId)) {
 				hql.append(" AND tm.tradeMembershipId = :tradeMembershipId");
 			}
@@ -51,7 +51,7 @@ public class ItemQueryBuilder implements QueryBuilder {
 			}
 		}
 		Query result = sessionFactory.getCurrentSession().createQuery(hql.toString());
-		for (com.matchandtrade.common.Criterion c : searchCriteria.getCriteria()) {
+		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
 			if (c.getField().equals(Criterion.tradeMembershipId)) {
 				result.setParameter("tradeMembershipId", c.getValue());
 			}

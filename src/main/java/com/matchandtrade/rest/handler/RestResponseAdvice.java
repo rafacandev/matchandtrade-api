@@ -18,8 +18,8 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import com.matchandtrade.common.Pagination;
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.rest.Json;
 
 /**

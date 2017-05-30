@@ -7,9 +7,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.transform.RootEntityResultTransformer;
 import org.springframework.stereotype.Repository;
 
-import com.matchandtrade.common.Pagination;
-import com.matchandtrade.common.SearchCriteria;
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.SearchCriteria;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.CriteriaBuilder;
 import com.matchandtrade.persistence.entity.Entity;
 

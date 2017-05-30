@@ -1,4 +1,4 @@
-package com.matchandtrade.common;
+package com.matchandtrade.persistence.common;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;

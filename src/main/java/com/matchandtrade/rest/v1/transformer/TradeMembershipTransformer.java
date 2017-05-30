@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.repository.TradeRepository;
 import com.matchandtrade.repository.UserRepository;

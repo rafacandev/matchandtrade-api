@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.matchandtrade.common.Pagination;
-import com.matchandtrade.common.SearchCriteria;
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.SearchCriteria;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;

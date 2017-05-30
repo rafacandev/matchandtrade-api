@@ -3,9 +3,9 @@ package com.matchandtrade.rest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.common.Pagination;
-import com.matchandtrade.common.SearchCriteria;
-import com.matchandtrade.common.SearchResult;
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.SearchCriteria;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.TradeMembershipCriteriaBuilder;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.repository.TradeMembershipRepository;
