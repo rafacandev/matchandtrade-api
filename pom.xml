@@ -329,7 +329,7 @@
 					</includes>
 					<!-- -Xverify:none may reduce startup time. No need to verify bytecode on the test phase -->
 					<!-- ${surefireArgLine} jacoco instrumentation -->
-					<argLine>-Xverify:none ${surefireArgLine}</argLine>
+					<argLine>-Xverify:none @{surefireArgLine}</argLine>
 				</configuration>
 			</plugin>
 
@@ -349,7 +349,7 @@
 					</includes>
 					<!-- -Xverify:none may reduce startup time. No need to verify bitecode on the test phase -->
 					<!-- ${surefireArgLine} jacoco instrumentation -->
-					<argLine>-Xverify:none ${failsafeArgLine}</argLine>
+					<argLine>-Xverify:none @{failsafeArgLine}</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
