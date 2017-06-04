@@ -73,7 +73,6 @@ public class TradeMembershipControllerGetIT {
 		fixture = mockControllerFactory.getTradeMembershipController(false);
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, existingTradeMembership.getUser().getUserId(), null, null);
-		assertEquals(existingTradeMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
 		assertEquals(existingTradeMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
 

@@ -2,6 +2,7 @@ package com.matchandtrade.cli;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -16,6 +17,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import com.matchandtrade.config.AppConfigurationLoader;
 import com.matchandtrade.config.AppConfigurationProperties;
 
 public class AppCli {
@@ -46,20 +48,7 @@ public class AppCli {
 			CommandLine cli = new DefaultParser().parse(options, arguments);
 			if (cli.hasOption("cf")) {
 				String configFilePath = cli.getOptionValue("cf");
-				File configFile = new File(configFilePath);
-				if (!configFile.exists()) {
-					throw new IOException("File does not exist: " + configFile.getAbsolutePath());
-				} else if (configFile.isDirectory()) {
-					throw new IOException("The path provided is a directory instead of a valid file: " + configFile.getAbsolutePath());
-				} else {
-					System.setProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey(), configFile.getAbsolutePath());
-					// Load the content of the configuration file as system properties
-					Properties additionalProperties = new Properties();
-					additionalProperties.load(new FileInputStream(configFile));
-					for(Entry<Object, Object> e : additionalProperties.entrySet()) {
-						System.setProperty(e.getKey().toString(), e.getValue().toString());
-					}
-				}
+				AppConfigurationLoader.loadConfigurationFromFilePath(configFilePath);
 			}
 			
 			if (cli.hasOption("h")) {
@@ -85,6 +74,8 @@ public class AppCli {
 			throw new InvalidParameterException(e.getMessage());
 		}
 	}
+
+
 	
 	public boolean isInterrupted() {
 		return isInterrupted;
