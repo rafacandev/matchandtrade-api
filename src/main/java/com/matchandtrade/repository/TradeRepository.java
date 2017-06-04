@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
-import com.matchandtrade.persistence.criteria.TradeMembershipCriteriaBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 
@@ -20,19 +20,19 @@ public class TradeRepository {
 	@Autowired
 	private BasicRepository<TradeEntity> basicTradeRepository;
 	@Autowired
-	private SearchableRepository<TradeMembershipEntity> searchableTradeMembershipResposity;
+	private QueryableRepository<TradeMembershipEntity> queryableTradeMembershipResposity;
 	@Autowired
 	private QueryableRepository<TradeEntity> queryableTradeResposity;
 	@Autowired
-	private TradeQueryBuilder tradeCriteriaBuilder;
+	private TradeQueryBuilder tradeQueryBuilder;
 	@Autowired
-	private TradeMembershipCriteriaBuilder tradeMembershipCriteriaBuilder;
+	private TradeMembershipQueryBuilder tradeMembershipQueryBuilder;
 
 	@Transactional
 	public void delete(Integer tradeId) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(TradeMembershipCriteriaBuilder.Criterion.tradeId, tradeId);
-		SearchResult<TradeMembershipEntity> sr = searchableTradeMembershipResposity.search(searchCriteria, tradeMembershipCriteriaBuilder);
+		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, tradeId);
+		SearchResult<TradeMembershipEntity> sr = queryableTradeMembershipResposity.query(searchCriteria, tradeMembershipQueryBuilder);
 		for (TradeMembershipEntity tm : sr.getResultList()) {
 			basicTradeMembershipRepository.delete(tm);
 		}
@@ -52,6 +52,6 @@ public class TradeRepository {
 
 	@Transactional
 	public SearchResult<TradeEntity> search(SearchCriteria searchCriteria) {
-		return queryableTradeResposity.query(searchCriteria, tradeCriteriaBuilder);
+		return queryableTradeResposity.query(searchCriteria, tradeQueryBuilder);
 	}
 }

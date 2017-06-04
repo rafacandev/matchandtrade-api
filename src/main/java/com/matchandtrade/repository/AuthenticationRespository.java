@@ -18,7 +18,7 @@ public class AuthenticationRespository {
 	@Autowired
 	private QueryableRepository<AuthenticationEntity> searchableRepository;
 	@Autowired
-	private AuthenticationQueryBuilder criteriaBuilder;
+	private AuthenticationQueryBuilder authenticationQueryBuilder;
 
 	@Transactional
 	public AuthenticationEntity getByAtiForgeryState(String antiForgeryState) {
@@ -51,7 +51,7 @@ public class AuthenticationRespository {
 
 	@Transactional
 	public SearchResult<AuthenticationEntity> search(SearchCriteria searchCriteria) {
-		return searchableRepository.query(searchCriteria, criteriaBuilder);
+		return searchableRepository.query(searchCriteria, authenticationQueryBuilder);
 	}
 
 	@Transactional

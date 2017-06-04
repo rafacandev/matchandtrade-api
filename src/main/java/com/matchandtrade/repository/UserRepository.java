@@ -18,7 +18,7 @@ public class UserRepository {
 	@Autowired
 	private QueryableRepository<UserEntity> queryableRepository;
 	@Autowired
-	private UserQueryBuilder criteriaBuilder;
+	private UserQueryBuilder userQueryBuilder;
 
 	@Transactional
 	public UserEntity get(Integer userId) {
@@ -44,7 +44,7 @@ public class UserRepository {
 
 	@Transactional
 	public SearchResult<UserEntity> search(SearchCriteria searchCriteria) {
-		return queryableRepository.query(searchCriteria, criteriaBuilder);
+		return queryableRepository.query(searchCriteria, userQueryBuilder);
 	}
 
 }

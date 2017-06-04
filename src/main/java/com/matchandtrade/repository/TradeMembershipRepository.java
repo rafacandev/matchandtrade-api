@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeMembershipCriteriaBuilder;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 
 @Repository
@@ -15,9 +15,9 @@ public class TradeMembershipRepository {
 	@Autowired
 	private BasicRepository<TradeMembershipEntity> basicRepository;
 	@Autowired
-	private TradeMembershipCriteriaBuilder criteriaBuilder;
+	private TradeMembershipQueryBuilder tradeMembershipQueryBuilder;
 	@Autowired
-	private SearchableRepository<TradeMembershipEntity> searchableResposity;
+	private QueryableRepository<TradeMembershipEntity> queriableResposity;
 
 	@Transactional
 	public void delete(Integer tradeMembershipId) {
@@ -37,7 +37,7 @@ public class TradeMembershipRepository {
 	
 	@Transactional
 	public SearchResult<TradeMembershipEntity> search(SearchCriteria searchCriteria) {
-		return searchableResposity.search(searchCriteria, criteriaBuilder);
+		return queriableResposity.query(searchCriteria, tradeMembershipQueryBuilder);
 	}
 
 }

@@ -10,7 +10,7 @@ import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
-import com.matchandtrade.persistence.criteria.TradeMembershipCriteriaBuilder;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -73,9 +73,9 @@ public class TradeValidator {
 		
 		// Validates if authenticated user is the owner of the trade
 		SearchCriteria searchTradeOwner = new SearchCriteria(new Pagination(1,1));
-		searchTradeOwner.addCriterion(TradeMembershipCriteriaBuilder.Criterion.tradeId, json.getTradeId());
-		searchTradeOwner.addCriterion(TradeMembershipCriteriaBuilder.Criterion.userId, user.getUserId());
-		searchTradeOwner.addCriterion(TradeMembershipCriteriaBuilder.Criterion.type, TradeMembershipEntity.Type.OWNER);
+		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, json.getTradeId());
+		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Criterion.userId, user.getUserId());
+		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Criterion.type, TradeMembershipEntity.Type.OWNER);
 		SearchResult<TradeMembershipEntity> searchResultTradeOwner = tradeMembershipRepository.search(searchTradeOwner);
 		if (searchResultTradeOwner.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not the owner of Trade.tradeId: " + json.getTradeId());

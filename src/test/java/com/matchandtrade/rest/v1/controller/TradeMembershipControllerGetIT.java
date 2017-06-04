@@ -57,7 +57,6 @@ public class TradeMembershipControllerGetIT {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<TradeMembershipJson> getResponse = fixture.get(existingTradeMembership.getTrade().getTradeId(), null, null, null);
 		assertEquals(existingTradeMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
-		assertEquals(existingTradeMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
 
 	@Test

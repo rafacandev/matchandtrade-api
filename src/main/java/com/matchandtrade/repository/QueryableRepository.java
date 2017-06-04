@@ -33,9 +33,9 @@ public class QueryableRepository<T extends Entity> {
 	}
 
 	/**
-	 * Searches the database for a matching {@code searchCriteria} applying the {@code searchCriteria.getPagination()}
+	 * Queries the database for a matching {@code searchCriteria} applying the {@code searchCriteria.getPagination()}
 	 * @param searchCriteria to be used
-	 * @param criteriaBuilder CriteriaBuilder to parse searchCritia in org.hibernate.Criteria
+	 * @param QueryBuilder to parse searchCriteria in org.hibernate.Criteria
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
