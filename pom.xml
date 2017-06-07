@@ -19,13 +19,6 @@
 		</license>
 	</licenses>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.3.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
-
 	<properties>
 		<!-- Plugin and dependency versions -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,8 +32,21 @@
 		<org.jacoco.version>0.7.9</org.jacoco.version>
 	</properties>
 
-	<dependencies>
+	<!-- Using Spring Boot without the parent POM. See: https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-build-systems.html -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<!-- Import dependency management from Spring Boot -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>1.5.3.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
+	<dependencies>
 		<!-- Spring Boot. Substitutes spring-boot-starter -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
