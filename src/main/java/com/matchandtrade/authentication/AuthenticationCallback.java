@@ -6,6 +6,7 @@ import java.io.Serializable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,8 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.AuthenticationRespository;
-import com.matchandtrade.repository.UserRepository;
+import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
+import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 
 @Component
 public class AuthenticationCallback implements Serializable {
@@ -29,10 +30,11 @@ public class AuthenticationCallback implements Serializable {
 	@Autowired
 	private AuthenticationOAuth authenticationOAuth;
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepositoryFacade userRepository;
 	@Autowired
-	private AuthenticationRespository authenticationRepository;
+	private AuthenticationRespositoryFacade authenticationRepository;
 
+	@Transactional
 	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// oAuth Step 3. Confirm anti-forgery state token
 		String stateParameter = request.getParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString());
@@ -84,10 +86,14 @@ public class AuthenticationCallback implements Serializable {
 			Integer userId,
 			String accessToken) {
 		// Persists Authentication info
-		authenticationEntity.setUser(userRepository.get(userId));
-		authenticationEntity.setAntiForgeryState(null);
-		authenticationEntity.setToken(accessToken);
-		authenticationRepository.save(authenticationEntity);
+		// TODO remove this when refactor authenticationRepository.getByAtiForgeryState(). We are getting org.hibernate.PersistentObjectException: detached entity passed to persist: com.matchandtrade.persistence.entity.AuthenticationEntity
+		AuthenticationEntity authenticationEntity2 = authenticationRepository.get(authenticationEntity.getAuthenticationId());
+		authenticationEntity2.setUser(userRepository.get(userId));
+		authenticationEntity2.setAntiForgeryState(null);
+		authenticationEntity2.setToken(accessToken);
+		authenticationRepository.save(authenticationEntity2);
+		// TODO remove this when refactor authenticationRepository.getByAtiForgeryState(). We are getting org.hibernate.PersistentObjectException: detached entity passed to persist: com.matchandtrade.persistence.entity.AuthenticationEntity
+		authenticationEntity = authenticationEntity2;
 	}
 
 	/**
@@ -98,7 +104,7 @@ public class AuthenticationCallback implements Serializable {
 	 * @return updated User.
 	 */
 	private AuthenticationResponsePojo updateUserInfo(String email, String name) {
-		UserEntity userEntity = userRepository.get(email);
+		UserEntity userEntity = userRepository.getByEmail(email);
 		boolean isNewUser = false;
 		if (userEntity == null) {
 			userEntity = new UserEntity();

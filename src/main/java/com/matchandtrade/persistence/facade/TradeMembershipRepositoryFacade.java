@@ -1,41 +1,36 @@
-package com.matchandtrade.repository;
+package com.matchandtrade.persistence.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilderJavax;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.repository.TradeMembershipRepository;
 
 @Repository
-public class TradeMembershipRepository {
+public class TradeMembershipRepositoryFacade {
 
 	@Autowired
-	private BasicRepository<TradeMembershipEntity> basicRepository;
+	private TradeMembershipRepository tradeMembershipRepository;
 	@Autowired
-	private TradeMembershipQueryBuilder tradeMembershipQueryBuilder;
+	private TradeMembershipQueryBuilderJavax tradeMembershipQueryBuilder;
 	@Autowired
-	private QueryableRepository<TradeMembershipEntity> queriableResposity;
+	private QueryableRepositoryJavax<TradeMembershipEntity> queriableResposity;
 
-	@Transactional
 	public void delete(Integer tradeMembershipId) {
-		TradeMembershipEntity tm = get(tradeMembershipId);
-		basicRepository.delete(tm);
+		tradeMembershipRepository.delete(tradeMembershipId);
 	}
 
-	@Transactional
 	public TradeMembershipEntity get(Integer tradeMembershipId) {
-		return basicRepository.get(TradeMembershipEntity.class, tradeMembershipId);
+		return tradeMembershipRepository.findOne(tradeMembershipId);
 	}
 
-	@Transactional
 	public void save(TradeMembershipEntity entity) {
-		basicRepository.save(entity);
+		tradeMembershipRepository.save(entity);
 	}
 	
-	@Transactional
 	public SearchResult<TradeMembershipEntity> search(SearchCriteria searchCriteria) {
 		return queriableResposity.query(searchCriteria, tradeMembershipQueryBuilder);
 	}

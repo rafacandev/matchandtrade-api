@@ -63,13 +63,21 @@ public class AuthenticationServletUT {
 	}
 	
 	@Test
-	public void doGetSignOff() throws ServletException, IOException, URISyntaxException {
+	public void doGetSignOffWithoutToken() throws ServletException, IOException, URISyntaxException {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setRequestURI("http://localhost:8080/authenticate/sign-out");
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		
 		authenticationServlet.doGet(request, response);
-		
+		assertNull(request.getSession(false));
+	}
+
+	@Test
+	public void doGetSignOffWithToken() throws ServletException, IOException, URISyntaxException {
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setRequestURI("http://localhost:8080/authenticate/sign-out");
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		authenticationServlet.setAuthenticationOAuth(new AuthenticationOAuthNewUserMock());
+		authenticationServlet.doGet(request, response);
 		assertNull(request.getSession(false));
 	}
 
@@ -85,13 +93,11 @@ public class AuthenticationServletUT {
 	}
 	
 	@Test
-	public void doGetCallback() throws ServletException, IOException, URISyntaxException {
+	public void doGetUnauthorizedCallback() throws ServletException, IOException, URISyntaxException {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setRequestURI("http://localhost:8080/authenticate/callback");
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		
 		authenticationServlet.doGet(request, response);
-		
 		assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
 	}
 	

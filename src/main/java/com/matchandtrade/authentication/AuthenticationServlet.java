@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
-import com.matchandtrade.repository.AuthenticationRespository;
+import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
 
 
 @WebServlet(name="authenticationServlet", urlPatterns="/authenticate/*")
@@ -35,7 +35,7 @@ public class AuthenticationServlet extends HttpServlet {
 	@Autowired
 	private AuthenticationCallback authenticationCallbak;
 	@Autowired
-	private AuthenticationRespository authenticationRepository;
+	private AuthenticationRespositoryFacade authenticationRepository;
 
 	
 	/**
@@ -107,8 +107,10 @@ public class AuthenticationServlet extends HttpServlet {
 		LOGGER.debug("Signing out from session id: [{}]", request.getSession().getId());
 		// Delete authentication details
 		String accessToken = request.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
-		AuthenticationEntity authenticationEntity = authenticationRepository.getByToken(accessToken);
-		authenticationRepository.delete(authenticationEntity);
+		if (accessToken != null) {
+			AuthenticationEntity authenticationEntity = authenticationRepository.getByToken(accessToken);
+			authenticationRepository.delete(authenticationEntity);
+		}
 		
 		// Invalidate the current session (not required, but good practice overall)
 		request.getSession().invalidate();

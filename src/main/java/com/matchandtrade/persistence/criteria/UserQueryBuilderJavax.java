@@ -2,23 +2,24 @@ package com.matchandtrade.persistence.criteria;
 
 import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.buildClause;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
-public class TradeQueryBuilder implements QueryBuilder {
-
+public class UserQueryBuilderJavax implements QueryBuilderJavax {
+	
 	public enum Criterion {
-		name
+			email
 	}
 	
-    @Autowired
-    private SessionFactory sessionFactory;
-    private static final String BASIC_HQL = "FROM TradeEntity trade";
+	@Autowired
+	private EntityManager entityManager;
+    private static final String BASIC_HQL = "FROM UserEntity user";
 
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
@@ -36,18 +37,19 @@ public class TradeQueryBuilder implements QueryBuilder {
 		hql.append(" WHERE 1=1");
 		
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.name)) {
-				hql.append(buildClause("UPPER(trade.name)", "name", c));
+			if (c.getField().equals(Criterion.email)) {
+				hql.append(buildClause("user.email", "email", c));
 			}
 		}
-		
-		Query result = sessionFactory.getCurrentSession().createQuery(hql.toString());
+		Query result = entityManager.createQuery(hql.toString());
+
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.name)) {
-				result.setParameter("name", c.getValue().toString().toUpperCase());
+			if (c.getField().equals(Criterion.email)) {
+				result.setParameter("email", c.getValue());
 			}
 		}
 		return result;
 	}
+	
 	
 }

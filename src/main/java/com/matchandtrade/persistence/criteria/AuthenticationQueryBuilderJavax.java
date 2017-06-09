@@ -2,23 +2,24 @@ package com.matchandtrade.persistence.criteria;
 
 import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.buildClause;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
-public class UserQueryBuilder implements QueryBuilder {
-	
-	public enum Criterion {
-			email
-	}
+public class AuthenticationQueryBuilderJavax implements QueryBuilderJavax {
 
-    @Autowired
-    private SessionFactory sessionFactory;
-    private static final String BASIC_HQL = "FROM UserEntity user";
+	public enum Criterion {
+		token, antiForgeryState
+	}
+	
+	@Autowired
+    private EntityManager entityManager;
+    private static final String BASIC_HQL = "FROM AuthenticationEntity authentication";
 
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
@@ -36,19 +37,23 @@ public class UserQueryBuilder implements QueryBuilder {
 		hql.append(" WHERE 1=1");
 		
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.email)) {
-				hql.append(buildClause("user.email", "email", c));
+			if (c.getField().equals(Criterion.token)) {
+				hql.append(buildClause("authentication.token", "token", c));
+			}
+			if (c.getField().equals(Criterion.antiForgeryState)) {
+				hql.append(buildClause("authentication.antiForgeryState", "antiForgeryState", c));
 			}
 		}
-		
-		Query result = sessionFactory.getCurrentSession().createQuery(hql.toString());
+		Query result = entityManager.createQuery(hql.toString());
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.email)) {
-				result.setParameter("email", c.getValue());
+			if (c.getField().equals(Criterion.token)) {
+				result.setParameter("token", c.getValue());
+			}
+			if (c.getField().equals(Criterion.antiForgeryState)) {
+				result.setParameter("antiForgeryState", c.getValue());
 			}
 		}
 		return result;
 	}
-	
 	
 }

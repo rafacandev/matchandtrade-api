@@ -2,22 +2,23 @@ package com.matchandtrade.persistence.criteria;
 
 import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.buildClause;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
-public class TradeMembershipQueryBuilder implements QueryBuilder {
+public class TradeMembershipQueryBuilderJavax implements QueryBuilderJavax {
 
 	public enum Criterion {
 		userId, tradeId, tradeMembershipId, type, itemId
 	}
 	
     @Autowired
-    private SessionFactory sessionFactory;
+    private EntityManager entityManager;
 
     private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tradeMembership";
     
@@ -79,7 +80,7 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 			}
 		}
 		
-		Query result = sessionFactory.getCurrentSession().createQuery(hql.toString());
+		Query result = entityManager.createQuery(hql.toString());
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
 			if (c.getField().equals(Criterion.tradeMembershipId)) {
 				result.setParameter("tradeMembershipId", c.getValue());

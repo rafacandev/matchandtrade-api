@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.AuthenticationRespository;
-import com.matchandtrade.repository.UserRepository;
+import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
+import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.test.random.UserRandom;
 
@@ -29,7 +29,7 @@ import com.matchandtrade.test.random.UserRandom;
 public class MockControllerFactory {
 
 	@Autowired
-	private AuthenticationRespository authentRepository;
+	private AuthenticationRespositoryFacade authentRepository;
 	@Autowired
 	private AuthenticationController authenticationController;
 	@Autowired
@@ -42,7 +42,7 @@ public class MockControllerFactory {
 	@Autowired
 	private UserController userController;
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepositoryFacade userRepository;
 	@Autowired
 	private WantItemController wantItemController;
 

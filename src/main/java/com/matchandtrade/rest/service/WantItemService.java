@@ -6,13 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.WantItemEntity;
-import com.matchandtrade.repository.ItemRepository;
+import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
 
 @Service
 public class WantItemService {
 
 	@Autowired
-	private ItemRepository itemRepository;
+	private ItemRepositoryFacade itemRepository;
 
 	@Transactional
 	public void create(WantItemEntity wantItem, Integer itemId) {

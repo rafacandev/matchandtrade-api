@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.UserRepository;
+import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
 
@@ -13,7 +13,7 @@ import com.matchandtrade.rest.v1.transformer.UserTransformer;
 public class UserRandom {
 	
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepositoryFacade userRepository;
 	
 	public static UserEntity nextEntity() {
 		return UserTransformer.transform(nextJson());

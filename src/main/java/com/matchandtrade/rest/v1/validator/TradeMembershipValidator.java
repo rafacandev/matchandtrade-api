@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilderJavax;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.TradeMembershipRepository;
-import com.matchandtrade.repository.TradeRepository;
-import com.matchandtrade.repository.UserRepository;
+import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
+import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 
@@ -19,18 +19,18 @@ import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 public class TradeMembershipValidator {
 
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
+	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepositoryFacade userRepository;
 	@Autowired
-	private TradeRepository tradeRepository;
+	private TradeRepositoryFacade tradeRepository;
 	
 	/**
 	 * {@code TradeMembership.tradeId} must be valid.
 	 * {@code TradeMembership.userId} must be valid.
 	 * The combination of {@code TradeMembership.tradeId} and {@code TradeMembership.userId} must be unique.
 	 * 
-	 * @param TradeMembershipJson to be validated
+	 * @param json to be validated
 	 */
 	public void validatePost(TradeMembershipJson json) {
 		if (userRepository.get(json.getUserId()) == null) {
@@ -40,8 +40,8 @@ public class TradeMembershipValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.tradeId must refer to an existing Trade.");
 		}
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1, 1));
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, json.getTradeId());
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.userId, json.getUserId());
+		searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.tradeId, json.getTradeId());
+		searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.userId, json.getUserId());
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.");

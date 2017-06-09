@@ -7,19 +7,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
+import com.matchandtrade.persistence.criteria.ItemQueryBuilderJavax;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.ItemRepository;
-import com.matchandtrade.repository.TradeMembershipRepository;
+import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
+import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 
 @Service
 public class ItemService {
 
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
+	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 	@Autowired
-	private ItemRepository itemRepository;
+	private ItemRepositoryFacade itemRepository;
 
 	@Transactional
 	public void create(Integer tradeMembershipId, ItemEntity itemEntity) {
@@ -37,9 +37,9 @@ public class ItemService {
 	@Transactional
 	public SearchResult<ItemEntity> search(Integer tradeMembershipId, String name, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.tradeMembershipId, tradeMembershipId);
 		if (name != null) {
-			searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, name);
+			searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.name, name);
 		}
 		return itemRepository.query(searchCriteria);
 	}

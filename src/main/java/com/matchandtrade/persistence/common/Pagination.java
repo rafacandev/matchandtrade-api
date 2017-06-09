@@ -55,7 +55,6 @@ public class Pagination {
 
 	/**
 	 * Get the page size.
-	 * @return
 	 */
 	public int getSize() {
 		return size;
@@ -63,7 +62,6 @@ public class Pagination {
 	
 	/**
 	 * Get the page number starting on zero.
-	 * @return
 	 */
 	public int getNumber() {
 		return number;
@@ -71,7 +69,6 @@ public class Pagination {
 	
 	/**
 	 * Get the total of records.
-	 * @return
 	 */
 	public long getTotal() {
 		return total;

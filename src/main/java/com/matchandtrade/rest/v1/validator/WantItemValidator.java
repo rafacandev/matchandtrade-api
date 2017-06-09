@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.common.Criterion.Restriction;
-import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilderJavax;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.TradeMembershipRepository;
-import com.matchandtrade.repository.WantItemRepository;
+import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.WantItemRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.WantItemJson;
 
@@ -19,9 +19,9 @@ import com.matchandtrade.rest.v1.json.WantItemJson;
 public class WantItemValidator {
 
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
+	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 	@Autowired
-	private WantItemRepository wantItemRepository;
+	private WantItemRepositoryFacade wantItemRepository;
 	
 	/**
 	 * <p>
@@ -34,9 +34,9 @@ public class WantItemValidator {
 	private void checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(Integer tradeMembershipId, Integer desiredItemId) {
 		TradeMembershipEntity tradeMembership = tradeMembershipRepository.get(tradeMembershipId);
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, tradeMembership.getTrade().getTradeId());
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId, Restriction.NOT_EQUALS);
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.itemId, desiredItemId);
+		searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.tradeId, tradeMembership.getTrade().getTradeId());
+		searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.tradeMembershipId, tradeMembershipId, Restriction.NOT_EQUALS);
+		searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.itemId, desiredItemId);
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
 		if (searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item must belong to another TradeMembership within the same Trade.");

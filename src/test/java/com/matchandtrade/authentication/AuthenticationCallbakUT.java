@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.AuthenticationRespository;
-import com.matchandtrade.repository.UserRepository;
+import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
+import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.StringRandom;
@@ -32,9 +32,9 @@ public class AuthenticationCallbakUT {
 	@Autowired
 	private AuthenticationCallback authenticationCallbakServlet;
 	@Autowired
-	private AuthenticationRespository authenticationRepository;
+	private AuthenticationRespositoryFacade authenticationRepository;
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepositoryFacade userRepository;
 	
 	@Test
 	public void doGetAtiForgeryTokenNegative() throws ServletException, IOException {

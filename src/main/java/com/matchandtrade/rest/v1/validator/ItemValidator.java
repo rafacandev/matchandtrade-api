@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
+import com.matchandtrade.persistence.criteria.ItemQueryBuilderJavax;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.ItemRepository;
-import com.matchandtrade.repository.TradeMembershipRepository;
+import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
+import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ItemJson;
 
@@ -20,9 +20,9 @@ import com.matchandtrade.rest.v1.json.ItemJson;
 public class ItemValidator {
 
 	@Autowired
-	private ItemRepository itemRepository;
+	private ItemRepositoryFacade itemRepository;
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
+	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 
 	/**
 	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
@@ -62,7 +62,6 @@ public class ItemValidator {
 	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipId}
 	 * @param userId
 	 * @param tradeMembershipId
-	 * @param json
 	 */
 	public void validateGet(Integer userId, Integer tradeMembershipId) {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepository.get(tradeMembershipId);
@@ -87,8 +86,8 @@ public class ItemValidator {
 		checkIfNameLength(json.getName());
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
+		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.name, json.getName());
 		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
@@ -120,10 +119,10 @@ public class ItemValidator {
 		}
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
+		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.name, json.getName());
 		// Required to check if is not the same itemId because to guarantee PUT idempotency
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.itemIdIsNot, json.getItemId());
+		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.itemIdIsNot, json.getItemId());
 		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");

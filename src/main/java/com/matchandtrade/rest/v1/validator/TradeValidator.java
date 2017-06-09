@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
-import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilderJavax;
+import com.matchandtrade.persistence.criteria.TradeQueryBuilderJavax;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.TradeMembershipRepository;
-import com.matchandtrade.repository.TradeRepository;
+import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeJson;
 
@@ -23,9 +23,9 @@ import com.matchandtrade.rest.v1.json.TradeJson;
 public class TradeValidator {
 
 	@Autowired
-	private TradeRepository tradeRepository;
+	private TradeRepositoryFacade tradeRepository;
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
+	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 
 	/*
 	 * Check if name is mandatory and must be between 3 and 150 characters in length.
@@ -37,15 +37,14 @@ public class TradeValidator {
 	}
 
 	/**
-	 * Validates if name is mandatory and must be between 3 and 150 characters in length.
-	 * Validates if name is unique.
-	 * @param userId
+	 * Validates if json.name is mandatory and must be between 3 and 150 characters in length.
+	 * Validates if json.name is unique.
 	 * @param json
 	 */
 	public void validatePost(TradeJson json) {
 		checkNameLength(json.getName());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(TradeQueryBuilder.Criterion.name, json.getName());
+		searchCriteria.addCriterion(TradeQueryBuilderJavax.Criterion.name, json.getName());
 		SearchResult<TradeEntity> searchResult = tradeRepository.search(searchCriteria);
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
@@ -73,9 +72,9 @@ public class TradeValidator {
 		
 		// Validates if authenticated user is the owner of the trade
 		SearchCriteria searchTradeOwner = new SearchCriteria(new Pagination(1,1));
-		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, json.getTradeId());
-		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Criterion.userId, user.getUserId());
-		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Criterion.type, TradeMembershipEntity.Type.OWNER);
+		searchTradeOwner.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.tradeId, json.getTradeId());
+		searchTradeOwner.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.userId, user.getUserId());
+		searchTradeOwner.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.type, TradeMembershipEntity.Type.OWNER);
 		SearchResult<TradeMembershipEntity> searchResultTradeOwner = tradeMembershipRepository.search(searchTradeOwner);
 		if (searchResultTradeOwner.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not the owner of Trade.tradeId: " + json.getTradeId());
@@ -83,7 +82,7 @@ public class TradeValidator {
 
 		// Validates if name is unique but not the same which is being updated
 		SearchCriteria searchUniqueName = new SearchCriteria(new Pagination(1,2));
-		searchUniqueName.addCriterion(TradeQueryBuilder.Criterion.name, json.getName());
+		searchUniqueName.addCriterion(TradeQueryBuilderJavax.Criterion.name, json.getName());
 		SearchResult<TradeEntity> searchResultUniqueName = tradeRepository.search(searchUniqueName);
 		// If results and it is not the same we the updating trade, then name already exists. Otherwise the result belongs to the same trade it is trying to update.
 		if (!searchResultUniqueName.getResultList().isEmpty() && !json.getTradeId().equals(searchResultUniqueName.getResultList().get(0).getTradeId())) {

@@ -1,15 +1,15 @@
-package com.matchandtrade.repository;
+package com.matchandtrade.persistence.facade;
 
 import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.transform.RootEntityResultTransformer;
+import javax.persistence.Query;
+
 import org.springframework.stereotype.Repository;
 
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.QueryBuilder;
+import com.matchandtrade.persistence.criteria.QueryBuilderJavax;
 import com.matchandtrade.persistence.entity.Entity;
 
 /**
@@ -18,7 +18,7 @@ import com.matchandtrade.persistence.entity.Entity;
  * @author rafael.santos.bra@gmail.com
  */
 @Repository
-public class QueryableRepository<T extends Entity> {
+public class QueryableRepositoryJavax<T extends Entity> {
 	
     /**
 	 * Apply pagination value to the criteria
@@ -32,18 +32,18 @@ public class QueryableRepository<T extends Entity> {
 		query.setMaxResults(pagination.getSize());
 	}
 
-	/**
+	/*
 	 * Queries the database for a matching {@code searchCriteria} applying the {@code searchCriteria.getPagination()}
 	 * @param searchCriteria to be used
-	 * @param QueryBuilder to parse searchCriteria in org.hibernate.Criteria
+	 * @param queryBuilder to parse searchCriteria in org.hibernate.Criteria
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public SearchResult<T> query(SearchCriteria searchCriteria, QueryBuilder queryBuilder) {
+	public SearchResult<T> query(SearchCriteria searchCriteria, QueryBuilderJavax queryBuilder) {
 		// Firstly, count how many records the searchCriteria returns. Important for pagination purposes
 		Query countQuery = queryBuilder.buildCountQuery(searchCriteria);
 		// Set pagination total
-		Long rowCount = (Long) countQuery.uniqueResult();
+		Long rowCount = (Long) countQuery.getSingleResult();
 		searchCriteria.getPagination().setTotal(rowCount);
 		
 		// Secondly, query the database with the proper pagination.
@@ -52,9 +52,9 @@ public class QueryableRepository<T extends Entity> {
 		// Apply pagination parameters to the main criteria
 		applyPaginationToCriteria(searchCriteria.getPagination(), queryCriteria);
 		// Set Result Transformer
-		queryCriteria.setResultTransformer(RootEntityResultTransformer.INSTANCE);
+//		queryCriteria.setResultTransformer(RootEntityResultTransformer.INSTANCE);
 		// List results
-		List<T> resultList = queryCriteria.list();
+		List<T> resultList = queryCriteria.getResultList();
 		return new SearchResult<>(resultList, searchCriteria.getPagination());
 	}
 

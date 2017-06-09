@@ -6,16 +6,16 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.TradeMembershipRepository;
-import com.matchandtrade.repository.TradeRepository;
+import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 
 @Component
 public class TradeMembershipRandom {
 	
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
+	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 	@Autowired
-	private TradeRepository tradeRepository;
+	private TradeRepositoryFacade tradeRepository;
 	
 	public TradeMembershipEntity nextEntity(UserEntity tradeOwner) {
 		TradeEntity tradeEntity = nextPersistedEntityWithoutOwner();

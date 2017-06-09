@@ -26,8 +26,8 @@ import com.matchandtrade.rest.Json;
  * This <i>ResponseBodyAdvice</i> handles HATEOAS and response status codes.
  * It will build {@link Json} links and generate the header <i>Links</i> and <i>X-Pagination-Total-Count</i>
  * 
- * @see https://tools.ietf.org/html/rfc5988
- * @see https://developer.github.com/guides/traversing-with-pagination/
+ * @see <a href="https://tools.ietf.org/html/rfc5988">https://tools.ietf.org/html/rfc5988</a>
+ * @see <a href="https://developer.github.com/guides/traversing-with-pagination/">https://developer.github.com/guides/traversing-with-pagination/</a>
  * @author rafael.santos.bra@gmail.com
  */
 @ControllerAdvice
@@ -47,7 +47,7 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 	 * 
 	 * Additionally, sets status code as HttpStatus.NOT_FOUND of body is null or SearchResult.getResultList().isEmpty().
 	 * 
-	 * @see http://projects.spring.io/spring-hateoas/
+	 * @see <a href="http://projects.spring.io/spring-hateoas/">http://projects.spring.io/spring-hateoas/</a>
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override

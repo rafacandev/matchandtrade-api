@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.TradeRepository;
-import com.matchandtrade.repository.UserRepository;
+import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
+import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson.Type;
 
@@ -17,9 +17,9 @@ import com.matchandtrade.rest.v1.json.TradeMembershipJson.Type;
 public class TradeMembershipTransformer {
 
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepositoryFacade userRepository;
 	@Autowired
-	private TradeRepository tradeRepository;
+	private TradeRepositoryFacade tradeRepository;
 
 	public TradeMembershipEntity transform(TradeMembershipJson json) {
 		TradeMembershipEntity result;

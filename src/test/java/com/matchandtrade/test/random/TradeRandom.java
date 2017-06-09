@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.repository.TradeRepository;
+import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;

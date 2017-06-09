@@ -6,15 +6,15 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilderJavax;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.repository.TradeMembershipRepository;
+import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 
 @Component
 public class TradeMembershipService {
 
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
+	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 	
 	public void create(TradeMembershipEntity tradeMembership) {
 		// Rule, when creating a new TradeMembership it's Type is MEMBER by default
@@ -34,10 +34,10 @@ public class TradeMembershipService {
 	public SearchResult<TradeMembershipEntity> search(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (userId != null) {
-			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.userId, userId);
+			searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.userId, userId);
 		}
 		if (tradeId != null) {
-			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, tradeId);
+			searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.tradeId, tradeId);
 		}
 		// Delegate to Repository layer
 		return tradeMembershipRepository.search(searchCriteria);
