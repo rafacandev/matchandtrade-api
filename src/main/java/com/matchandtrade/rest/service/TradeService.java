@@ -3,12 +3,13 @@ package com.matchandtrade.rest.service;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -49,13 +50,17 @@ public class TradeService {
 		tradeRepository.delete(tradeId);
 	}
 
-	public SearchResult<TradeEntity> search(String name, Integer _pageNumber, Integer _pageSize) {
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
-		if (name != null) {
-			searchCriteria.addCriterion(TradeQueryBuilder.Criterion.name, name);
-		}
+	public SearchResult<TradeEntity> searchByName(String name, Integer _pageNumber, Integer _pageSize) {
+		Pagination pagination = new Pagination(_pageNumber, _pageSize);
+		Pageable pageable = new PageRequest(pagination.getNumber(), pagination.getSize());
+		
+		Page<TradeEntity> trades = tradeRepository.findByName(name, pageable);
+		
+		pagination.setTotal(trades.getNumberOfElements());
+		SearchResult<TradeEntity> searchResult = new SearchResult<>(trades.getContent(), pagination);
+		
 		// Delegate to Repository layer
-		return tradeRepository.search(searchCriteria);
+		return searchResult;
 	}
 
 	public TradeEntity get(Integer tradeId) {

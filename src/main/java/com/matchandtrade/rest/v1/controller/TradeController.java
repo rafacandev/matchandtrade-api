@@ -82,7 +82,7 @@ public class TradeController implements Controller {
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request - Nothing to validate
 		// Delegate to Service layer
-		SearchResult<TradeEntity> searchResult = tradeService.search(name, _pageNumber, _pageSize);
+		SearchResult<TradeEntity> searchResult = tradeService.searchByName(name, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<TradeJson> response = TradeTransformer.transform(searchResult);
 		// Assemble links

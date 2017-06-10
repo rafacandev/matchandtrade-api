@@ -4,15 +4,8 @@ import java.beans.PropertyVetoException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import com.matchandtrade.authentication.AuthenticationOAuth;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -55,35 +48,5 @@ public class AppConfiguration {
 	public AppConfigurationProperties getAppProperties() {
 		return appProperties;
 	}
-	
-	
-	
-
-	  @Bean
-	  public EntityManagerFactory entityManagerFactory() throws PropertyVetoException {
-
-	    HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-	    vendorAdapter.setGenerateDdl(true);
-
-	    LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-	    factory.setJpaVendorAdapter(vendorAdapter);
-	    factory.setPackagesToScan("com.matchandtrade.persistence.entity");
-	    DataSource ds = (DataSource) dataSource();
-	    factory.setDataSource(ds);
-	    factory.afterPropertiesSet();
-
-	    return factory.getObject();
-	  }
-
-	  @Bean
-	  public PlatformTransactionManager transactionManager() throws PropertyVetoException {
-
-	    JpaTransactionManager txManager = new JpaTransactionManager();
-	    txManager.setEntityManagerFactory(entityManagerFactory());
-	    return txManager;
-	  }
-	
-	
-	
 	
 }

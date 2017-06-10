@@ -8,6 +8,6 @@ import com.matchandtrade.persistence.entity.TradeEntity;
 
 public interface TradeRepository extends CrudRepository<TradeEntity, Integer>{
 	
-	Page<TradeEntity> findTradeByNameIgnoreCase(String name, Pageable pageable);
+	Page<TradeEntity> findByNameIgnoreCase(String name, Pageable pageable);
 
 }
