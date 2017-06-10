@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.WantItemQueryBuilderJavax;
+import com.matchandtrade.persistence.criteria.WantItemQueryBuilder;
 import com.matchandtrade.persistence.entity.WantItemEntity;
 
 @Repository
@@ -17,17 +17,7 @@ public class WantItemRepositoryFacade {
 	
     @Autowired
     private EntityManager entityManager;
-	@Autowired
-	private QueryableRepositoryJavax<WantItemEntity> queryableRepositoryJavax;
-	@Autowired
-	private WantItemQueryBuilderJavax queryBuilderJavax;
 
-	@Transactional
-	public SearchResult<WantItemEntity> query(SearchCriteria searchCriteria) {
-		return queryableRepositoryJavax.query(searchCriteria, queryBuilderJavax);
-	}
-	
-	@Transactional
 	public int countItemWantItemPriority(Integer itemId, Integer priority) {
 		Query query = entityManager.createQuery("SELECT COUNT(*) FROM ItemEntity item INNER JOIN item.wantItems AS wantedItem WHERE item.itemId = :itemId AND wantedItem.priority = :priority");
 		query.setParameter("itemId", itemId);
@@ -36,7 +26,6 @@ public class WantItemRepositoryFacade {
 		return count.intValue();
 	}
 
-	@Transactional
 	public int countItemWantItem(Integer itemId, Integer desiredItemId) {
 		Query query = entityManager.createQuery("SELECT COUNT(*) FROM ItemEntity item INNER JOIN item.wantItems AS wantedItem WHERE item.itemId = :itemId AND wantedItem.item.itemId = :desiredItemId");
 		query.setParameter("itemId", itemId);

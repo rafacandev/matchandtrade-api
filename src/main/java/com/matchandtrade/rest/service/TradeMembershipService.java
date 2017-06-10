@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilderJavax;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 
@@ -34,13 +34,13 @@ public class TradeMembershipService {
 	public SearchResult<TradeMembershipEntity> search(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (userId != null) {
-			searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.userId, userId);
+			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.userId, userId);
 		}
 		if (tradeId != null) {
-			searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.tradeId, tradeId);
+			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, tradeId);
 		}
 		// Delegate to Repository layer
-		return tradeMembershipRepository.search(searchCriteria);
+		return tradeMembershipRepository.query(searchCriteria);
 	}
 	
 }

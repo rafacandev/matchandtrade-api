@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
-public class ItemQueryBuilderJavax implements QueryBuilderJavax {
+public class ItemQueryBuilder implements QueryBuilder {
 
 	public enum Criterion {
 		itemIdIsNot, tradeMembershipId, name, tradeId

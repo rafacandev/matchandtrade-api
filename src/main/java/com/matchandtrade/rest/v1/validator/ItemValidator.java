@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemQueryBuilderJavax;
+import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
@@ -86,8 +86,8 @@ public class ItemValidator {
 		checkIfNameLength(json.getName());
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.name, json.getName());
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
 		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
@@ -119,10 +119,10 @@ public class ItemValidator {
 		}
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.name, json.getName());
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
 		// Required to check if is not the same itemId because to guarantee PUT idempotency
-		searchCriteria.addCriterion(ItemQueryBuilderJavax.Criterion.itemIdIsNot, json.getItemId());
+		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.itemIdIsNot, json.getItemId());
 		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");

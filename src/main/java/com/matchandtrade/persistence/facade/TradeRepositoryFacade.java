@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeQueryBuilderJavax;
+import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.repository.TradeMembershipRepository;
@@ -18,13 +18,13 @@ import com.matchandtrade.persistence.repository.TradeRepository;
 public class TradeRepositoryFacade {
 
 	@Autowired
-	private QueryableRepositoryJavax<TradeEntity> queryableTradeRepository;
+	private QueryableRepository<TradeEntity> queryableTradeRepository;
 	@Autowired
 	private TradeMembershipRepository tradeMembershipRepository;
 	@Autowired
 	private TradeRepository tradeRepository;
 	@Autowired
-	private TradeQueryBuilderJavax tradeQueryBuilder;
+	private TradeQueryBuilder tradeQueryBuilder;
 
 	@Transactional
 	public void delete(Integer tradeId) {

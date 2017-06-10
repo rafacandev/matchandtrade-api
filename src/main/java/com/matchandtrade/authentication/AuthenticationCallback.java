@@ -86,14 +86,10 @@ public class AuthenticationCallback implements Serializable {
 			Integer userId,
 			String accessToken) {
 		// Persists Authentication info
-		// TODO remove this when refactor authenticationRepository.getByAtiForgeryState(). We are getting org.hibernate.PersistentObjectException: detached entity passed to persist: com.matchandtrade.persistence.entity.AuthenticationEntity
-		AuthenticationEntity authenticationEntity2 = authenticationRepository.get(authenticationEntity.getAuthenticationId());
-		authenticationEntity2.setUser(userRepository.get(userId));
-		authenticationEntity2.setAntiForgeryState(null);
-		authenticationEntity2.setToken(accessToken);
-		authenticationRepository.save(authenticationEntity2);
-		// TODO remove this when refactor authenticationRepository.getByAtiForgeryState(). We are getting org.hibernate.PersistentObjectException: detached entity passed to persist: com.matchandtrade.persistence.entity.AuthenticationEntity
-		authenticationEntity = authenticationEntity2;
+		authenticationEntity.setUser(userRepository.get(userId));
+		authenticationEntity.setAntiForgeryState(null);
+		authenticationEntity.setToken(accessToken);
+		authenticationRepository.save(authenticationEntity);
 	}
 
 	/**

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
-public class TradeMembershipQueryBuilderJavax implements QueryBuilderJavax {
+public class TradeMembershipQueryBuilder implements QueryBuilder {
 
 	public enum Criterion {
 		userId, tradeId, tradeMembershipId, type, itemId
@@ -35,7 +35,6 @@ public class TradeMembershipQueryBuilderJavax implements QueryBuilderJavax {
 	}
 	
 	private Query parameterizeQuery(SearchCriteria searchCriteria, StringBuilder hql) {
-		
 		boolean isTradeJoinRequired = false;
 		boolean isUserJoinRequired = false;
 		boolean isItemsJoinRequired = false;

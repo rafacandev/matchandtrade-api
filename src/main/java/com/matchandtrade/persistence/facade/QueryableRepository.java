@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.QueryBuilderJavax;
+import com.matchandtrade.persistence.criteria.QueryBuilder;
 import com.matchandtrade.persistence.entity.Entity;
 
 /**
@@ -18,7 +18,7 @@ import com.matchandtrade.persistence.entity.Entity;
  * @author rafael.santos.bra@gmail.com
  */
 @Repository
-public class QueryableRepositoryJavax<T extends Entity> {
+public class QueryableRepository<T extends Entity> {
 	
     /**
 	 * Apply pagination value to the criteria
@@ -39,20 +39,17 @@ public class QueryableRepositoryJavax<T extends Entity> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public SearchResult<T> query(SearchCriteria searchCriteria, QueryBuilderJavax queryBuilder) {
+	public SearchResult<T> query(SearchCriteria searchCriteria, QueryBuilder queryBuilder) {
 		// Firstly, count how many records the searchCriteria returns. Important for pagination purposes
 		Query countQuery = queryBuilder.buildCountQuery(searchCriteria);
 		// Set pagination total
 		Long rowCount = (Long) countQuery.getSingleResult();
 		searchCriteria.getPagination().setTotal(rowCount);
-		
 		// Secondly, query the database with the proper pagination.
 		// Do not reuse countCriteria since rowCount() modifies the criteria (I wish hibernate provided a why to clone Criteria)...
 		Query queryCriteria = queryBuilder.buildSearchQuery(searchCriteria);
 		// Apply pagination parameters to the main criteria
 		applyPaginationToCriteria(searchCriteria.getPagination(), queryCriteria);
-		// Set Result Transformer
-//		queryCriteria.setResultTransformer(RootEntityResultTransformer.INSTANCE);
 		// List results
 		List<T> resultList = queryCriteria.getResultList();
 		return new SearchResult<>(resultList, searchCriteria.getPagination());

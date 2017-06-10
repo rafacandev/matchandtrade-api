@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemQueryBuilderJavax;
+import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.repository.ItemRepository;
 
@@ -13,18 +13,18 @@ import com.matchandtrade.persistence.repository.ItemRepository;
 public class ItemRepositoryFacade {
 	
 	@Autowired
+	private QueryableRepository<ItemEntity> itemQueryableRepository;
+	@Autowired
+	private ItemQueryBuilder itemQueryBuilder;
+	@Autowired
 	private ItemRepository itemRepository;
-	@Autowired
-	private QueryableRepositoryJavax<ItemEntity> queryableRepositoryJavax;
-	@Autowired
-	private ItemQueryBuilderJavax queryBuilderJavax;
 
 	public ItemEntity get(Integer itemId) {
 		return itemRepository.findOne(itemId);
 	}
 
 	public SearchResult<ItemEntity> query(SearchCriteria searchCriteria) {
-		return queryableRepositoryJavax.query(searchCriteria, queryBuilderJavax);
+		return itemQueryableRepository.query(searchCriteria, itemQueryBuilder);
 	}
 	
 	public void save(ItemEntity entity) {

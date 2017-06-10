@@ -8,7 +8,7 @@ import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilderJavax;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.WantItemRepositoryFacade;
@@ -34,10 +34,10 @@ public class WantItemValidator {
 	private void checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(Integer tradeMembershipId, Integer desiredItemId) {
 		TradeMembershipEntity tradeMembership = tradeMembershipRepository.get(tradeMembershipId);
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
-		searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.tradeId, tradeMembership.getTrade().getTradeId());
-		searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.tradeMembershipId, tradeMembershipId, Restriction.NOT_EQUALS);
-		searchCriteria.addCriterion(TradeMembershipQueryBuilderJavax.Criterion.itemId, desiredItemId);
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.search(searchCriteria);
+		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, tradeMembership.getTrade().getTradeId());
+		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId, Restriction.NOT_EQUALS);
+		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.itemId, desiredItemId);
+		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.query(searchCriteria);
 		if (searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item must belong to another TradeMembership within the same Trade.");
 		}

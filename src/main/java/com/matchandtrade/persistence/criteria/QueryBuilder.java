@@ -4,7 +4,7 @@ import javax.persistence.Query;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 
-public interface QueryBuilderJavax {
+public interface QueryBuilder {
 
 	public Query buildSearchQuery(SearchCriteria searchCriteria);
 

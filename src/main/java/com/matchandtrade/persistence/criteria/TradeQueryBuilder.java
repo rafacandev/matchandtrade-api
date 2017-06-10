@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
-public class TradeQueryBuilderJavax implements QueryBuilderJavax {
+public class TradeQueryBuilder implements QueryBuilder {
 
 	public enum Criterion {
 		name
