@@ -1,14 +1,9 @@
 package com.matchandtrade.cli;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.InvalidParameterException;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -18,7 +13,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import com.matchandtrade.config.AppConfigurationLoader;
-import com.matchandtrade.config.AppConfigurationProperties;
 
 public class AppCli {
 	

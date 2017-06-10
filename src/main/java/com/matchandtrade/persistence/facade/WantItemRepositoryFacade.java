@@ -5,12 +5,6 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.matchandtrade.persistence.common.SearchCriteria;
-import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.WantItemQueryBuilder;
-import com.matchandtrade.persistence.entity.WantItemEntity;
 
 @Repository
 public class WantItemRepositoryFacade {

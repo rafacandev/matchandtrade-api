@@ -1,6 +1,7 @@
 package com.matchandtrade.persistence.criteria;
 
-import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.*;
+import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.buildClauses;
+import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.setParameters;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
