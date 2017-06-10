@@ -14,7 +14,15 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class TradeQueryBuilder implements QueryBuilder {
 
 	public enum Criterion {
-		name
+		name("trade.name");
+		private String alias;
+		Criterion(String alias) {
+			this.alias = alias;
+		}
+		@Override
+		public String toString() {
+			return alias;
+		}
 	}
 	
     @Autowired

@@ -1,6 +1,6 @@
 package com.matchandtrade.persistence.criteria;
 
-import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.buildClause;
+import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -14,7 +14,15 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class WantItemQueryBuilder implements QueryBuilder {
 
 	public enum Criterion {
-		itemId, priority
+		itemId("item.itemId"), priority("wantItem.priority");
+		private String alias;
+		Criterion(String alias) {
+			this.alias = alias;
+		}
+		@Override
+		public String toString() {
+			return alias;
+		}
 	}
 	
     @Autowired
@@ -36,25 +44,9 @@ public class WantItemQueryBuilder implements QueryBuilder {
 	}
 
 	private Query parameterizeQuery(SearchCriteria searchCriteria, StringBuilder hql) {
-		hql.append(" WHERE 1=1");
-		
-		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.itemId)) {
-				hql.append(buildClause("item.itemId", "itemId", c));
-			}
-			if (c.getField().equals(Criterion.priority)) {
-				hql.append(buildClause("wantItem.priority", "priority", c));
-			}
-		}
+		hql.append(buildClauses(searchCriteria));
 		Query result = entityManager.createQuery(hql.toString());
-		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.itemId)) {
-				result.setParameter("itemId", c.getValue());
-			}
-			if (c.getField().equals(Criterion.priority)) {
-				result.setParameter("priority", c.getValue());
-			}
-		}
+		setParameters(searchCriteria, result);
 		return result;
 	}
 
