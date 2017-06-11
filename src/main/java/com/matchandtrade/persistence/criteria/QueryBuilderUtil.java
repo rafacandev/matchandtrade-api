@@ -1,11 +1,13 @@
 package com.matchandtrade.persistence.criteria;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.matchandtrade.persistence.common.Criterion;
 import com.matchandtrade.persistence.common.Criterion.LogicalOperator;
 import com.matchandtrade.persistence.common.Criterion.Restriction;
-import com.matchandtrade.persistence.common.Field;
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 public class QueryBuilderUtil {
@@ -13,66 +15,63 @@ public class QueryBuilderUtil {
 	// Utility classes should not have public constructors
 	private QueryBuilderUtil() { }
 	
-	public static String buildClause(Field field, Criterion criterion) {
-		return buildClause(field.alias(), field.name(), criterion);
+	/**
+	 * Builds a string representing a JPA Query WHERE clause.
+	 * It takes in consideration the {@code Criterion.LogicalOperator} and {@code Criterion.Restriction} 
+	 * @param field
+	 * @param criterion
+	 * @return
+	 */
+	public static String buildClauses(List<Criterion> criteria) {
+		StringBuilder result = new StringBuilder();
+		criteria.forEach( criterion -> {
+			// Check if result already starts with WHERE
+			if (result.lastIndexOf(" WHERE") < 0) {
+				result.append(" WHERE");
+				result.append(buildClause(criterion.getField().alias(), criterion.getField().name(), criterion, false));
+			} else {
+				result.append(buildClause(criterion.getField().alias(), criterion.getField().name(), criterion, true));
+			}
+		});
+		return result.toString();
 	}
 	
-	public static String buildClause(final String alias, final String param, Criterion c) {
+	private static String buildClause(final String alias, final String param, Criterion criterion, boolean prependOperator) {
 		StringBuilder result = new StringBuilder();
 		
-		if (c.getLogicalOperator().equals(LogicalOperator.AND)) {
+		if (prependOperator && criterion.getLogicalOperator().equals(LogicalOperator.AND)) {
 			result.append(" AND");
-		} else if (c.getLogicalOperator().equals(LogicalOperator.OR)) {
+		} else if (prependOperator && criterion.getLogicalOperator().equals(LogicalOperator.OR)) {
 			result.append(" OR");
 		}
 		
-		if (c.getRestriction().equals(Restriction.EQUALS)) {
+		if (criterion.getRestriction().equals(Restriction.EQUALS)) {
 			result.append(" " + alias + " = :" + param);
-		} else if (c.getRestriction().equals(Restriction.NOT_EQUALS)) {
+		} else if (criterion.getRestriction().equals(Restriction.NOT_EQUALS)) {
 			result.append(" " + alias + " != :" + param);
-		} else if (c.getRestriction().equals(Restriction.EQUALS_IGNORE_CASE)) {
+		} else if (criterion.getRestriction().equals(Restriction.EQUALS_IGNORE_CASE)) {
 			result.append(" UPPER(" + alias + ") = UPPER(:" + param + ")");
-		} else if (c.getRestriction().equals(Restriction.LIKE_IGNORE_CASE)) {
+		} else if (criterion.getRestriction().equals(Restriction.LIKE_IGNORE_CASE)) {
 			result.append(" UPPER(" + alias + ") LIKE UPPER(:" + param + ")");
 		}
-		return result.toString();
-	}
-
-	public static String buildClause(Criterion c) {
-		return buildClause(c, true);
-	}
-
-	public static String buildClause(Criterion c, boolean needsLogicalOperator) {
-		StringBuilder result = new StringBuilder();
-		if (needsLogicalOperator) {
-			if (c.getLogicalOperator().equals(LogicalOperator.AND)) {
-				result.append(" AND");
-			} else if (c.getLogicalOperator().equals(LogicalOperator.OR)) {
-				result.append(" OR");
-			}
-		}
-
-		String restriction = "=";
-		if (c.getRestriction().equals(Restriction.NOT_EQUALS)) {
-			restriction = "!=";
-		}
-		result.append(" " + c.getField().toString() + " " + restriction + " :" + c.getField().toString());
+		
 		return result.toString();
 	}
 	
-	public static String buildClauses(SearchCriteria searchCriteria) {
-		StringBuilder result = new StringBuilder();
-		boolean needLogicalOperator = false;
-		for (Criterion c : searchCriteria.getCriteria()) {
-			result.append(buildClause(c, needLogicalOperator));
-			needLogicalOperator = true;
-		}
-		return result.toString();
+	/**
+	 * Build clauses for the given hql {@code buildClauses(hql)}.
+	 * Creates a Query which is then parameterized with the given criteria. 
+	 * 
+	 * @param criteria
+	 * @param hql to be used to buildClauses() and the create the Query
+	 * @param entityManager to create the Query
+	 * @return parameterized query for the given criteria
+	 */
+	public static Query parameterizeQuery(List<Criterion> criteria, StringBuilder hql, EntityManager entityManager) {
+		hql.append(QueryBuilderUtil.buildClauses(criteria));
+		Query result = entityManager.createQuery(hql.toString());
+		criteria.forEach(c -> result.setParameter(c.getField().name(), c.getValue()));
+		return result;
 	}
-
-	public static void setParameters(SearchCriteria searchCriteria, Query query) {
-		for (Criterion c : searchCriteria.getCriteria()) {
-			query.setParameter(c.getField().toString(), c.getValue());
-		}
-	}
+	
 }

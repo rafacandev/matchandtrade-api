@@ -1,13 +1,12 @@
 package com.matchandtrade.persistence.criteria;
 
-import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.buildClause;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.matchandtrade.persistence.common.Criterion;
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
@@ -32,7 +31,6 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 		}
 		
 	}
-
 	
     @Autowired
     private EntityManager entityManager;
@@ -54,7 +52,7 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 		boolean isTradeJoinRequired = false;
 		boolean isUserJoinRequired = false;
 		boolean isItemsJoinRequired = false;
-		for(com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
+		for(Criterion c : searchCriteria.getCriteria()) {
 			if (c.getField().equals(Field.itemId)) {
 				isItemsJoinRequired = true;
 			}
@@ -65,6 +63,7 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 				isUserJoinRequired = true;
 			}
 		}
+		
 		if (isItemsJoinRequired) {
 			hql.append(" INNER JOIN tradeMembership.items AS item");
 		}
@@ -75,19 +74,7 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 			hql.append(" INNER JOIN tradeMembership.trade AS trade");
 		}
 		
-		hql.append(" WHERE 1=1");
-		
-		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			Field f = (Field) c.getField();
-			hql.append(buildClause(f, c));
-		}
-		
-		Query result = entityManager.createQuery(hql.toString());
-		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			Field f = (Field) c.getField();
-			result.setParameter(f.name(), c.getValue());
-		}
-		return result;
+		return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
 	}
 	
 }

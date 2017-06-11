@@ -18,12 +18,12 @@ public class SearchCriteria {
 		this.pagination = pagination;
 	}
 	
-	public void addCriterion(Object field, Object value) {
+	public void addCriterion(Field field, Object value) {
 		Criterion c = new Criterion(field, value);
 		this.criteria.add(c);
 	}
 
-	public void addCriterion(Object field, Object value, Criterion.Restriction restriction) {
+	public void addCriterion(Field field, Object value, Criterion.Restriction restriction) {
 		Criterion c = new Criterion(field, value, restriction);
 		this.criteria.add(c);
 	}

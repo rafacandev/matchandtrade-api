@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
-import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.*;
 
 @Component
 public class ItemQueryBuilder implements QueryBuilder {
@@ -35,33 +34,18 @@ public class ItemQueryBuilder implements QueryBuilder {
 	
     private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tm"
     		+ " INNER JOIN tm.trade AS trade"
-    		+ " INNER JOIN tm.items AS item"
-    		+ " WHERE 1=1 ";
+    		+ " INNER JOIN tm.items AS item";
 
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
-    	return parameterizeQuery(searchCriteria, hql);
+    	return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
     }
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT item " + BASIC_HQL);
-		return parameterizeQuery(searchCriteria, hql);
-	}
-
-	private Query parameterizeQuery(SearchCriteria searchCriteria, StringBuilder hql) {
-		// Add Field
-		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			Field field = (Field) c.getField();
-			hql.append(buildClause(field, c));
-		}
-		Query result = entityManager.createQuery(hql.toString());
-		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			Field field = (Field) c.getField();
-			result.setParameter(field.name(), c.getValue());
-		}
-		return result;
+		return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
 	}
 
 }
