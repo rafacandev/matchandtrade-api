@@ -36,7 +36,7 @@ public class ItemQueryBuilder implements QueryBuilder {
 	}
 
 	private Query parameterizeQuery(SearchCriteria searchCriteria, StringBuilder hql) {
-		// Add Criterion
+		// Add Field
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
 			if (c.getField().equals(Criterion.tradeMembershipId)) {
 				hql.append(" AND tm.tradeMembershipId = :tradeMembershipId");

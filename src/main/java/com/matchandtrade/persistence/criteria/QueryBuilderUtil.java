@@ -5,12 +5,17 @@ import javax.persistence.Query;
 import com.matchandtrade.persistence.common.Criterion;
 import com.matchandtrade.persistence.common.Criterion.LogicalOperator;
 import com.matchandtrade.persistence.common.Criterion.Restriction;
+import com.matchandtrade.persistence.common.Field;
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 public class QueryBuilderUtil {
 
 	// Utility classes should not have public constructors
 	private QueryBuilderUtil() { }
+	
+	public static String buildClause(Field field, Criterion criterion) {
+		return buildClause(field.alias(), field.name(), criterion);
+	}
 	
 	public static String buildClause(final String alias, final String param, Criterion c) {
 		StringBuilder result = new StringBuilder();

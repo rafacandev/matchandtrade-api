@@ -34,10 +34,10 @@ public class TradeMembershipService {
 	public SearchResult<TradeMembershipEntity> search(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (userId != null) {
-			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.userId, userId);
+			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.userId, userId);
 		}
 		if (tradeId != null) {
-			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, tradeId);
+			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, tradeId);
 		}
 		// Delegate to Repository layer
 		return tradeMembershipRepository.query(searchCriteria);

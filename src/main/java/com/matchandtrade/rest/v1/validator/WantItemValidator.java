@@ -34,9 +34,9 @@ public class WantItemValidator {
 	private void checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(Integer tradeMembershipId, Integer desiredItemId) {
 		TradeMembershipEntity tradeMembership = tradeMembershipRepository.get(tradeMembershipId);
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, tradeMembership.getTrade().getTradeId());
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId, Restriction.NOT_EQUALS);
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.itemId, desiredItemId);
+		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, tradeMembership.getTrade().getTradeId());
+		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeMembershipId, tradeMembershipId, Restriction.NOT_EQUALS);
+		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.itemId, desiredItemId);
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.query(searchCriteria);
 		if (searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item must belong to another TradeMembership within the same Trade.");

@@ -72,9 +72,9 @@ public class TradeValidator {
 		
 		// Validates if authenticated user is the owner of the trade
 		SearchCriteria searchTradeOwner = new SearchCriteria(new Pagination(1,1));
-		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, json.getTradeId());
-		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Criterion.userId, user.getUserId());
-		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Criterion.type, TradeMembershipEntity.Type.OWNER);
+		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, json.getTradeId());
+		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Field.userId, user.getUserId());
+		searchTradeOwner.addCriterion(TradeMembershipQueryBuilder.Field.type, TradeMembershipEntity.Type.OWNER);
 		SearchResult<TradeMembershipEntity> searchResultTradeOwner = tradeMembershipRepository.query(searchTradeOwner);
 		if (searchResultTradeOwner.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not the owner of Trade.tradeId: " + json.getTradeId());
