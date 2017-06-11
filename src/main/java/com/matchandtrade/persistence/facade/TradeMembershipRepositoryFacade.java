@@ -39,7 +39,7 @@ public class TradeMembershipRepositoryFacade {
 		return queriableResposity.query(searchCriteria, tradeMembershipQueryBuilder);
 	}
 	
-	public SearchResult<TradeMembershipEntity> searchByTradeIdAndUserId(Integer tradeId, Integer userId, Pagination pagination) {
+	public SearchResult<TradeMembershipEntity> findByTradeIdAndUserId(Integer tradeId, Integer userId, Pagination pagination) {
 		Pageable pageable = PersistenceUtil.buildPageable(pagination);
 		Page<TradeMembershipEntity> page = tradeMembershipRepository.findByTrade_TradeIdAndUser_UserId(tradeId, userId, pageable);
 		return PersistenceUtil.buildSearchResult(pageable, page);
