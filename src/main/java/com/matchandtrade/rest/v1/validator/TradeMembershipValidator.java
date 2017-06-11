@@ -39,10 +39,7 @@ public class TradeMembershipValidator {
 		if (tradeRepository.get(json.getTradeId()) == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.tradeId must refer to an existing Trade.");
 		}
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1, 1));
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.tradeId, json.getTradeId());
-		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Criterion.userId, json.getUserId());
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.query(searchCriteria);
+		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.searchByTradeIdAndUserId(json.getTradeId(), json.getUserId(), new Pagination(1,1));
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.");
 		}

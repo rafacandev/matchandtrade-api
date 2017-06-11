@@ -1,8 +1,12 @@
 package com.matchandtrade.persistence.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.PersistenceUtil;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
@@ -33,6 +37,12 @@ public class TradeMembershipRepositoryFacade {
 	
 	public SearchResult<TradeMembershipEntity> query(SearchCriteria searchCriteria) {
 		return queriableResposity.query(searchCriteria, tradeMembershipQueryBuilder);
+	}
+	
+	public SearchResult<TradeMembershipEntity> searchByTradeIdAndUserId(Integer tradeId, Integer userId, Pagination pagination) {
+		Pageable pageable = PersistenceUtil.buildPageable(pagination);
+		Page<TradeMembershipEntity> page = tradeMembershipRepository.findByTrade_TradeIdAndUser_UserId(tradeId, userId, pageable);
+		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
 
 }
