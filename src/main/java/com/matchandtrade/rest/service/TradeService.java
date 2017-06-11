@@ -4,11 +4,10 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.PersistenceUtil;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -51,16 +50,9 @@ public class TradeService {
 	}
 
 	public SearchResult<TradeEntity> searchByName(String name, Integer _pageNumber, Integer _pageSize) {
-		Pagination pagination = new Pagination(_pageNumber, _pageSize);
-		Pageable pageable = new PageRequest(pagination.getNumber(), pagination.getSize());
-		
-		Page<TradeEntity> trades = tradeRepository.findByName(name, pageable);
-		
-		pagination.setTotal(trades.getNumberOfElements());
-		SearchResult<TradeEntity> searchResult = new SearchResult<>(trades.getContent(), pagination);
-		
-		// Delegate to Repository layer
-		return searchResult;
+		Pageable pageable = PersistenceUtil.buildPageable(_pageNumber, _pageSize);
+		Page<TradeEntity> page = tradeRepository.findByName(name, pageable);
+		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
 
 	public TradeEntity get(Integer tradeId) {
