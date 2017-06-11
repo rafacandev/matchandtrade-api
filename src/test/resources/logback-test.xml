@@ -10,10 +10,14 @@
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 	</root>
-	
-	<!-- Set noisy testing loggers to level=error -->	
-    <logger name="org.springframework" level="error" />
-    <logger name="springfox" level="error" />
-    <logger name="org.hibernate" level="error" />
 
+	<!-- DEBUG: Log all SQL DML statements as they are executed -->
+	<logger level="INFO" name="org.hibernate.SQL"/>
+	<!-- TRACE: Log all JDBC parameters -->
+	<logger level="INFO" name="org.hibernate.type"/>
+	<!-- TRACE: Log transaction related activity -->
+	<logger level="INFO" name="org.hibernate.transaction"/>
+	<!-- TRACE: Log all second-level cache activity -->
+	<logger level="INFO" name="org.hibernate.cache"/>
+	
 </configuration>

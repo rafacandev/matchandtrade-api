@@ -30,6 +30,8 @@ public class QueryBuilderUtil {
 			result.append(" " + alias + " = :" + param);
 		} else if (c.getRestriction().equals(Restriction.NOT_EQUALS)) {
 			result.append(" " + alias + " != :" + param);
+		} else if (c.getRestriction().equals(Restriction.LIKE_IGNORE_CASE)) {
+			result.append(" UPPER(" + alias + ") LIKE UPPER(:" + param + ")");
 		}
 		return result.toString();
 	}

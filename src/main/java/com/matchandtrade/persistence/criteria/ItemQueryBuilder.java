@@ -7,12 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
+import static com.matchandtrade.persistence.criteria.QueryBuilderUtil.*;
 
 @Component
 public class ItemQueryBuilder implements QueryBuilder {
 
-	public enum Criterion {
-		itemIdIsNot, tradeMembershipId, name, tradeId
+	public enum Field implements com.matchandtrade.persistence.common.Field {
+		itemIdIsNot("item.itemId"),
+		name("item.name"),
+		tradeId("trade.tradeId"),
+		tradeMembershipId("tm.tradeMembershipId");
+		
+		private String alias;
+
+		private Field(String alias) {
+			this.alias = alias;
+		}
+		
+		@Override
+		public String alias() {
+			return alias;
+		}
 	}
 	
 	@Autowired
@@ -38,33 +53,13 @@ public class ItemQueryBuilder implements QueryBuilder {
 	private Query parameterizeQuery(SearchCriteria searchCriteria, StringBuilder hql) {
 		// Add Field
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.tradeMembershipId)) {
-				hql.append(" AND tm.tradeMembershipId = :tradeMembershipId");
-			}
-			if (c.getField().equals(Criterion.name)) {
-				hql.append(" AND UPPER(item.name) LIKE UPPER(:name)");
-			}
-			if (c.getField().equals(Criterion.itemIdIsNot)) {
-				hql.append(" AND item.itemId != :itemIdIsNot");
-			}
-			if (c.getField().equals(Criterion.tradeId)) {
-				hql.append(" AND trade.tradeId = :tradeId");
-			}
+			Field field = (Field) c.getField();
+			hql.append(buildClause(field, c));
 		}
 		Query result = entityManager.createQuery(hql.toString());
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.tradeMembershipId)) {
-				result.setParameter("tradeMembershipId", c.getValue());
-			}
-			if (c.getField().equals(Criterion.name)) {
-				result.setParameter("name", "%"+c.getValue()+"%");
-			}
-			if (c.getField().equals(Criterion.itemIdIsNot)) {
-				result.setParameter("itemIdIsNot", c.getValue());
-			}
-			if (c.getField().equals(Criterion.tradeId)) {
-				result.setParameter("tradeId", c.getValue());
-			}
+			Field field = (Field) c.getField();
+			result.setParameter(field.name(), c.getValue());
 		}
 		return result;
 	}

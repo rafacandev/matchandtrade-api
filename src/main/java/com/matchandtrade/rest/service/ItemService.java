@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
+import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -37,9 +38,9 @@ public class ItemService {
 	@Transactional
 	public SearchResult<ItemEntity> search(Integer tradeMembershipId, String name, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
 		if (name != null) {
-			searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, name);
+			searchCriteria.addCriterion(ItemQueryBuilder.Field.name, name, Restriction.LIKE_IGNORE_CASE);
 		}
 		return itemRepository.query(searchCriteria);
 	}

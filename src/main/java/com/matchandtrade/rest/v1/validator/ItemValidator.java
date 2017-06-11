@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
@@ -51,7 +52,7 @@ public class ItemValidator {
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.name} is null or length is not between 3 and 150.
 	 * @param name
 	 */
-	private void checkIfNameLength(String name) {
+	private void checkNameLength(String name) {
 		if (name == null || name.length() < 3 || name.length() > 150) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name is mandatory and must be between 3 and 150 characters in length.");
 		}
@@ -83,11 +84,11 @@ public class ItemValidator {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepository.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
-		checkIfNameLength(json.getName());
+		checkNameLength(json.getName());
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
+		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName());
 		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
@@ -111,7 +112,7 @@ public class ItemValidator {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepository.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
-		checkIfNameLength(json.getName());
+		checkNameLength(json.getName());
 
 		ItemEntity itemEntity = itemRepository.get(itemId);
 		if (itemEntity == null) {
@@ -119,10 +120,10 @@ public class ItemValidator {
 		}
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.name, json.getName());
+		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName(), Restriction.LIKE_IGNORE_CASE);
 		// Required to check if is not the same itemId because to guarantee PUT idempotency
-		searchCriteria.addCriterion(ItemQueryBuilder.Criterion.itemIdIsNot, json.getItemId());
+		searchCriteria.addCriterion(ItemQueryBuilder.Field.itemIdIsNot, json.getItemId(), Restriction.NOT_EQUALS);
 		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
