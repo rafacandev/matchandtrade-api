@@ -13,14 +13,18 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 @Component
 public class TradeQueryBuilder implements QueryBuilder {
 
-	public enum Criterion {
+	public enum Field implements com.matchandtrade.persistence.common.Field {
 		name("trade.name");
 		private String alias;
-		Criterion(String alias) {
+		Field(String alias) {
 			this.alias = alias;
 		}
 		@Override
 		public String toString() {
+			return alias;
+		}
+		@Override
+		public String alias() {
 			return alias;
 		}
 	}
@@ -45,16 +49,14 @@ public class TradeQueryBuilder implements QueryBuilder {
 		hql.append(" WHERE 1=1");
 		
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.name)) {
-				hql.append(buildClause("UPPER(trade.name)", "name", c));
-			}
+			Field field = (Field) c.getField();
+			hql.append(buildClause(field, c));
 		}
 		
 		Query result = entityManager.createQuery(hql.toString());
 		for (com.matchandtrade.persistence.common.Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Criterion.name)) {
-				result.setParameter("name", c.getValue().toString().toUpperCase());
-			}
+			Field field = (Field) c.getField();
+			result.setParameter(field.name(), c.getValue());
 		}
 		return result;
 	}
