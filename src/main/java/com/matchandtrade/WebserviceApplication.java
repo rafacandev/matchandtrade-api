@@ -7,10 +7,12 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
+import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.batch.BatchAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration;
 import org.springframework.boot.autoconfigure.cloud.CloudAutoConfiguration;
+import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.couchbase.CouchbaseAutoConfiguration;
 import org.springframework.boot.autoconfigure.dao.PersistenceExceptionTranslationAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.cassandra.CassandraDataAutoConfiguration;
@@ -20,6 +22,8 @@ import org.springframework.boot.autoconfigure.data.couchbase.CouchbaseRepositori
 import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.ldap.LdapDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jDataAutoConfiguration;
@@ -36,10 +40,12 @@ import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration;
 import org.springframework.boot.autoconfigure.hateoas.HypermediaAutoConfiguration;
 import org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration;
+import org.springframework.boot.autoconfigure.hazelcast.HazelcastJpaDependencyAutoConfiguration;
 import org.springframework.boot.autoconfigure.info.ProjectInfoAutoConfiguration;
 import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JndiDataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration;
@@ -50,7 +56,11 @@ import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQAutoConfigura
 import org.springframework.boot.autoconfigure.jms.artemis.ArtemisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.boot.autoconfigure.jooq.JooqAutoConfiguration;
+import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
+import org.springframework.boot.autoconfigure.ldap.LdapAutoConfiguration;
+import org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
+import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
 import org.springframework.boot.autoconfigure.mail.MailSenderValidatorAutoConfiguration;
 import org.springframework.boot.autoconfigure.mobile.DeviceDelegatingViewResolverAutoConfiguration;
 import org.springframework.boot.autoconfigure.mobile.DeviceResolverAutoConfiguration;
@@ -58,6 +68,7 @@ import org.springframework.boot.autoconfigure.mobile.SitePreferenceAutoConfigura
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.autoconfigure.mustache.MustacheAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
 import org.springframework.boot.autoconfigure.reactor.ReactorAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.FallbackWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
@@ -71,9 +82,14 @@ import org.springframework.boot.autoconfigure.social.SocialWebAutoConfiguration;
 import org.springframework.boot.autoconfigure.social.TwitterAutoConfiguration;
 import org.springframework.boot.autoconfigure.solr.SolrAutoConfiguration;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
+import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpEncodingAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.webservices.WebServicesAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.WebSocketAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.WebSocketMessagingAutoConfiguration;
@@ -98,6 +114,22 @@ import com.matchandtrade.config.AppConfigurationProperties;
 	WebClientAutoConfiguration.class,
 	WebSocketAutoConfiguration.class,
 	// Classed found on the auto-configuration console Negative Matches
+	AopAutoConfiguration.class,
+	DataSourceTransactionManagerAutoConfiguration.class,
+	DispatcherServletAutoConfiguration.class,
+	EmbeddedLdapAutoConfiguration.class,
+	EmbeddedServletContainerAutoConfiguration.class,
+	HazelcastJpaDependencyAutoConfiguration.class,
+//	JpaBaseConfiguration.class, TODO: Configure this manually
+	KafkaAutoConfiguration.class,
+	LdapAutoConfiguration.class,
+	LdapDataAutoConfiguration.class,
+	LdapRepositoriesAutoConfiguration.class,
+	MailSenderAutoConfiguration.class,
+	MessageSourceAutoConfiguration.class,
+	TransactionAutoConfiguration.class,
+	ValidationAutoConfiguration.class,
+	WebMvcAutoConfiguration.class,
 	ActiveMQAutoConfiguration.class,
 	ArtemisAutoConfiguration.class,
 	BatchAutoConfiguration.class,
