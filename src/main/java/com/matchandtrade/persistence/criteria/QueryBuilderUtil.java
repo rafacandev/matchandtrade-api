@@ -8,7 +8,6 @@ import javax.persistence.Query;
 import com.matchandtrade.persistence.common.Criterion;
 import com.matchandtrade.persistence.common.Criterion.LogicalOperator;
 import com.matchandtrade.persistence.common.Criterion.Restriction;
-import com.matchandtrade.persistence.common.SearchCriteria;
 
 public class QueryBuilderUtil {
 

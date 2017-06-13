@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.UserJson;
