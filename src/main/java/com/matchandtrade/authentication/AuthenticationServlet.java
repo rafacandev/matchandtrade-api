@@ -108,7 +108,7 @@ public class AuthenticationServlet extends HttpServlet {
 		// Delete authentication details
 		String accessToken = request.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
 		if (accessToken != null) {
-			AuthenticationEntity authenticationEntity = authenticationRepository.getByToken(accessToken);
+			AuthenticationEntity authenticationEntity = authenticationRepository.findByToken(accessToken);
 			authenticationRepository.delete(authenticationEntity);
 		}
 		

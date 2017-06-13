@@ -40,7 +40,7 @@ public class AuthenticationCallback implements Serializable {
 		String stateParameter = request.getParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString());
 		logger.debug("Received request with state parameter: [{}]", stateParameter);
 
-		AuthenticationEntity authenticationEntity = authenticationRepository.getByAtiForgeryState(stateParameter);
+		AuthenticationEntity authenticationEntity = authenticationRepository.findByAtiForgeryState(stateParameter);
 		// Return HTTP-STATUS 401 if anti-forgery state token is not found
 		if (authenticationEntity == null) {
 			response.setStatus(401);
@@ -100,7 +100,7 @@ public class AuthenticationCallback implements Serializable {
 	 * @return updated User.
 	 */
 	private AuthenticationResponsePojo updateUserInfo(String email, String name) {
-		UserEntity userEntity = userRepository.getByEmail(email);
+		UserEntity userEntity = userRepository.findByEmail(email);
 		boolean isNewUser = false;
 		if (userEntity == null) {
 			userEntity = new UserEntity();

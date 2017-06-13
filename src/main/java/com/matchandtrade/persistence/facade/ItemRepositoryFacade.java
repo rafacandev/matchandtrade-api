@@ -13,20 +13,12 @@ import com.matchandtrade.persistence.repository.ItemRepository;
 public class ItemRepositoryFacade {
 	
 	@Autowired
-	private QueryableRepository<ItemEntity> itemQueryableRepository;
-	@Autowired
-	private ItemQueryBuilder itemQueryBuilder;
-	@Autowired
 	private ItemRepository itemRepository;
 
 	public ItemEntity get(Integer itemId) {
 		return itemRepository.findOne(itemId);
 	}
 
-	public SearchResult<ItemEntity> query(SearchCriteria searchCriteria) {
-		return itemQueryableRepository.query(searchCriteria, itemQueryBuilder);
-	}
-	
 	public void save(ItemEntity entity) {
 		itemRepository.save(entity);
 	}

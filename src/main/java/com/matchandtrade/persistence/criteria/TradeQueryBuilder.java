@@ -26,9 +26,9 @@ public class TradeQueryBuilder implements QueryBuilder {
 		}
 	}
 	
+	private static final String BASIC_HQL = "FROM TradeEntity trade";
     @Autowired
     private EntityManager entityManager;
-    private static final String BASIC_HQL = "FROM TradeEntity trade";
 
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {

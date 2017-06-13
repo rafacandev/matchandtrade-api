@@ -43,7 +43,7 @@ public class AuthenticationIT {
 
 		// Assert if authentication was stored correctly
 		String authenticationHeader = responseCallback.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
-		authenticationRepository.getByToken(authenticationHeader);
+		authenticationRepository.findByToken(authenticationHeader);
 		
 		// Sign-off
 		requestCallback.setRequestURI("http://localhost:8080/sign-out");

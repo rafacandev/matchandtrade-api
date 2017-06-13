@@ -13,15 +13,21 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.WantItemRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.SearchService;
+import com.matchandtrade.rest.service.WantItemService;
 import com.matchandtrade.rest.v1.json.WantItemJson;
 
 @Component
 public class WantItemValidator {
 
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepository;
+	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
 	@Autowired
-	private WantItemRepositoryFacade wantItemRepository;
+	private WantItemRepositoryFacade wantItemRepositoryFacade;
+	@Autowired
+	private WantItemService wantItemService;
+	@Autowired
+	private SearchService searchService;
 	
 	/**
 	 * <p>
@@ -32,12 +38,14 @@ public class WantItemValidator {
 	 * @param desiredItemId
 	 */
 	private void checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(Integer tradeMembershipId, Integer desiredItemId) {
-		TradeMembershipEntity tradeMembership = tradeMembershipRepository.get(tradeMembershipId);
+		TradeMembershipEntity tradeMembership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
 		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, tradeMembership.getTrade().getTradeId());
 		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeMembershipId, tradeMembershipId, Restriction.NOT_EQUALS);
 		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.itemId, desiredItemId);
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.query(searchCriteria);
+//		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepositoryFacade.query(searchCriteria);
+		SearchResult<TradeMembershipEntity> searchResult = searchService.search(searchCriteria, TradeMembershipQueryBuilder.class);
+		
 		if (searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item must belong to another TradeMembership within the same Trade.");
 		}
@@ -49,7 +57,7 @@ public class WantItemValidator {
 	 * @param desiredItemId
 	 */
 	private void checkIfItemIsUnique(Integer itemId, Integer desiredItemId) {
-		int count = wantItemRepository.countItemWantItem(itemId, desiredItemId);
+		long count = wantItemService.countWantItemInItem(itemId, desiredItemId);
 		if (count > 0) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.wantItem.item must be unique within the same Item.");
 		}
@@ -61,7 +69,7 @@ public class WantItemValidator {
 	 * @param priority
 	 */
 	private void checkIfItemPriorityExists(Integer itemId, Integer priority) {
-		int count = wantItemRepository.countItemWantItemPriority(itemId, priority);
+		long count = wantItemService.countWantItemPriorityInItem(itemId, priority);
 		if (count > 0) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.priority must be unique within the same Item.");
 		}

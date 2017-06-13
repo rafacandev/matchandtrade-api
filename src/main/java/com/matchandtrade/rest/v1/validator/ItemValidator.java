@@ -15,6 +15,7 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.rest.v1.json.ItemJson;
 
 @Component
@@ -24,6 +25,8 @@ public class ItemValidator {
 	private ItemRepositoryFacade itemRepository;
 	@Autowired
 	private TradeMembershipRepositoryFacade tradeMembershipRepository;
+	@Autowired
+	private SearchService searchService;
 
 	/**
 	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
@@ -89,7 +92,7 @@ public class ItemValidator {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName());
-		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
+		SearchResult<ItemEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
 		}
@@ -124,7 +127,7 @@ public class ItemValidator {
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName(), Restriction.LIKE_IGNORE_CASE);
 		// Required to check if is not the same itemId because to guarantee PUT idempotency
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.itemIdIsNot, json.getItemId(), Restriction.NOT_EQUALS);
-		SearchResult<ItemEntity> searchResult = itemRepository.query(searchCriteria);
+		SearchResult<ItemEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
 		}

@@ -21,7 +21,7 @@ public class AuthenticationProvider {
 	
 	public AuthenticationEntity getAuthentication() {
 		String authenticationHeader = httpRequest.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
-		return authenticationRepository.getByToken(authenticationHeader);
+		return authenticationRepository.findByToken(authenticationHeader);
 	}
 
 }

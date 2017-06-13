@@ -8,9 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.matchandtrade.persistence.common.SearchCriteria;
-import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.repository.TradeMembershipRepository;
@@ -20,13 +17,9 @@ import com.matchandtrade.persistence.repository.TradeRepository;
 public class TradeRepositoryFacade {
 
 	@Autowired
-	private QueryableRepository<TradeEntity> queryableTradeRepository;
-	@Autowired
 	private TradeMembershipRepository tradeMembershipRepository;
 	@Autowired
 	private TradeRepository tradeRepository;
-	@Autowired
-	private TradeQueryBuilder tradeQueryBuilder;
 
 	@Transactional
 	public void delete(Integer tradeId) {
@@ -45,9 +38,5 @@ public class TradeRepositoryFacade {
 	
 	public Page<TradeEntity> findByName(String name, Pageable pageable) {
 		return tradeRepository.findByNameIgnoreCase(name, pageable);
-	}
-
-	public SearchResult<TradeEntity> search(SearchCriteria searchCriteria) {
-		return queryableTradeRepository.query(searchCriteria, tradeQueryBuilder);
 	}
 }

@@ -12,20 +12,30 @@ public class WantItemRepositoryFacade {
     @Autowired
     private EntityManager entityManager;
 
-	public int countItemWantItemPriority(Integer itemId, Integer priority) {
+    /**
+     * Count how many 'WantItem' are there for a given {@code itemId}
+     * @param itemId
+     * @param priority
+     * @return
+     */
+	public long countWantItemPriorityInItem(Integer itemId, Integer priority) {
 		Query query = entityManager.createQuery("SELECT COUNT(*) FROM ItemEntity item INNER JOIN item.wantItems AS wantedItem WHERE item.itemId = :itemId AND wantedItem.priority = :priority");
 		query.setParameter("itemId", itemId);
 		query.setParameter("priority", priority);
-		Long count = (Long) query.getSingleResult();
-		return count.intValue();
+		return (Long) query.getSingleResult();
 	}
 
-	public int countItemWantItem(Integer itemId, Integer desiredItemId) {
+	/**
+	 * Count how many 'WantItem' are there for a given itemId
+	 * @param itemId
+	 * @param desiredItemId
+	 * @return
+	 */
+	public long countWantItemInItem(Integer itemId, Integer desiredItemId) {
 		Query query = entityManager.createQuery("SELECT COUNT(*) FROM ItemEntity item INNER JOIN item.wantItems AS wantedItem WHERE item.itemId = :itemId AND wantedItem.item.itemId = :desiredItemId");
 		query.setParameter("itemId", itemId);
 		query.setParameter("desiredItemId", desiredItemId);
-		Long count = (Long) query.getSingleResult();
-		return count.intValue();
+		return (Long) query.getSingleResult();
 	}
 	
 }

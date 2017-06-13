@@ -16,7 +16,7 @@ public class UserRepositoryFacade {
 		return userRepository.findOne(userId);
 	}
 
-	public UserEntity getByEmail(String email) {
+	public UserEntity findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
 

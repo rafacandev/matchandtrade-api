@@ -14,24 +14,26 @@ import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 public class TradeMembershipService {
 
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepository;
+	private SearchService searchService;
+	@Autowired
+	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
 	
 	public void create(TradeMembershipEntity tradeMembership) {
 		// Rule, when creating a new TradeMembership it's Type is MEMBER by default
 		tradeMembership.setType(TradeMembershipEntity.Type.MEMBER);
 		// Delegate to RepositoryLayer
-		tradeMembershipRepository.save(tradeMembership);
+		tradeMembershipRepositoryFacade.save(tradeMembership);
 	}
 
 	public void delete(Integer tradeMembershipId) {
-		tradeMembershipRepository.delete(tradeMembershipId);
+		tradeMembershipRepositoryFacade.delete(tradeMembershipId);
 	}
 
 	public TradeMembershipEntity get(Integer tradeMembershipId) {
-		return tradeMembershipRepository.get(tradeMembershipId);
+		return tradeMembershipRepositoryFacade.get(tradeMembershipId);
 	}
 
-	public SearchResult<TradeMembershipEntity> search(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<TradeMembershipEntity> searchByTradeIdUserId(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (userId != null) {
 			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.userId, userId);
@@ -40,7 +42,7 @@ public class TradeMembershipService {
 			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, tradeId);
 		}
 		// Delegate to Repository layer
-		return tradeMembershipRepository.query(searchCriteria);
+		return searchService.search(searchCriteria, TradeMembershipQueryBuilder.class);
 	}
 	
 }
