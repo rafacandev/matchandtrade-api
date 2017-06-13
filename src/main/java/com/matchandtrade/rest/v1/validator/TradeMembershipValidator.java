@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
@@ -37,7 +36,7 @@ public class TradeMembershipValidator {
 		if (tradeService.get(json.getTradeId()) == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.tradeId must refer to an existing Trade.");
 		}
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.findByTradeIdUserId(json.getTradeId(), json.getUserId(), new Pagination(1,1));
+		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.searchByTradeIdUserId(json.getTradeId(), json.getUserId(), 1, 1);
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.");
 		}

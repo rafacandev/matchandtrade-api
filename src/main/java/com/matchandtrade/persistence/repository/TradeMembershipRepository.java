@@ -2,8 +2,6 @@ package com.matchandtrade.persistence.repository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +12,4 @@ public interface TradeMembershipRepository extends CrudRepository<TradeMembershi
 
 	List<TradeMembershipEntity> findByTrade_TradeId(Integer tradeId);
 	
-	Page<TradeMembershipEntity> findByTrade_TradeIdAndUser_UserId(Integer tradeId, Integer userId, Pageable pageable);
-
 }
