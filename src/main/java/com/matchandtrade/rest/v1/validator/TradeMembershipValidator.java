@@ -7,21 +7,21 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
-import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
-import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.TradeMembershipService;
+import com.matchandtrade.rest.service.TradeService;
+import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 
 @Component
 public class TradeMembershipValidator {
 
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepository;
+	private TradeMembershipService tradeMembershipService;
 	@Autowired
-	private UserRepositoryFacade userRepository;
+	private TradeService tradeService;
 	@Autowired
-	private TradeRepositoryFacade tradeRepository;
+	private UserService userService;
 	
 	/**
 	 * {@code TradeMembership.tradeId} must be valid.
@@ -31,20 +31,20 @@ public class TradeMembershipValidator {
 	 * @param json to be validated
 	 */
 	public void validatePost(TradeMembershipJson json) {
-		if (userRepository.get(json.getUserId()) == null) {
+		if (userService.get(json.getUserId()) == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.userId must refer to an existing User.");
 		}
-		if (tradeRepository.get(json.getTradeId()) == null) {
+		if (tradeService.get(json.getTradeId()) == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.tradeId must refer to an existing Trade.");
 		}
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepository.findByTradeIdAndUserId(json.getTradeId(), json.getUserId(), new Pagination(1,1));
+		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.findByTradeIdUserId(json.getTradeId(), json.getUserId(), new Pagination(1,1));
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.");
 		}
 	}
 
 	public void validateDelete(Integer tradeMembershipId) {
-		TradeMembershipEntity tm = tradeMembershipRepository.get(tradeMembershipId);
+		TradeMembershipEntity tm = tradeMembershipService.get(tradeMembershipId);
 		if (tm == null) {
 			throw new RestException(HttpStatus.NOT_FOUND);
 		}

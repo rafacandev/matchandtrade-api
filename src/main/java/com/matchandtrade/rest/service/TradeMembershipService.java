@@ -44,5 +44,9 @@ public class TradeMembershipService {
 		// Delegate to Repository layer
 		return searchService.search(searchCriteria, TradeMembershipQueryBuilder.class);
 	}
+
+	public SearchResult<TradeMembershipEntity> findByTradeIdUserId(Integer tradeId, Integer userId,	Pagination pagination) {
+		return tradeMembershipRepositoryFacade.findByTradeIdAndUserId(tradeId, userId, pagination);
+	}
 	
 }

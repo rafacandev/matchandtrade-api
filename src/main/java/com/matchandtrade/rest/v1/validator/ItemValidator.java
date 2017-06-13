@@ -12,19 +12,19 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
-import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ItemService;
 import com.matchandtrade.rest.service.SearchService;
+import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.v1.json.ItemJson;
 
 @Component
 public class ItemValidator {
 
 	@Autowired
-	private ItemRepositoryFacade itemRepository;
+	private ItemService itemService;
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepository;
+	private TradeMembershipService tradeMembershipService;
 	@Autowired
 	private SearchService searchService;
 
@@ -68,7 +68,7 @@ public class ItemValidator {
 	 * @param tradeMembershipId
 	 */
 	public void validateGet(Integer userId, Integer tradeMembershipId) {
-		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepository.get(tradeMembershipId);
+		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
 	}
@@ -84,7 +84,7 @@ public class ItemValidator {
 	 */
 	@Transactional
 	public void validatePost(Integer userId, Integer tradeMembershipId, ItemJson json) {
-		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepository.get(tradeMembershipId);
+		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
 		checkNameLength(json.getName());
@@ -112,12 +112,12 @@ public class ItemValidator {
 	 */
 	@Transactional
 	public void validatePut(Integer userId, Integer tradeMembershipId, Integer itemId, ItemJson json) {
-		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepository.get(tradeMembershipId);
+		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
 		checkNameLength(json.getName());
 
-		ItemEntity itemEntity = itemRepository.get(itemId);
+		ItemEntity itemEntity = itemService.get(itemId);
 		if (itemEntity == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Did not find resource for the given Item.itemId");
 		}
@@ -131,7 +131,6 @@ public class ItemValidator {
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
 		}
-		
 	}
 
 }

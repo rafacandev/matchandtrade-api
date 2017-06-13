@@ -10,10 +10,9 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
-import com.matchandtrade.persistence.facade.WantItemRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.SearchService;
+import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.service.WantItemService;
 import com.matchandtrade.rest.v1.json.WantItemJson;
 
@@ -21,13 +20,11 @@ import com.matchandtrade.rest.v1.json.WantItemJson;
 public class WantItemValidator {
 
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
-	@Autowired
-	private WantItemRepositoryFacade wantItemRepositoryFacade;
-	@Autowired
-	private WantItemService wantItemService;
+	private TradeMembershipService tradeMembershipService;
 	@Autowired
 	private SearchService searchService;
+	@Autowired
+	private WantItemService wantItemService;
 	
 	/**
 	 * <p>
@@ -38,12 +35,11 @@ public class WantItemValidator {
 	 * @param desiredItemId
 	 */
 	private void checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(Integer tradeMembershipId, Integer desiredItemId) {
-		TradeMembershipEntity tradeMembership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
+		TradeMembershipEntity tradeMembership = tradeMembershipService.get(tradeMembershipId);
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1,1));
 		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, tradeMembership.getTrade().getTradeId());
 		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeMembershipId, tradeMembershipId, Restriction.NOT_EQUALS);
 		searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.itemId, desiredItemId);
-//		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipRepositoryFacade.query(searchCriteria);
 		SearchResult<TradeMembershipEntity> searchResult = searchService.search(searchCriteria, TradeMembershipQueryBuilder.class);
 		
 		if (searchResult.getResultList().isEmpty()) {

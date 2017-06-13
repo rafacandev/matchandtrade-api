@@ -15,9 +15,9 @@ import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.SearchService;
+import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
 
 @Component
@@ -26,7 +26,7 @@ public class TradeValidator {
 	@Autowired
 	private SearchService searchService;
 	@Autowired
-	private TradeRepositoryFacade tradeRepository;
+	private TradeService tradeService;
 
 	/*
 	 * Check if name is mandatory and must be between 3 and 150 characters in length.
@@ -66,7 +66,7 @@ public class TradeValidator {
 		checkNameLength(json.getName());
 
 		// Validates if the Trade.tradeId exists otherwise return status NOT_FOUND
-		TradeEntity t = tradeRepository.get(json.getTradeId());
+		TradeEntity t = tradeService.get(json.getTradeId());
 		if (t == null) {
 			throw new RestException(HttpStatus.NOT_FOUND);
 		}
@@ -93,7 +93,7 @@ public class TradeValidator {
 	
 	@Transactional
 	public void validateDelete(Integer tradeId) {
-		TradeEntity tradeEntity = tradeRepository.get(tradeId);
+		TradeEntity tradeEntity = tradeService.get(tradeId);
 		if (tradeEntity == null) {
 			throw new RestException(HttpStatus.NOT_FOUND);
 		}
