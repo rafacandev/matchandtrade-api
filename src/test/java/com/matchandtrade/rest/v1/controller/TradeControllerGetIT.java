@@ -3,6 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +40,13 @@ public class TradeControllerGetIT {
 		TradeJson response = fixture.get(existingTrade.getTradeId());
 		assertNotNull(response.getTradeId());
 		assertEquals(existingTrade.getName(), response.getName());
+	}
+
+	@Test
+	public void getAll() {
+		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		SearchResult<TradeJson> response = fixture.get(null, null, null);
+		assertTrue(response.getPagination().getTotal() > 0);
 	}
 
 	@Test

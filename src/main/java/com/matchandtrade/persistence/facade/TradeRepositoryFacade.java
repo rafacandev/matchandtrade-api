@@ -3,8 +3,6 @@ package com.matchandtrade.persistence.facade;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +33,5 @@ public class TradeRepositoryFacade {
 	public void save(TradeEntity entity) {
 		tradeRepository.save(entity);
 	}
-	
-	public Page<TradeEntity> findByName(String name, Pageable pageable) {
-		return tradeRepository.findByNameIgnoreCase(name, pageable);
-	}
+
 }

@@ -3,12 +3,12 @@ package com.matchandtrade.rest.service;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.common.PersistenceUtil;
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
+import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -22,7 +22,9 @@ public class TradeService {
 	private TradeRepositoryFacade tradeRepository;
 	@Autowired
 	private TradeMembershipRepositoryFacade tradeMembershipRepository;
-
+	@Autowired
+	private SearchService searchService;
+	
 	@Transactional
 	public void create(TradeEntity tradeEntity, UserEntity tradeOwner) {
 		tradeEntity.setState(TradeEntity.State.SUBMITTING_ITEMS); // State is SUBMITTING_ITEMS when creating a new Trade
@@ -35,6 +37,22 @@ public class TradeService {
 		tradeMembershipRepository.save(tradeMembershipEntity);
 	}
 
+	public void delete(Integer tradeId) {
+		tradeRepository.delete(tradeId);
+	}
+
+	public TradeEntity get(Integer tradeId) {
+		return tradeRepository.get(tradeId);
+	}
+
+	public SearchResult<TradeEntity> search(String name, Integer pageNumber, Integer pageSize) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
+		if (name != null && !name.isEmpty()) {
+			searchCriteria.addCriterion(TradeQueryBuilder.Field.name, name);
+		}
+		return searchService.search(searchCriteria, TradeQueryBuilder.class);
+	}
+
 	@Transactional
 	public void update(TradeEntity tradeEntity) {
 		tradeRepository.save(tradeEntity);
@@ -43,20 +61,6 @@ public class TradeService {
 		tradeMembershipEntity.setTrade(tradeEntity);
 		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
 		tradeMembershipRepository.save(tradeMembershipEntity);
-	}
-
-	public void delete(Integer tradeId) {
-		tradeRepository.delete(tradeId);
-	}
-
-	public SearchResult<TradeEntity> searchByName(String name, Integer _pageNumber, Integer _pageSize) {
-		Pageable pageable = PersistenceUtil.buildPageable(_pageNumber, _pageSize);
-		Page<TradeEntity> page = tradeRepository.findByName(name, pageable);
-		return PersistenceUtil.buildSearchResult(pageable, page);
-	}
-
-	public TradeEntity get(Integer tradeId) {
-		return tradeRepository.get(tradeId);
 	}
 	
 }
