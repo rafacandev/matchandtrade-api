@@ -84,11 +84,8 @@ import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfigurati
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.jta.JtaAutoConfiguration;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpEncodingAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.webservices.WebServicesAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.WebSocketAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.WebSocketMessagingAutoConfiguration;
@@ -101,6 +98,11 @@ import com.matchandtrade.config.AppConfigurationProperties;
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={
+	// Required, matchandtrade-doc-maker fails if we exclude: 
+	// EmbeddedServletContainerAutoConfiguration.class
+	// WebMvcAutoConfiguration.class
+	// DispatcherServletAutoConfiguration.class
+	
 	// Classed found on the auto-configuration report Positive Matches
 	DataSourceAutoConfiguration.class,
 	HttpEncodingAutoConfiguration.class,
@@ -112,24 +114,10 @@ import com.matchandtrade.config.AppConfigurationProperties;
 	PersistenceExceptionTranslationAutoConfiguration.class,
 	WebClientAutoConfiguration.class,
 	WebSocketAutoConfiguration.class,
+	
 	// Classed found on the auto-configuration console Negative Matches
-	AopAutoConfiguration.class,
-	DataSourceTransactionManagerAutoConfiguration.class,
-	DispatcherServletAutoConfiguration.class,
-	EmbeddedLdapAutoConfiguration.class,
-	EmbeddedServletContainerAutoConfiguration.class,
-	HazelcastJpaDependencyAutoConfiguration.class,
-//	JpaBaseConfiguration.class, TODO: Configure this manually
-	KafkaAutoConfiguration.class,
-	LdapAutoConfiguration.class,
-	LdapDataAutoConfiguration.class,
-	LdapRepositoriesAutoConfiguration.class,
-	MailSenderAutoConfiguration.class,
-	MessageSourceAutoConfiguration.class,
-	TransactionAutoConfiguration.class,
-	ValidationAutoConfiguration.class,
-	WebMvcAutoConfiguration.class,
 	ActiveMQAutoConfiguration.class,
+	AopAutoConfiguration.class,
 	ArtemisAutoConfiguration.class,
 	BatchAutoConfiguration.class,
 	CacheAutoConfiguration.class,
@@ -140,11 +128,13 @@ import com.matchandtrade.config.AppConfigurationProperties;
 	CouchbaseAutoConfiguration.class,
 	CouchbaseDataAutoConfiguration.class,
 	CouchbaseRepositoriesAutoConfiguration.class,
+	DataSourceTransactionManagerAutoConfiguration.class,
 	DeviceDelegatingViewResolverAutoConfiguration.class,
 	DeviceResolverAutoConfiguration.class,
 	ElasticsearchAutoConfiguration.class,
 	ElasticsearchDataAutoConfiguration.class,
 	ElasticsearchRepositoriesAutoConfiguration.class,
+	EmbeddedLdapAutoConfiguration.class,
 	EmbeddedMongoAutoConfiguration.class,
 	FacebookAutoConfiguration.class,
 	FallbackWebSecurityAutoConfiguration.class,
@@ -154,6 +144,7 @@ import com.matchandtrade.config.AppConfigurationProperties;
 	GsonAutoConfiguration.class,
 	H2ConsoleAutoConfiguration.class,
 	HazelcastAutoConfiguration.class,
+	HazelcastJpaDependencyAutoConfiguration.class,
 	IntegrationAutoConfiguration.class,
 	JerseyAutoConfiguration.class,
 	JestAutoConfiguration.class,
@@ -161,9 +152,15 @@ import com.matchandtrade.config.AppConfigurationProperties;
 	JndiConnectionFactoryAutoConfiguration.class,
 	JndiDataSourceAutoConfiguration.class,
 	JooqAutoConfiguration.class,
+	KafkaAutoConfiguration.class,
+	LdapAutoConfiguration.class,
+	LdapDataAutoConfiguration.class,
+	LdapRepositoriesAutoConfiguration.class,
 	LinkedInAutoConfiguration.class,
 	LiquibaseAutoConfiguration.class,
+	MailSenderAutoConfiguration.class,
 	MailSenderValidatorAutoConfiguration.class,
+	MessageSourceAutoConfiguration.class,
 	MongoAutoConfiguration.class,
 	MongoDataAutoConfiguration.class,
 	MongoRepositoriesAutoConfiguration.class,
@@ -187,7 +184,9 @@ import com.matchandtrade.config.AppConfigurationProperties;
 	SolrRepositoriesAutoConfiguration.class,
 	SpringApplicationAdminJmxAutoConfiguration.class,
 	ThymeleafAutoConfiguration.class,
+	TransactionAutoConfiguration.class,
 	TwitterAutoConfiguration.class,
+	ValidationAutoConfiguration.class,
 	WebServicesAutoConfiguration.class,
 	WebSocketMessagingAutoConfiguration.class,
 	XADataSourceAutoConfiguration.class
