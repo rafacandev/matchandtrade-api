@@ -52,7 +52,6 @@ public class TradeValidator {
 		}
 	}
 
-
 	/**
 	 * Validates if name is mandatory and must be between 3 and 150 characters in length.
 	 * Validates if the {@code Trade.tradeId} exists otherwise return status NOT_FOUND.
@@ -82,11 +81,11 @@ public class TradeValidator {
 		}
 
 		// Validates if name is unique but not the same which is being updated
-		SearchCriteria searchCriteriaUniqueName = new SearchCriteria(new Pagination(1,2));
+		SearchCriteria searchCriteriaUniqueName = new SearchCriteria(new Pagination(1,1));
 		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.name, json.getName());
+		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.tradeId, json.getTradeId(), Restriction.NOT_EQUALS);
 		SearchResult<TradeEntity> searchResultUniqueName = searchService.search(searchCriteriaUniqueName, TradeQueryBuilder.class);
-		// If results and it is not the same we the updating trade, then name already exists. Otherwise the result belongs to the same trade it is trying to update.
-		if (!searchResultUniqueName.getResultList().isEmpty() && !json.getTradeId().equals(searchResultUniqueName.getResultList().get(0).getTradeId())) {
+		if (!searchResultUniqueName.getResultList().isEmpty()) {
 				throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
 		}
 	}

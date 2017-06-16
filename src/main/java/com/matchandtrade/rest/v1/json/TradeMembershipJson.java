@@ -24,6 +24,7 @@ public class TradeMembershipJson extends JsonLinkSupport {
 		return tradeMembershipId;
 	}
 
+	@JsonInclude(value=Include.NON_NULL)
 	public Type getType() {
 		return type;
 	}
