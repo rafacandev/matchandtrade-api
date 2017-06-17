@@ -1,6 +1,6 @@
 package com.matchandtrade.rest.v1.controller;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class WantItemControllerPostIT {
 
 		// User1 wants Australia for Alpha
 		WantItemJson australiaPriority1 = transform(ItemTransformer.transform(australia), 1);
-		fixture.post(user1TradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australiaPriority1);
+		australiaPriority1 = fixture.post(user1TradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australiaPriority1);
 		// User1 wants Cuba for Alpha
 		WantItemJson cubaPriority2 = transform(ItemTransformer.transform(cuba), 2);
 		fixture.post(user1TradeMemberhip.getTradeMembershipId(), alpha.getItemId(), cubaPriority2);
@@ -77,6 +77,11 @@ public class WantItemControllerPostIT {
 		// User2 wants Beta for Cuba
 		WantItemJson betaPriority1 = transform(ItemTransformer.transform(beta), 1);
 		fixture.post(user2TradeMemberhip.getTradeMembershipId(), cuba.getItemId(), betaPriority1);
+		
+		// Assertions
+		assertNotNull(australiaPriority1.getWantItemId());
+		assertEquals(new Integer(1), australiaPriority1.getPriority());
+		
 	}
 
 	@Test(expected=RestException.class)

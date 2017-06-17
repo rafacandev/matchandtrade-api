@@ -22,6 +22,7 @@ public class WantItemService {
 		ItemEntity item = itemRepositoryFacade.get(itemId);
 		item.getWantItems().add(wantItem);
 		itemRepositoryFacade.save(item);
+		wantItem.setWantItemId(item.getWantItems().iterator().next().getWantItemId());
 	}
 
 	public long countWantItemInItem(Integer itemId, Integer desiredItemId) {

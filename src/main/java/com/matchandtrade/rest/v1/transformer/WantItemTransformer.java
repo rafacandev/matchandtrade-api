@@ -18,8 +18,8 @@ public class WantItemTransformer {
 
 	public static WantItemJson transform(WantItemEntity entity) {
 		WantItemJson result = new WantItemJson();
-		result.setWantItemId(entity.getWantItemId());
 		result.setItem(ItemTransformer.transform(entity.getItem()));
+		result.setPriority(entity.getPriority());
 		result.setWantItemId(entity.getWantItemId());
 		return result;
 	}
