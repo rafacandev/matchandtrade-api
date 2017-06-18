@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.WantItemEntity;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
@@ -31,6 +33,10 @@ public class WantItemService {
 
 	public long countWantItemPriorityInItem(Integer itemId, Integer priority) {
 		return wantItemRepositoryFacade.countWantItemPriorityInItem(itemId, priority);
+	}
+
+	public SearchResult<WantItemEntity> search(Integer tradeMembershipId, Integer itemId, Integer _pageNumber, Integer _pageSize) {
+		return wantItemRepositoryFacade.findByTradeMembershipAndItemId(tradeMembershipId, itemId, new Pagination(_pageNumber, _pageSize));
 	}
 
 }

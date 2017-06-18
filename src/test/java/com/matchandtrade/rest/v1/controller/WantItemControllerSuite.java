@@ -6,7 +6,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	WantItemControllerPostIT.class
+	WantItemControllerPostIT.class,
+	WantItemControllerGetIT.class
 })
 public class WantItemControllerSuite {
 

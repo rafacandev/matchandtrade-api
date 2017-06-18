@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.WantItemEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.WantItemService;
@@ -44,6 +45,21 @@ public class WantItemController implements Controller {
 		wantItemService.create(entity, itemId);
 		// Transform the response
 		WantItemJson response = WantItemTransformer.transform(entity);
+		// Assemble links
+		WantItemLinkAssember.assemble(response, itemId, tradeMembershipId);
+		return response;
+	}
+
+	@RequestMapping(path = "/{tradeMembershipId}/items/{itemId}/want-items", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.CREATED)
+	public SearchResult<WantItemJson> get(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, Integer _pageNumber, Integer _pageSize) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request - Nothing to validate
+		// Delegate to service layer
+		SearchResult<WantItemEntity> searchResult = wantItemService.search(tradeMembershipId, itemId, _pageNumber, _pageSize);
+		// Transform the response
+		SearchResult<WantItemJson> response = WantItemTransformer.transform(searchResult);
 		// Assemble links
 		WantItemLinkAssember.assemble(response, itemId, tradeMembershipId);
 		return response;

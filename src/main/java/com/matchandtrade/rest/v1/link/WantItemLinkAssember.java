@@ -1,5 +1,6 @@
 package com.matchandtrade.rest.v1.link;
 
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.rest.v1.json.WantItemJson;
 
 public class WantItemLinkAssember {
@@ -9,6 +10,11 @@ public class WantItemLinkAssember {
 
 	//TODO
 	public static void assemble(WantItemJson json, Integer itemId, Integer tradeMembershipId) {
+	}
+
+	public static void assemble(SearchResult<WantItemJson> response, Integer itemId, Integer tradeMembershipId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

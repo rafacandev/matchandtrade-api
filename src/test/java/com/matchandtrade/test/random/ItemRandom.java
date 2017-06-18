@@ -43,6 +43,7 @@ public class ItemRandom {
 		return result;
 	}
 	
+	@Transactional
 	public ItemEntity nextPersistedEntity(UserEntity tradeOwner) {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(tradeOwner);
 		return nextPersistedEntity(existingTradeMemberhip);

@@ -4,13 +4,23 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.PersistenceUtil;
+import com.matchandtrade.persistence.common.SearchResult;
+import com.matchandtrade.persistence.entity.WantItemEntity;
+import com.matchandtrade.persistence.repository.WantItemRepository;
 
 @Repository
 public class WantItemRepositoryFacade {
 	
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private WantItemRepository wantItemRepository;
 
     /**
      * Count how many 'WantItem' are there for a given {@code itemId}
@@ -36,6 +46,12 @@ public class WantItemRepositoryFacade {
 		query.setParameter("itemId", itemId);
 		query.setParameter("desiredItemId", desiredItemId);
 		return (Long) query.getSingleResult();
+	}
+
+	public SearchResult<WantItemEntity> findByTradeMembershipAndItemId(Integer tradeMembershipId, Integer itemId, Pagination pagination) {
+		Pageable pageable = PersistenceUtil.buildPageable(pagination.getNumber(), pagination.getSize());
+		Page<WantItemEntity> page = wantItemRepository.findByTradeMembershipIdAndItemId(tradeMembershipId, itemId, pageable);
+		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
 	
 }

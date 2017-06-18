@@ -29,7 +29,7 @@ public class WantItemValidator {
 	/**
 	 * <p>
 	 * Check if {@code desiredItemId} belongs to another {@code TradeMembership} within the same {@code Trade}.
-	 * This will avoid to want an item of a different trade, or to want an item that belongs to the same user (TradeMembership).
+	 * This will avoid to want an item from a different trade, or to want an item that belongs to the same user (TradeMembership).
 	 * </p>
 	 * @param tradeMembershipId
 	 * @param desiredItemId
@@ -48,7 +48,7 @@ public class WantItemValidator {
 	}
 
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} already exists for the Item.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.itemId} already exists.
 	 * @param itemId
 	 * @param desiredItemId
 	 */
@@ -60,7 +60,7 @@ public class WantItemValidator {
 	}
 
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} already exists for the Item.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} already exists.
 	 * @param itemId
 	 * @param priority
 	 */
@@ -72,8 +72,9 @@ public class WantItemValidator {
 	}
 
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is given and its value must be between 1 and 1000.
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item.itemId} is given and its value must be between 1 and 1000.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is null.
+	 * Or its value is not be between 1 and 1000.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.itemId} is null 
 	 * @param request
 	 */
 	private void checkRequest(final WantItemJson request) {
@@ -86,22 +87,20 @@ public class WantItemValidator {
 	}
 
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is given and its value must be between 1 and 1000.
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item.itemId} is given and its value must be between 1 and 1000.
+	 * <p>Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is null.
+	 * Or if its value is not must be between 1 and 1000. 
+	 * Or if another {@code WantItem.priority} already exists</p>
 	 * 
-	 * <p>
-	 * Check if {@code desiredItemId} belongs to another {@code TradeMembership} within the same {@code Trade}.
-	 * This will avoid to want an item of a different trade, or to want an item that belongs to the same user (TradeMembership).
+	 * <p>Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.itemId} is null.
+	 * Or if it belongs to another {@code TradeMembership} within the same {@code Trade}
+	 * in order to avoid an {@code itemId} from a different trade, or to want an item that belongs to the same {@code TradeMembership}.
 	 * </p>
-	 * 
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} already exists for the Item.
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} already exists for the Item.
 	 * 
 	 * @param tradeMembershipId
 	 * @param itemId
 	 * @param request
 	 */
-	public void validatePost(final Integer tradeMembershipId, final Integer itemId, final WantItemJson request) {
+	public void validatePost(Integer tradeMembershipId, Integer itemId, WantItemJson request) {
 		checkRequest(request);
 		checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(tradeMembershipId, request.getItemId());
 		checkIfItemPriorityExists(itemId, request.getPriority());
