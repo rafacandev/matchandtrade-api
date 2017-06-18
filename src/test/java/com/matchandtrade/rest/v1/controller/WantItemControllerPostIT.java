@@ -160,7 +160,7 @@ public class WantItemControllerPostIT {
 	
 	public static WantItemJson transform(ItemJson item, Integer priority) {
 		WantItemJson result = new WantItemJson();
-		result.setItem(item);
+		result.setItemId(item.getItemId());
 		result.setPriority(priority);
 		return result;
 	}

@@ -73,7 +73,6 @@ public class WantItemValidator {
 
 	/**
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is given and its value must be between 1 and 1000.
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} is given and its value must be between 1 and 1000.
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item.itemId} is given and its value must be between 1 and 1000.
 	 * @param request
 	 */
@@ -81,17 +80,13 @@ public class WantItemValidator {
 		if (request.getPriority() == null || request.getPriority() < 0 || request.getPriority() > 1000) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.priority is mandatory and its value must be between 1 and 1000");
 		}
-		if (request.getItem() == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item is mandatory");
-		}
-		if (request.getItem().getItemId() == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.item.itemId is mandatory");
+		if (request.getItemId() == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "WantItem.itemId is mandatory");
 		}
 	}
 
 	/**
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.priority} is given and its value must be between 1 and 1000.
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item} is given and its value must be between 1 and 1000.
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code WantItem.item.itemId} is given and its value must be between 1 and 1000.
 	 * 
 	 * <p>
@@ -108,9 +103,9 @@ public class WantItemValidator {
 	 */
 	public void validatePost(final Integer tradeMembershipId, final Integer itemId, final WantItemJson request) {
 		checkRequest(request);
-		checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(tradeMembershipId, request.getItem().getItemId());
+		checkIfItemBelongsToAnotherTradeMembershipWithinTheSameTrade(tradeMembershipId, request.getItemId());
 		checkIfItemPriorityExists(itemId, request.getPriority());
-		checkIfItemIsUnique(itemId, request.getItem().getItemId());
+		checkIfItemIsUnique(itemId, request.getItemId());
 	}
 
 }

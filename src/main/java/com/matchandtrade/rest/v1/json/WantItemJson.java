@@ -5,11 +5,11 @@ import com.matchandtrade.rest.JsonLinkSupport;
 public class WantItemJson extends JsonLinkSupport {
 
 	private Integer wantItemId;
+	private Integer itemId;
 	private Integer priority;
-	private ItemJson item;
 
-	public ItemJson getItem() {
-		return item;
+	public Integer getItemId() {
+		return itemId;
 	}
 
 	public Integer getPriority() {
@@ -20,8 +20,8 @@ public class WantItemJson extends JsonLinkSupport {
 		return wantItemId;
 	}
 
-	public void setItem(ItemJson item) {
-		this.item = item;
+	public void setItemId(Integer itemId) {
+		this.itemId = itemId;
 	}
 
 	public void setPriority(Integer priority) {

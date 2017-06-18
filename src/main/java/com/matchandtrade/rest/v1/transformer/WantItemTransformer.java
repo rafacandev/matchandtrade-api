@@ -1,24 +1,37 @@
 package com.matchandtrade.rest.v1.transformer;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.matchandtrade.persistence.entity.WantItemEntity;
+import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
 import com.matchandtrade.rest.v1.json.WantItemJson;
 
+@Component
 public class WantItemTransformer {
+	
+	@Autowired
+	private ItemRepositoryFacade itemRepositoryFacade;
 	
 	// Utility classes should not have public constructors
 	private WantItemTransformer() {}
 
-	public static WantItemEntity transform(WantItemJson json) {
+	public WantItemEntity transform(WantItemJson json) {
 		WantItemEntity result = new WantItemEntity();
-		result.setItem(ItemTransformer.transform(json.getItem()));
+		result.setItem(itemRepositoryFacade.get(json.getItemId()));
 		result.setPriority(json.getPriority());
 		result.setWantItemId(json.getWantItemId());
 		return result;
 	}
 
 	public static WantItemJson transform(WantItemEntity entity) {
+		if (entity == null) {
+			return null;
+		}
 		WantItemJson result = new WantItemJson();
-		result.setItem(ItemTransformer.transform(entity.getItem()));
+		if (entity.getItem() != null) {
+			result.setItemId(entity.getItem().getItemId());
+		}
 		result.setPriority(entity.getPriority());
 		result.setWantItemId(entity.getWantItemId());
 		return result;

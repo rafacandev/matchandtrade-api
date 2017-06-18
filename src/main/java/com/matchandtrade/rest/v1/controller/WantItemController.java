@@ -28,6 +28,8 @@ public class WantItemController implements Controller {
 	private WantItemService wantItemService;
 	@Autowired
 	private WantItemValidator wantItemValidator;
+	@Autowired
+	private WantItemTransformer wantItemTransformer;
 
 	@RequestMapping(path = "/{tradeMembershipId}/items/{itemId}/want-items", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -37,7 +39,7 @@ public class WantItemController implements Controller {
 		// Validate the request
 		wantItemValidator.validatePost(tradeMembershipId, itemId, requestJson);
 		// Transform the request
-		WantItemEntity entity = WantItemTransformer.transform(requestJson);
+		WantItemEntity entity = wantItemTransformer.transform(requestJson);
 		// Delegate to service layer
 		wantItemService.create(entity, itemId);
 		// Transform the response
