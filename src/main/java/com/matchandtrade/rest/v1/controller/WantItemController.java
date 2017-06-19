@@ -50,8 +50,8 @@ public class WantItemController implements Controller {
 		return response;
 	}
 
-	@RequestMapping(path = "/{tradeMembershipId}/items/{itemId}/want-items", method = RequestMethod.GET)
-	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(path = {"/{tradeMembershipId}/items/{itemId}/want-items/", "/{tradeMembershipId}/items/{itemId}/want-items"}, method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
 	public SearchResult<WantItemJson> get(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
