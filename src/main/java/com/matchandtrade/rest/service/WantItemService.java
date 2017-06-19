@@ -39,4 +39,8 @@ public class WantItemService {
 		return wantItemRepositoryFacade.findByTradeMembershipAndItemId(tradeMembershipId, itemId, new Pagination(_pageNumber, _pageSize));
 	}
 
+	public WantItemEntity get(Integer tradeMembershipId, Integer itemId, Integer wantItemId) {
+		return wantItemRepositoryFacade.findByTradeMembershipAndItemIdAndWantItemId(tradeMembershipId, itemId, wantItemId);
+	}
+
 }

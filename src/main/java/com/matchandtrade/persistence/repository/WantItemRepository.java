@@ -19,4 +19,14 @@ public interface WantItemRepository extends CrudRepository<WantItemEntity, Integ
 			+ " AND item.itemId = :itemId")
 	Page<WantItemEntity> findByTradeMembershipIdAndItemId(@Param("tradeMembershipId") Integer tradeMembershipId, @Param("itemId")Integer itemId, Pageable pageable);
 
+	@Query("SELECT wantItem"
+			+ " FROM TradeMembershipEntity tradeMembership"
+			+ " INNER JOIN tradeMembership.items item"
+			+ " INNER JOIN item.wantItems wantItem"
+			+ " WHERE"
+			+ " tradeMembership.tradeMembershipId = :tradeMembershipId"
+			+ " AND item.itemId = :itemId"
+			+ " AND wantItem.wantItemId = :wantItemId")
+	WantItemEntity findByTradeMembershipAndItemIdAndWantItemId(@Param("tradeMembershipId") Integer tradeMembershipId, @Param("itemId")Integer itemId, @Param("wantItemId")Integer wantItemId);
+
 }

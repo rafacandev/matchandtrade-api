@@ -53,5 +53,8 @@ public class WantItemRepositoryFacade {
 		Page<WantItemEntity> page = wantItemRepository.findByTradeMembershipIdAndItemId(tradeMembershipId, itemId, pageable);
 		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
-	
+
+	public WantItemEntity findByTradeMembershipAndItemIdAndWantItemId(Integer tradeMembershipId, Integer itemId, Integer wantItemId) {
+		return wantItemRepository.findByTradeMembershipAndItemIdAndWantItemId(tradeMembershipId, itemId, wantItemId);
+	}
 }

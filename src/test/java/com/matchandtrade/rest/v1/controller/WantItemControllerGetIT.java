@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.v1.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.WantItemEntity;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
+import com.matchandtrade.persistence.repository.WantItemRepository;
 import com.matchandtrade.rest.v1.json.WantItemJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
@@ -28,6 +30,8 @@ public class WantItemControllerGetIT {
 	private WantItemController fixture;
 	@Autowired
 	private ItemRepositoryFacade itemRepositoryFacade;
+	@Autowired
+	private WantItemRepository wantItemRepository;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
@@ -46,23 +50,53 @@ public class WantItemControllerGetIT {
 		}
 	}
 
-	@Test
-	public void get() {
+	private void buildTradeMemembershipAndItemEntity(TradeMembershipEntity tradeMembershipToBuild, ItemEntity itemToBuild, WantItemEntity wantItemToBuild) {
 		// Create a trade for a random user
 		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		// Create items for user1 (Greek letters)
-		TradeMembershipEntity user1TradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity alpha = itemRandom.nextPersistedEntity(user1TradeMemberhip);
-		// Create items for user2 (country names)
+		// Create items for a user (Greek letters)
+		TradeMembershipEntity tradeMembership = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
+		ItemEntity alpha = itemRandom.nextPersistedEntity(tradeMembership);
+		// Create items for another user (country names)
 		ItemEntity australia = itemRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		// User1 wants Australia for Alpha
-		WantItemEntity wantsAustraliaForAlpha = new WantItemEntity();
-		wantsAustraliaForAlpha.setItem(australia);
-		wantsAustraliaForAlpha.setPriority(1);
-		alpha.getWantItems().add(wantsAustraliaForAlpha);
+		wantItemToBuild.setItem(australia);
+		wantItemToBuild.setPriority(1);
+		wantItemRepository.save(wantItemToBuild);
+		alpha.getWantItems().add(wantItemToBuild);
 		itemRepositoryFacade.save(alpha);
-		SearchResult<WantItemJson> response = fixture.get(user1TradeMemberhip.getTradeMembershipId(), alpha.getItemId(), 1, 1);
+		tradeMembershipToBuild.setTradeMembershipId(tradeMembership.getTradeMembershipId());
+		itemToBuild.setItemId(alpha.getItemId());
+	}
+
+	@Test
+	public void getAll() {
+		TradeMembershipEntity tradeMembership = new TradeMembershipEntity();
+		ItemEntity item = new ItemEntity();
+		buildTradeMemembershipAndItemEntity(tradeMembership, item, new WantItemEntity());
+		SearchResult<WantItemJson> response = fixture.get(tradeMembership.getTradeMembershipId(), item.getItemId(), 1, 1);
 		assertEquals(1, response.getResultList().size());
 	}
-	
+
+	@Test
+	public void getOne() {
+		TradeMembershipEntity tradeMembership = new TradeMembershipEntity();
+		ItemEntity item = new ItemEntity();
+		WantItemEntity wantItem = new WantItemEntity();
+		buildTradeMemembershipAndItemEntity(tradeMembership, item, wantItem);
+		
+		// Asserts the response
+		WantItemJson response = fixture.get(tradeMembership.getTradeMembershipId(), item.getItemId(), wantItem.getWantItemId());
+		assertEquals(wantItem.getWantItemId(), response.getWantItemId());
+		assertEquals(wantItem.getItem().getItemId(), response.getItemId());
+		assertEquals(wantItem.getPriority(), response.getPriority());
+		
+		// Assert invalid scenarios
+		WantItemJson invalidTradeMembershipId = fixture.get(-1, item.getItemId(), wantItem.getWantItemId());
+		assertNull(invalidTradeMembershipId);
+		WantItemJson invalidItemId = fixture.get(tradeMembership.getTradeMembershipId(), -1, wantItem.getWantItemId());
+		assertNull(invalidItemId);
+		WantItemJson invalidWantItemId = fixture.get(tradeMembership.getTradeMembershipId(), item.getItemId(), -1);
+		assertNull(invalidWantItemId);
+	}
+
 }

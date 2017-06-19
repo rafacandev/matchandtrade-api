@@ -65,4 +65,19 @@ public class WantItemController implements Controller {
 		return response;
 	}
 
+	@RequestMapping(path = "/{tradeMembershipId}/items/{itemId}/want-items/{wantItemId}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public WantItemJson get(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, @PathVariable Integer wantItemId) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request - Nothing to validate
+		// Delegate to service layer
+		WantItemEntity searchResult = wantItemService.get(tradeMembershipId, itemId, wantItemId);
+		// Transform the response
+		WantItemJson response = WantItemTransformer.transform(searchResult);
+		// Assemble links
+		WantItemLinkAssember.assemble(response, itemId, tradeMembershipId);
+		return response;
+	}
+
 }
