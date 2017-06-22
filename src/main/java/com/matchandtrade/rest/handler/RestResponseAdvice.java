@@ -137,9 +137,6 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		result.totalCount = totalCount;
 		result.nextPage = nextPageHeader;
 		result.previousPage = previousPageHeader;
-		
-		String deb = "total: " + totalCount + " ;size: " + searchResult.getPagination().getSize() + " ;pageNumber: " + searchResult.getPagination().getNumber(); 
-		System.out.println(deb);
 		return result;
 	}
 
