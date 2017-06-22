@@ -1,7 +1,7 @@
 package com.matchandtrade.rest.handler;
 
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
@@ -51,6 +51,35 @@ public class RestResponseAdviceUT {
 		assertEquals(404, servletResponse.getServletResponse().getStatus());
 	}
 	
+	private void buildServletHttpResponseForPagination(int pageNumber, int pageSize, long total) throws URISyntaxException {
+		// Test targeting RestResponseAdvice.buildPaginationHeader()
+		URI uri = new URIBuilder()
+				.setScheme("http")
+				.setHost("www.test.com")
+				.setPath("/mypath")
+				.setParameter("email", "myemail@mail.com")
+				.setParameter("_pageSize", ""+pageSize)
+				.setParameter("_pageNumber", ""+pageNumber)
+				.build();
+		// Mocking
+		ServerHttpRequest request = Mockito.mock(ServerHttpRequest.class);
+		Mockito.when(request.getURI()).thenReturn(uri);
+		List<UserJson> resultList = new ArrayList<>();
+		UserJson user1 = UserRandom.nextJson();
+		user1.setUserId(1);
+		resultList.add(user1);
+		UserJson user2 = UserRandom.nextJson();
+		user2.setUserId(2);
+		resultList.add(user2);
+		UserJson user3 = UserRandom.nextJson();
+		user3.setUserId(3);
+		resultList.add(user3);
+		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination(pageNumber, pageSize, total));
+		// Execution
+		RestResponseAdvice adivice = new RestResponseAdvice();
+		adivice.beforeBodyWrite(body, null, null, null, request, serverHttpResponse);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void searchResultNegative() {
@@ -72,43 +101,52 @@ public class RestResponseAdviceUT {
 		UserJson userJson = UserRandom.nextJson();
 		userJson.setUserId(1);
 		resultList.add(userJson);
-		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination());
+		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination(null, null));
 		RestResponseAdvice adivice = new RestResponseAdvice();
 		// Test execution
 		List<UserJson> response = (List<UserJson>) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
 		UserJson responseUserJson = (UserJson) response.get(0);
 		// Assertions
 		assertEquals(resultList.get(0).getEmail(), responseUserJson.getEmail());
+		assertNull(serverHttpResponse.getHeaders().get("Link"));
 	}
 	
 	@Test
-	public void paginationPositive() throws URISyntaxException {
-		// Test setup
-		URI uri = new URIBuilder()
-	        .setScheme("http")
-	        .setHost("www.test.com")
-	        .setPath("/mypath")
-	        .setParameter("email", "myemail@mail.com")
-	        .setParameter("_pageSize", "5")
-	        .setParameter("_pageNumber", "2")
-	        .build();
-		ServerHttpRequest request = Mockito.mock(ServerHttpRequest.class);
-		Mockito.when(request.getURI()).thenReturn(uri);
-		List<UserJson> resultList = new ArrayList<>();
-		UserJson userJson = UserRandom.nextJson();
-		userJson.setUserId(1);
-		resultList.add(userJson);
-		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination(2,5,1L));
-		// Test execution
-		RestResponseAdvice adivice = new RestResponseAdvice();
-		adivice.beforeBodyWrite(body, null, null, null, request, serverHttpResponse);
+	public void paginationWithNextAndPrevious() throws URISyntaxException {
+		buildServletHttpResponseForPagination(2,1,3L);
 		// Assertions
 		List<String> links = serverHttpResponse.getHeaders().get("Link");
-		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageSize=5&_pageNumber=3>; rel=\"nextPage\""));
-		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageSize=5&_pageNumber=3>; rel=\"previousPage\""));
+		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageSize=1&_pageNumber=3>; rel=\"nextPage\""));
+		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageSize=1&_pageNumber=1>; rel=\"previousPage\""));
 		List<String> totalCount = serverHttpResponse.getHeaders().get("X-Pagination-Total-Count");
 		assertEquals(1, totalCount.size());
-		assertTrue(totalCount.contains("1"));
+		assertTrue(totalCount.contains("3"));
 	}
-	
+
+	@Test
+	public void paginationWithoutNextNorPrevious() throws URISyntaxException {
+		buildServletHttpResponseForPagination(1,10,3L);
+		// Assertions
+		List<String> links = serverHttpResponse.getHeaders().get("Link");
+		assertNull(links);
+	}
+
+	@Test
+	public void paginationWithNextOnly() throws URISyntaxException {
+		buildServletHttpResponseForPagination(1,2,3L);
+		// Assertions
+		List<String> links = serverHttpResponse.getHeaders().get("Link");
+		assertEquals(1, links.size());
+		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageSize=2&_pageNumber=2>; rel=\"nextPage\""));
+	}
+
+	@Test
+	public void paginationWithPreviousOnly() throws URISyntaxException {
+		buildServletHttpResponseForPagination(2,2,3L);
+		// Assertions
+		List<String> links = serverHttpResponse.getHeaders().get("Link");
+		assertEquals(1, links.size());
+		assertTrue(links.contains("<http://www.test.com/mypath?email=myemail%40mail.com&_pageSize=2&_pageNumber=1>; rel=\"previousPage\""));
+	}
+
 }

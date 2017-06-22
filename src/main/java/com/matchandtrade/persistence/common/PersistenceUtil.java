@@ -23,7 +23,7 @@ public class PersistenceUtil {
 	}
 
 	public static <T> SearchResult<T> buildSearchResult(Pageable pageable, Page<T> page) {
-		Pagination pagination = new Pagination(pageable.getPageNumber(), pageable.getPageSize(), page.getTotalElements());
+		Pagination pagination = new Pagination(pageable.getPageNumber()+1, pageable.getPageSize(), page.getTotalElements());
 		return new SearchResult<>(page.getContent(), pagination);
 	}
 

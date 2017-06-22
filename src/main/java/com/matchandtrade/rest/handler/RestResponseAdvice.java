@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.handler;
 
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,11 +99,11 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 				.setPath(request.getURI().getPath());
 		
 		// Build query parameters without _pageSize and _pageNumber
-		List<NameValuePair> queryParams = URLEncodedUtils.parse(request.getURI(), "UTF-8");
-		List<NameValuePair> queryParamsWithoutPageNumber = new ArrayList<>();
+		List<NameValuePair> queryParams = URLEncodedUtils.parse(request.getURI(), Charset.forName("UTF-8"));
+		List<NameValuePair> queryParamsWithoutPaginationParameters = new ArrayList<>();
 		for (NameValuePair param : queryParams) {
 			if (!param.getName().equals(Pagination.Parameter.NUMBER.toString())) {
-				queryParamsWithoutPageNumber.add(param);
+				queryParamsWithoutPaginationParameters.add(param);
 			}
 		}
 
@@ -110,14 +111,22 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		String nextPageHeader = null;
 		String previousPageHeader = null;
 		try {
-			URIBuilder nextPageUri = new URIBuilder(rootUri.build().toString());
-			nextPageUri.addParameters(queryParamsWithoutPageNumber);
-			nextPageUri.addParameter(Pagination.Parameter.NUMBER.toString(), String.valueOf(searchResult.getPagination().getNumber() + 1));
-			nextPageHeader = "<" + nextPageUri.toString() + ">; rel=\"nextPage\"";
-			URIBuilder previousPageUri = new URIBuilder(rootUri.build().toString());
-			previousPageUri.addParameters(queryParamsWithoutPageNumber);
-			previousPageUri.addParameter(Pagination.Parameter.NUMBER.toString(), String.valueOf(searchResult.getPagination().getNumber() + 1));
-			previousPageHeader = "<" + nextPageUri.toString() + ">; rel=\"previousPage\"";
+			// need total and pageSize as double because 'int' does not offer enough precision
+			double total = searchResult.getPagination().getTotal();
+			double pageSize = searchResult.getPagination().getSize();
+			// If has a next page
+			if ((total / pageSize) > searchResult.getPagination().getNumber()) {
+				URIBuilder nextPageUri = new URIBuilder(rootUri.build().toString());
+				nextPageUri.addParameters(queryParamsWithoutPaginationParameters);
+				nextPageUri.addParameter(Pagination.Parameter.NUMBER.toString(), String.valueOf(searchResult.getPagination().getNumber() + 1));
+				nextPageHeader = "<" + nextPageUri.toString() + ">; rel=\"nextPage\"";
+			}
+			if (searchResult.getPagination().getNumber() > 1) {
+				URIBuilder previousPageUri = new URIBuilder(rootUri.build().toString());
+				previousPageUri.addParameters(queryParamsWithoutPaginationParameters);
+				previousPageUri.addParameter(Pagination.Parameter.NUMBER.toString(), String.valueOf(searchResult.getPagination().getNumber() - 1));
+				previousPageHeader = "<" + previousPageUri.toString() + ">; rel=\"previousPage\"";
+			}
 		} catch (URISyntaxException e) {
 			logger.error("Unable to build pagination link header URI. Exception message: {}", e.getMessage(), e);
 		}
@@ -128,13 +137,20 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		result.totalCount = totalCount;
 		result.nextPage = nextPageHeader;
 		result.previousPage = previousPageHeader;
+		
+		String deb = "total: " + totalCount + " ;size: " + searchResult.getPagination().getSize() + " ;pageNumber: " + searchResult.getPagination().getNumber(); 
+		System.out.println(deb);
 		return result;
 	}
 
 	private void handlePaginationHeaders(ServerHttpResponse response, PaginationHeader paginationHeader) {
 		response.getHeaders().add("X-Pagination-Total-Count", paginationHeader.totalCount);
-		response.getHeaders().add("Link", paginationHeader.nextPage);
-		response.getHeaders().add("Link", paginationHeader.previousPage);
+		if (paginationHeader.nextPage != null) {
+			response.getHeaders().add("Link", paginationHeader.nextPage);
+		}
+		if (paginationHeader.previousPage != null) {
+			response.getHeaders().add("Link", paginationHeader.previousPage);
+		}
 	}
 
 	@Override

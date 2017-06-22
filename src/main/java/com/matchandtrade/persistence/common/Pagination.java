@@ -35,11 +35,13 @@ public class Pagination {
 	
 	public Pagination(Integer number, Integer size) {
 		if (number != null) {
+			// TODO throw invalidArgumentException if number < 0, but need to handle it on RestResponseAdvice
 			this.number = number;
 		}
-		if (size != null) {
+		if (size != null){
+			// TODO throw invalidArgumentException if number < 1, but need to handle it on RestResponseAdvice
 			if (size > 50) {
-				// TODO Create a PaginationException
+				// TODO throw invalidArgumentException, but need to handle it on RestResponseAdvice
 				throw new RestException(HttpStatus.BAD_REQUEST, "_pageSize cannot be bigger than 50.");
 			}
 			this.size = size;
