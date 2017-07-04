@@ -11,12 +11,9 @@ Match and Trade is a web application where many people trade several items at on
 
 RESTful Documentation
 ---------------------
-Checkout our [RESTful Documentation](doc/rest-guide.md). This application offers a power RESTful API which can be integrated with other applications.
+Checkout our [RESTful Documentation](https://rafasantos.github.io/matchandtrade-doc/rest-guide.html). This application offers a power RESTful API which can be integrated with other applications.
 
 Development Guide
 -----------------
-Checkout our [Development Guide](doc/development-guide.md) if you want to contribute or customize the application.
+Checkout our [Development Guide](https://rafasantos.github.io/matchandtrade-doc/development-guide.html) if you want to contribute or customize the application.
 
-Deployment Guide
-----------------
-Follow the [Deployment Guide](doc/deployment-guide.md) if you want to host your own instance of the application.
