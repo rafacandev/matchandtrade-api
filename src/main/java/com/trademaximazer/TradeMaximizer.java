@@ -43,6 +43,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Created by <i>Chris Okasaki</i> and modified by <i>Rafael Santos</i>.
+ * The modifications are minimal as possible to keep the original code
+ * but decouple it from the System.out and file system and promote better usability. 
+ */
 public class TradeMaximizer {
 	
 	private Output out;
@@ -388,11 +393,201 @@ public class TradeMaximizer {
 		}
 	}
 
+	List<String[]> readWantLists(List<String> wantItems) {
+		List<String[]> wantLists = new ArrayList<String[]>();
+		try {
+			int lineNumber = 1;
+			boolean readingOfficialNames = false;
+			for (String line : wantItems) {
+				line = line.trim();
+				if (line.length() == 0)
+					continue; // skip blank link
+				if (line.matches("#!.*")) { // declare options
+					if (wantLists.size() > 0)
+						fatalError("Options (#!...) cannot be declared after first real want list", lineNumber);
+					if (officialNames != null)
+						fatalError("Options (#!...) cannot be declared after official names", lineNumber);
+					for (String option : line.toUpperCase().substring(2).trim().split("\\s+")) {
+						if (option.equals("CASE-SENSITIVE"))
+							caseSensitive = true;
+						else if (option.equals("REQUIRE-COLONS"))
+							requireColons = true;
+						else if (option.equals("REQUIRE-USERNAMES"))
+							requireUsernames = true;
+						else if (option.equals("HIDE-ERRORS"))
+							showErrors = false;
+						else if (option.equals("HIDE-REPEATS"))
+							showRepeats = false;
+						else if (option.equals("HIDE-LOOPS"))
+							showLoops = false;
+						else if (option.equals("HIDE-SUMMARY"))
+							showSummary = false;
+						else if (option.equals("HIDE-NONTRADES"))
+							showNonTrades = false;
+						else if (option.equals("HIDE-STATS"))
+							showStats = false;
+						else if (option.equals("SHOW-MISSING"))
+							showMissing = true;
+						else if (option.equals("SORT-BY-ITEM"))
+							sortByItem = true;
+						else if (option.equals("ALLOW-DUMMIES"))
+							allowDummies = true;
+						else if (option.equals("SHOW-ELAPSED-TIME"))
+							showElapsedTime = true;
+						else if (option.equals("LINEAR-PRIORITIES"))
+							priorityScheme = LINEAR_PRIORITIES;
+						else if (option.equals("TRIANGLE-PRIORITIES"))
+							priorityScheme = TRIANGLE_PRIORITIES;
+						else if (option.equals("SQUARE-PRIORITIES"))
+							priorityScheme = SQUARE_PRIORITIES;
+						else if (option.equals("SCALED-PRIORITIES"))
+							priorityScheme = SCALED_PRIORITIES;
+						else if (option.equals("EXPLICIT-PRIORITIES"))
+							priorityScheme = EXPLICIT_PRIORITIES;
+						else if (option.startsWith("SMALL-STEP=")) {
+							String num = option.substring(11);
+							if (!num.matches("\\d+"))
+								fatalError("SMALL-STEP argument must be a non-negative integer", lineNumber);
+							smallStep = Integer.parseInt(num);
+						} else if (option.startsWith("BIG-STEP=")) {
+							String num = option.substring(9);
+							if (!num.matches("\\d+"))
+								fatalError("BIG-STEP argument must be a non-negative integer", lineNumber);
+							bigStep = Integer.parseInt(num);
+						} else if (option.startsWith("NONTRADE-COST=")) {
+							String num = option.substring(14);
+							if (!num.matches("[1-9]\\d*"))
+								fatalError("NONTRADE-COST argument must be a positive integer", lineNumber);
+							nonTradeCost = Long.parseLong(num);
+						} else if (option.startsWith("ITERATIONS=")) {
+							String num = option.substring(11);
+							if (!num.matches("[1-9]\\d*"))
+								fatalError("ITERATIONS argument must be a positive integer", lineNumber);
+							iterations = Integer.parseInt(num);
+						} else if (option.startsWith("SEED=")) {
+							String num = option.substring(5);
+							if (!num.matches("[1-9]\\d*"))
+								fatalError("SEED argument must be a positive integer", lineNumber);
+							graph.setSeed(Long.parseLong(num));
+						} else
+							fatalError("Unknown option \"" + option + "\"", lineNumber);
+
+						options.add(option);
+					}
+					continue;
+				}
+				if (line.matches("#.*"))
+					continue; // skip comment line
+				if (line.indexOf("#") != -1) {
+					if (readingOfficialNames) {
+						if (line.split("[:\\s]")[0].indexOf("#") != -1) {
+							fatalError("# symbol cannot be used in an item name", lineNumber);
+						}
+					} else
+						fatalError("Comments (#...) cannot be used after beginning of line", lineNumber);
+				}
+
+				// handle official names
+				if (line.equalsIgnoreCase("!BEGIN-OFFICIAL-NAMES")) {
+					if (officialNames != null)
+						fatalError("Cannot begin official names more than once", lineNumber);
+					if (wantLists.size() > 0)
+						fatalError("Official names cannot be declared after first real want list", lineNumber);
+
+					officialNames = new HashSet<String>();
+					readingOfficialNames = true;
+					continue;
+				}
+				if (line.equalsIgnoreCase("!END-OFFICIAL-NAMES")) {
+					if (!readingOfficialNames)
+						fatalError("!END-OFFICIAL-NAMES without matching !BEGIN-OFFICIAL-NAMES", lineNumber);
+					readingOfficialNames = false;
+					continue;
+				}
+				if (readingOfficialNames) {
+					if (line.charAt(0) == ':')
+						fatalError("Line cannot begin with colon", lineNumber);
+					if (line.charAt(0) == '%')
+						fatalError("Cannot give official names for dummy items", lineNumber);
+
+					String[] toks = line.split("[:\\s]");
+					String name = toks[0];
+					if (!caseSensitive)
+						name = name.toUpperCase();
+					if (officialNames.contains(name))
+						fatalError("Official name " + name + "+ already defined", lineNumber);
+					officialNames.add(name);
+					continue;
+				}
+
+				// check parens for user name
+				if (line.indexOf("(") == -1 && requireUsernames)
+					fatalError("Missing username with REQUIRE-USERNAMES selected", lineNumber);
+				if (line.charAt(0) == '(') {
+					if (line.lastIndexOf("(") > 0)
+						fatalError("Cannot have more than one '(' per line", lineNumber);
+					int close = line.indexOf(")");
+					if (close == -1)
+						fatalError("Missing ')' in username", lineNumber);
+					if (close == line.length() - 1)
+						fatalError("Username cannot appear on a line by itself", lineNumber);
+					if (line.lastIndexOf(")") > close)
+						fatalError("Cannot have more than one ')' per line", lineNumber);
+					if (close == 1)
+						fatalError("Cannot have empty parentheses", lineNumber);
+
+					// temporarily replace spaces in username with #'s
+					if (line.indexOf(" ") < close) {
+						line = line.substring(0, close + 1).replaceAll(" ", "#") + " " + line.substring(close + 1);
+					}
+				} else if (line.indexOf("(") > 0)
+					fatalError("Username can only be used at the front of a want list", lineNumber);
+				else if (line.indexOf(")") > 0)
+					fatalError("Bad ')' on a line that does not have a '('", lineNumber);
+
+				// check semicolons
+				line = line.replaceAll(";", " ; ");
+				int semiPos = line.indexOf(";");
+				if (semiPos != -1) {
+					if (semiPos < line.indexOf(":"))
+						fatalError("Semicolon cannot appear before colon", lineNumber);
+					String before = line.substring(0, semiPos).trim();
+					if (before.length() == 0 || before.charAt(before.length() - 1) == ')')
+						fatalError("Semicolon cannot appear before first item on line", lineNumber);
+				}
+
+				// check and remove colon
+				int colonPos = line.indexOf(":");
+				if (colonPos != -1) {
+					if (line.lastIndexOf(":") != colonPos)
+						fatalError("Cannot have more that one colon on a line", lineNumber);
+					String header = line.substring(0, colonPos).trim();
+					if (!header.matches("(.*\\)\\s+)?[^(\\s)]\\S*"))
+						fatalError("Must have exactly one item before a colon (:)", lineNumber);
+					line = line.replaceFirst(":", " "); // remove colon
+				} else if (requireColons) {
+					fatalError("Missing colon with REQUIRE-COLONS selected", lineNumber);
+				}
+
+				if (!caseSensitive)
+					line = line.toUpperCase();
+				wantLists.add(line.trim().split("\\s+"));
+				lineNumber++;
+			}
+		} catch (Exception e) {
+			fatalError(e.getMessage());
+			return null;
+		}
+		return wantLists;
+	}
+
+	
+	
 	void fatalError(String msg) {
 		out.println();
 		out.println("FATAL ERROR: " + msg);
 		System.out.println(out.getOutputString());
-		System.exit(1);
+//		System.exit(1);
 	}
 
 	void fatalError(String msg, int lineNumber) {
@@ -691,6 +886,79 @@ public class TradeMaximizer {
 		while (name.length() < width)
 			name += " ";
 		return name;
+	}
+
+	/**
+	 * Generate the trade results based on a {@code List<String>}.
+	 * This method is intended to work similarly to {@code run()}
+	 * but removing the dependency on a file. 
+	 * @param wantItems
+	 */
+	public void generateResult(List<String> wantItems) {
+		out.println("TradeMaximizer " + version);
+		List<String[]> wantLists = readWantLists(wantItems);
+		if (wantLists == null)
+			return;
+		if (options.size() > 0) {
+			out.print("Options:");
+			for (String option : options)
+				out.print(" " + option);
+			out.println();
+		}
+		out.println();
+
+		buildGraph(wantLists);
+		if (showMissing && officialNames != null && officialNames.size() > 0) {
+			for (String name : usedNames)
+				officialNames.remove(name);
+			List<String> missing = new ArrayList<String>(officialNames);
+			Collections.sort(missing);
+			for (String name : missing) {
+				out.println("**** Missing want list for official name " + name);
+			}
+			out.println();
+		}
+		if (showErrors && errors.size() > 0) {
+			Collections.sort(errors);
+			out.println("ERRORS:");
+			for (String error : errors)
+				out.println(error);
+			out.println();
+		}
+
+		long startTime = System.currentTimeMillis();
+		graph.removeImpossibleEdges();
+		List<List<Graph.Vertex>> bestCycles = graph.findCycles();
+		int bestSumSquares = sumOfSquares(bestCycles);
+		if (iterations > 1) {
+			graph.saveMatches();
+			for (int i = 0; i < iterations - 1; i++) {
+				graph.shuffle();
+				List<List<Graph.Vertex>> cycles = graph.findCycles();
+				int sumSquares = sumOfSquares(cycles);
+				if (sumSquares < bestSumSquares) {
+					bestSumSquares = sumSquares;
+					bestCycles = cycles;
+					graph.saveMatches();
+					int[] groups = new int[cycles.size()];
+					for (int j = 0; j < cycles.size(); j++)
+						groups[j] = cycles.get(j).size();
+					Arrays.sort(groups);
+					out.print("[ " + sumSquares + " :");
+					for (int j = groups.length - 1; j >= 0; j--)
+						out.print(" " + groups[j]);
+					out.println(" ]");
+				}
+			}
+			out.println();
+			graph.restoreMatches();
+		}
+		long stopTime = System.currentTimeMillis();
+		displayMatches(bestCycles);
+
+		if (showElapsedTime)
+			out.println("Elapsed time = " + (stopTime - startTime) + "ms");
+		
 	}
 
 } // end TradeMaximizer

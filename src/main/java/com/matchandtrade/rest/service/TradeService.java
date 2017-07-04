@@ -9,9 +9,11 @@ import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
+import com.matchandtrade.persistence.criteria.WantItemQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.persistence.entity.WantItemEntity;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 
@@ -61,6 +63,11 @@ public class TradeService {
 		tradeMembershipEntity.setTrade(tradeEntity);
 		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
 		tradeMembershipRepository.save(tradeMembershipEntity);
+	}
+
+	public SearchResult<WantItemEntity> searchWantItemsByTradeId(Integer tradeId) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1, 1000));
+		return searchService.search(searchCriteria, WantItemQueryBuilder.class);
 	}
 	
 }
