@@ -150,6 +150,13 @@ public class TradeController implements Controller {
 		Output tradeMaximizerOutput = new Output(System.out);
 		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerOutput);
 		tradeMaximizer.generateResult(wItems);
+		
+		
+		
+		
+		
+		
+		
 		return tradeMaximizerOutput.getOutputString();
 	}
 }

@@ -47,7 +47,6 @@ public class TradeMaximizerIT {
 	@Autowired
 	private TradeMembershipService tradeMembershipService;
 	
-	
 	@Before
 	public void before() {
 		if (wantItemController == null) {
@@ -55,15 +54,6 @@ public class TradeMaximizerIT {
 			tradeController = mockControllerFactory.getTradeController(true);
 		}
 	}
-	
-//	@Test
-//	@Ignore
-//	public void getTrades() {
-//		String results = fixture.getResults(1);
-//		System.out.println("===================");
-//		System.out.println(results);
-//	}
-	
 	
 	@Test
 	public void post() {
@@ -101,9 +91,7 @@ public class TradeMaximizerIT {
 		WantItemJson betaPriority1 = transform(ItemTransformer.transform(beta), 1);
 		wantItemController.post(memberTradeMemberhip.getTradeMembershipId(), cuba.getItemId(), betaPriority1);
 		
-		// Assertions
-		assertNotNull(australiaPriority1.getWantItemId());
-		assertEquals(new Integer(1), australiaPriority1.getPriority());
+
 		
 		String response = tradeController.getResults(trade.getTradeId());
 		
