@@ -1,8 +1,5 @@
 package com.matchandtrade.trademaximizer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,36 +59,46 @@ public class TradeMaximizerIT {
 		UserEntity memberUser = userRandom.nextPersistedEntity();
 		TradeEntity trade = tradeRandom.nextPersistedEntity(ownerUser);
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.searchByTradeIdUserId(trade.getTradeId(), ownerUser.getUserId(), 1, 1);
-		TradeMembershipEntity ownerTradeMembership = searchResult.getResultList().get(0);
-
-		// Create items for trade owner (Greek letters)
-		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMembership);
-		ItemEntity beta = itemRandom.nextPersistedEntity(ownerTradeMembership);
 		
-		// Create items for member s(country names)
-		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberUser, TradeMembershipEntity.Type.MEMBER);
-		ItemEntity australia = itemRandom.nextPersistedEntity(memberTradeMemberhip);
-		ItemEntity brazil = itemRandom.nextPersistedEntity(memberTradeMemberhip);
-		ItemEntity cuba = itemRandom.nextPersistedEntity(memberTradeMemberhip);
-
-		// Owner wants Australia for Alpha
-		WantItemJson australiaPriority1 = transform(ItemTransformer.transform(australia), 1);
-		australiaPriority1 = wantItemController.post(ownerTradeMembership.getTradeMembershipId(), alpha.getItemId(), australiaPriority1);
-		// Owner wants Cuba for Alpha
-		WantItemJson cubaPriority2 = transform(ItemTransformer.transform(cuba), 2);
-		wantItemController.post(ownerTradeMembership.getTradeMembershipId(), alpha.getItemId(), cubaPriority2);
-		// Owner wants Brazil for Beta
-		WantItemJson brazilPriority1 = transform(ItemTransformer.transform(brazil), 1);
-		wantItemController.post(ownerTradeMembership.getTradeMembershipId(), beta.getItemId(), brazilPriority1);
-
-		// Member wants Alpha for Australia
-		WantItemJson alphaPriority1 = transform(ItemTransformer.transform(alpha), 1);
-		wantItemController.post(memberTradeMemberhip.getTradeMembershipId(), australia.getItemId(), alphaPriority1);
-		// Member wants Beta for Cuba
-		WantItemJson betaPriority1 = transform(ItemTransformer.transform(beta), 1);
-		wantItemController.post(memberTradeMemberhip.getTradeMembershipId(), cuba.getItemId(), betaPriority1);
+		// Create items for Greek letters
+		TradeMembershipEntity greekTradeMembership = searchResult.getResultList().get(0);
+		ItemEntity alpha = itemRandom.nextPersistedEntity(greekTradeMembership);
+		ItemEntity beta = itemRandom.nextPersistedEntity(greekTradeMembership);
 		
+		// Create items for country names
+		TradeMembershipEntity countryTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberUser, TradeMembershipEntity.Type.MEMBER);
+		ItemEntity australia = itemRandom.nextPersistedEntity(countryTradeMemberhip);
+		ItemEntity brazil = itemRandom.nextPersistedEntity(countryTradeMemberhip);
+		ItemEntity cuba = itemRandom.nextPersistedEntity(countryTradeMemberhip);
 
+		// Create items for ordinal numbers
+		TradeMembershipEntity ordinalTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberUser, TradeMembershipEntity.Type.MEMBER);
+		ItemEntity first = itemRandom.nextPersistedEntity(ordinalTradeMemberhip);
+		ItemEntity second = itemRandom.nextPersistedEntity(ordinalTradeMemberhip);
+		// Third is never used, but we add it just to see trademaximizer's response
+		ItemEntity third = itemRandom.nextPersistedEntity(ordinalTradeMemberhip);
+
+		// Alpha for Australia
+		WantItemJson alphaForAustralia = transform(ItemTransformer.transform(australia), 1);
+		alphaForAustralia = wantItemController.post(greekTradeMembership.getTradeMembershipId(), alpha.getItemId(), alphaForAustralia);
+		// Beta for Brazil
+		WantItemJson betaForBrazil = transform(ItemTransformer.transform(brazil), 1);
+		betaForBrazil = wantItemController.post(greekTradeMembership.getTradeMembershipId(), beta.getItemId(), betaForBrazil);
+		// Beta for Cuba
+		WantItemJson betaForCuba = transform(ItemTransformer.transform(cuba), 2);
+		betaForCuba = wantItemController.post(greekTradeMembership.getTradeMembershipId(), beta.getItemId(), betaForCuba);
+		// Australia for Alpha 
+		WantItemJson australiaForAlpha = transform(ItemTransformer.transform(alpha), 1);
+		australiaForAlpha = wantItemController.post(countryTradeMemberhip.getTradeMembershipId(), australia.getItemId(), australiaForAlpha);
+		// Brazil for First 
+		WantItemJson brazilForFirst = transform(ItemTransformer.transform(first), 1);
+		brazilForFirst = wantItemController.post(countryTradeMemberhip.getTradeMembershipId(), brazil.getItemId(), brazilForFirst);
+		// First for Brazil 
+		WantItemJson firstForBrazil = transform(ItemTransformer.transform(brazil), 1);
+		firstForBrazil = wantItemController.post(ordinalTradeMemberhip.getTradeMembershipId(), first.getItemId(), firstForBrazil);
+		// Second for Brazil 
+		WantItemJson secondForBrazil = transform(ItemTransformer.transform(brazil), 1);
+		secondForBrazil = wantItemController.post(ordinalTradeMemberhip.getTradeMembershipId(), second.getItemId(), secondForBrazil);
 		
 		String response = tradeController.getResults(trade.getTradeId());
 		
