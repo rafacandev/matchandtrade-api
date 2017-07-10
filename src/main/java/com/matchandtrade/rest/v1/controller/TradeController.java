@@ -108,7 +108,7 @@ public class TradeController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request - Nothing to validate
-		// Delegate to Repository layer
+		// Delegate to Service layer
 		TradeEntity tradeEntity = tradeService.get(tradeId);
 		// Transform the response
 		TradeJson response = TradeTransformer.transform(tradeEntity);
@@ -118,45 +118,38 @@ public class TradeController implements Controller {
 	}
 
 	@RequestMapping(path="/{tradeId/results}", method=RequestMethod.GET)
-	@Transactional
 	public String getResults(@PathVariable("tradeId") Integer tradeId) {
 		// Validate request identity
-//		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request - Nothing to validate
-		// Delegate to Repository layer
-//		TradeEntity tradeEntity = tradeService.get(tradeId);
+		// Delegate to Service layer
+		String result = tradeService.getResult(tradeId);
 		// Transform the response
 //		TradeJson response = TradeTransformer.transform(tradeEntity);
 		// Assemble links
 //		TradeLinkAssember.assemble(response);
-		List<String> wItems = new ArrayList<>();
-		SearchResult<TradeMembershipEntity> tradeMemberships = tradeMembershipService.searchByTradeIdUserId(tradeId, null, 1, 50);
-		for (TradeMembershipEntity tme : tradeMemberships.getResultList()) {
-			for (ItemEntity ie : tme.getItems()) {
-				StringBuilder wantEntry = new StringBuilder("(" + tme.getTradeMembershipId() + ")");
-				wantEntry.append(" " + ie.getItemId() + " :");
-				for (WantItemEntity wie : ie.getWantItems()) {
-					wantEntry.append(" " + wie.getItem().getItemId());
-				}
-				wItems.add(wantEntry.toString());
-			}
-		}
-		
-		System.out.println("===WantItemsString===");
-		for (String s : wItems) {
-			System.out.println(s);
-		}
-		
-		Output tradeMaximizerOutput = new Output(System.out);
-		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerOutput);
-		tradeMaximizer.generateResult(wItems);
-		
-		
-		
-		
-		
-		
-		
-		return tradeMaximizerOutput.getOutputString();
+//		List<String> wItems = new ArrayList<>();
+//		SearchResult<TradeMembershipEntity> tradeMemberships = tradeMembershipService.searchByTradeIdUserId(tradeId, null, 1, 50);
+//		for (TradeMembershipEntity tme : tradeMemberships.getResultList()) {
+//			for (ItemEntity ie : tme.getItems()) {
+//				StringBuilder wantEntry = new StringBuilder("(" + tme.getTradeMembershipId() + ")");
+//				wantEntry.append(" " + ie.getItemId() + " :");
+//				for (WantItemEntity wie : ie.getWantItems()) {
+//					wantEntry.append(" " + wie.getItem().getItemId());
+//				}
+//				wItems.add(wantEntry.toString());
+//			}
+//		}
+//		
+//		System.out.println("===WantItemsString===");
+//		for (String s : wItems) {
+//			System.out.println(s);
+//		}
+//		
+//		Output tradeMaximizerOutput = new Output(System.out);
+//		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerOutput);
+//		tradeMaximizer.generateResult(wItems);
+//		return tradeMaximizerOutput.getOutputString();
+		return result;
 	}
 }

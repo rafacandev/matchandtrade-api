@@ -1,4 +1,4 @@
-package com.matchandtrade.trademaximizer;
+package com.matchandtrade.rest.v1.controller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +27,11 @@ import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class TradeMaximizerIT {
+public class TradeControllerResultIT {
 	
-	private WantItemController wantItemController;
-	private TradeController tradeController;
+	private WantItemController greekController;
+	private WantItemController countryController;
+	private WantItemController ordinalController;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
@@ -46,19 +47,23 @@ public class TradeMaximizerIT {
 	
 	@Before
 	public void before() {
-		if (wantItemController == null) {
-			wantItemController = mockControllerFactory.getWantItemController(true);
-			tradeController = mockControllerFactory.getTradeController(true);
+		if (greekController == null) {
+			greekController = mockControllerFactory.getWantItemController(false);
+		}
+		if (countryController == null) {
+			countryController = mockControllerFactory.getWantItemController(false);
+		}
+		if (ordinalController == null) {
+			ordinalController = mockControllerFactory.getWantItemController(false);
 		}
 	}
 	
 	@Test
 	public void post() {
 		// Create a trade for a random user
-		UserEntity ownerUser = userRandom.nextPersistedEntity();
-		UserEntity memberUser = userRandom.nextPersistedEntity();
-		TradeEntity trade = tradeRandom.nextPersistedEntity(ownerUser);
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.searchByTradeIdUserId(trade.getTradeId(), ownerUser.getUserId(), 1, 1);
+		UserEntity greekUser = greekController.authenticationProvider.getAuthentication().getUser();
+		TradeEntity trade = tradeRandom.nextPersistedEntity(greekUser);
+		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.searchByTradeIdUserId(trade.getTradeId(), greekUser.getUserId(), 1, 1);
 		
 		// Create items for Greek letters
 		TradeMembershipEntity greekTradeMembership = searchResult.getResultList().get(0);
@@ -66,13 +71,15 @@ public class TradeMaximizerIT {
 		ItemEntity beta = itemRandom.nextPersistedEntity(greekTradeMembership);
 		
 		// Create items for country names
-		TradeMembershipEntity countryTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberUser, TradeMembershipEntity.Type.MEMBER);
+		UserEntity countryUser = userRandom.nextPersistedEntity();
+		TradeMembershipEntity countryTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, countryUser, TradeMembershipEntity.Type.MEMBER);
 		ItemEntity australia = itemRandom.nextPersistedEntity(countryTradeMemberhip);
 		ItemEntity brazil = itemRandom.nextPersistedEntity(countryTradeMemberhip);
 		ItemEntity cuba = itemRandom.nextPersistedEntity(countryTradeMemberhip);
 
 		// Create items for ordinal numbers
-		TradeMembershipEntity ordinalTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberUser, TradeMembershipEntity.Type.MEMBER);
+		UserEntity ordinalUser = userRandom.nextPersistedEntity();
+		TradeMembershipEntity ordinalTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, ordinalUser, TradeMembershipEntity.Type.MEMBER);
 		ItemEntity first = itemRandom.nextPersistedEntity(ordinalTradeMemberhip);
 		ItemEntity second = itemRandom.nextPersistedEntity(ordinalTradeMemberhip);
 		// Third is never used, but we add it just to see trademaximizer's response
@@ -80,26 +87,28 @@ public class TradeMaximizerIT {
 
 		// Alpha for Australia
 		WantItemJson alphaForAustralia = transform(ItemTransformer.transform(australia), 1);
-		alphaForAustralia = wantItemController.post(greekTradeMembership.getTradeMembershipId(), alpha.getItemId(), alphaForAustralia);
+		alphaForAustralia = greekController.post(greekTradeMembership.getTradeMembershipId(), alpha.getItemId(), alphaForAustralia);
 		// Beta for Brazil
 		WantItemJson betaForBrazil = transform(ItemTransformer.transform(brazil), 1);
-		betaForBrazil = wantItemController.post(greekTradeMembership.getTradeMembershipId(), beta.getItemId(), betaForBrazil);
+		betaForBrazil = greekController.post(greekTradeMembership.getTradeMembershipId(), beta.getItemId(), betaForBrazil);
 		// Beta for Cuba
 		WantItemJson betaForCuba = transform(ItemTransformer.transform(cuba), 2);
-		betaForCuba = wantItemController.post(greekTradeMembership.getTradeMembershipId(), beta.getItemId(), betaForCuba);
+		betaForCuba = greekController.post(greekTradeMembership.getTradeMembershipId(), beta.getItemId(), betaForCuba);
 		// Australia for Alpha 
 		WantItemJson australiaForAlpha = transform(ItemTransformer.transform(alpha), 1);
-		australiaForAlpha = wantItemController.post(countryTradeMemberhip.getTradeMembershipId(), australia.getItemId(), australiaForAlpha);
+		australiaForAlpha = countryController.post(countryTradeMemberhip.getTradeMembershipId(), australia.getItemId(), australiaForAlpha);
 		// Brazil for First 
 		WantItemJson brazilForFirst = transform(ItemTransformer.transform(first), 1);
-		brazilForFirst = wantItemController.post(countryTradeMemberhip.getTradeMembershipId(), brazil.getItemId(), brazilForFirst);
+		brazilForFirst = countryController.post(countryTradeMemberhip.getTradeMembershipId(), brazil.getItemId(), brazilForFirst);
 		// First for Brazil 
 		WantItemJson firstForBrazil = transform(ItemTransformer.transform(brazil), 1);
-		firstForBrazil = wantItemController.post(ordinalTradeMemberhip.getTradeMembershipId(), first.getItemId(), firstForBrazil);
-		// Second for Brazil 
+		firstForBrazil = ordinalController.post(ordinalTradeMemberhip.getTradeMembershipId(), first.getItemId(), firstForBrazil);
+		// Second for Brazil
 		WantItemJson secondForBrazil = transform(ItemTransformer.transform(brazil), 1);
-		secondForBrazil = wantItemController.post(ordinalTradeMemberhip.getTradeMembershipId(), second.getItemId(), secondForBrazil);
+		secondForBrazil = ordinalController.post(ordinalTradeMemberhip.getTradeMembershipId(), second.getItemId(), secondForBrazil);
 		
+		TradeController tradeController = mockControllerFactory.getTradeController(true);
+		System.out.println(tradeController.authenticationProvider.getAuthentication());
 		String response = tradeController.getResults(trade.getTradeId());
 		
 		System.out.println(response);
