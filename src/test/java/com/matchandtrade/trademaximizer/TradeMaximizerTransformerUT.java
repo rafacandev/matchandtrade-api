@@ -3,6 +3,7 @@ package com.matchandtrade.trademaximizer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class TradeMaximizerTransformerUT {
 			"\n" +
 			"ITEM SUMMARY (4 total trades):\n" +
 			"\n" +
-			"(1) 1 receives (2) 3  and sends to (2) 3\n" +
+			"(1) 1 receives (2) 3 and sends to (2) 3\n" +
 			"(1) 2             does not trade\n" +
 			"(2) 3 receives (1) 1 and sends to (1) 1\n" +
 			"(2) 4 receives (3) 6 and sends to (3) 6\n" +
@@ -81,7 +82,6 @@ public class TradeMaximizerTransformerUT {
 		boolean sevenDoesNotTrade = tradeResults.removeIf(p 
 				-> p.getOfferingItem().equals(itemSeven) && p.getReceivingItem() == null);
 		assertTrue(sevenDoesNotTrade);
-
 	}
 	
 }

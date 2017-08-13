@@ -3,6 +3,7 @@ package com.matchandtrade.cli;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 
@@ -32,12 +33,12 @@ public class AppCliUT {
 	
 	@Test
 	public void configFilePositive() throws IOException {
-		String filePath = this.getClass().getClassLoader().getResource("").getPath() + "../../src/config/matchandtrade.properties";
+		String filePath = this.getClass().getClassLoader().getResource("").getPath() 
+				+ ".." + File.separator + ".." + File.separator + "src" + File.separator + "config"+ File.separator +"matchandtrade.properties";
 		String[] arguments = {"-cf", filePath};
 		new AppCli(arguments);
 		assertEquals(filePath, System.getProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
 	}
-
 	
 	@Test(expected=IOException.class)
 	public void configFileNegativeFileNotFound() throws IOException {

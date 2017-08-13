@@ -40,27 +40,34 @@ public class TradeMaximizerTransformer {
 		
 		// Build the offering portion
 		// offeringTradeMembershipId is the first number in parenthesis
-		Integer offeringTradeMembershipId = Integer.parseInt(line.substring(1, line.indexOf(")")));
-		// Remove the content before ')'
-		line = line.substring(line.indexOf(")") + 2);
+		Integer offeringTradeMembershipId = Integer.parseInt(line.substring(1, line.indexOf(')')));
 		// offeringItemId is the number after the first ')'
-		Integer offeringItemId = Integer.parseInt(line.substring(0, line.indexOf(" ")));
+		Integer offeringItemId = Integer.parseInt(line.substring(line.indexOf(')')+2, ordinalIndexOf(line, " ", 2)));
 		result.setOfferingItem(ItemLinkAssember.buildLink(offeringTradeMembershipId, offeringItemId));
 		
 		// Build the receiving portion
 		if (line.contains("receives")) {
-			// Remove the content before 'receives ('
-			line = line.substring(line.indexOf("receives (") + 10);
 			// receivingTradeMembershipId is the second number in parenthesis
-			Integer receivingTradeMembershipId = Integer.parseInt(line.substring(0, line.indexOf(")")));
-			// receivingTradeMembershipId is the second number in parenthesis
-			line = line.substring(line.indexOf(")") + 2);
-			String receivingTradeMembershipIdString = line.substring(0, line.indexOf(" "));
-			Integer receivingItemId = Integer.parseInt(receivingTradeMembershipIdString);
+			Integer receivingTradeMembershipId = Integer.parseInt(line.substring(line.indexOf("receives (") + 10, ordinalIndexOf(line, ")", 2)));
+			// receivingItemId is the number after the second ')'
+			int afterSecondCloseParenthesis = ordinalIndexOf(line, ")", 2) + 2;
+			Integer receivingItemId = Integer.parseInt(line.substring(afterSecondCloseParenthesis, line.indexOf(' ', afterSecondCloseParenthesis)));
 			// Build the result
 			result.setReceivingItem(ItemLinkAssember.buildLink(receivingTradeMembershipId, receivingItemId));
 		}
 		return result;
+	}
+	
+	/*
+	 * Finds the n-th index within a String, handling null. This method uses String.indexOf(String).
+	 * Implementation of org.apache.commons.lang.StringUtils
+	 */
+	private static int ordinalIndexOf(String str, String criterion, int ordinalOcurrence) {
+	    int pos = str.indexOf(criterion);
+	    int n = ordinalOcurrence;
+	    while (--n > 0 && pos != -1)
+	        pos = str.indexOf(criterion, pos + 1);
+	    return pos;
 	}
 	
 }
