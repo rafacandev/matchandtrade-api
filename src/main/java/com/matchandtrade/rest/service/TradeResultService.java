@@ -26,31 +26,58 @@ public class TradeResultService {
 
 	@Transactional
 	public String get(Integer tradeId) {
-		List<String> wItems = new ArrayList<>();
-		SearchResult<TradeMembershipEntity> tradeMemberships = searchByTradeIdUserId(tradeId, null, 1, 50);
-		for (TradeMembershipEntity tme : tradeMemberships.getResultList()) {
-			for (ItemEntity ie : tme.getItems()) {
-				StringBuilder wantEntry = new StringBuilder("(" + tme.getTradeMembershipId() + ")");
-				wantEntry.append(" " + ie.getItemId() + " :");
-				for (WantItemEntity wie : ie.getWantItems()) {
-					wantEntry.append(" " + wie.getItem().getItemId());
+		String result = buildTradeMaximizerOutput(tradeId);
+		return result;
+	}
+	
+	/**
+	 * Build a list of entries for Trade Maximizer for the {@code tradeId}.
+	 * It fetches all tradeMemberships, items and wanted items for the given {@code tradeId}
+	 * and transforms it in the expected Trade Maximizer's input.
+	 * @param tradeId
+	 * @return list of entries for Trade Maximizer
+	 */
+	private List<String> buildTradeMaximizerInput(Integer tradeId) {
+		List<String> tradeMaximizerEntries = new ArrayList<>();
+		boolean hasNextPage = false;
+		Integer currentPageNumber = 1;
+		do {
+			SearchResult<TradeMembershipEntity> tradeMemberships = searchTradeMembershipByTradeId(tradeId, currentPageNumber, 50);
+			for (TradeMembershipEntity tradeMembership : tradeMemberships.getResultList()) {
+				for (ItemEntity item : tradeMembership.getItems()) {
+					StringBuilder tradeMaximizerEntry = new StringBuilder("(" + tradeMembership.getTradeMembershipId() + ")");
+					tradeMaximizerEntry.append(" " + item.getItemId() + " :");
+					for (WantItemEntity wantItem : item.getWantItems()) {
+						tradeMaximizerEntry.append(" " + wantItem.getItem().getItemId());
+					}
+					tradeMaximizerEntries.add(tradeMaximizerEntry.toString());
 				}
-				wItems.add(wantEntry.toString());
 			}
-		}
+			hasNextPage = tradeMemberships.getPagination().hasNextPage();
+			currentPageNumber++;
+		} while (hasNextPage);
+		return tradeMaximizerEntries;
+	}
+
+	/**
+	 * Build a Trade Maximizer Input string for the {@code tradeId}.
+	 * See: trademaximizer/instructions.html
+	 * See: https://github.com/chrisokasaki/TradeMaximizer
+	 * @param tradeId
+	 * @return
+	 */
+	private String buildTradeMaximizerOutput(Integer tradeId) {
+		// The entries to be passed to Trade Maximizer
+		List<String> tradeMaximizerEntries = buildTradeMaximizerInput(tradeId);
 		
 		Output tradeMaximizerOutput = new Output(System.out);
 		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerOutput);
-		tradeMaximizer.generateResult(wItems);
+		tradeMaximizer.generateResult(tradeMaximizerEntries);
 		return tradeMaximizerOutput.getOutputString();
 	}
 	
-	
-	private SearchResult<TradeMembershipEntity> searchByTradeIdUserId(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
+	private SearchResult<TradeMembershipEntity> searchTradeMembershipByTradeId(Integer tradeId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
-		if (userId != null) {
-			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.userId, userId);
-		}
 		if (tradeId != null) {
 			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, tradeId);
 		}

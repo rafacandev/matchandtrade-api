@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 public class Output {
 	
-	private StringBuffer out = new StringBuffer();
+	private StringBuilder out = new StringBuilder();
 	private OutputStream outputStream;
 	
 	public Output(OutputStream outputStream) {

@@ -54,6 +54,14 @@ public class Pagination {
 			this.total = total;
 		}
 	}
+	
+	/**
+	 * Returns true if there is a next page. Formally, it returns {@code ((float) total / size) > number}.
+	 * @return true if has a next page; false otherwise.
+	 */
+	public boolean hasNextPage() {
+		return ((float) total / size) > number;
+	}
 
 	/**
 	 * Get the page size.
