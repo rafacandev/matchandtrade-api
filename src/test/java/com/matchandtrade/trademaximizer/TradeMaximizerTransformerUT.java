@@ -1,9 +1,18 @@
 package com.matchandtrade.trademaximizer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.hateoas.Link;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.matchandtrade.rest.v1.json.TradeResultJson;
+import com.matchandtrade.rest.v1.link.ItemLinkAssember;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.trademaximazer.TradeMaximizerTransformer;
 
@@ -24,7 +33,7 @@ public class TradeMaximizerTransformerUT {
 			"\n" +
 			"ITEM SUMMARY (4 total trades):\n" +
 			"\n" +
-			"(1) 1 receives (2) 3 and sends to (2) 3\n" +
+			"(1) 1 receives (2) 3  and sends to (2) 3\n" +
 			"(1) 2             does not trade\n" +
 			"(2) 3 receives (1) 1 and sends to (1) 1\n" +
 			"(2) 4 receives (3) 6 and sends to (3) 6\n" +
@@ -40,8 +49,38 @@ public class TradeMaximizerTransformerUT {
 			"Sum squares = 8\n";
 	
 	@Test
-	public void transform() {
-		TradeMaximizerTransformer.transform(TRADE_MAXIMIZER_RESULT);
+	public void transform() throws JsonProcessingException {
+		List<TradeResultJson> tradeResults = TradeMaximizerTransformer.transform(TRADE_MAXIMIZER_RESULT);
+		// Assertions
+		assertEquals(8, tradeResults.size());
+		// "(1) 1 receives (2) 3\n" +
+		Link itemOne = ItemLinkAssember.buildLink(1, 1);
+		// "(2) 3 receives (1) 1\n" +
+		Link itemThree = ItemLinkAssember.buildLink(2, 3);
+		// "(2) 4 receives (3) 6\n" +
+		Link itemSix = ItemLinkAssember.buildLink(3, 6);
+		// "(3) 6 receives (2) 4\n" +
+		Link itemFour = ItemLinkAssember.buildLink(2, 4);
+		// "(1) 2 does not trade\n" +
+		Link itemTwo = ItemLinkAssember.buildLink(1, 2);
+		//"(3) 7             does not trade\n" +
+		Link itemSeven = ItemLinkAssember.buildLink(3, 7);
+		
+		boolean oneReceivesThree = tradeResults.removeIf(p 
+				-> p.getOfferingItem().equals(itemOne) && p.getReceivingItem().equals(itemThree));
+		assertTrue(oneReceivesThree);
+		
+		boolean sixReceivesFour = tradeResults.removeIf(p 
+				-> p.getOfferingItem().equals(itemSix) && p.getReceivingItem().equals(itemFour));
+		assertTrue(sixReceivesFour);
+
+		boolean twoDoesNotTrade = tradeResults.removeIf(p 
+				-> p.getOfferingItem().equals(itemTwo) && p.getReceivingItem() == null);
+		assertTrue(twoDoesNotTrade);
+
+		boolean sevenDoesNotTrade = tradeResults.removeIf(p 
+				-> p.getOfferingItem().equals(itemSeven) && p.getReceivingItem() == null);
+		assertTrue(sevenDoesNotTrade);
 
 	}
 	

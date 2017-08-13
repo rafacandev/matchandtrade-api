@@ -38,6 +38,8 @@ public class MockControllerFactory {
 	@Autowired
 	private TradeController tradeController;
 	@Autowired
+	private TradeResultController tradeResultController;
+	@Autowired
 	private TradeMembershipController tradeMembershipController;
 	@Autowired
 	private UserController userController;
@@ -45,6 +47,7 @@ public class MockControllerFactory {
 	private UserRepositoryFacade userRepository;
 	@Autowired
 	private WantItemController wantItemController;
+	
 
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
@@ -84,7 +87,12 @@ public class MockControllerFactory {
 		tradeController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return tradeController;
 	}
-	
+
+	public TradeResultController getTradeResultController(boolean reusePreviousAuthentication) {
+		tradeResultController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return tradeResultController;
+	}
+
 	public TradeMembershipController getTradeMembershipController(boolean reusePreviousAuthentication) {
 		tradeMembershipController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return tradeMembershipController;

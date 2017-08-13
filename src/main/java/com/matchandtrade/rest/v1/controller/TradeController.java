@@ -1,9 +1,4 @@
 package com.matchandtrade.rest.v1.controller;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.persistence.entity.WantItemEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.service.TradeService;
@@ -26,8 +18,6 @@ import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.link.TradeLinkAssember;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
-import com.trademaximazer.Output;
-import com.trademaximazer.TradeMaximizer;
 
 @RestController
 @RequestMapping(path="/rest/v1/trades")
@@ -117,39 +107,4 @@ public class TradeController implements Controller {
 		return response;
 	}
 
-	@RequestMapping(path="/{tradeId/results}", method=RequestMethod.GET)
-	public String getResults(@PathVariable("tradeId") Integer tradeId) {
-		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Validate the request - Nothing to validate
-		// Delegate to Service layer
-		String result = tradeService.getResult(tradeId);
-		// Transform the response
-//		TradeJson response = TradeTransformer.transform(tradeEntity);
-		// Assemble links
-//		TradeLinkAssember.assemble(response);
-//		List<String> wItems = new ArrayList<>();
-//		SearchResult<TradeMembershipEntity> tradeMemberships = tradeMembershipService.searchByTradeIdUserId(tradeId, null, 1, 50);
-//		for (TradeMembershipEntity tme : tradeMemberships.getResultList()) {
-//			for (ItemEntity ie : tme.getItems()) {
-//				StringBuilder wantEntry = new StringBuilder("(" + tme.getTradeMembershipId() + ")");
-//				wantEntry.append(" " + ie.getItemId() + " :");
-//				for (WantItemEntity wie : ie.getWantItems()) {
-//					wantEntry.append(" " + wie.getItem().getItemId());
-//				}
-//				wItems.add(wantEntry.toString());
-//			}
-//		}
-//		
-//		System.out.println("===WantItemsString===");
-//		for (String s : wItems) {
-//			System.out.println(s);
-//		}
-//		
-//		Output tradeMaximizerOutput = new Output(System.out);
-//		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerOutput);
-//		tradeMaximizer.generateResult(wItems);
-//		return tradeMaximizerOutput.getOutputString();
-		return result;
-	}
 }

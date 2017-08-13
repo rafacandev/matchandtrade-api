@@ -9,12 +9,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonInclude(value=Include.NON_EMPTY)
 public class JsonLinkSupport implements Json {
 
 	private Set<Link> links = new HashSet<>();
 
 	@JsonProperty("_links")
-	@JsonInclude(value=Include.NON_EMPTY)
 	public Set<Link> getLinks() {
 		return links;
 	}
