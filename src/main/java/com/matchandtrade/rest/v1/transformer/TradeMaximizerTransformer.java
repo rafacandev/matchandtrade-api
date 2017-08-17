@@ -43,6 +43,9 @@ public class TradeMaximizerTransformer {
 	 */
 	public String transform(String tradeMaximizerOutput) throws IOException {
 		List<String> tradeLines = transformTradeMaximizerToList(tradeMaximizerOutput);
+		// Sort trade lines for better CSV presentation 
+		sortTradeLinesByOfferingTradeMembershipAndOfferingItemId(tradeLines);
+		
 		CSVFormat formatter = CSVFormat.DEFAULT
 				.withRecordSeparator("\n")
 				.withCommentMarker('#')
@@ -93,6 +96,24 @@ public class TradeMaximizerTransformer {
 		csvPrinter.close();
 		
 		return csvOutput.toString();
+	}
+
+	/**
+	 * Sort trade lines by offeringTradeMembership and itemId 
+	 * @param tradeLines
+	 */
+	private void sortTradeLinesByOfferingTradeMembershipAndOfferingItemId(List<String> tradeLines) {
+		tradeLines.sort((i, j) -> {
+			TradeLinePojo iPojo = transformLine(i);
+			TradeLinePojo jPojo = transformLine(j);
+			if (iPojo.offeringTradeMembershipId > jPojo.offeringTradeMembershipId) {
+				return 1;
+			} else if (iPojo.offeringTradeMembershipId < jPojo.offeringTradeMembershipId) {
+				return -1;
+			} else {
+				return iPojo.offeringItemId.compareTo(jPojo.offeringItemId);
+			}
+		});
 	}
 
 	/**
