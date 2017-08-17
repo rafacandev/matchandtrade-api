@@ -3,26 +3,21 @@ package com.matchandtrade.rest.v1.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.service.TradeMembershipService;
-import com.matchandtrade.rest.v1.json.TradeResultJson;
 import com.matchandtrade.rest.v1.json.WantItemJson;
-import com.matchandtrade.rest.v1.link.ItemLinkAssember;
 import com.matchandtrade.rest.v1.transformer.ItemTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
@@ -57,7 +52,7 @@ public class TradeResultControllerGetIT {
 	}
 	
 	@Test
-	public void positive() {
+	public void positive() throws IOException {
 		// Create a trade for a random user
 		UserEntity greekUser = wantItemController.authenticationProvider.getAuthentication().getUser();
 		TradeEntity trade = tradeRandom.nextPersistedEntity(greekUser);
@@ -82,58 +77,67 @@ public class TradeResultControllerGetIT {
 		ItemEntity second = itemRandom.nextPersistedEntity(ordinalTradeMembership);
 		// Create a "third" ItemEntity which is never used but I added it to see if it won't be accounted in the trade
 		itemRandom.nextPersistedEntity(ordinalTradeMembership);
+		// Create a "fourth" ItemEntity which is never used but I added it to see if it won't be accounted in the trade
+		itemRandom.nextPersistedEntity(ordinalTradeMembership);
 
-		// Alpha for Australia
+		// Offering Alpha for Australia
 		WantItemJson alphaForAustralia = WantItemControllerPostIT.transform(ItemTransformer.transform(australia), 1);
 		alphaForAustralia = wantItemController.post(greekTradeMembership.getTradeMembershipId(), alpha.getItemId(), alphaForAustralia);
-		// Beta for Brazil
+		// Offering Beta for Brazil
 		WantItemJson betaForBrazil = WantItemControllerPostIT.transform(ItemTransformer.transform(brazil), 1);
 		betaForBrazil = wantItemController.post(greekTradeMembership.getTradeMembershipId(), beta.getItemId(), betaForBrazil);
-		// Beta for Cuba
+		// Offering Beta for Cuba
 		WantItemJson betaForCuba = WantItemControllerPostIT.transform(ItemTransformer.transform(cuba), 2);
 		betaForCuba = wantItemController.post(greekTradeMembership.getTradeMembershipId(), beta.getItemId(), betaForCuba);
-		// Australia for Alpha 
+		// Offering Australia for Alpha 
 		WantItemJson australiaForAlpha = WantItemControllerPostIT.transform(ItemTransformer.transform(alpha), 1);
 		australiaForAlpha = wantItemController.post(countryTradeMembership.getTradeMembershipId(), australia.getItemId(), australiaForAlpha);
-		// Brazil for First 
+		// Offering Brazil for First 
 		WantItemJson brazilForFirst = WantItemControllerPostIT.transform(ItemTransformer.transform(first), 1);
 		brazilForFirst = wantItemController.post(countryTradeMembership.getTradeMembershipId(), brazil.getItemId(), brazilForFirst);
-		// First for Brazil 
+		// Offering First for Brazil 
 		WantItemJson firstForBrazil = WantItemControllerPostIT.transform(ItemTransformer.transform(brazil), 1);
 		firstForBrazil = wantItemController.post(ordinalTradeMembership.getTradeMembershipId(), first.getItemId(), firstForBrazil);
-		// Second for Brazil
+		// Offering Second for Brazil
 		WantItemJson secondForBrazil = WantItemControllerPostIT.transform(ItemTransformer.transform(brazil), 1);
 		secondForBrazil = wantItemController.post(ordinalTradeMembership.getTradeMembershipId(), second.getItemId(), secondForBrazil);
 		
 		// Generate the trade results
 		TradeResultController tradeResultController = mockControllerFactory.getTradeResultController(true);
-		List<TradeResultJson> tradeResult = tradeResultController.getResults(trade.getTradeId());
+		String response = tradeResultController.getResults(trade.getTradeId());
+		String[] responseLines = response.split("\n");
+
+		// Assert header
+		assertEquals(
+				"offering_user_id,offering_user_name,offering_item_id,offering_item_name,receiving_user_id,receiving_user_name,receiving_item_id,receiving_item_name",
+				responseLines[0]);
+
+		// Offering Alpha for Australia
+		assertEquals(responseLines[1], buildCsvLine(greekTradeMembership, alpha, countryTradeMembership, australia));
+		// Offering Australia for Alpha
+		assertEquals(responseLines[2], buildCsvLine(countryTradeMembership, australia, greekTradeMembership, alpha));
+		// Offering Brazil for First 
+		assertEquals(responseLines[3], buildCsvLine(countryTradeMembership, brazil, ordinalTradeMembership, first));
+		// Offering Brazil for First 
+		assertEquals(responseLines[4], buildCsvLine(ordinalTradeMembership, first, countryTradeMembership, brazil));
 		
-		// Asserts if there are 8 elements
-		assertEquals(8, tradeResult.size());
-		
-		// Asserts successful trades
-		// Asserts if result contains Alpha for Australia
-		Link alphaLink = ItemLinkAssember.buildLink(greekTradeMembership.getTradeMembershipId(), alpha.getItemId());
-		Link australiaLink = ItemLinkAssember.buildLink(countryTradeMembership.getTradeMembershipId(), australia.getItemId());
-		assertTrue(tradeResult.contains(new TradeResultJson(alphaLink, australiaLink)));
-		assertTrue(tradeResult.contains(new TradeResultJson(australiaLink, alphaLink)));
-		// Asserts if result contains Brazil for First
-		Link brazilLink = ItemLinkAssember.buildLink(countryTradeMembership.getTradeMembershipId(), brazil.getItemId());
-		Link firstLink = ItemLinkAssember.buildLink(ordinalTradeMembership.getTradeMembershipId(), first.getItemId());
-		assertTrue(tradeResult.contains(new TradeResultJson(brazilLink, firstLink)));
-		assertTrue(tradeResult.contains(new TradeResultJson(firstLink, brazilLink)));
-		
-		// Asserts non-successful trades
-		// Asserts result contains Beta is not wanted (does not trade)
-		Link betaLink = ItemLinkAssember.buildLink(greekTradeMembership.getTradeMembershipId(), beta.getItemId());
-		assertTrue(tradeResult.contains(new TradeResultJson(betaLink, null)));
-		// Asserts result contains Cuba is not wanted (does not trade)
-		Link cubaLink = ItemLinkAssember.buildLink(countryTradeMembership.getTradeMembershipId(), cuba.getItemId());
-		assertTrue(tradeResult.contains(new TradeResultJson(cubaLink, null)));
-		// Asserts result contains Second is not wanted (does not trade)
-		Link secondLink = ItemLinkAssember.buildLink(ordinalTradeMembership.getTradeMembershipId(), second.getItemId());
-		assertTrue(tradeResult.contains(new TradeResultJson(secondLink, null)));
+		// Assert summary
+		assertTrue(responseLines[7].contains(trade.getName()) );
+		assertTrue(responseLines[8].contains("9") );
+		assertTrue(responseLines[9].contains("4") );
+		assertTrue(responseLines[10].contains("5") );
 	}
 
+	private String buildCsvLine(TradeMembershipEntity greekTradeMembership, ItemEntity alpha,
+			TradeMembershipEntity countryTradeMembership, ItemEntity australia) {
+		String alphaForAustraliaString = greekTradeMembership.getUser().getUserId() + ","
+				+ greekTradeMembership.getUser().getName() + ","
+				+ alpha.getItemId() + ","
+				+ alpha.getName() + ","
+				+ countryTradeMembership.getUser().getUserId() + ","
+				+ countryTradeMembership.getUser().getName() + ","
+				+ australia.getItemId() + ","
+				+ australia.getName();
+		return alphaForAustraliaString;
+	}
 }

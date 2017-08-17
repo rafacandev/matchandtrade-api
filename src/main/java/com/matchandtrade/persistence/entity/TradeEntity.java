@@ -1,5 +1,6 @@
 package com.matchandtrade.persistence.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,6 +8,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -20,10 +23,17 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 	private Integer tradeId;
 	private String name;
 	private State state;
-
+	private TradeResultEntity result;
+	
 	@Column(name = "name", length = 150, nullable = false, unique = true)
 	public String getName() {
 		return name;
+	}
+
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="asdf")
+	public TradeResultEntity getResult() {
+		return result;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -41,6 +51,10 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setResult(TradeResultEntity result) {
+		this.result = result;
 	}
 
 	public void setState(State state) {

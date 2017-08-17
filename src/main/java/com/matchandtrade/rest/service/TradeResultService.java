@@ -13,8 +13,11 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.TradeResultEntity;
 import com.matchandtrade.persistence.entity.WantItemEntity;
+import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.trademaximazer.Output;
 import com.trademaximazer.TradeMaximizer;
 
@@ -23,11 +26,20 @@ public class TradeResultService {
 
 	@Autowired
 	private SearchService searchService;
+	@Autowired
+	private TradeRepositoryFacade tradeRepositoryFacade;
 
 	@Transactional
 	public String get(Integer tradeId) {
-		String result = buildTradeMaximizerOutput(tradeId);
-		return result;
+		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
+		if (trade.getResult() == null) {
+			String result = buildTradeMaximizerOutput(tradeId);
+			TradeResultEntity tradeResult = new TradeResultEntity();
+			tradeResult.setText(result);
+			trade.setResult(tradeResult);
+			tradeRepositoryFacade.save(trade);
+		}
+		return trade.getResult().getText();
 	}
 	
 	/**
