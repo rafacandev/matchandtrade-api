@@ -18,17 +18,23 @@ public class TradeTransformer {
 		}
 		TradeEntity.State result = null;
 		switch (state) {
-		case CLOSED:
-			result = TradeEntity.State.CLOSED;
-			break;
-		case GENERATING_TRADES:
-			result = TradeEntity.State.GENERATING_TRADES;
+		case SUBMITTING_ITEMS:
+			result = TradeEntity.State.SUBMITTING_ITEMS;
 			break;
 		case MATCHING_ITEMS:
 			result = TradeEntity.State.MATCHING_ITEMS;
 			break;
-		case SUBMITTING_ITEMS:
-			result = TradeEntity.State.SUBMITTING_ITEMS;
+		case MATCHING_ITEMS_ENDED:
+			result = TradeEntity.State.MATCHING_ITEMS_ENDED;
+			break;
+		case GENERATING_TRADES:
+			result = TradeEntity.State.GENERATING_TRADES;
+			break;
+		case GENERATING_TRADES_ENDED:
+			result = TradeEntity.State.GENERATING_TRADES_ENDED;
+			break;
+		case CANCELED:
+			result = TradeEntity.State.CANCELED;
 			break;
 		default:
 			break;
@@ -42,17 +48,23 @@ public class TradeTransformer {
 		}
 		TradeJson.State result = null;
 		switch (state) {
-		case CLOSED:
-			result = TradeJson.State.CLOSED;
-			break;
-		case GENERATING_TRADES:
-			result = TradeJson.State.GENERATING_TRADES;
+		case SUBMITTING_ITEMS:
+			result = TradeJson.State.SUBMITTING_ITEMS;
 			break;
 		case MATCHING_ITEMS:
 			result = TradeJson.State.MATCHING_ITEMS;
 			break;
-		case SUBMITTING_ITEMS:
-			result = TradeJson.State.SUBMITTING_ITEMS;
+		case MATCHING_ITEMS_ENDED:
+			result = TradeJson.State.MATCHING_ITEMS_ENDED;
+			break;
+		case GENERATING_TRADES:
+			result = TradeJson.State.GENERATING_TRADES;
+			break;
+		case GENERATING_TRADES_ENDED:
+			result = TradeJson.State.GENERATING_TRADES_ENDED;
+			break;
+		case CANCELED:
+			result = TradeJson.State.CANCELED;
 			break;
 		default:
 			break;
