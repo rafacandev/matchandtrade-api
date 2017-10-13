@@ -153,6 +153,7 @@ public class WantItemControllerPostIT {
 			fixture.post(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), betaPriority1);
 		} catch (RestException e) {
 			assertEquals("WantItem.item must belong to another TradeMembership within the same Trade.", e.getDescription());
+			throw e;
 		}
 	}
 	

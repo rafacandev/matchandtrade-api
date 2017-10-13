@@ -23,7 +23,9 @@ public class TradeResultController implements Controller {
 	@Autowired
 	TradeMaximizerTransformer tradeMaximizerTransformer;
 
-	@RequestMapping(path="/{tradeId}/results", method=RequestMethod.GET, produces="text/csv", headers="Content-Disposition: attachment; filename='trade-result.csv'")
+	@RequestMapping(path="/{tradeId}/results",
+			method = RequestMethod.GET,
+			produces = "text/csv")
 	public String getResults(@PathVariable("tradeId") Integer tradeId) throws IOException {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
