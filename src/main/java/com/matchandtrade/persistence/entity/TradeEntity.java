@@ -17,7 +17,12 @@ import javax.persistence.Table;
 public class TradeEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	public enum State {
-		SUBMITTING_ITEMS, MATCHING_ITEMS, GENERATING_TRADES, CLOSED 
+		SUBMITTING_ITEMS,
+		MATCHING_ITEMS,
+		MATCHING_ITEMS_ENDED,
+		GENERATING_TRADES,
+		GENERATING_TRADES_ENDED,
+		CANCELED 
 	}
 	
 	private Integer tradeId;
@@ -31,7 +36,7 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 	}
 
 	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="asdf")
+	@JoinColumn(name="tradeResultId")
 	public TradeResultEntity getResult() {
 		return result;
 	}
