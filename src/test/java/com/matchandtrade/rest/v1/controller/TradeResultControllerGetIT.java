@@ -47,11 +47,14 @@ public class TradeResultControllerGetIT {
 	private TradeMembershipService tradeMembershipService;
 	@Autowired
 	private TradeRepositoryFacade tradeRepositoryFacade;
+	@Autowired
+	private TradeResultController tradeResultController;
 	
 	@Before
 	public void before() {
-		if (wantItemController == null) {
+		if (wantItemController == null || tradeResultController == null) {
 			wantItemController = mockControllerFactory.getWantItemController(false);
+			tradeResultController = mockControllerFactory.getTradeResultController(true);
 		}
 	}
 	
@@ -109,7 +112,6 @@ public class TradeResultControllerGetIT {
 		// Generate the trade results
 		trade.setState(TradeEntity.State.MATCHING_ITEMS_ENDED);
 		tradeRepositoryFacade.save(trade);
-		TradeResultController tradeResultController = mockControllerFactory.getTradeResultController(true);
 		String response = tradeResultController.getResults(trade.getTradeId());
 		String[] responseLines = response.split("\n");
 
@@ -138,7 +140,6 @@ public class TradeResultControllerGetIT {
 		UserEntity greekUser = wantItemController.authenticationProvider.getAuthentication().getUser();
 		TradeEntity trade = tradeRandom.nextPersistedEntity(greekUser);
 		// Generate the trade results
-		TradeResultController tradeResultController = mockControllerFactory.getTradeResultController(true);
 		try {
 			tradeResultController.getResults(trade.getTradeId());
 		} catch (RestException e) {
