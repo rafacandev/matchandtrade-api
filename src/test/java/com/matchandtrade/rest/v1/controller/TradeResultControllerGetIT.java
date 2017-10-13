@@ -16,6 +16,8 @@ import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.v1.json.WantItemJson;
 import com.matchandtrade.rest.v1.transformer.ItemTransformer;
@@ -43,6 +45,8 @@ public class TradeResultControllerGetIT {
 	private UserRandom userRandom;
 	@Autowired
 	private TradeMembershipService tradeMembershipService;
+	@Autowired
+	private TradeRepositoryFacade tradeRepositoryFacade;
 	
 	@Before
 	public void before() {
@@ -52,7 +56,7 @@ public class TradeResultControllerGetIT {
 	}
 	
 	@Test
-	public void positive() throws IOException {
+	public void basicScenario() throws IOException {
 		// Create a trade for a random user
 		UserEntity greekUser = wantItemController.authenticationProvider.getAuthentication().getUser();
 		TradeEntity trade = tradeRandom.nextPersistedEntity(greekUser);
@@ -103,13 +107,14 @@ public class TradeResultControllerGetIT {
 		secondForBrazil = wantItemController.post(ordinalTradeMembership.getTradeMembershipId(), second.getItemId(), secondForBrazil);
 		
 		// Generate the trade results
+		trade.setState(TradeEntity.State.MATCHING_ITEMS_ENDED);
+		tradeRepositoryFacade.save(trade);
 		TradeResultController tradeResultController = mockControllerFactory.getTradeResultController(true);
 		String response = tradeResultController.getResults(trade.getTradeId());
 		String[] responseLines = response.split("\n");
 
 		// Assert header
-		assertEquals(
-				"offering_user_id,offering_user_name,offering_item_id,offering_item_name,receiving_user_id,receiving_user_name,receiving_item_id,receiving_item_name",
+		assertEquals("offering_user_id,offering_user_name,offering_item_id,offering_item_name,receiving_user_id,receiving_user_name,receiving_item_id,receiving_item_name",
 				responseLines[0]);
 
 		// Offering Alpha for Australia
@@ -128,8 +133,26 @@ public class TradeResultControllerGetIT {
 		assertTrue(responseLines[10].contains("5") );
 	}
 
-	private String buildCsvLine(TradeMembershipEntity greekTradeMembership, ItemEntity alpha,
-			TradeMembershipEntity countryTradeMembership, ItemEntity australia) {
+	@Test(expected = RestException.class)
+	public void resultsAreOnlyGeneratedIfTradeStatusIsMatchingItemsEndedOrGeneratingTradesEnded() throws IOException {
+		UserEntity greekUser = wantItemController.authenticationProvider.getAuthentication().getUser();
+		TradeEntity trade = tradeRandom.nextPersistedEntity(greekUser);
+		// Generate the trade results
+		TradeResultController tradeResultController = mockControllerFactory.getTradeResultController(true);
+		try {
+			tradeResultController.getResults(trade.getTradeId());
+		} catch (RestException e) {
+			assertEquals("TradeResult is only availble when Trade.State is MATCHING_ITEMS_ENDED or GENERATING_TRADES_ENDED", e.getDescription());
+			throw e;
+		}
+		
+	}
+
+	private String buildCsvLine(
+			TradeMembershipEntity greekTradeMembership,
+			ItemEntity alpha,
+			TradeMembershipEntity countryTradeMembership,
+			ItemEntity australia) {
 		String alphaForAustraliaString = greekTradeMembership.getUser().getUserId() + ","
 				+ greekTradeMembership.getUser().getName() + ","
 				+ alpha.getItemId() + ","
