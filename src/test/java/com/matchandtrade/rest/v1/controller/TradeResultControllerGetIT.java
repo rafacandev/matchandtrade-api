@@ -150,18 +150,18 @@ public class TradeResultControllerGetIT {
 	}
 
 	private String buildCsvLine(
-			TradeMembershipEntity greekTradeMembership,
+			TradeMembershipEntity offeringTradeMembership,
 			ItemEntity alpha,
-			TradeMembershipEntity countryTradeMembership,
+			TradeMembershipEntity receiverTradeMembership,
 			ItemEntity australia) {
-		String alphaForAustraliaString = greekTradeMembership.getUser().getUserId() + ","
-				+ greekTradeMembership.getUser().getName() + ","
+		String result = offeringTradeMembership.getUser().getUserId() + ","
+				+ offeringTradeMembership.getUser().getName() + ","
 				+ alpha.getItemId() + ","
 				+ alpha.getName() + ","
-				+ countryTradeMembership.getUser().getUserId() + ","
-				+ countryTradeMembership.getUser().getName() + ","
+				+ receiverTradeMembership.getUser().getUserId() + ","
+				+ receiverTradeMembership.getUser().getName() + ","
 				+ australia.getItemId() + ","
 				+ australia.getName();
-		return alphaForAustraliaString;
+		return result;
 	}
 }

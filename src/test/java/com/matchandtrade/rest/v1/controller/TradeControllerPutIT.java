@@ -28,7 +28,7 @@ public class TradeControllerPutIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeController(true);
+			fixture = mockControllerFactory.getTradeController(false);
 		}
 	}
 	
@@ -36,7 +36,7 @@ public class TradeControllerPutIT {
 	public void put() {
 		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		TradeJson tradeRequest = TradeTransformer.transform(existingTrade);
-		tradeRequest.setName(tradeRequest.getName() + " - Name after PUT");
+		tradeRequest.setName(tradeRequest.getName() + " - Trade.name after PUT");
 		TradeJson tradeResponse = fixture.put(tradeRequest.getTradeId(), tradeRequest);
 		assertEquals(tradeRequest.getName(), tradeResponse.getName());
 	}
