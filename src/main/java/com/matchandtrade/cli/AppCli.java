@@ -1,5 +1,6 @@
 package com.matchandtrade.cli;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -12,13 +13,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import com.matchandtrade.config.AppConfigurationLoader;
-
 public class AppCli {
 	
 	private boolean isInterrupted = false;
 	private String commandLineOutputMessage = "";
-
+	private CommandLine cli;
+	
 	public AppCli(String[] arguments) throws IOException {
 		
 		Options options = new Options();
@@ -39,16 +39,22 @@ public class AppCli {
 				.build());
 
 		try {
-			CommandLine cli = new DefaultParser().parse(options, arguments);
+			cli = new DefaultParser().parse(options, arguments);
 			if (cli.hasOption("cf")) {
-				String configFilePath = cli.getOptionValue("cf");
-				AppConfigurationLoader.loadConfigurationFromFilePath(configFilePath);
+				File configFile = new File(cli.getOptionValue("cf"));
+				if (!configFile.exists()) {
+					throw new InvalidParameterException("Configuration file [" + cli.getOptionValue("cf") + "] does not exist.");
+				}
+				if (configFile.isDirectory()) {
+					throw new InvalidParameterException("Configuration file [" + cli.getOptionValue("cf") + "] is a directory but this application expects a file.");
+				}
+				if (!configFile.canRead()) {
+					throw new InvalidParameterException("Configuration file [" + cli.getOptionValue("cf") + "] cannot be read.");
+				}
 			}
-			
 			if (cli.hasOption("h")) {
 				StringWriter stringWritter = new StringWriter();
 				PrintWriter printWritter = new PrintWriter(stringWritter);
-				
 				isInterrupted = true;
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.setWidth(150);
@@ -69,7 +75,9 @@ public class AppCli {
 		}
 	}
 
-
+	public String configurationFilePath() {
+		return cli.getOptionValue("cf");
+	}
 	
 	public boolean isInterrupted() {
 		return isInterrupted;

@@ -3,7 +3,6 @@ package com.matchandtrade.cli;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.AppConfiguration;
-import com.matchandtrade.config.AppConfigurationProperties;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
 @RunWith(SpringRunner.class)
@@ -23,7 +21,7 @@ public class AppCliUT {
 	@Autowired
 	AppConfiguration appConfiguration;
 	
-	@Test(expected=IOException.class)
+	@Test(expected=InvalidParameterException.class)
 	public void configFileNegativeDirectory() throws IOException {
 		String directoryPath = AppCliUT.class.getProtectionDomain().getCodeSource().getLocation().getPath();		
 		String[] arguments = {"-cf", directoryPath};
@@ -31,16 +29,7 @@ public class AppCliUT {
 		assertEquals(true, cli.isInterrupted());
 	}
 	
-	@Test
-	public void configFilePositive() throws IOException {
-		String filePath = this.getClass().getClassLoader().getResource("").getPath() 
-				+ ".." + File.separator + ".." + File.separator + "src" + File.separator + "config"+ File.separator +"matchandtrade.properties";
-		String[] arguments = {"-cf", filePath};
-		new AppCli(arguments);
-		assertEquals(filePath, System.getProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
-	}
-	
-	@Test(expected=IOException.class)
+	@Test(expected=InvalidParameterException.class)
 	public void configFileNegativeFileNotFound() throws IOException {
 		String[] arguments = {"-cf", "configFileTest"};
 		AppCli cli = new AppCli(arguments);

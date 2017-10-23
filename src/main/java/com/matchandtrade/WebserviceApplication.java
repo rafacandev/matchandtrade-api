@@ -93,6 +93,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 import com.matchandtrade.authentication.AuthenticationServlet;
 import com.matchandtrade.cli.AppCli;
+import com.matchandtrade.config.AppConfigurationLoader;
 import com.matchandtrade.config.AppConfigurationProperties;
 
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
@@ -205,13 +206,20 @@ public class WebserviceApplication {
 			throw(e);
 		}
 		
-		// If line output message is interrupted; then, display message 
+		// Load configurationFile from arguments
+		String configurationFilePath = System.getProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey());
+		if (cli.configurationFilePath() != null) {
+			configurationFilePath = cli.configurationFilePath();
+		}
+		AppConfigurationLoader.loadConfigurationFromFilePath(configurationFilePath);
+		
+		// If line output message is interrupted (e.g: invalid command line); then, display message CommandLineOutputMessage 
 		if (cli.isInterrupted()) {
 			LOGGER.info(cli.getCommandLineOutputMessage());
 		} else {
 			displayWelcomeMessage();
 			// Proceed normally
-			SpringApplication.run(WebserviceApplication.class, arguments);
+			SpringApplication.run(WebserviceApplication.class);
 		}
 	}
 
