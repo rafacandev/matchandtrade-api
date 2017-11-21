@@ -15,7 +15,9 @@ public class AppConfigurationProperties {
 		DATA_SOURCE_DRIVER_CLASS("datasource.driver.class", "org.h2.Driver"),
 		DATA_SOURCE_JDBC_URL("datasource.jdbc.url", "jdbc:h2:./target/h2db/matchandtrade;DB_CLOSE_ON_EXIT=FALSE"),
 		DATA_SOURCE_PASSWORD("datasource.password", "password"),
-		DATA_SOURCE_USER("datasource.user", "username");
+		DATA_SOURCE_USER("datasource.user", "username"),
+		LOGGING_FILE("logging.file", "target/matchandtrade-web-api.log"),
+		SERVER_PORT("server.port", "8080");
 
 		private final String defaultValue;
 		private final String key;

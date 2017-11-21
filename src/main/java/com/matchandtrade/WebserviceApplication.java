@@ -202,17 +202,22 @@ public class WebserviceApplication {
 		try {
 			cli = new AppCli(arguments);
 		} catch (Exception e) {
-			LOGGER.info("Not able to start application! ", e.getMessage());
-			throw(e);
+			LOGGER.info("Not able to start application! ", e.getMessage(), e);
+			System.exit(1);
 		}
-		
-		// Load configurationFile from arguments
+
 		String configurationFilePath = System.getProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey());
-		if (cli.configurationFilePath() != null) {
-			configurationFilePath = cli.configurationFilePath();
+		if (configurationFilePath == null) {
+			configurationFilePath = AppConfigurationProperties.Keys.CONFIG_FILE.getDefaultValue();
 		}
+		LOGGER.info("Loading configurations from {}", configurationFilePath);
 		AppConfigurationLoader.loadConfigurationFromFilePath(configurationFilePath);
-		
+		// Override configuration properties with values coming from arguments
+		if (cli.configurationFilePath() != null) {
+			LOGGER.info("Loading configurations from {}", cli.configurationFilePath());
+			AppConfigurationLoader.loadConfigurationFromFilePath(cli.configurationFilePath());
+		}
+
 		// If line output message is interrupted (e.g: invalid command line); then, display message CommandLineOutputMessage 
 		if (cli.isInterrupted()) {
 			LOGGER.info(cli.getCommandLineOutputMessage());
@@ -227,14 +232,11 @@ public class WebserviceApplication {
 		LOGGER.info("/===========================================================");
 		LOGGER.info("| WELCOME TO MATCH AND TRADE WEB");
 		LOGGER.info("| ");
-		String msg = buildDefaultMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey());
-		LOGGER.info("| Configuration file: {}", msg);
-		msg = buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey());
-		LOGGER.info("| OAuth implementation: {}", msg);
-		msg = buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey());
-		LOGGER.info("| JDBC Url: {}", msg);
-		msg = buildDefaultMessage("logging.file");
-		LOGGER.info("| Log file: {}", msg);
+		LOGGER.info("| Configuration file: {}", buildDefaultMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
+		LOGGER.info("| OAuth implementation: {}", buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
+		LOGGER.info("| JDBC Url: {}", buildDefaultMessage(AppConfigurationProperties.Keys.DATA_SOURCE_JDBC_URL.getKey()));
+		LOGGER.info("| Log file: {}", buildDefaultMessage(AppConfigurationProperties.Keys.LOGGING_FILE.getKey()));
+		LOGGER.info("| Web Server Port: {}", buildDefaultMessage(AppConfigurationProperties.Keys.SERVER_PORT.getKey()));
 		LOGGER.info("\\===========================================================");
 	}
 
