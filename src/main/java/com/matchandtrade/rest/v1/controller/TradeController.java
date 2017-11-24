@@ -12,7 +12,6 @@ import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
-import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.link.TradeLinkAssember;
@@ -29,8 +28,6 @@ public class TradeController implements Controller {
 	TradeValidator tradeValidador;
 	@Autowired
 	TradeService tradeService;
-	@Autowired
-	TradeMembershipService tradeMembershipService;
 
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
