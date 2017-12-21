@@ -338,7 +338,7 @@
 				<configuration>
 					<arguments>
 						<argument>-cf</argument>
-						<argument>${basedir}/src/config/matchandtrade.properties</argument>
+						<argument>${basedir}/config/matchandtrade.properties</argument>
 					</arguments>
 					<configuration>
 						<classifier>exec</classifier>
