@@ -51,6 +51,11 @@ public class AuthenticationServlet extends HttpServlet {
 		AuthenticationProperties.Action targetAction = obtainAuthenticationAction(request);
 		LOGGER.debug("Performing Authentication Action {} for requet [{}].", targetAction, request.getRequestURI());
 		try {
+			if (targetAction == null) {
+				LOGGER.info("URI request not recognized: {}", request.getRequestURI());
+				response.setStatus(404);
+				return;
+			}
 			switch (targetAction) {
 			case SIGNOUT:
 				signOut(request, response);
@@ -71,7 +76,7 @@ public class AuthenticationServlet extends HttpServlet {
 			}
 		} catch (Exception e) {
 			LOGGER.error("Error when performing a GET /authenticate/* with targetAction {}", targetAction, e);
-			response.setStatus(404);
+			response.setStatus(500);
 		}
 	}
 	

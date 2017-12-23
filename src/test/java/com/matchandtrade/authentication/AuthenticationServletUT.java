@@ -53,10 +53,8 @@ public class AuthenticationServletUT {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setRequestURI("http://localhost:8080/authenticate");
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		
 		authenticationServlet.setAuthenticationOAuth(new AuthenticationOAuthNewUserMock());
 		authenticationServlet.doGet(request, response);
-		
 		URI uri = new URI(response.getRedirectedUrl());
 		String redirectUrl = uri.getPath();
 		assertEquals(authenticationProperties.getRedirectURI(), redirectUrl);
@@ -86,9 +84,7 @@ public class AuthenticationServletUT {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setRequestURI("http://localhost:8080/authenticate/invalid");
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		
 		authenticationServlet.doGet(request, response);
-		
 		assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 	}
 	
