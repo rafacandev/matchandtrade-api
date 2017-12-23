@@ -35,6 +35,8 @@ public class AppConfiguration {
 		result.setClientId(appProperties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_ID));
 		result.setClientSecret(appProperties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_SECRET));
 		result.setRedirectURI(appProperties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_CLIENT_REDIRECT_URL));
+		Integer sessionTimeout = Integer.parseInt(appProperties.getProperty(AppConfigurationProperties.Keys.AUTHENTICATION_SESSION_TIMEOUT));
+		result.setSessionTimeout(sessionTimeout);
 		return result;
 	}
 

@@ -58,7 +58,7 @@ public class AuthenticationServletUT {
 		authenticationServlet.doGet(request, response);
 		
 		URI uri = new URI(response.getRedirectedUrl());
-		String redirectUrl = uri.getScheme() +"://" + uri.getHost() + ":" + uri.getPort() + uri.getPath();
+		String redirectUrl = uri.getPath();
 		assertEquals(authenticationProperties.getRedirectURI(), redirectUrl);
 	}
 	

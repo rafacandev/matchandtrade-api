@@ -20,7 +20,7 @@ public class AuthenticationProperties {
 	}
 	
 	public enum Action {
-		AUTHENTICATE, CALLBACK, SIGNOUT;
+		AUTHENTICATE, CALLBACK, SIGNOUT, INFO;
 		public static Action get(String s) {
 			Action result = null;
 			switch (s) {
@@ -33,6 +33,9 @@ public class AuthenticationProperties {
 			case "callback":
 				result = Action.CALLBACK;
 				break;			
+			case "info":
+				result = Action.INFO;
+				break;			
 			default:
 				// There is no default value
 				break;
@@ -44,6 +47,7 @@ public class AuthenticationProperties {
 	private String clientId;
 	private String clientSecret;
 	private String redirectURI;
+	private Integer sessionTimeout;
 
 	public String getClientId() {
 		return clientId;
@@ -67,6 +71,14 @@ public class AuthenticationProperties {
 
 	public void setRedirectURI(String redirectURI) {
 		this.redirectURI = redirectURI;
+	}
+
+	public Integer getSessionTimeout() {
+		return sessionTimeout;
+	}
+
+	public void setSessionTimeout(Integer sessionTimeout) {
+		this.sessionTimeout = sessionTimeout;
 	}
 
 }

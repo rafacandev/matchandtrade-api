@@ -1,9 +1,7 @@
 package com.matchandtrade.authentication;
 
 import java.io.IOException;
-import java.io.Serializable;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -20,10 +18,9 @@ import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 
 @Component
-public class AuthenticationCallback implements Serializable {
+public class AuthenticationCallback {
 
-	private static final long serialVersionUID = 6742828244957421933L;
-	private static final Logger logger = LoggerFactory.getLogger(AuthenticationCallback.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationCallback.class);
 	
 	@Autowired
 	private AuthenticationProperties authenticationProperties;
@@ -35,10 +32,10 @@ public class AuthenticationCallback implements Serializable {
 	private AuthenticationRespositoryFacade authenticationRepository;
 
 	@Transactional
-	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// oAuth Step 3. Confirm anti-forgery state token
 		String stateParameter = request.getParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString());
-		logger.debug("Received request with state parameter: [{}]", stateParameter);
+		LOGGER.debug("Received request with state parameter: [{}]", stateParameter);
 
 		AuthenticationEntity authenticationEntity = authenticationRepository.findByAtiForgeryState(stateParameter);
 		// Return HTTP-STATUS 401 if anti-forgery state token is not found
@@ -62,12 +59,25 @@ public class AuthenticationCallback implements Serializable {
 		AuthenticationResponsePojo persistedUserInfo = updateUserInfo(userInfoFromAuthenticationAuthority.getEmail(), userInfoFromAuthenticationAuthority.getName());
 		updateAuthenticationInfo(authenticationEntity, persistedUserInfo.getUserId(), accessToken);
 		
-		/*
-		 * Using accessToken as AuthorizationToken since authorization is managed locally instead of the Authentication Authority
-		 * Assign the accessToken to the Authorization header
-		 * Returns only the Authorization header, at the moment there is no need for a response body
-		 */
+		// Using accessToken as AuthorizationToken since authorization is managed locally instead of the Authentication Authority
 		response.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
+		request.getSession().setAttribute(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
+		
+		// Redirect the response
+		redirectResponse(request, response);
+	}
+
+	/**
+	 * Redirects the response according to <code>request.getSession().getAttribute("callbackUrl")</code>
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	private void redirectResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		Object callbackUrl = request.getSession().getAttribute("callbackUrl");
+		if (callbackUrl != null && !callbackUrl.toString().isEmpty()) {
+			response.sendRedirect(callbackUrl.toString());
+		}
 	}
 
 	/**

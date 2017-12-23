@@ -43,6 +43,7 @@ public class AuthenticationServlet extends HttpServlet {
 	 * If {@code request.getRequestURI()} ends in 'sign-out' it ends the session.
 	 * If {@code request.getRequestURI()} ends in 'authenticate' it redirect to the Authentication Authority.
 	 * If {@code request.getRequestURI()} ends in 'callback' it delegates to {@code AuthenticationCallback.authenticate()}.
+	 * If {@code request.getRequestURI()} ends in 'info' it delegates to {@code AuthenticationInfoUtil.writeResponseBody()}.
 	 * Otherwise returns {@code Response.Status.NOT_FOUND}
 	 */
 	@Override
@@ -50,18 +51,34 @@ public class AuthenticationServlet extends HttpServlet {
 		AuthenticationProperties.Action targetAction = obtainAuthenticationAction(request);
 		LOGGER.debug("Performing Authentication Action {} for requet [{}].", targetAction, request.getRequestURI());
 		try {
-			if (targetAction == null) {
-				response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
-			} else if (targetAction == AuthenticationProperties.Action.SIGNOUT) {
+			switch (targetAction) {
+			case SIGNOUT:
 				signOut(request, response);
-			} else if (targetAction == AuthenticationProperties.Action.AUTHENTICATE) {
+				break;
+			case AUTHENTICATE:
+				saveCallbackUrlInSession(request);
 				redirectToAuthenticationServer(response);
-			} else if (targetAction == AuthenticationProperties.Action.CALLBACK) {
+				break;
+			case CALLBACK:
 				authenticationCallbak.authenticate(request, response);
+				break;
+			case INFO:
+				AuthenticationInfoUtil.writeResponseBody(request, response);
+				break;
+			default:
+				response.setStatus(Response.Status.NOT_FOUND.getStatusCode());
+				break;
 			}
 		} catch (Exception e) {
-			LOGGER.error("Error when performing a GET /authenticate/.", e);
+			LOGGER.error("Error when performing a GET /authenticate/* with targetAction {}", targetAction, e);
+			response.setStatus(404);
 		}
+	}
+	
+	private void saveCallbackUrlInSession(HttpServletRequest request) {
+		String callbackUrl = request.getParameter(AuthenticationParameter.CALLBACK_URL.toString());
+		request.getSession().setAttribute(AuthenticationParameter.CALLBACK_URL.toString(), callbackUrl);
+		request.getSession().setMaxInactiveInterval(authenticationProperties.getSessionTimeout());
 	}
 
 	private String generateAntiForgeryToken() {

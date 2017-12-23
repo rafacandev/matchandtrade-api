@@ -9,7 +9,8 @@ public class AppConfigurationProperties {
 	public enum Keys {
 		AUTHENTICATION_CLIENT_ID("authentication.client.id","clientIdProperty"),
 		AUTHENTICATION_CLIENT_SECRET("authentication.client.secrete","clientSecretProperty"),
-		AUTHENTICATION_CLIENT_REDIRECT_URL("authentication.redirect.url","http://localhost:8080/authenticate/callback"),
+		AUTHENTICATION_CLIENT_REDIRECT_URL("authentication.redirect.url","/api/authenticate/callback"),
+		AUTHENTICATION_SESSION_TIMEOUT("authentication.session.timeout","60"),
 		AUTHENTICATION_OAUTH_CLASS("authentication.oauth.class","com.matchandtrade.authentication.AuthenticationOAuthNewUserMock"),
 		CONFIG_FILE("matchandtrade.config.file", "config/matchandtrade.properties"),
 		DATA_SOURCE_DRIVER_CLASS("datasource.driver.class", "org.h2.Driver"),
