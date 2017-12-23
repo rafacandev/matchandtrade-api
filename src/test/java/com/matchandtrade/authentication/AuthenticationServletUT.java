@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import javax.servlet.ServletException;
 import javax.ws.rs.core.Response;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,11 @@ public class AuthenticationServletUT {
 	
 	@Autowired
 	AuthenticationServlet authenticationServlet;
+	
+	@Before
+	public void before() {
+		authenticationProperties.setRedirectURI("http://localhost/authenticate/callback");
+	}
 	
 	@Test
 	public void authenticationAction() {
@@ -56,7 +62,7 @@ public class AuthenticationServletUT {
 		authenticationServlet.setAuthenticationOAuth(new AuthenticationOAuthNewUserMock());
 		authenticationServlet.doGet(request, response);
 		URI uri = new URI(response.getRedirectedUrl());
-		String redirectUrl = uri.getPath();
+		String redirectUrl = "http://" + uri.getHost() + uri.getPath();
 		assertEquals(authenticationProperties.getRedirectURI(), redirectUrl);
 	}
 	
