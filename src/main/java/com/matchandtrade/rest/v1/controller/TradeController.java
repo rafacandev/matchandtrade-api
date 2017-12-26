@@ -78,8 +78,7 @@ public class TradeController implements Controller {
 
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
 	public SearchResult<TradeJson> get(String name, Integer _pageNumber, Integer _pageSize) {
-		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate request identity - Nothing to validate it is a public resource
 		// Validate the request - Nothing to validate
 		// Delegate to Service layer
 		SearchResult<TradeEntity> searchResult = tradeService.search(name, _pageNumber, _pageSize);
