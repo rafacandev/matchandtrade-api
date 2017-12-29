@@ -8,7 +8,7 @@
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>${logging.file:-matchandtrade.log}</file>
+		<file>${logging.file:-log/matchandtrade.log}</file>
 		<encoder>
 			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n</pattern>
 		</encoder>

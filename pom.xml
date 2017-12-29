@@ -343,6 +343,7 @@
 					<configuration>
 						<classifier>exec</classifier>
 					</configuration>
+					<jvmArguments>-Dlogging.file="target/log/matchandtrade.log"</jvmArguments>
 				</configuration>
 			</plugin>
 			
