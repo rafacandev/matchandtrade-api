@@ -21,7 +21,7 @@ public class AuthenticationInfoUtil {
 	public static void writeResponseBody(HttpServletRequest request, HttpServletResponse response) {
 		Object authorizationHeader = request.getSession().getAttribute(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
 		if (authorizationHeader == null) {
-			response.setStatus(404);
+			response.setStatus(401);
 			return;
 		}
 		
