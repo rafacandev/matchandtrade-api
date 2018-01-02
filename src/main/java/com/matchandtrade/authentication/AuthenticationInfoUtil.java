@@ -1,9 +1,11 @@
 package com.matchandtrade.authentication;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,8 @@ public class AuthenticationInfoUtil {
 
 		try {
 			String authenticationInfoJsonAsString = JsonUtil.toJson(authenticationInfoJson);
+			response.setContentType(MediaType.APPLICATION_JSON);
+			response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
 			response.getWriter().println(authenticationInfoJsonAsString);
 		} catch (IOException e) {
 			LOGGER.error("Not able to write AuthenticationInfoJson in the response body.", e);
