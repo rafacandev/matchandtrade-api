@@ -25,6 +25,8 @@ public class ThrowableExceptionHandlerUT extends ResponseEntityExceptionHandler 
 		RestException e = new RestException(HttpStatus.FORBIDDEN);
 		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(request, e);
 		Assert.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+		RestErrorJson restErrorJson = (RestErrorJson) response.getBody();
+		Assert.assertEquals(HttpStatus.FORBIDDEN.getReasonPhrase(), restErrorJson.getDescription());
 	}
 
 	@Test
@@ -34,6 +36,8 @@ public class ThrowableExceptionHandlerUT extends ResponseEntityExceptionHandler 
 		RestException e = new RestException(HttpStatus.ALREADY_REPORTED, "ThrowableExceptionHandlerUT.restExceptionWithDescription()");
 		ResponseEntity<Object> response = throwableExceptionHandler.handleControllerException(request, e);
 		Assert.assertEquals(HttpStatus.ALREADY_REPORTED, response.getStatusCode());
+		RestErrorJson restErrorJson = (RestErrorJson) response.getBody();
+		Assert.assertEquals(e.getDescription(), restErrorJson.getDescription());
 	}
 	
 	@Test

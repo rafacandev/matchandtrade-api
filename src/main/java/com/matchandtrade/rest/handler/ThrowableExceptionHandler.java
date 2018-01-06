@@ -22,30 +22,34 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     ResponseEntity<Object> handleControllerException(HttpServletRequest request, Throwable exception) {
 		// Default is null, which results in no response body
-		Object responseEntityObject = null;
-		
+		Object resultEntity = null;
 		// Default is http status 500
     	HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
     	if (exception instanceof RestException) {
     		RestException e = (RestException) exception;
     		status = e.getHttpStatus();
-    		if (e.getDescription() != null) {
-        		responseEntityObject = buildRestErrorJson(e);
-			}
+       		resultEntity = buildErrorJson(e);
 		} else {
 			LOGGER.error("Error proccessing request to URI: [{}]. Exception message: [{}].", request.getRequestURI(), exception.getMessage(), exception);
-			RestErrorJson restErrorJson = new RestErrorJson();
-			restErrorJson.setDescription("Unknown error. " + status.getReasonPhrase());
-			responseEntityObject = restErrorJson;
+			resultEntity = buildErrorJson("Unknown error. " + status.getReasonPhrase());
 		}
-    	return new ResponseEntity<>(responseEntityObject, status);
+    	return new ResponseEntity<>(resultEntity, status);
     }
 
-	private Object buildRestErrorJson(Exception e) {
-		Object result;
-		RestErrorJson restErrorJson = new RestErrorJson();
-		restErrorJson.setDescription(e.getMessage());
-		result = restErrorJson;
+	private Object buildErrorJson(RestException e) {
+		RestErrorJson result = new RestErrorJson();
+		if (e.getDescription() != null && !e.getDescription().isEmpty()) {
+			result.setDescription(e.getDescription());
+		} else {			
+			result.setDescription(e.getMessage());
+		}
+		return result;
+	}
+
+	private Object buildErrorJson(String description) {
+		RestErrorJson result = new RestErrorJson();
+		result.setDescription(description);
 		return result;
 	}
 
