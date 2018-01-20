@@ -14,7 +14,7 @@ public class TradeMembershipLinkAssember {
 
 	public static void assemble(TradeMembershipJson json) {
 		if (json != null) {
-			json.getLinks().add(linkTo(methodOn(TradeMembershipController.class).get(json.getTradeId())).withSelfRel());
+			json.getLinks().add(linkTo(methodOn(TradeMembershipController.class).get(json.getTradeMembershipId())).withSelfRel());
 		}
 	}
 
