@@ -95,6 +95,7 @@ import com.matchandtrade.authentication.AuthenticationServlet;
 import com.matchandtrade.cli.AppCli;
 import com.matchandtrade.config.AppConfigurationLoader;
 import com.matchandtrade.config.AppConfigurationProperties;
+import com.matchandtrade.util.VersionUtil;
 
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
@@ -229,29 +230,28 @@ public class WebserviceApplication {
 	}
 
 	private static void displayWelcomeMessage() {
+		VersionUtil versionUtil = new VersionUtil();
 		LOGGER.info("/===========================================================");
-		LOGGER.info("| WELCOME TO MATCH AND TRADE WEB");
-		LOGGER.info("| ");
-		LOGGER.info("| Configuration file: {}", buildDefaultMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
-		LOGGER.info("| OAuth implementation: {}", buildDefaultMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
-		LOGGER.info("| JDBC Url: {}", buildDefaultMessage(AppConfigurationProperties.Keys.DATA_SOURCE_JDBC_URL.getKey()));
-		LOGGER.info("| Log file: {}", buildDefaultMessage(AppConfigurationProperties.Keys.LOGGING_FILE.getKey()));
-		LOGGER.info("| Web Server Port: {}", buildDefaultMessage(AppConfigurationProperties.Keys.SERVER_PORT.getKey()));
+		LOGGER.info("| WELCOME TO MATCH AND TRADE WEB API");
+		LOGGER.info("|");
+		LOGGER.info("| Project Name: {}", versionUtil.projectName());
+		LOGGER.info("| Project Version: {}", versionUtil.projectVersion());
+		LOGGER.info("| Build Number: {}", versionUtil.buildNumber());
+		LOGGER.info("| Build Timestamp: {}", versionUtil.buildTimestamp());
+		LOGGER.info("|");
+		LOGGER.info("| Configuration file: {}", buildPropertyMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
+		LOGGER.info("| OAuth implementation: {}", buildPropertyMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
+		LOGGER.info("| JDBC Url: {}", buildPropertyMessage(AppConfigurationProperties.Keys.DATA_SOURCE_JDBC_URL.getKey()));
+		LOGGER.info("| Log file: {}", buildPropertyMessage(AppConfigurationProperties.Keys.LOGGING_FILE.getKey()));
+		LOGGER.info("| Web Server Port: {}", buildPropertyMessage(AppConfigurationProperties.Keys.SERVER_PORT.getKey()));
+		
 		LOGGER.info("\\===========================================================");
 	}
 
-	private static String buildDefaultMessage(String s) {
+	private static String buildPropertyMessage(String s) {
 		String property = null;
 		if (s != null && !s.isEmpty()) {
 			property = System.getProperty(s);
-			if (property == null) {
-				AppConfigurationProperties.Keys key = AppConfigurationProperties.Keys.getKey(s);
-				if (key != null) {
-					return "["+s+"] NOT FOUND! Using default value: " + key.getDefaultValue();
-				} else {
-					return "["+s+"] NOT FOUND!";
-				}
-			}
 		}
 		return property;
 	}
