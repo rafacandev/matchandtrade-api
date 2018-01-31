@@ -21,7 +21,7 @@ public class QueryBuilderUtil {
 	 * @param criterion
 	 * @return
 	 */
-	public static String buildClauses(List<Criterion> criteria) {
+	private static String buildClauses(List<Criterion> criteria) {
 		StringBuilder result = new StringBuilder();
 		criteria.forEach( criterion -> {
 			// Check if result already starts with WHERE

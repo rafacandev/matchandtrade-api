@@ -36,6 +36,8 @@ public class MockControllerFactory {
 	private ItemController itemController;
 	private MockAuthenticationProvider lastMockAuthenticationProvider;
 	@Autowired
+	private SearchController searchController;
+	@Autowired
 	private TradeController tradeController;
 	@Autowired
 	private TradeResultController tradeResultController;
@@ -106,6 +108,11 @@ public class MockControllerFactory {
 	public WantItemController getWantItemController(boolean reusePreviousAuthentication) {
 		wantItemController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return wantItemController;
+	}
+
+	public SearchController getSearchController(boolean reusePreviousAuthentication) {
+		searchController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return searchController;
 	}
 
 }
