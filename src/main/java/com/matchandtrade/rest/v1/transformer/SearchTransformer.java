@@ -21,8 +21,8 @@ public class SearchTransformer {
 
 	private SearchTransformer() {}
 
-	public static SearchCriteria transform(SearchCriteriaJson request) {
-		SearchCriteria result = new SearchCriteria(new Pagination(1, 10));
+	public static SearchCriteria transform(SearchCriteriaJson request, Pagination pagination) {
+		SearchCriteria result = new SearchCriteria(pagination);
 		if (Recipe.ITEMS == request.getRecipe()) {
 			request.getCriteria().forEach(entry -> {
 				if ("trade.tradeId".equals(entry.getKey())) {

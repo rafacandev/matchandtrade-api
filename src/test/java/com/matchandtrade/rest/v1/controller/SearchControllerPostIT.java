@@ -66,7 +66,7 @@ public class SearchControllerPostIT {
 		request.setRecipe(Recipe.ITEMS);
 		request.addCriterion("trade.tradeId", trade.getTradeId());
 
-		SearchResult<Json> response = fixture.post(request);
+		SearchResult<Json> response = fixture.post(request, 1, 10);
 		assertEquals(5, response.getResultList().size());
 		assertTrue(containsItem(response, alpha));
 		assertTrue(containsItem(response, beta));

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
+import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.dto.ItemAndTradeMembershipIdDto;
@@ -32,13 +33,13 @@ public class SearchController implements Controller {
 	private SearchWithRecipeService searchService;
 	
 	@RequestMapping(path={"", "/"}, method=RequestMethod.POST)
-	public SearchResult<Json> post(@RequestBody SearchCriteriaJson request) {
+	public SearchResult<Json> post(@RequestBody SearchCriteriaJson request, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		SearchValidator.validatePost(request);
 		// Transform the request
-		SearchCriteria searchCriteria = SearchTransformer.transform(request);
+		SearchCriteria searchCriteria = SearchTransformer.transform(request, new Pagination(_pageNumber, _pageSize));
 		// Delegate to service layer
 		SearchResult<Entity> searchResult = search(request.getRecipe(), searchCriteria);
 		// Transform the response

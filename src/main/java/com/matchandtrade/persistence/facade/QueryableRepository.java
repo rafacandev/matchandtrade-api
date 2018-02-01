@@ -60,12 +60,12 @@ public class QueryableRepository<T extends Entity> {
 		// Secondly, query the database with the proper pagination.
 		// Do not reuse countQuery since rowCount() modifies the query (I wish hibernate provided a way to clone Queries)...
 		Query queryCriteria = queryBuilder.buildSearchQuery(searchCriteria);
+		// Apply pagination parameters to the main criteria
+		applyPaginationToCriteria(searchCriteria.getPagination(), queryCriteria);
 		// Apply resultTransformer if exists
 		if (resultTransformer != null) {
 			queryCriteria.unwrap(org.hibernate.Query.class).setResultTransformer(resultTransformer);
 		}
-		// Apply pagination parameters to the main criteria
-		applyPaginationToCriteria(searchCriteria.getPagination(), queryCriteria);
 		// List results
 		List<T> resultList = queryCriteria.getResultList();
 		return new SearchResult<>(resultList, searchCriteria.getPagination());
