@@ -86,7 +86,7 @@ public class ItemController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId);
+		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, _pageNumber, _pageSize);
 		// Delegate to service layer
 		SearchResult<ItemEntity> searchResult = itemService.searchByTradeMembershipIdName(tradeMembershipId, name, _pageNumber, _pageSize);
 		// Transform the response

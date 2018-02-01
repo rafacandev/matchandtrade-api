@@ -107,4 +107,8 @@ public class WantItemValidator {
 		checkIfItemIsUnique(itemId, request.getItemId());
 	}
 
+	public void validateGet(Integer pageNumber, Integer pageSize) {
+		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);		
+	}
+
 }

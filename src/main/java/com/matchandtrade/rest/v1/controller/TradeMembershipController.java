@@ -68,6 +68,7 @@ public class TradeMembershipController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request - Nothing to validate
+		tradeMembershipValidador.validateGet(_pageNumber, _pageSize);
 		// Delegate to Service layer
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.searchByTradeIdUserId(tradeId, userId, _pageNumber, _pageSize);
 		// Transform the response

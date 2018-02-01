@@ -56,6 +56,7 @@ public class WantItemController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request - Nothing to validate
+		wantItemValidator.validateGet(_pageNumber, _pageSize);
 		// Delegate to service layer
 		SearchResult<WantItemEntity> searchResult = wantItemService.search(tradeMembershipId, itemId, _pageNumber, _pageSize);
 		// Transform the response

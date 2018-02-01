@@ -67,10 +67,16 @@ public class ItemValidator {
 	 * @param userId
 	 * @param tradeMembershipId
 	 */
-	public void validateGet(Integer userId, Integer tradeMembershipId) {
+	public void validateGet(Integer userId, Integer tradeMembershipId, Integer pageNumber, Integer pageSize) {
+		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
+		
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
+	}
+
+	public void validateGet(Integer userId, Integer tradeMembershipId) {
+		validateGet(userId, tradeMembershipId, null, null);
 	}
 
 	/**

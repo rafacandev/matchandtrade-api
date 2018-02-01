@@ -49,4 +49,8 @@ public class TradeMembershipValidator {
 		}
 	}
 
+	public void validateGet(Integer pageNumber, Integer pageSize) {
+		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
+	}
+
 }

@@ -37,7 +37,7 @@ public class SearchController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		SearchValidator.validatePost(request);
+		SearchValidator.validatePost(request, _pageNumber, _pageSize);
 		// Transform the request
 		SearchCriteria searchCriteria = SearchTransformer.transform(request, new Pagination(_pageNumber, _pageSize));
 		// Delegate to service layer

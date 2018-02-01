@@ -97,5 +97,12 @@ public class TradeValidator {
 			throw new RestException(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	public void validateGet(String name, Integer pageNumber, Integer pageSize) {
+		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
+		if (name != null) {
+			checkNameLength(name);
+		}
+	}
 
 }

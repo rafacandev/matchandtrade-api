@@ -16,8 +16,10 @@ public class SearchValidator {
 	 * Validates if request.recipe is present.
 	 * @param json
 	 */
-	public static void validatePost(SearchCriteriaJson json) {
-		if (json.getRecipe() == null) {
+	public static void validatePost(SearchCriteriaJson requestBody, Integer pageNumber, Integer pageSize) {
+		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
+		
+		if (requestBody.getRecipe() == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Recipe is mandatory.");
 		}
 	}

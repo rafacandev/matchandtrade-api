@@ -80,6 +80,7 @@ public class TradeController implements Controller {
 	public SearchResult<TradeJson> get(String name, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity - Nothing to validate it is a public resource
 		// Validate the request - Nothing to validate
+		tradeValidador.validateGet(name, _pageNumber, _pageSize);
 		// Delegate to Service layer
 		SearchResult<TradeEntity> searchResult = tradeService.search(name, _pageNumber, _pageSize);
 		// Transform the response
