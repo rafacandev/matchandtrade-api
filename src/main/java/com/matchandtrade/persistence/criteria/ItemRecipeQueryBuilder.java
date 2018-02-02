@@ -17,7 +17,7 @@ import com.matchandtrade.persistence.entity.ItemEntity;
 public class ItemRecipeQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		TRADE_ID("tradeMembership.trade.tradeId");
+		TRADE_ID("tradeMembership.trade.tradeId"), TRADE_MEMBERSHIP_ID("tradeMembership.tradeMembershipId");
 
 		private String alias;
 		

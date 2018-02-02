@@ -59,7 +59,7 @@ public class SearchController implements Controller {
 
 	private void assembleLinks(SearchResult<Json> response, Recipe recipe, SearchResult<Entity> searchResult) {
 		if (Recipe.ITEMS == recipe) {
-			// Sub-optimum performance but nice separation of concerns. If performance becomes issue then we need to assemble links with json transformation.
+			// Sub-optimum performance but nice separation of concerns. If performance becomes issue then we need to assemble links along with with json transformation.
 			searchResult.getResultList().forEach(v -> {
 				ItemAndTradeMembershipIdDto tradeMembershipAndItemDto = (ItemAndTradeMembershipIdDto) v;
 				response.getResultList().forEach(json -> {

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,9 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.v1.json.ItemJson;
+import com.matchandtrade.rest.v1.json.search.Operator;
 import com.matchandtrade.rest.v1.json.search.Recipe;
+import com.matchandtrade.rest.v1.json.search.Matcher;
 import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
@@ -45,7 +48,8 @@ public class SearchControllerPostIT {
 	}
 	
 	@Test
-	public void postBasicSearch() {
+	@Ignore
+	public void searchByTradeId() {
 		// Create a trade for a random user
 		UserEntity greekUser = userRandom.nextPersistedEntity();
 		TradeMembershipEntity greekTradeMembership = tradeMembershipRandom.nextPersistedEntity(greekUser);
@@ -64,7 +68,7 @@ public class SearchControllerPostIT {
 		
 		SearchCriteriaJson request = new SearchCriteriaJson();
 		request.setRecipe(Recipe.ITEMS);
-		request.addCriterion("trade.tradeId", trade.getTradeId());
+		request.addCriterion("Trade.tradeId", trade.getTradeId());
 
 		SearchResult<Json> response = fixture.post(request, 1, 10);
 		assertEquals(5, response.getResultList().size());
@@ -73,6 +77,35 @@ public class SearchControllerPostIT {
 		assertTrue(containsItem(response, australia));
 		assertTrue(containsItem(response, brazil));
 		assertTrue(containsItem(response, cuba));
+	}
+
+	@Test
+	public void searchByTradeIdAndTradeMembershipIdNotEquals() {
+		// Create a trade for a random user
+		UserEntity greekUser = userRandom.nextPersistedEntity();
+		TradeMembershipEntity greekTradeMembership = tradeMembershipRandom.nextPersistedEntity(greekUser);
+		TradeEntity trade = greekTradeMembership.getTrade();
+		
+		// Create items for Greek letters
+		ItemEntity alpha = itemRandom.nextPersistedEntity(greekTradeMembership);
+		ItemEntity beta = itemRandom.nextPersistedEntity(greekTradeMembership);
+		
+		// Create items for country names
+		UserEntity countryUser = userRandom.nextPersistedEntity();
+		TradeMembershipEntity countryTradeMembership = tradeMembershipRandom.nextPersistedEntity(trade, countryUser, TradeMembershipEntity.Type.MEMBER);
+		itemRandom.nextPersistedEntity(countryTradeMembership);
+		itemRandom.nextPersistedEntity(countryTradeMembership);
+		itemRandom.nextPersistedEntity(countryTradeMembership);
+		
+		SearchCriteriaJson request = new SearchCriteriaJson();
+		request.setRecipe(Recipe.ITEMS);
+		request.addCriterion("Trade.tradeId", trade.getTradeId());
+		request.addCriterion("TradeMembership.tradeMembershipId", countryTradeMembership.getTradeMembershipId(), Operator.AND, Matcher.NOT_EQUALS); 
+		
+		SearchResult<Json> response = fixture.post(request, 1, 10);
+		assertEquals(2, response.getResultList().size());
+		assertTrue(containsItem(response, alpha));
+		assertTrue(containsItem(response, beta));
 	}
 
 	private boolean containsItem(SearchResult<Json> response, ItemEntity targetItem) {

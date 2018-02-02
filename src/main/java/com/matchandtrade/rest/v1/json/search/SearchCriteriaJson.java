@@ -14,6 +14,10 @@ public class SearchCriteriaJson {
 		criteria.add(new Criterion(key, value));
 	}
 
+	public void addCriterion(String key, Object value, Operator operator, Matcher restriction) {
+		criteria.add(new Criterion(key, value, operator, restriction));
+	}
+
 	public List<Criterion> getCriteria() {
 		return criteria;
 	}
