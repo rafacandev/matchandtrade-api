@@ -1,11 +1,9 @@
 package com.matchandtrade.rest.v1.validator;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import com.matchandtrade.rest.RestException;
 
-@Component
 public class PaginationValidator {
 	
 	//Utility classes should not have public constructors
