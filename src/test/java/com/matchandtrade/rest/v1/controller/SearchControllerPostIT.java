@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,9 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.v1.json.ItemJson;
+import com.matchandtrade.rest.v1.json.search.Matcher;
 import com.matchandtrade.rest.v1.json.search.Operator;
 import com.matchandtrade.rest.v1.json.search.Recipe;
-import com.matchandtrade.rest.v1.json.search.Matcher;
 import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
@@ -48,7 +47,6 @@ public class SearchControllerPostIT {
 	}
 	
 	@Test
-	@Ignore
 	public void searchByTradeId() {
 		// Create a trade for a random user
 		UserEntity greekUser = userRandom.nextPersistedEntity();
