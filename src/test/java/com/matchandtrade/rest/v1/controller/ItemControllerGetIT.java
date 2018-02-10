@@ -17,6 +17,7 @@ import com.matchandtrade.rest.v1.json.ItemJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
+import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
@@ -27,6 +28,8 @@ public class ItemControllerGetIT {
 	private ItemRandom itemRandom;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
+	@Autowired
+	private UserRandom userRandom;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
 
@@ -69,13 +72,25 @@ public class ItemControllerGetIT {
 		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
 		fixture.get(-1, existingItem.getItemId());
 	}
+	
+	@Test
+ 	public void userAssociatedWithTradeCanGetItems() {
+		// Create owner's items (Greek letters)
+		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		// Create member's items (country names)
+		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(ownerTradeMemberhip.getTrade(), fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
+		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getItemId());
+	}
 
-	@Test(expected = RestException.class)
- 	public void getUserNotAssociatedWithTradeMembership() {
-		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
-		fixture = mockControllerFactory.getItemController(false);
-		fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getItemId());
+	@Test(expected=RestException.class)
+	public void userNotAssociatedWithTradeCanNotGetItems() {
+		// Create owner's items (Greek letters)
+		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		// Create member's items (country names)
+		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getItemId());
 	}
 
 }

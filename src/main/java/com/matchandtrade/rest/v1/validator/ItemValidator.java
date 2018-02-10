@@ -10,6 +10,7 @@ import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
@@ -50,6 +51,22 @@ public class ItemValidator {
 			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not associated to TradeMembership.tradeMembershipId: " + tradeMembershipId);
 		}
 	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipEntity.getTradeId()}
+	 * @param userId
+	 * @param tradeMembershipEntity
+	 */
+	private void checkIfUserIsAssociatedToTrade(Integer userId, TradeMembershipEntity tradeMembershipEntity) {
+		Integer tradeId = tradeMembershipEntity.getTrade().getTradeId();
+		SearchCriteria criteria = new SearchCriteria(new Pagination(1, 10));
+		criteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, tradeId);
+		criteria.addCriterion(TradeMembershipQueryBuilder.Field.userId, userId);
+		SearchResult<TradeMembershipEntity> searchResult = searchService.search(criteria, TradeMembershipQueryBuilder.class);
+		if (searchResult.getResultList().isEmpty()) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "User.userId: " + userId + " is not associated with the Trade.tradeId: " + tradeId);
+		}
+	}
 	
 	/**
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.name} is null or length is not between 3 and 150.
@@ -72,7 +89,7 @@ public class ItemValidator {
 		
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
-		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
+		checkIfUserIsAssociatedToTrade(userId, tradeMembershipEntity);
 	}
 
 	public void validateGet(Integer userId, Integer tradeMembershipId) {
