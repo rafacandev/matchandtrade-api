@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class VersionUtil {
 	
-	private static Logger LOGGER = LoggerFactory.getLogger(VersionUtil.class);
+	private Logger logger = LoggerFactory.getLogger(VersionUtil.class);
 
 	private Properties versionProperties = new Properties();
 	
@@ -19,7 +19,7 @@ public class VersionUtil {
 			InputStream versionInputStream = classLoader.getResource("version.properties").openStream();
 			versionProperties.load(versionInputStream);
 		} catch (IOException e) {
-			LOGGER.error("Unable to load version.properties", e.getMessage());
+			logger.error("Unable to load version.properties", e.getMessage());
 		}
 	}
 

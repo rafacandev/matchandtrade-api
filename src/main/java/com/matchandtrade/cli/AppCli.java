@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.security.InvalidParameterException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -43,13 +42,13 @@ public class AppCli {
 			if (cli.hasOption("cf")) {
 				File configFile = new File(cli.getOptionValue("cf"));
 				if (!configFile.exists()) {
-					throw new InvalidParameterException("Configuration file [" + cli.getOptionValue("cf") + "] does not exist.");
+					throw new IllegalArgumentException("Configuration file [" + cli.getOptionValue("cf") + "] does not exist.");
 				}
 				if (configFile.isDirectory()) {
-					throw new InvalidParameterException("Configuration file [" + cli.getOptionValue("cf") + "] is a directory but this application expects a file.");
+					throw new IllegalArgumentException("Configuration file [" + cli.getOptionValue("cf") + "] is a directory but this application expects a file.");
 				}
 				if (!configFile.canRead()) {
-					throw new InvalidParameterException("Configuration file [" + cli.getOptionValue("cf") + "] cannot be read.");
+					throw new IllegalArgumentException("Configuration file [" + cli.getOptionValue("cf") + "] cannot be read.");
 				}
 			}
 			if (cli.hasOption("h")) {
@@ -71,7 +70,7 @@ public class AppCli {
 			}
 		} catch (ParseException e) {
 			isInterrupted = true;
-			throw new InvalidParameterException(e.getMessage());
+			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
 

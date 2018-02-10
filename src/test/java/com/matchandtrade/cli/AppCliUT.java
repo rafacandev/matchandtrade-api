@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +20,7 @@ public class AppCliUT {
 	@Autowired
 	AppConfiguration appConfiguration;
 	
-	@Test(expected=InvalidParameterException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void configFileNegativeDirectory() throws IOException {
 		String directoryPath = AppCliUT.class.getProtectionDomain().getCodeSource().getLocation().getPath();		
 		String[] arguments = {"-cf", directoryPath};
@@ -29,14 +28,14 @@ public class AppCliUT {
 		assertEquals(true, cli.isInterrupted());
 	}
 	
-	@Test(expected=InvalidParameterException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void configFileNegativeFileNotFound() throws IOException {
 		String[] arguments = {"-cf", "configFileTest"};
 		AppCli cli = new AppCli(arguments);
 		assertEquals(true, cli.isInterrupted());
 	}
 	
-	@Test(expected=InvalidParameterException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void configFileNegativeMissingArgument() throws IOException {
 		String[] arguments = {"--configFile"};
 		AppCli cli = new AppCli(arguments);

@@ -367,6 +367,7 @@
 					<configuration>
 						<classifier>exec</classifier>
 					</configuration>
+					<mainClass>com.matchandtrade.WebserviceApplication</mainClass>
 					<jvmArguments>-Dlogging.file="target/log/matchandtrade.log"</jvmArguments>
 				</configuration>
 			</plugin>

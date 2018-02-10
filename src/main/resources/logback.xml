@@ -1,22 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- See: http://logback.qos.ch/manual/configuration.html -->
-<configuration debug="true" scan="false" packagingData="false">
+<configuration debug="false" scan="false" packagingData="false">
 
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%file:%line] - %msg%n</pattern>
-		</encoder>
-	</appender>
-
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>${logging.file:-log/matchandtrade.log}</file>
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level [%file:%line]- %msg%n</pattern>
-		</encoder>
-	</appender>
+	<!-- Building on top of default CONSOLE and FILE appenders provided by spring boot. See: https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot/src/main/resources/org/springframework/boot/logging/logback -->    
+    <property 
+    	name="CONSOLE_LOG_PATTERN"
+    	value="${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint}%clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%-40.40logger{39}){cyan}%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+	
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
 	<appender name="PLAINOUTPUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%msg%n</pattern>
+			<pattern>%clr(%msg%n){yellow}</pattern>
 		</encoder>
 	</appender>
 
@@ -27,7 +22,7 @@
 	<logger level="inherited" name="com.matchandtrade" />
 
 	<root level="${logging.level.root:-info}">
-		<appender-ref ref="STDOUT" />
+		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="FILE" />
 	</root>
 

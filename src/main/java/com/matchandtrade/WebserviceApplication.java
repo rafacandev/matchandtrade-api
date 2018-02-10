@@ -93,9 +93,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 import com.matchandtrade.authentication.AuthenticationServlet;
 import com.matchandtrade.cli.AppCli;
-import com.matchandtrade.config.AppConfigurationLoader;
-import com.matchandtrade.config.AppConfigurationProperties;
-import com.matchandtrade.util.VersionUtil;
+import com.matchandtrade.config.MatchAndTradePropertyKeys;
 
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
@@ -195,7 +193,8 @@ import com.matchandtrade.util.VersionUtil;
 })
 public class WebserviceApplication {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger("plainTextLogger");
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebserviceApplication.class);
+	private static final String CONFIGURATION_FILE_PROPERTY_KEY = MatchAndTradePropertyKeys.CONFIG_FILE.toString();
 	
 	public static void main(String[] arguments) throws Throwable {
 		// Handles the command line options.
@@ -207,52 +206,33 @@ public class WebserviceApplication {
 			System.exit(1);
 		}
 
-		String configurationFilePath = System.getProperty(AppConfigurationProperties.Keys.CONFIG_FILE.getKey());
-		if (configurationFilePath == null) {
-			configurationFilePath = AppConfigurationProperties.Keys.CONFIG_FILE.getDefaultValue();
-		}
-		LOGGER.info("Loading configurations from {}", configurationFilePath);
-		AppConfigurationLoader.loadConfigurationFromFilePath(configurationFilePath);
-		// Override configuration properties with values coming from arguments
-		if (cli.configurationFilePath() != null) {
-			LOGGER.info("Loading configurations from {}", cli.configurationFilePath());
-			AppConfigurationLoader.loadConfigurationFromFilePath(cli.configurationFilePath());
-		}
+		// Load the correct configuration file as an environment property
+		String configurationFile = loadConfigurationFileProperty(cli);
 
 		// If line output message is interrupted (e.g: invalid command line); then, display message CommandLineOutputMessage 
 		if (cli.isInterrupted()) {
 			LOGGER.info(cli.getCommandLineOutputMessage());
 		} else {
-			displayWelcomeMessage();
 			// Proceed normally
 			SpringApplication.run(WebserviceApplication.class);
+			LOGGER.info("Using {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
 		}
 	}
 
-	private static void displayWelcomeMessage() {
-		VersionUtil versionUtil = new VersionUtil();
-		LOGGER.info("/===========================================================");
-		LOGGER.info("| WELCOME TO MATCH AND TRADE WEB API");
-		LOGGER.info("|");
-		LOGGER.info("| Project Name: {}", versionUtil.projectName());
-		LOGGER.info("| Project Version: {}", versionUtil.projectVersion());
-		LOGGER.info("| Build Number: {}", versionUtil.buildNumber());
-		LOGGER.info("| Build Timestamp: {}", versionUtil.buildTimestamp());
-		LOGGER.info("|");
-		LOGGER.info("| Configuration file: {}", buildPropertyMessage(AppConfigurationProperties.Keys.CONFIG_FILE.getKey()));
-		LOGGER.info("| OAuth implementation: {}", buildPropertyMessage(AppConfigurationProperties.Keys.AUTHENTICATION_OAUTH_CLASS.getKey()));
-		LOGGER.info("| JDBC Url: {}", buildPropertyMessage(AppConfigurationProperties.Keys.DATA_SOURCE_JDBC_URL.getKey()));
-		LOGGER.info("| Log file: {}", buildPropertyMessage(AppConfigurationProperties.Keys.LOGGING_FILE.getKey()));
-		LOGGER.info("| Web Server Port: {}", buildPropertyMessage(AppConfigurationProperties.Keys.SERVER_PORT.getKey()));
-		
-		LOGGER.info("\\===========================================================");
+	private static String loadConfigurationFileProperty(AppCli cli) {
+		String configurationFile = System.getProperty(CONFIGURATION_FILE_PROPERTY_KEY);
+		if (configurationFile == null) {
+			LOGGER.debug("Did not find property {}", CONFIGURATION_FILE_PROPERTY_KEY);
+		} else {
+			LOGGER.debug("Found property {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
+		}
+		if (cli.configurationFilePath() != null) {
+			LOGGER.debug("Found argument {}={}", CONFIGURATION_FILE_PROPERTY_KEY, cli.configurationFilePath());
+			configurationFile = cli.configurationFilePath();
+		}
+		LOGGER.debug("Setting environment propert {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
+		System.setProperty(CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
+		return configurationFile;
 	}
 
-	private static String buildPropertyMessage(String s) {
-		String property = null;
-		if (s != null && !s.isEmpty()) {
-			property = System.getProperty(s);
-		}
-		return property;
-	}
 }
