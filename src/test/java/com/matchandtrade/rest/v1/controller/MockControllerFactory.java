@@ -36,6 +36,8 @@ public class MockControllerFactory {
 	private ItemController itemController;
 	private MockAuthenticationProvider lastMockAuthenticationProvider;
 	@Autowired
+	private OfferController offerController;
+	@Autowired
 	private SearchController searchController;
 	@Autowired
 	private TradeController tradeController;
@@ -47,9 +49,6 @@ public class MockControllerFactory {
 	private UserController userController;
 	@Autowired
 	private UserRepositoryFacade userRepository;
-	@Autowired
-	private WantItemController wantItemController;
-	
 
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
@@ -64,7 +63,7 @@ public class MockControllerFactory {
 		}
 		@Override
 		public AuthenticationEntity getAuthentication() {
-			return authenticationEntity;
+			return this.authenticationEntity;
 		}
 	}
 	
@@ -105,14 +104,18 @@ public class MockControllerFactory {
 		return userController;
 	}
 
-	public WantItemController getWantItemController(boolean reusePreviousAuthentication) {
-		wantItemController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
-		return wantItemController;
-	}
-
 	public SearchController getSearchController(boolean reusePreviousAuthentication) {
 		searchController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return searchController;
+	}
+
+	public OfferController getOfferController(boolean reusePreviousAuthentication) {
+		OfferController result = new OfferController();
+		result.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		result.offerService = offerController.offerService;
+		result.offerTransformer = offerController.offerTransformer;
+		result.offerValidator = offerController.offerValidator;
+		return result;
 	}
 
 }

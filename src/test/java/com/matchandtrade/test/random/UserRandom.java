@@ -32,4 +32,12 @@ public class UserRandom {
 		userRepository.save(result);
 		return result;
 	}
+
+	@Transactional
+	public UserEntity nextPersistedEntity(String name) {
+		UserEntity result = nextEntity();
+		result.setName(name);
+		userRepository.save(result);
+		return result;
+	}
 }

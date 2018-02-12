@@ -36,6 +36,11 @@ public class ItemService {
 	public ItemEntity get(Integer itemId) {
 		return itemRepositoryFacade.get(itemId);
 	}
+	
+	@Transactional
+	public boolean exists(Integer ...itemIds) {
+		return itemRepositoryFacade.exists(itemIds);
+	}
 
 	@Transactional
 	public SearchResult<ItemEntity> searchByTradeMembershipIdName(Integer tradeMembershipId, String name, Integer _pageNumber, Integer _pageSize) {

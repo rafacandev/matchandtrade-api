@@ -21,5 +21,13 @@ public class UserService {
 	public UserEntity get(Integer userId) {
 		return userRepository.get(userId);
 	}
+	
+	public UserEntity searchByItemId(Integer itemId) {
+		return userRepository.findByItemId(itemId);
+	}
+
+	public UserEntity searchByOfferId(Integer offerId) {
+		return userRepository.findByOfferId(offerId);
+	}
 
 }

@@ -33,5 +33,5 @@ public class TradeRepositoryFacade {
 	public void save(TradeEntity entity) {
 		tradeRepository.save(entity);
 	}
-
+	
 }

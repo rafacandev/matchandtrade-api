@@ -41,7 +41,7 @@ public class TradeMaximizerTransformer {
 	 * @return trade result in CSV format
 	 * @throws IOException
 	 */
-	public String transform(String tradeMaximizerOutput) throws IOException {
+	public String toCsv(String tradeMaximizerOutput) throws IOException {
 		List<String> tradeLines = transformTradeMaximizerToList(tradeMaximizerOutput);
 		// Sort trade lines for better CSV presentation 
 		sortTradeLinesByOfferingTradeMembershipAndOfferingItemId(tradeLines);
@@ -65,17 +65,17 @@ public class TradeMaximizerTransformer {
 				continue;
 			}
 			List<Object> csvRecord = new ArrayList<>();
-			TradeMembershipEntity offeringTradeMembership = tradeMembershipRepositoryFacade.get(tradeLinePojo.offeringTradeMembershipId);
-			csvRecord.add(offeringTradeMembership.getUser().getUserId());
-			csvRecord.add(offeringTradeMembership.getUser().getName());
+//			TradeMembershipEntity offeringTradeMembership = tradeMembershipRepositoryFacade.get(tradeLinePojo.offeringTradeMembershipId);
+			csvRecord.add(1);
+			csvRecord.add("USER-NAME");
 			ItemEntity offeringItem = itemRepositoryFacade.get(tradeLinePojo.offeringItemId);
 			csvRecord.add(offeringItem.getItemId());
 			csvRecord.add(offeringItem.getName());
 			if (tradeLinePojo.receivingItemId != null) {
 				tradedItemsCount++;
-				TradeMembershipEntity receivingTradeMembership = tradeMembershipRepositoryFacade.get(tradeLinePojo.receivingTradeMembershipId);
-				csvRecord.add(receivingTradeMembership.getUser().getUserId());
-				csvRecord.add(receivingTradeMembership.getUser().getName());
+//				TradeMembershipEntity receivingTradeMembership = tradeMembershipRepositoryFacade.get(tradeLinePojo.receivingTradeMembershipId);
+				csvRecord.add(2);
+				csvRecord.add("USER-NAME-OTHER");
 				ItemEntity receivingItem = itemRepositoryFacade.get(tradeLinePojo.receivingItemId);
 				csvRecord.add(receivingItem.getItemId());
 				csvRecord.add(receivingItem.getName());
@@ -84,11 +84,13 @@ public class TradeMaximizerTransformer {
 		}
 
 		// Handles the Summary portion
-		TradeMembershipEntity offeringTradeMembership = tradeMembershipRepositoryFacade.get(transformLine(tradeLines.get(0)).offeringTradeMembershipId);
-		TradeEntity trade = offeringTradeMembership.getTrade();
 		csvPrinter.println();
 		csvPrinter.printComment("#############################");
-		csvPrinter.printComment("Summary of Trade [" + trade.getTradeId() + " : " + trade.getName() + "]");
+		if (!tradeLines.isEmpty()) {
+			TradeMembershipEntity offeringTradeMembership = tradeMembershipRepositoryFacade.get(transformLine(tradeLines.get(0)).offeringTradeMembershipId);
+			TradeEntity trade = offeringTradeMembership.getTrade();
+			csvPrinter.printComment("Summary of Trade [" + trade.getTradeId() + " : " + trade.getName() + "]");
+		}
 		csvPrinter.printComment("Total of items: " + tradeLines.size());
 		csvPrinter.printComment("Total of traded items: " + tradedItemsCount);
 		csvPrinter.printComment("Total of items not traded: " + (tradeLines.size() - tradedItemsCount));

@@ -9,13 +9,10 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
-public class ItemQueryBuilder implements QueryBuilder {
+public class UserQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		itemId("item.itemId"),
-		name("item.name"),
-		tradeId("trade.tradeId"),
-		tradeMembershipId("tm.tradeMembershipId");
+		itemId("item.itemId");
 		
 		private String alias;
 
@@ -32,19 +29,20 @@ public class ItemQueryBuilder implements QueryBuilder {
 	@Autowired
 	private EntityManager entityManager;
 	
-    private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tm"
+	private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tm"
+    		+ " INNER JOIN tm.user AS user"
     		+ " INNER JOIN tm.trade AS trade"
     		+ " INNER JOIN tm.items AS item";
 
-    @Override
-    public Query buildCountQuery(SearchCriteria searchCriteria) {
-    	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
-    	return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
-    }
+	@Override
+	public Query buildCountQuery(SearchCriteria searchCriteria) {
+		StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
+		return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
+	}
 
-    @Override
+	@Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
-    	StringBuilder hql = new StringBuilder("SELECT item " + BASIC_HQL);
+	StringBuilder hql = new StringBuilder("SELECT user " + BASIC_HQL);
 		return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
 	}
 

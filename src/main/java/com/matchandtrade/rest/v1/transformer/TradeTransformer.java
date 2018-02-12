@@ -24,25 +24,27 @@ public class TradeTransformer {
 		case MATCHING_ITEMS:
 			result = TradeEntity.State.MATCHING_ITEMS;
 			break;
-		case MATCHING_ITEMS_ENDED:
-			result = TradeEntity.State.MATCHING_ITEMS_ENDED;
+		case ITEMS_MATCHED:
+			result = TradeEntity.State.ITEMS_MATCHED;
 			break;
-		case GENERATING_TRADES:
-			result = TradeEntity.State.GENERATING_TRADES;
+		case GENERATE_RESULTS:
+			result = TradeEntity.State.GENERATE_RESULTS;
 			break;
-		case GENERATING_TRADES_ENDED:
-			result = TradeEntity.State.GENERATING_TRADES_ENDED;
+		case GENERATING_RESULTS:
+			result = TradeEntity.State.GENERATING_RESULTS;
+			break;
+		case RESULTS_GENERATED:
+			result = TradeEntity.State.RESULTS_GENERATED;
 			break;
 		case CANCELED:
 			result = TradeEntity.State.CANCELED;
-			break;
 		default:
 			break;
 		}
 		return result;
 	}
 
-	private static TradeJson.State buildState(State state) {
+	private static TradeJson.State buildState(TradeEntity.State state) {
 		if (state == null) {
 			return null;
 		}
@@ -54,18 +56,20 @@ public class TradeTransformer {
 		case MATCHING_ITEMS:
 			result = TradeJson.State.MATCHING_ITEMS;
 			break;
-		case MATCHING_ITEMS_ENDED:
-			result = TradeJson.State.MATCHING_ITEMS_ENDED;
+		case ITEMS_MATCHED:
+			result = TradeJson.State.ITEMS_MATCHED;
 			break;
-		case GENERATING_TRADES:
-			result = TradeJson.State.GENERATING_TRADES;
+		case GENERATE_RESULTS:
+			result = TradeJson.State.GENERATE_RESULTS;
 			break;
-		case GENERATING_TRADES_ENDED:
-			result = TradeJson.State.GENERATING_TRADES_ENDED;
+		case GENERATING_RESULTS:
+			result = TradeJson.State.GENERATING_RESULTS;
+			break;
+		case RESULTS_GENERATED:
+			result = TradeJson.State.RESULTS_GENERATED;
 			break;
 		case CANCELED:
 			result = TradeJson.State.CANCELED;
-			break;
 		default:
 			break;
 		}

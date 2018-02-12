@@ -19,10 +19,11 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 	public enum State {
 		SUBMITTING_ITEMS,
 		MATCHING_ITEMS,
-		MATCHING_ITEMS_ENDED,
-		GENERATING_TRADES,
-		GENERATING_TRADES_ENDED,
-		CANCELED 
+		ITEMS_MATCHED,
+		GENERATE_RESULTS,
+		GENERATING_RESULTS,
+		RESULTS_GENERATED,
+		CANCELED
 	}
 	
 	private Integer tradeId;

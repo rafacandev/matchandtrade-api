@@ -24,4 +24,12 @@ public class UserRepositoryFacade {
 		userRepository.save(entity);
 	}
 
+	public UserEntity findByItemId(Integer itemId) {
+		return userRepository.findByItemId(itemId);
+	}
+
+	public UserEntity findByOfferId(Integer offerId) {
+		return null;
+	}
+
 }

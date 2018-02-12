@@ -91,5 +91,10 @@ public class Pagination {
 	public void setTotal(long total) {
 		this.total = total;
 	}
+
+	@Override
+	public String toString() {
+		return "Pagination [size=" + size + ", number=" + number + ", total=" + total + "]";
+	}
 	
 }

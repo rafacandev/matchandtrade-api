@@ -9,9 +9,11 @@ import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.criteria.QueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
+import com.matchandtrade.persistence.criteria.UserQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.QueryableRepository;
 
 @Component
@@ -24,11 +26,15 @@ public class SearchService {
 	@Autowired
 	private QueryableRepository<TradeMembershipEntity> queryableTradeMembership;
 	@Autowired
+	private QueryableRepository<UserEntity> queryableUser;
+	@Autowired
 	private TradeQueryBuilder tradeQueryBuilder;
 	@Autowired
 	private TradeMembershipQueryBuilder tradeMembershipQueryBuilder;
 	@Autowired
 	private ItemQueryBuilder itemQueryBuilder;
+	@Autowired
+	private UserQueryBuilder userQueryBuilder;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -42,6 +48,9 @@ public class SearchService {
 		}
 		if (ItemQueryBuilder.class.equals(queryBuilderClass)) {
 			result = (SearchResult<T>) queryableItem.query(searchCriteria, itemQueryBuilder);
+		}
+		if (UserQueryBuilder.class.equals(queryBuilderClass)) {
+			result = (SearchResult<T>) queryableUser.query(searchCriteria, userQueryBuilder);
 		}
 		return result;
 	}

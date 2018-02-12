@@ -6,9 +6,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	WantItemControllerPostIT.class,
-	WantItemControllerGetIT.class
+	OfferControllerPostIT.class,
+	OfferControllerGetIT.class,
+	OfferControllerDeleteIT.class
 })
-public class WantItemControllerSuite {
+public class OfferControllerSuite {
 
 }

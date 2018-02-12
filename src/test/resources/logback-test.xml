@@ -5,7 +5,7 @@
 	<!-- Building on top of default CONSOLE and FILE appenders provided by spring boot. See: https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot/src/main/resources/org/springframework/boot/logging/logback -->    
     <property 
     	name="CONSOLE_LOG_PATTERN"
-    	value="${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint}%clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%-40.40logger{39}){cyan}%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    	value="${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%-40.40logger{39}){cyan}%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 	
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
@@ -26,18 +26,21 @@
 		<appender-ref ref="FILE" />
 	</root>
 
-	<!-- DEBUG: Log all SQL DML statements as they are executed -->
-	<logger level="INFO" name="org.hibernate.SQL"/>
-	<!-- TRACE: Log all JDBC parameters -->
-	<logger level="INFO" name="org.hibernate.type"/>
-	<!-- TRACE: Log transaction related activity -->
-	<logger level="INFO" name="org.hibernate.transaction"/>
-	<!-- TRACE: Log all second-level cache activity -->
-	<logger level="INFO" name="org.hibernate.cache"/>
-
 	<!-- Set noisy testing loggers to level=ERROR -->	
-    <logger name="org.springframework" level="ERROR" />
-    <logger name="org.hibernate" level="ERROR" />
-    <logger name="com.mchange.v2" level="ERROR" />
+	<logger name="org.springframework" level="ERROR" />
+	<logger name="org.hibernate" level="ERROR" />
+	<logger name="com.mchange.v2" level="ERROR" />
+
+	<!-- Log all SQL DML statements as they are executed -->
+	<logger level="INFO" name="org.hibernate.SQL"/>
+	<!-- Log all JDBC parameters -->
+	<logger level="INFO" name="org.hibernate.type"/>
+	<!-- Log transaction related activity -->
+	<logger level="INFO" name="org.hibernate.transaction"/>
+	<!-- Log all second-level cache activity -->
+	<logger level="INFO" name="org.hibernate.cache"/>
+	
+	<!-- Match And Trade loggers -->
+	<logger leve="INFO" name="com.matchandtrade.rest.service.TradeResultService" />
 	
 </configuration>

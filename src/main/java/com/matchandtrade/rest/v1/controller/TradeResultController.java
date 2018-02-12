@@ -28,8 +28,9 @@ public class TradeResultController implements Controller {
 
 	@RequestMapping(path="/{tradeId}/results",
 			method = RequestMethod.GET,
+			consumes = "text/csv",
 			produces = "text/csv")
-	public String getResults(@PathVariable("tradeId") Integer tradeId) throws IOException {
+	public String getCsv(@PathVariable("tradeId") Integer tradeId) throws IOException {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
@@ -37,7 +38,23 @@ public class TradeResultController implements Controller {
 		// Delegate to Service layer
 		String result = tradeResultService.get(tradeId);
 		// Transform the response
-		String response = tradeMaximizerTransformer.transform(result);
+		String response = tradeMaximizerTransformer.toCsv(result);
+		// Assemble links - Nothing to assemble
+		return response;
+	}
+
+	@RequestMapping(path="/{tradeId}/results",
+			method = RequestMethod.GET,
+			consumes = "text/plain",
+			produces = "text/plain")
+	public String getText(@PathVariable("tradeId") Integer tradeId) throws IOException {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		tradeResultValidator.validateGet(tradeId);
+		// Delegate to Service layer
+		String response = tradeResultService.get(tradeId);
+		// Transform the response - no need to transform
 		// Assemble links - Nothing to assemble
 		return response;
 	}
