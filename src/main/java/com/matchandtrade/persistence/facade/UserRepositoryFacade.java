@@ -29,7 +29,7 @@ public class UserRepositoryFacade {
 	}
 
 	public UserEntity findByOfferId(Integer offerId) {
-		return null;
+		return userRepository.findByOfferId(offerId);
 	}
 
 }

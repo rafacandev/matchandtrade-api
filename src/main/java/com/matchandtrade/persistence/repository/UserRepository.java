@@ -21,4 +21,13 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 			+ " i.itemId = :itemId")
 	UserEntity findByItemId(@Param("itemId") Integer itemId);
 
+	
+	@Query("SELECT u "
+			+ " FROM TradeMembershipEntity tm"
+			+ " INNER JOIN tm.user AS u"
+			+ " INNER JOIN tm.offers AS o"
+			+ " WHERE"
+			+ " o.offerId = :offerId")
+	UserEntity findByOfferId(@Param("offerId")Integer offerId);
+
 }

@@ -30,9 +30,9 @@ public class OfferControllerPostIT {
 	
 	private OfferController fixture;
 	@Autowired
-	private MockControllerFactory mockControllerFactory;
-	@Autowired
 	private ItemRandom itemRandom;
+	@Autowired
+	private MockControllerFactory mockControllerFactory;
 	@Autowired
 	private TradeRandom tradeRandom;
 	@Autowired
@@ -40,86 +40,19 @@ public class OfferControllerPostIT {
 	@Autowired
 	private UserRandom userRandom;
 
+	private void assertOffer(ItemEntity offered, ItemEntity wanted, OfferJson json) {
+		assertNotNull(json.getOfferId());
+		assertEquals(offered.getItemId(), json.getOfferedItemId());
+		assertEquals(wanted.getItemId(), json.getWantedItemId());
+	}
+	
 	@Before
 	public void before() {
 		if (fixture == null) {
 			fixture = mockControllerFactory.getOfferController(true);
 		}
 	}
-	
-	@Test
-	public void shouldOwnerOfferItemToMember() {
-		UserEntity owner = fixture.authenticationProvider.getAuthentication().getUser();
-		TradeEntity trade = tradeRandom.nextPersistedEntity(owner);
-		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, owner);
-		ItemEntity ownerItem = itemRandom.nextPersistedEntity(ownerMembership);
 
-		UserEntity member = userRandom.nextPersistedEntity();
-		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(trade, member, TradeMembershipEntity.Type.MEMBER);
-		ItemEntity memberItem = itemRandom.nextPersistedEntity(memberMembership);
-
-		OfferJson request = OfferRandom.nextJson(ownerItem.getItemId(), memberItem.getItemId());
-		OfferJson response = fixture.post(request);
-		assertNotNull(response);
-		assertNotNull(response.getOfferId());
-	}
-
-	@Test(expected=RestException.class)
-	public void shouldNotCreateOfferWhenItemDoesNotExist() {
-		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerMembership);
-		OfferJson request = OfferRandom.nextJson(alpha.getItemId(), 99999999);
-		try {
-			fixture.post(request);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertTrue(e.getMessage().contains("Offer.offeredItemId and Offer.wantedItemId must belong to existing Items"));
-			throw e;
-		}
-	}
-	
-	@Test(expected=RestException.class)
-	public void shouldNotCreateOfferWhenItemsAreNotAssociatedToTheSameTrade() {
-		UserEntity owner = fixture.authenticationProvider.getAuthentication().getUser();
-		TradeEntity trade = tradeRandom.nextPersistedEntity(owner);
-		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, owner);
-		ItemEntity ownerItem = itemRandom.nextPersistedEntity(ownerMembership);
-
-		UserEntity member = userRandom.nextPersistedEntity();
-		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(tradeRandom.nextPersistedEntity(member), member, TradeMembershipEntity.Type.MEMBER);
-		ItemEntity memberItem = itemRandom.nextPersistedEntity(memberMembership);
-
-		OfferJson request = OfferRandom.nextJson(ownerItem.getItemId(), memberItem.getItemId());
-		try {
-			fixture.post(request);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertTrue(e.getMessage().contains("must be associated to the same Trade"));
-			throw e;
-		}
-	}
-
-	@Test(expected=RestException.class)
-	public void shouldNotCreateOfferWhenOfferingItemDoesNotBelongToTheOfferingUser() {
-		UserEntity owner = fixture.authenticationProvider.getAuthentication().getUser();
-		TradeEntity trade = tradeRandom.nextPersistedEntity(owner);
-		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, owner);
-		ItemEntity ownerItem = itemRandom.nextPersistedEntity(ownerMembership);
-
-		UserEntity member = userRandom.nextPersistedEntity();
-		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(trade, member, TradeMembershipEntity.Type.MEMBER);
-		ItemEntity memberItem = itemRandom.nextPersistedEntity(memberMembership);
-
-		OfferJson request = OfferRandom.nextJson(memberItem.getItemId(), ownerItem.getItemId());
-		try {
-			fixture.post(request);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertTrue(e.getMessage().contains("Offer.offeredItemId must belong to the offering User.userId."));
-			throw e;
-		}
-	}
-	
 	@Test
 	public void shouldMemberOfferVariousItemsToOwner() {
 		// Create a trade for a random user
@@ -139,34 +72,128 @@ public class OfferControllerPostIT {
 
 		// Owner offers Alpha for Australia
 		OfferJson alphaForAustralia = OfferRandom.nextJson(alpha.getItemId(), australia.getItemId());
-		alphaForAustralia = fixture.post(alphaForAustralia);
+		alphaForAustralia = fixture.post(ownerTradeMemberhip.getTradeMembershipId(), alphaForAustralia);
 		assertOffer(alpha, australia, alphaForAustralia);
 		
 		// Owner offers Alpha for Cuba
 		OfferJson alphaForCuba = OfferRandom.nextJson(alpha.getItemId(), cuba.getItemId());
-		alphaForCuba = fixture.post(alphaForCuba);
+		alphaForCuba = fixture.post(ownerTradeMemberhip.getTradeMembershipId(), alphaForCuba);
 		assertOffer(alpha, cuba, alphaForCuba);
 
 		// Member offers Beta for Brazil
 		OfferJson betaForBrazil = OfferRandom.nextJson(beta.getItemId(), brazil.getItemId());
-		betaForBrazil = fixture.post(betaForBrazil);
+		betaForBrazil = fixture.post(ownerTradeMemberhip.getTradeMembershipId(), betaForBrazil);
 		assertOffer(beta, brazil, betaForBrazil);
 
 		// Member offers Australia for Alpha
 		OfferJson australiaForAlpha = OfferRandom.nextJson(australia.getItemId(), alpha.getItemId());
-		australiaForAlpha = memberController.post(australiaForAlpha);
+		australiaForAlpha = memberController.post(memberTradeMemberhip.getTradeMembershipId(), australiaForAlpha);
 		assertOffer(australia, alpha, australiaForAlpha);
 		
 		// Member offers Cuba for Beta
 		OfferJson cubaForAlpha = OfferRandom.nextJson(cuba.getItemId(), alpha.getItemId());
-		cubaForAlpha = memberController.post(cubaForAlpha);
+		cubaForAlpha = memberController.post(memberTradeMemberhip.getTradeMembershipId(), cubaForAlpha);
 		assertOffer(cuba, alpha, cubaForAlpha);
 	}
+	
+	@Test(expected=RestException.class)
+	public void shouldNotCreateOfferWhenItemDoesNotExist() {
+		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerMembership);
+		OfferJson request = OfferRandom.nextJson(alpha.getItemId(), 99999999);
+		try {
+			fixture.post(ownerMembership.getTradeMembershipId(), request);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertTrue(e.getMessage().contains("Offer.offeredItemId and Offer.wantedItemId must belong to existing Items"));
+			throw e;
+		}
+	}
 
-	private void assertOffer(ItemEntity offered, ItemEntity wanted, OfferJson json) {
-		assertNotNull(json.getOfferId());
-		assertEquals(offered.getItemId(), json.getOfferedItemId());
-		assertEquals(wanted.getItemId(), json.getWantedItemId());
+	@Test(expected=RestException.class)
+	public void shouldNotCreateOfferWhenItemsAreNotAssociatedToTheSameTrade() {
+		UserEntity owner = fixture.authenticationProvider.getAuthentication().getUser();
+		TradeEntity trade = tradeRandom.nextPersistedEntity(owner);
+		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, owner);
+		ItemEntity ownerItem = itemRandom.nextPersistedEntity(ownerMembership);
+
+		UserEntity member = userRandom.nextPersistedEntity();
+		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(tradeRandom.nextPersistedEntity(member), member, TradeMembershipEntity.Type.MEMBER);
+		ItemEntity memberItem = itemRandom.nextPersistedEntity(memberMembership);
+
+		OfferJson request = OfferRandom.nextJson(ownerItem.getItemId(), memberItem.getItemId());
+		try {
+			fixture.post(ownerMembership.getTradeMembershipId(), request);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertTrue(e.getMessage().contains("must be associated to the same Trade"));
+			throw e;
+		}
+	}
+	
+	@Test(expected=RestException.class)
+	public void shouldNotCreateOfferWhenOfferingItemDoesNotBelongToTheOfferingUser() {
+		UserEntity owner = fixture.authenticationProvider.getAuthentication().getUser();
+		TradeEntity trade = tradeRandom.nextPersistedEntity(owner);
+		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, owner);
+		ItemEntity ownerItem = itemRandom.nextPersistedEntity(ownerMembership);
+
+		UserEntity member = userRandom.nextPersistedEntity();
+		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(trade, member, TradeMembershipEntity.Type.MEMBER);
+		ItemEntity memberItem = itemRandom.nextPersistedEntity(memberMembership);
+
+		OfferJson request = OfferRandom.nextJson(memberItem.getItemId(), ownerItem.getItemId());
+		try {
+			fixture.post(ownerMembership.getTradeMembershipId(), request);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertTrue(e.getMessage().contains("Offer.offeredItemId must belong to the offering User.userId."));
+			throw e;
+		}
+	}
+
+	@Test(expected=RestException.class)
+	public void shouldNotCreateTradeWhenTradeMembershipDoesNotBelongToAuthenticatedUser() {
+		// Create a trade for a random user
+		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		
+		// Create owner's items (Greek letters)
+		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		
+		// Create member's items (country names)
+		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), TradeMembershipEntity.Type.MEMBER);
+		ItemEntity australia = itemRandom.nextPersistedEntity(memberTradeMemberhip);
+		
+		// Owner offers Alpha for Australia
+		OfferJson alphaForAustralia = OfferRandom.nextJson(alpha.getItemId(), australia.getItemId());
+		alphaForAustralia = fixture.post(ownerTradeMemberhip.getTradeMembershipId(), alphaForAustralia);
+		
+		// Member offers Australia for Alpha
+		OfferJson australiaForAlpha = OfferRandom.nextJson(australia.getItemId(), alpha.getItemId());
+		try {
+			australiaForAlpha = fixture.post(memberTradeMemberhip.getTradeMembershipId(), australiaForAlpha);
+		} catch (RestException e) {
+			assertTrue(e.getMessage().contains("TradeMembership must belong to the current authenticated User"));
+			throw e;
+		}
+	}
+
+	@Test
+	public void shouldOwnerOfferItemToMember() {
+		UserEntity owner = fixture.authenticationProvider.getAuthentication().getUser();
+		TradeEntity trade = tradeRandom.nextPersistedEntity(owner);
+		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, owner);
+		ItemEntity ownerItem = itemRandom.nextPersistedEntity(ownerMembership);
+
+		UserEntity member = userRandom.nextPersistedEntity();
+		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(trade, member, TradeMembershipEntity.Type.MEMBER);
+		ItemEntity memberItem = itemRandom.nextPersistedEntity(memberMembership);
+
+		OfferJson request = OfferRandom.nextJson(ownerItem.getItemId(), memberItem.getItemId());
+		OfferJson response = fixture.post(ownerMembership.getTradeMembershipId(), request);
+		assertNotNull(response);
+		assertNotNull(response.getOfferId());
 	}
 	
 }

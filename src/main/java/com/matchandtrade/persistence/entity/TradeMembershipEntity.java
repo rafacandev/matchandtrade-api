@@ -25,26 +25,33 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 		OWNER, MEMBER
 	}
 	
-	private Integer tradeMembershipId;
 	private Set<ItemEntity> items = new HashSet<>();
+	private Set<OfferEntity> offers = new HashSet<>();
 	private TradeEntity trade;
-	private UserEntity user;
+	private Integer tradeMembershipId;
 	private Type type;
+	private UserEntity user;
 
 	@OneToMany
-	@JoinTable(name = "trade_membership_to_item", joinColumns = @JoinColumn(name = "trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_item_trade_membership_id_fk")), inverseJoinColumns = @JoinColumn(name = "item_id", foreignKey=@ForeignKey(name="trade_membership_to_item_item_id_fk")))
+	@JoinTable(name="trade_membership_to_item", joinColumns=@JoinColumn(name="trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_item_trade_membership_id_fk")), inverseJoinColumns = @JoinColumn(name="item_id", foreignKey=@ForeignKey(name="trade_membership_to_item_item_id_fk")))
 	public Set<ItemEntity> getItems() {
 		return items;
 	}
 
+	@OneToMany
+	@JoinTable(name="trade_membership_to_offer", joinColumns=@JoinColumn(name="trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_offer_trade_membership_id_fk")), inverseJoinColumns=@JoinColumn(name="offer_id", foreignKey=@ForeignKey(name="trade_membership_to_offer_offer_id_fk")))
+	public Set<OfferEntity> getOffers() {
+		return offers;
+	}
+
 	@OneToOne
-	@JoinColumn(name="trade_id", foreignKey = @ForeignKey(name = "trade_membership_trade_id_fk"))
+	@JoinColumn(name="trade_id", foreignKey=@ForeignKey(name="trade_membership_trade_id_fk"))
 	public TradeEntity getTrade() {
 		return trade;
 	}
 
 	@Id
-	@Column(name = "trade_membership_id")
+	@Column(name="trade_membership_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Integer getTradeMembershipId() {
 		return tradeMembershipId;
@@ -57,13 +64,17 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	}
 
 	@OneToOne
-	@JoinColumn(name="user_id", foreignKey = @ForeignKey(name = "trade_membership_user_id_fk"))
+	@JoinColumn(name="user_id", foreignKey=@ForeignKey(name="trade_membership_user_id_fk"))
 	public UserEntity getUser() {
 		return user;
 	}
 
 	public void setItems(Set<ItemEntity> items) {
 		this.items = items;
+	}
+
+	public void setOffers(Set<OfferEntity> offers) {
+		this.offers = offers;
 	}
 
 	public void setTrade(TradeEntity trade) {

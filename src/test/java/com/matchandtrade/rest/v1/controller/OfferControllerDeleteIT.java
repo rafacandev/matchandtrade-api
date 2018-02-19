@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.v1.controller;
 
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
 import com.matchandtrade.test.random.OfferRandom;
@@ -50,22 +52,45 @@ public class OfferControllerDeleteIT {
 	@Test
 	public void shouldDeleteByOfferId() {
 		// Create a trade for a random user
-		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
 		// Create owner's items (Greek letters)
-		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerMembership);
 		
 		// Create member's items (country names)
-		OfferController memberController = mockControllerFactory.getOfferController(false);
-		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberController.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity australia = itemRandom.nextPersistedEntity(memberTradeMemberhip);
+		TradeMembershipEntity memberMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), TradeMembershipEntity.Type.MEMBER);
+		ItemEntity australia = itemRandom.nextPersistedEntity(memberMemberhip);
 
 		// Owner offers Alpha for Australia
-		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(alpha.getItemId(), australia.getItemId());
+		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getItemId(), australia.getItemId());
 
-//		fixture.delete(alphaForAustralia.getOfferId());
-//		assertNull(offerRepositoryFacade.get(alphaForAustralia.getOfferId()));
+		fixture.delete(ownerMembership.getTradeMembershipId(), alphaForAustralia.getOfferId());
+		assertNull(offerRepositoryFacade.get(alphaForAustralia.getOfferId()));
+	}
+
+	@Test(expected=RestException.class)
+	public void shouldNotDeleteWhenTradeMembershipDoesNotBelongToAuthenticatedUser() {
+		// Create a trade for a random user
+		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		
+		// Create owner's items (Greek letters)
+		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerMembership);
+		
+		// Create member's items (country names)
+		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), TradeMembershipEntity.Type.MEMBER);
+		ItemEntity australia = itemRandom.nextPersistedEntity(memberMembership);
+
+		// Owner offers Alpha for Australia
+		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getItemId(), australia.getItemId());
+
+		try {
+			fixture.delete(memberMembership.getTradeMembershipId(), alphaForAustralia.getOfferId());
+		} catch (RestException e) {
+			assertTrue(e.getMessage().contains("TradeMembership.tradeMembershipId must belong to the authenticated User"));
+			throw e;
+		}
 	}
 
 }

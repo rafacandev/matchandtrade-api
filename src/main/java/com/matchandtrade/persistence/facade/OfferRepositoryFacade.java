@@ -42,8 +42,8 @@ public class OfferRepositoryFacade {
 		return (resultList.size() == 1);
 	}
 	
-	public void save(OfferEntity entity) {
-		offerRepository.save(entity);
+	public void delete(Integer offerId) {
+		offerRepository.delete(offerId);
 	}
 
 	public OfferEntity get(Integer offerId) {
@@ -52,5 +52,9 @@ public class OfferRepositoryFacade {
 
 	public List<OfferEntity> getByOfferedItemId(Integer offeredItemId) {
 		return offerRepository.findByOfferedItemItemId(offeredItemId);
+	}
+
+	public void save(OfferEntity entity) {
+		offerRepository.save(entity);
 	}
 }
