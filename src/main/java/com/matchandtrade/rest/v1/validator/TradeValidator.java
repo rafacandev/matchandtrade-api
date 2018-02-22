@@ -98,11 +98,8 @@ public class TradeValidator {
 		}
 	}
 	
-	public void validateGet(String name, Integer pageNumber, Integer pageSize) {
+	public void validateGet(Integer pageNumber, Integer pageSize) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
-		if (name != null) {
-			checkNameLength(name);
-		}
 	}
 
 }

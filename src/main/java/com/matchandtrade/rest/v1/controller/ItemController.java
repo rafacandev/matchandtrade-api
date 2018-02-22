@@ -82,13 +82,13 @@ public class ItemController implements Controller {
 	}
 
 	@RequestMapping(path={"/{tradeMembershipId}/items/", "/{tradeMembershipId}/items"}, method=RequestMethod.GET)
-	public SearchResult<ItemJson> get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, String name, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<ItemJson> get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, _pageNumber, _pageSize);
 		// Delegate to service layer
-		SearchResult<ItemEntity> searchResult = itemService.searchByTradeMembershipIdName(tradeMembershipId, name, _pageNumber, _pageSize);
+		SearchResult<ItemEntity> searchResult = itemService.searchByTradeMembershipIdName(tradeMembershipId, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<ItemJson> response = ItemTransformer.transform(searchResult);
 		// Assemble links

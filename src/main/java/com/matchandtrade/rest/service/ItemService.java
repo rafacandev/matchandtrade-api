@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
@@ -43,12 +42,9 @@ public class ItemService {
 	}
 
 	@Transactional
-	public SearchResult<ItemEntity> searchByTradeMembershipIdName(Integer tradeMembershipId, String name, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<ItemEntity> searchByTradeMembershipIdName(Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
-		if (name != null) {
-			searchCriteria.addCriterion(ItemQueryBuilder.Field.name, name, Restriction.LIKE_IGNORE_CASE);
-		}
 		return searchService.search(searchCriteria, ItemQueryBuilder.class);
 	}
 

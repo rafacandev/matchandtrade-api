@@ -41,17 +41,17 @@ public class ItemControllerGetIT {
 	}
 
 	@Test
-	public void getAllFromTradeMembership() {
+	public void shouldGetAllItemsByTradeMembershipId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		itemRandom.nextPersistedEntity(existingTradeMembership);
 		itemRandom.nextPersistedEntity(existingTradeMembership);
 		itemRandom.nextPersistedEntity(existingTradeMembership);
-		SearchResult<ItemJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), null, null, null);
+		SearchResult<ItemJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), null, null);
 		assertEquals(3, response.getResultList().size());
 	}
 
 	@Test
-	public void getById() {
+	public void shouldGetItemByTradeMemberhipId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
 		ItemJson response = fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getItemId());
@@ -59,22 +59,7 @@ public class ItemControllerGetIT {
 	}
 
 	@Test
-	public void getByName() {
-		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
-		SearchResult<ItemJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getName(), null, null);
-		assertEquals(existingItem.getName(), response.getResultList().get(0).getName());
-	}
-	
-	@Test(expected = RestException.class)
- 	public void getTradeMembershipNotFound() {
-		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
-		fixture.get(-1, existingItem.getItemId());
-	}
-	
-	@Test
- 	public void userAssociatedWithTradeCanGetItems() {
+ 	public void shouldGetItemsWhenUserIsAssociatedWithTrade() {
 		// Create owner's items (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
@@ -82,9 +67,16 @@ public class ItemControllerGetIT {
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(ownerTradeMemberhip.getTrade(), fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
 		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getItemId());
 	}
+	
+	@Test(expected = RestException.class)
+ 	public void shouldNotGetItemForInexistingTradeMembershipId() {
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
+		fixture.get(-1, existingItem.getItemId());
+	}
 
 	@Test(expected=RestException.class)
-	public void userNotAssociatedWithTradeCanNotGetItems() {
+	public void shouldNotGetItemsWhenUserIsAssociatedWithTrade() {
 		// Create owner's items (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);

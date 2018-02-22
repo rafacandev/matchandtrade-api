@@ -45,11 +45,8 @@ public class TradeService {
 		return tradeRepository.get(tradeId);
 	}
 
-	public SearchResult<TradeEntity> search(String name, Integer pageNumber, Integer pageSize) {
+	public SearchResult<TradeEntity> search(Integer pageNumber, Integer pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
-		if (name != null && !name.isEmpty()) {
-			searchCriteria.addCriterion(TradeQueryBuilder.Field.name, name);
-		}
 		return searchService.search(searchCriteria, TradeQueryBuilder.class);
 	}
 

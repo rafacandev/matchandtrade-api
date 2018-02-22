@@ -77,19 +77,19 @@ public class TradeController implements Controller {
 	}
 
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
-	public SearchResult<TradeJson> get(String name, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<TradeJson> get(Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity - Nothing to validate it is a public resource
 		// Validate the request - Nothing to validate
-		tradeValidador.validateGet(name, _pageNumber, _pageSize);
+		tradeValidador.validateGet(_pageNumber, _pageSize);
 		// Delegate to Service layer
-		SearchResult<TradeEntity> searchResult = tradeService.search(name, _pageNumber, _pageSize);
+		SearchResult<TradeEntity> searchResult = tradeService.search(_pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<TradeJson> response = TradeTransformer.transform(searchResult);
 		// Assemble links
 		TradeLinkAssember.assemble(response);
 		return response;
 	}
-	
+
 	@RequestMapping(path="/{tradeId}", method=RequestMethod.GET)
 	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
 		// Validate request identity
