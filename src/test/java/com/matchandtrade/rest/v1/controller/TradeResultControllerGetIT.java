@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.entity.ItemEntity;
-import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -48,7 +47,6 @@ public class TradeResultControllerGetIT {
 	private TradeRepositoryFacade tradeRepositoryFacade;
 	private TradeResultController fixture;
 	
-	
 	@Before
 	public void before() {
 		if (fixture == null) {
@@ -56,51 +54,58 @@ public class TradeResultControllerGetIT {
 		}
 	}
 	
+	/**
+	 *  Three way exchange where no items are directly offered-wanted but can be indirectly exchanged.
+	 *  
+	 *  <pre>
+	 *  INPUT
+	 *  ====================
+	 *  OFFERED   :  WANTED
+	 *  --------------------
+	 *  beta      : brazil
+	 *  brazil    : first,
+	 *  first     : beta
+	 *  --------------------
+	 *  
+	 *  EXPECTED RESULT: all items should trade
+	 *  </pre>
+	 * 
+	 * @throws IOException
+	 */
 	@Test
-	public void basicScenario() throws IOException {
+	public void shouldTradeThreeWayExchange() throws IOException {
 		// Create a trade for a random user
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
 		// Create owner's items (Greek letters)
 		TradeMembershipEntity greekMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("GREEK"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity alpha = itemRandom.nextPersistedEntity(greekMembership);
 		ItemEntity beta = itemRandom.nextPersistedEntity(greekMembership);
 		
 		// Create member's items (country names)
 		TradeMembershipEntity countryMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("COUNTRY"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity australia = itemRandom.nextPersistedEntity(countryMemberhip);
 		ItemEntity brazil = itemRandom.nextPersistedEntity(countryMemberhip);
-		ItemEntity cuba = itemRandom.nextPersistedEntity(countryMemberhip);
 
 		// Create member's items (ordinal numbers)
 		TradeMembershipEntity ordinalMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), TradeMembershipEntity.Type.MEMBER);
 		ItemEntity first = itemRandom.nextPersistedEntity(ordinalMemberhip);
-		ItemEntity second = itemRandom.nextPersistedEntity(ordinalMemberhip);
 
-
-		// Offering Alpha for Australia
-		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), alpha.getItemId(), australia.getItemId());
-		// Offering Beta for Brazil
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getItemId(), brazil.getItemId());
-		// Offering Beta for Cuba
-		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getItemId(), cuba.getItemId());
-		// Offering Australia for Alpha 
-		offerRandom.nextPersistedEntity(countryMemberhip.getTradeMembershipId(), australia.getItemId(), alpha.getItemId());
-		// Offering Brazil for First 
 		offerRandom.nextPersistedEntity(countryMemberhip.getTradeMembershipId(), brazil.getItemId(), first.getItemId());
-		// Offering First for Brazil 
-		offerRandom.nextPersistedEntity(ordinalMemberhip.getTradeMembershipId(), first.getItemId(), brazil.getItemId());
-		// Offering Second for Brazil
-		offerRandom.nextPersistedEntity(ordinalMemberhip.getTradeMembershipId(), second.getItemId(), brazil.getItemId());
-
+		offerRandom.nextPersistedEntity(ordinalMemberhip.getTradeMembershipId(), first.getItemId(), beta.getItemId());
 		
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
 		tradeRepositoryFacade.save(trade);
 		String response = fixture.getText(trade.getTradeId());
-		
-		// TODO Assert results
+		// Remove white spaces and tabs to facilitate assertion
+		response = response.replace(" ", "").replaceAll("\t", "");
 
+		String expectedBetaLine = "(GREEK)" + beta.getItemId() + "receives(COUNTRY)" + brazil.getItemId();
+		assertTrue(response.contains(expectedBetaLine));
+		String expectedBrazilLine = "(COUNTRY)" + brazil.getItemId() + "receives(ORDINAL)" + first.getItemId();
+		assertTrue(response.contains(expectedBrazilLine));
+		String expectedFirstLine = "(ORDINAL)" + first.getItemId() + "receives(GREEK)" + beta.getItemId();
+		assertTrue(response.contains(expectedFirstLine));
 	}
 	
 	@Test(expected = RestException.class)
@@ -120,17 +125,28 @@ public class TradeResultControllerGetIT {
 	/**
 	 * Reproducing the example from TradeMaximizer website: https://github.com/chrisokasaki/TradeMaximizer
 	<pre>
+		INPUT
+		======================
 		(Alice) 1 : 3 2 6
 		(Betty) 2 : 1 6 4 3
 		(Craig) 3 : 6 2
 		(David) 4 : 2
 		(Ethan) 5 : 1 2 3 4 6
 		(Fiona) 6 : 1 2
+		
+		EXPECTED RESULT
+		======================
+		(ALICE) 1 receives (CRAIG) 3
+		(CRAIG) 3 receives (FIONA) 6
+		(FIONA) 6 receives (ALICE) 1
+		
+		(BETTY) 2 receives (DAVID) 4
+		(DAVID) 4 receives (BETTY) 2
 	</pre>
 	 * @throws IOException 
 	 */
 	@Test
-	public void basicTradeMaximizerScenario() throws IOException {
+	public void shouldTradeAsInTradeMaximizerWebsiteExample() throws IOException {
 		// Create a trade for a random user
 		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 
@@ -176,7 +192,6 @@ public class TradeResultControllerGetIT {
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
 		tradeRepositoryFacade.save(trade);
 		String response = fixture.getText(trade.getTradeId());
-		
 
 		List<String> assertions = new ArrayList<>();
 		assertions.add("(ALICE)"+one.getItemId()+"receives(CRAIG)"+three.getItemId());
@@ -185,10 +200,8 @@ public class TradeResultControllerGetIT {
 		assertions.add("(BETTY)"+two.getItemId()+"receives(DAVID)"+four.getItemId());
 		assertions.add("(DAVID)"+four.getItemId()+"receives(BETTY)"+two.getItemId());
 		
-		// Remove white spaces to facilitate assertion
-		response = response.replace(" ", "");
-		// Remove tabs to facilitate assertion
-		response = response.replace("\t", "");
+		// Remove white spaces and tabs to facilitate assertion
+		response = response.replace(" ", "").replace("\t", "");
 		
 		for (String assertion : assertions) {
 			assertTrue(response.contains(assertion));
