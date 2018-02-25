@@ -1,13 +1,11 @@
 package com.matchandtrade.rest.v1.controller;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
-import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.TradeResultService;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
 import com.matchandtrade.test.random.OfferRandom;
@@ -29,10 +26,8 @@ import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class TradeResultControllerGetIT {
+public class TradeResultServiceIT {
 	
-	@Autowired
-	private MockControllerFactory mockControllerFactory;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
 	@Autowired
@@ -45,14 +40,8 @@ public class TradeResultControllerGetIT {
 	private UserRandom userRandom;
 	@Autowired
 	private TradeRepositoryFacade tradeRepositoryFacade;
-	private TradeResultController fixture;
-	
-	@Before
-	public void before() {
-		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeResultController(true);
-		}
-	}
+	@Autowired
+	private TradeResultService tradeResultService;
 	
 	/**
 	 *  Three way exchange where no items are directly offered-wanted but can be indirectly exchanged.
@@ -75,7 +64,7 @@ public class TradeResultControllerGetIT {
 	@Test
 	public void shouldTradeThreeWayExchange() throws IOException {
 		// Create a trade for a random user
-		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		
 		// Create owner's items (Greek letters)
 		TradeMembershipEntity greekMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("GREEK"), TradeMembershipEntity.Type.MEMBER);
@@ -96,7 +85,7 @@ public class TradeResultControllerGetIT {
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
 		tradeRepositoryFacade.save(trade);
-		String response = fixture.getText(trade.getTradeId());
+		String response = tradeResultService.get(trade.getTradeId());
 		// Remove white spaces and tabs to facilitate assertion
 		response = response.replace(" ", "").replaceAll("\t", "");
 		
@@ -108,20 +97,6 @@ public class TradeResultControllerGetIT {
 		assertTrue(response.contains(expectedFirstLine));
 	}
 	
-	@Test(expected = RestException.class)
-	public void resultsAreOnlyGeneratedIfTradeStatusIsMatchingItemsEndedOrGeneratingTradesEnded() throws IOException {
-		UserEntity tradeOwner = fixture.authenticationProvider.getAuthentication().getUser();
-		TradeEntity trade = tradeRandom.nextPersistedEntity(tradeOwner);
-		// Generate the trade results
-		try {
-			fixture.getText(trade.getTradeId());
-		} catch (RestException e) {
-			assertEquals("TradeResult is only availble when Trade.State is GENERATE_RESULTS, GENERATING_RESULTS, RESULTS_GENERATED.", e.getDescription());
-			throw e;
-		}
-		
-	}
-
 	/**
 	 * Reproducing the example from TradeMaximizer website: https://github.com/chrisokasaki/TradeMaximizer
 	<pre>
@@ -191,7 +166,7 @@ public class TradeResultControllerGetIT {
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
 		tradeRepositoryFacade.save(trade);
-		String response = fixture.getText(trade.getTradeId());
+		String response = tradeResultService.get(trade.getTradeId());
 
 		List<String> assertions = new ArrayList<>();
 		assertions.add("("+aliceMembership.getTradeMembershipId()+")"+one.getItemId()+"receives("+craigMembership.getTradeMembershipId()+")"+three.getItemId());
