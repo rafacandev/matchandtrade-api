@@ -41,6 +41,6 @@
 	<logger level="INFO" name="org.hibernate.cache"/>
 	
 	<!-- Match And Trade loggers -->
-	<logger leve="INFO" name="com.matchandtrade.rest.service.TradeResultService" />
+	<logger level="INFO" name="com.matchandtrade.rest.service.TradeResultService"/>
 	
 </configuration>

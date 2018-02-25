@@ -36,22 +36,13 @@ public class TradeResultService {
 	@Autowired
 	private OfferService offerService;
 
-	/**
-	 * Get the results of a {@code Trade}
-	 * @param tradeId
-	 * @return
-	 */
-	@Transactional
-	public String get(Integer tradeId) {
-		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
-		if (trade.getResult() == null) {
-			String result = buildTradeMaximizerOutput(tradeId);
-			TradeResultEntity tradeResult = new TradeResultEntity();
-			tradeResult.setText(result);
-			trade.setResult(tradeResult);
-			tradeRepositoryFacade.save(trade);
-		}
-		return trade.getResult().getText();
+	private StringBuilder buildOfferLine(TradeMembershipEntity membership, ItemEntity item) {
+		StringBuilder line = new StringBuilder("(" + membership.getTradeMembershipId() + ") " + item.getItemId() + " :");
+		List<OfferEntity> offers = offerService.searchByOfferedItemId(item.getItemId());
+		offers.forEach(offer -> {
+			line.append(" " + offer.getWantedItem().getItemId());
+		});
+		return line;
 	}
 	
 	/**
@@ -61,28 +52,19 @@ public class TradeResultService {
 	 */
 	private List<String> buildTradeMaximizerInput(Integer tradeId) {
 		List<String> tradeMaximizerEntries = new ArrayList<>();
-		
 		LOGGER.debug("Finding all items for Trade.tradeId: {}", tradeId);
-		SearchCriteria itemsCriteria = new SearchCriteria(new Pagination(1, 50));
-		itemsCriteria.addCriterion(ItemQueryBuilder.Field.tradeId, tradeId);
-		SearchResult<ItemEntity> itemsResult = searchService.search(itemsCriteria, ItemQueryBuilder.class);
-		LOGGER.debug("Found items with {} ", itemsResult.getPagination());
 		
-		itemsResult.getResultList().forEach(item -> {
-			//TODO Improve performance, search all users once instead of one by one
-			SearchCriteria userCriteria = new SearchCriteria(new Pagination(1,1));
-			userCriteria.addCriterion(TradeMembershipQueryBuilder.Field.itemId, item.getItemId());
-			SearchResult<TradeMembershipEntity> userResult = searchService.search(userCriteria, TradeMembershipQueryBuilder.class);
-			Integer tradeMembershipId = userResult.getResultList().get(0).getTradeMembershipId();
-			
-			StringBuilder line = new StringBuilder("(" + tradeMembershipId + ") " + item.getItemId() + " :");
-			List<OfferEntity> offers = offerService.searchByOfferedItemId(item.getItemId());
-			offers.forEach(offer -> {
-				line.append(" " + offer.getWantedItem().getItemId());
+		int pageNumber = 1;
+		int pageSize = 50;
+		SearchResult<ItemEntity> itemsResult = null;
+		do {
+			itemsResult = searchItems(tradeId, new Pagination(pageNumber++, pageSize));
+			itemsResult.getResultList().forEach(item -> {
+				TradeMembershipEntity membership = searchMembership(item);
+				StringBuilder line = buildOfferLine(membership, item);
+				tradeMaximizerEntries.add(line.toString());
 			});
-			tradeMaximizerEntries.add(line.toString());
-		});
-		
+		} while (itemsResult.getPagination().hasNextPage());
 		return tradeMaximizerEntries;
 	}
 
@@ -103,6 +85,40 @@ public class TradeResultService {
 		String result = tradeMaximizerOutput.getOutputString();
 		LOGGER.debug("TradeMaximizer output: {}", result);
 		return result;
+	}
+
+	/**
+	 * Get the results of a {@code Trade}
+	 * @param tradeId
+	 * @return
+	 */
+	@Transactional
+	public String get(Integer tradeId) {
+		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
+		if (trade.getResult() == null) {
+			String result = buildTradeMaximizerOutput(tradeId);
+			TradeResultEntity tradeResult = new TradeResultEntity();
+			tradeResult.setText(result);
+			trade.setResult(tradeResult);
+			tradeRepositoryFacade.save(trade);
+		}
+		return trade.getResult().getText();
+	}
+
+	private SearchResult<ItemEntity> searchItems(Integer tradeId, Pagination pagination) {
+		SearchCriteria itemsCriteria = new SearchCriteria(pagination);
+		itemsCriteria.addCriterion(ItemQueryBuilder.Field.tradeId, tradeId);
+		SearchResult<ItemEntity> itemsResult = searchService.search(itemsCriteria, ItemQueryBuilder.class);
+		LOGGER.debug("Found items with {} ", pagination);
+		return itemsResult;
+	}
+
+	private TradeMembershipEntity searchMembership(ItemEntity item) {
+		SearchCriteria membershipCriteria = new SearchCriteria(new Pagination(1,1));
+		membershipCriteria.addCriterion(TradeMembershipQueryBuilder.Field.itemId, item.getItemId());
+		SearchResult<TradeMembershipEntity> membershipResult = searchService.search(membershipCriteria, TradeMembershipQueryBuilder.class);
+		TradeMembershipEntity membership = membershipResult.getResultList().get(0);
+		return membership;
 	}
 	
 }
