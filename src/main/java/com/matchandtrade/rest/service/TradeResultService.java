@@ -14,12 +14,12 @@ import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
-import com.matchandtrade.persistence.criteria.UserQueryBuilder;
+import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.TradeResultEntity;
-import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.trademaximazer.Output;
 import com.trademaximazer.TradeMaximizer;
@@ -71,11 +71,11 @@ public class TradeResultService {
 		itemsResult.getResultList().forEach(item -> {
 			//TODO Improve performance, search all users once instead of one by one
 			SearchCriteria userCriteria = new SearchCriteria(new Pagination(1,1));
-			userCriteria.addCriterion(UserQueryBuilder.Field.itemId, item.getItemId());
-			SearchResult<UserEntity> userResult = searchService.search(userCriteria, UserQueryBuilder.class);
-			String userName = userResult.getResultList().get(0).getName();
+			userCriteria.addCriterion(TradeMembershipQueryBuilder.Field.itemId, item.getItemId());
+			SearchResult<TradeMembershipEntity> userResult = searchService.search(userCriteria, TradeMembershipQueryBuilder.class);
+			Integer tradeMembershipId = userResult.getResultList().get(0).getTradeMembershipId();
 			
-			StringBuilder line = new StringBuilder("(" + userName + ") " + item.getItemId() + " :");
+			StringBuilder line = new StringBuilder("(" + tradeMembershipId + ") " + item.getItemId() + " :");
 			List<OfferEntity> offers = offerService.searchByOfferedItemId(item.getItemId());
 			offers.forEach(offer -> {
 				line.append(" " + offer.getWantedItem().getItemId());

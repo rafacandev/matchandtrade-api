@@ -99,12 +99,12 @@ public class TradeResultControllerGetIT {
 		String response = fixture.getText(trade.getTradeId());
 		// Remove white spaces and tabs to facilitate assertion
 		response = response.replace(" ", "").replaceAll("\t", "");
-
-		String expectedBetaLine = "(GREEK)" + beta.getItemId() + "receives(COUNTRY)" + brazil.getItemId();
+		
+		String expectedBetaLine = "("+greekMembership.getTradeMembershipId()+")" + beta.getItemId() + "receives("+countryMemberhip.getTradeMembershipId()+")" + brazil.getItemId();
 		assertTrue(response.contains(expectedBetaLine));
-		String expectedBrazilLine = "(COUNTRY)" + brazil.getItemId() + "receives(ORDINAL)" + first.getItemId();
+		String expectedBrazilLine = "("+countryMemberhip.getTradeMembershipId()+")" + brazil.getItemId() + "receives("+ordinalMemberhip.getTradeMembershipId()+")" + first.getItemId();
 		assertTrue(response.contains(expectedBrazilLine));
-		String expectedFirstLine = "(ORDINAL)" + first.getItemId() + "receives(GREEK)" + beta.getItemId();
+		String expectedFirstLine = "("+ordinalMemberhip.getTradeMembershipId()+")" + first.getItemId() + "receives("+greekMembership.getTradeMembershipId()+")" + beta.getItemId();
 		assertTrue(response.contains(expectedFirstLine));
 	}
 	
@@ -194,11 +194,11 @@ public class TradeResultControllerGetIT {
 		String response = fixture.getText(trade.getTradeId());
 
 		List<String> assertions = new ArrayList<>();
-		assertions.add("(ALICE)"+one.getItemId()+"receives(CRAIG)"+three.getItemId());
-		assertions.add("(CRAIG)"+three.getItemId()+"receives(FIONA)"+six.getItemId());
-		assertions.add("(FIONA)"+six.getItemId()+"receives(ALICE)"+one.getItemId());
-		assertions.add("(BETTY)"+two.getItemId()+"receives(DAVID)"+four.getItemId());
-		assertions.add("(DAVID)"+four.getItemId()+"receives(BETTY)"+two.getItemId());
+		assertions.add("("+aliceMembership.getTradeMembershipId()+")"+one.getItemId()+"receives("+craigMembership.getTradeMembershipId()+")"+three.getItemId());
+		assertions.add("("+craigMembership.getTradeMembershipId()+")"+three.getItemId()+"receives("+fionaMembership.getTradeMembershipId()+")"+six.getItemId());
+		assertions.add("("+fionaMembership.getTradeMembershipId()+")"+six.getItemId()+"receives("+aliceMembership.getTradeMembershipId()+")"+one.getItemId());
+		assertions.add("("+bettyMembership.getTradeMembershipId()+")"+two.getItemId()+"receives("+davidMembership.getTradeMembershipId()+")"+four.getItemId());
+		assertions.add("("+davidMembership.getTradeMembershipId()+")"+four.getItemId()+"receives("+bettyMembership.getTradeMembershipId()+")"+two.getItemId());
 		
 		// Remove white spaces and tabs to facilitate assertion
 		response = response.replace(" ", "").replace("\t", "");
