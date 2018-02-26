@@ -1,5 +1,6 @@
 package com.matchandtrade.rest.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.Pagination;
@@ -21,6 +23,8 @@ import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.TradeResultEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
+import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.v1.transformer.TradeMaximizerTransformer;
 import com.trademaximazer.Output;
 import com.trademaximazer.TradeMaximizer;
 
@@ -35,6 +39,9 @@ public class TradeResultService {
 	private TradeRepositoryFacade tradeRepositoryFacade;
 	@Autowired
 	private OfferService offerService;
+	@Autowired
+	private TradeMaximizerTransformer tradeMaximizerTransformer;
+
 
 	private StringBuilder buildOfferLine(TradeMembershipEntity membership, ItemEntity item) {
 		StringBuilder line = new StringBuilder("(" + membership.getTradeMembershipId() + ") " + item.getItemId() + " :");
@@ -75,7 +82,7 @@ public class TradeResultService {
 	 * @param tradeId
 	 * @return
 	 */
-	private String buildTradeMaximizerOutput(Integer tradeId) {
+	protected String buildTradeMaximizerOutput(Integer tradeId) {
 		// The entries to be passed to Trade Maximizer
 		List<String> tradeMaximizerEntries = buildTradeMaximizerInput(tradeId);
 		LOGGER.info("Using TradeMaximizer input: {}", tradeMaximizerEntries);
@@ -83,7 +90,7 @@ public class TradeResultService {
 		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerOutput);
 		tradeMaximizer.generateResult(tradeMaximizerEntries);
 		String result = tradeMaximizerOutput.getOutputString();
-		LOGGER.debug("TradeMaximizer output: {}", result);
+		LOGGER.debug("TradeMaximizer output:\n{}", result);
 		return result;
 	}
 
@@ -95,14 +102,24 @@ public class TradeResultService {
 	@Transactional
 	public String get(Integer tradeId) {
 		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
+		trade.setState(TradeEntity.State.GENERATING_RESULTS);
+		tradeRepositoryFacade.save(trade);
 		if (trade.getResult() == null) {
-			String result = buildTradeMaximizerOutput(tradeId);
+			String tradeMaximizerOutput = buildTradeMaximizerOutput(tradeId);
 			TradeResultEntity tradeResult = new TradeResultEntity();
-			tradeResult.setText(result);
+			tradeResult.setTradeMaximizerOutput(tradeMaximizerOutput);
+			try {
+				String csv = tradeMaximizerTransformer.toCsv(tradeId, tradeMaximizerOutput);
+				LOGGER.debug("Trasnformed TradeMaximizer output into csv:\n{}", csv);
+				tradeResult.setCsv(csv);
+			} catch (IOException e) {
+				throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Not able to generate CSV. Exception message: " + e.getMessage());
+			}
 			trade.setResult(tradeResult);
+			trade.setState(TradeEntity.State.RESULTS_GENERATED);
 			tradeRepositoryFacade.save(trade);
 		}
-		return trade.getResult().getText();
+		return trade.getResult().getCsv();
 	}
 
 	private SearchResult<ItemEntity> searchItems(Integer tradeId, Pagination pagination) {

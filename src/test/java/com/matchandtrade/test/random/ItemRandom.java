@@ -42,6 +42,17 @@ public class ItemRandom {
 		tradeMembershipRepository.save(tme);
 		return result;
 	}
+
+	@Transactional
+	public ItemEntity nextPersistedEntity(TradeMembershipEntity tradeMembership, String name) {
+		TradeMembershipEntity tme = tradeMembershipRepository.get(tradeMembership.getTradeMembershipId());
+		ItemEntity result = new ItemEntity();
+		result.setName(name);
+		itemRepository.save(result);
+		tme.getItems().add(result);
+		tradeMembershipRepository.save(tme);
+		return result;
+	}
 	
 	@Transactional
 	public ItemEntity nextPersistedEntity(UserEntity tradeOwner) {

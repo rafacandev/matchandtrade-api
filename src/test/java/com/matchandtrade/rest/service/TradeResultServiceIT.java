@@ -1,4 +1,4 @@
-package com.matchandtrade.rest.v1.controller;
+package com.matchandtrade.rest.service;
 
 import static org.junit.Assert.assertTrue;
 
@@ -85,7 +85,7 @@ public class TradeResultServiceIT {
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
 		tradeRepositoryFacade.save(trade);
-		String response = tradeResultService.get(trade.getTradeId());
+		String response = tradeResultService.buildTradeMaximizerOutput(trade.getTradeId());
 		// Remove white spaces and tabs to facilitate assertion
 		response = response.replace(" ", "").replaceAll("\t", "");
 		
@@ -166,7 +166,7 @@ public class TradeResultServiceIT {
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
 		tradeRepositoryFacade.save(trade);
-		String response = tradeResultService.get(trade.getTradeId());
+		String response = tradeResultService.buildTradeMaximizerOutput(trade.getTradeId());
 
 		List<String> assertions = new ArrayList<>();
 		assertions.add("("+aliceMembership.getTradeMembershipId()+")"+one.getItemId()+"receives("+craigMembership.getTradeMembershipId()+")"+three.getItemId());

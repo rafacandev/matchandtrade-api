@@ -13,7 +13,20 @@ import javax.persistence.Table;
 public class TradeResultEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	private Integer tradeResultId;
-	private String text;
+	private String tradeMaximizerOutput;
+	private String csv;
+
+	@Lob
+	@Column(name = "csv", nullable = false, unique = false)
+	public String getCsv() {
+		return csv;
+	}
+
+	@Lob
+	@Column(name = "trade_maximizer_output", nullable = false, unique = false)
+	public String getTradeMaximizerOutput() {
+		return tradeMaximizerOutput;
+	}
 
 	@Id
 	@Column(name = "trade_result_id", nullable = false)
@@ -22,18 +35,16 @@ public class TradeResultEntity implements com.matchandtrade.persistence.entity.E
 		return tradeResultId;
 	}
 
+	public void setCsv(String csv) {
+		this.csv = csv;
+	}
+
+	public void setTradeMaximizerOutput(String tradeMaximizerOutput) {
+		this.tradeMaximizerOutput = tradeMaximizerOutput;
+	}
+
 	public void setTradeResultId(Integer tradeResultId) {
 		this.tradeResultId = tradeResultId;
-	}
-
-	@Lob
-	@Column(name = "text", nullable = false, unique = false)
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String result) {
-		this.text = result;
 	}
 
 }
