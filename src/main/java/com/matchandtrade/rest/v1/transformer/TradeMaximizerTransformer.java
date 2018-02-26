@@ -112,7 +112,7 @@ public class TradeMaximizerTransformer {
 		csvPrinter.printComment("--------------------------------");
 		csvPrinter.printComment("");
 		csvPrinter.printComment("Below is an example to help you understand the results:");
-		csvPrinter.printComment("Sample row:  1,Alice,10,Ticket to Ride,:RECEIVES:,2,Bob,11,Power Grid,:SENDS:,3,Charlie,1,Pandemic");
+		csvPrinter.printComment("Sample row:  1,Alice,10,Ticket to Ride,:RECEIVES:,2,Bob,11,Power Grid,:SENDS:,3,Charlie");
 		csvPrinter.printComment("Explanation: Alice receives Bob's Power Grid and sends her Ticket to Ride to Charlie");
 	}
 
