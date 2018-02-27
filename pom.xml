@@ -36,6 +36,7 @@
 		<org.jacoco.version>0.7.9</org.jacoco.version>
 		<org.springframework.boot.version>1.5.3.RELEASE</org.springframework.boot.version>
 		<org.apache.commons.commons-csv>1.4</org.apache.commons.commons-csv>
+		<chrisokasaki.tm.trade-maximizer.version>1.3c</chrisokasaki.tm.trade-maximizer.version>
 	</properties>
 
 	<!-- Using Spring Boot without the parent POM. See: https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-build-systems.html -->
@@ -176,6 +177,13 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
 			<version>${org.apache.commons.commons-csv}</version>
+		</dependency>
+
+		<!-- TradeMaximizer -->
+		<dependency>
+			<groupId>chrisokasaki.tm</groupId>
+			<artifactId>trade-maximizer</artifactId>
+			<version>${chrisokasaki.tm.trade-maximizer.version}</version>
 		</dependency>
 
 	</dependencies>

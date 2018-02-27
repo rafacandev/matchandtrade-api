@@ -9,11 +9,21 @@ Match and Trade is a web application where many people trade several items at on
 * The organizer closes the trade and the website generates a list with the items to be traded
 * Members exchange items according to the generated results
 
-RESTful Documentation
+REST API Documentation
 ---------------------
-Checkout our [RESTful Documentation](https://rafasantos.github.io/matchandtrade-doc/). This application offers a power RESTful API which can be integrated with other applications.
+Checkout our [REST API Documentation](https://rafasantos.github.io/matchandtrade-doc/). Match And Trade offers a power REST API which can be integrated with other applications.
 
 Development Guide
 -----------------
 Checkout our [Development Guide](https://rafasantos.github.io/matchandtrade-doc/development-guide.html) if you want to contribute or customize the application.
 
+
+### TradeMaximizer
+Match And Trade uses Chris Okasaki's [TradeMaximizer](https://github.com/chrisokasaki/TradeMaximizer) to generate trade results. Follow these steps to install _TradeMaximizer_ in your local _maven_ repository.
+
+```
+
+git clone https://github.com/rafasantos/TradeMaximizer.git
+ant compile jar
+mvn install:install-file -Dfile=tm.jar -DgroupId=chrisokasaki.tm -DartifactId=trade-maximizer -Dversion=1.3c -Dpackaging=jar
+```

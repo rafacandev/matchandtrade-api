@@ -1,7 +1,8 @@
 package com.matchandtrade.rest.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -25,8 +26,9 @@ import com.matchandtrade.persistence.entity.TradeResultEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.transformer.TradeMaximizerTransformer;
-import com.trademaximazer.Output;
-import com.trademaximazer.TradeMaximizer;
+
+import tm.Output;
+import tm.TradeMaximizer;
 
 @Component
 public class TradeResultService {
@@ -57,8 +59,8 @@ public class TradeResultService {
 	 * @param tradeId
 	 * @return list of entries for Trade Maximizer
 	 */
-	private List<String> buildTradeMaximizerInput(Integer tradeId) {
-		List<String> tradeMaximizerEntries = new ArrayList<>();
+	private String buildTradeMaximizerInput(Integer tradeId) {
+		StringBuilder tradeMaximizerEntries = new StringBuilder();
 		LOGGER.debug("Finding all items for Trade.tradeId: {}", tradeId);
 		
 		int pageNumber = 1;
@@ -69,10 +71,10 @@ public class TradeResultService {
 			itemsResult.getResultList().forEach(item -> {
 				TradeMembershipEntity membership = searchMembership(item);
 				StringBuilder line = buildOfferLine(membership, item);
-				tradeMaximizerEntries.add(line.toString());
+				tradeMaximizerEntries.append(line.toString() + "\n");
 			});
 		} while (itemsResult.getPagination().hasNextPage());
-		return tradeMaximizerEntries;
+		return tradeMaximizerEntries.toString();
 	}
 
 	/**
@@ -84,11 +86,12 @@ public class TradeResultService {
 	 */
 	protected String buildTradeMaximizerOutput(Integer tradeId) {
 		// The entries to be passed to Trade Maximizer
-		List<String> tradeMaximizerEntries = buildTradeMaximizerInput(tradeId);
-		LOGGER.info("Using TradeMaximizer input: {}", tradeMaximizerEntries);
+		String tradeMaximizerEntries = buildTradeMaximizerInput(tradeId);
+		LOGGER.info("Using TradeMaximizer input:\n{}", tradeMaximizerEntries);
+		InputStream tradeMaximizerInput = new ByteArrayInputStream(tradeMaximizerEntries.getBytes());
 		Output tradeMaximizerOutput = new Output(System.out);
-		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerOutput);
-		tradeMaximizer.generateResult(tradeMaximizerEntries);
+		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerInput, tradeMaximizerOutput);
+		tradeMaximizer.run();
 		String result = tradeMaximizerOutput.getOutputString();
 		LOGGER.debug("TradeMaximizer output:\n{}", result);
 		return result;
