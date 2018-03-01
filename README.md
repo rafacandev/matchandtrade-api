@@ -22,8 +22,6 @@ Checkout our [Development Guide](https://rafasantos.github.io/matchandtrade-doc/
 Match And Trade uses Chris Okasaki's [TradeMaximizer](https://github.com/chrisokasaki/TradeMaximizer) to generate trade results. Follow these steps to install _TradeMaximizer_ in your local _maven_ repository.
 
 ```
-
-git clone https://github.com/rafasantos/TradeMaximizer.git
-ant compile jar
-mvn install:install-file -Dfile=tm.jar -DgroupId=chrisokasaki.tm -DartifactId=trade-maximizer -Dversion=1.3c -Dpackaging=jar
+wget https://github.com/rafasantos/TradeMaximizer/releases/download/v1.3b-beta/tm.jar
+mvn install:install-file -Dfile=tm.jar -DgroupId=chrisokasaki.tm -DartifactId=trade-maximizer -Dversion=1.3c-beta -Dpackaging=jar
 ```

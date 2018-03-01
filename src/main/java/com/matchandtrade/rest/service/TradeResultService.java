@@ -1,8 +1,10 @@
 package com.matchandtrade.rest.service;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -27,7 +29,6 @@ import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.transformer.TradeMaximizerTransformer;
 
-import tm.Output;
 import tm.TradeMaximizer;
 
 @Component
@@ -86,13 +87,19 @@ public class TradeResultService {
 	 */
 	protected String buildTradeMaximizerOutput(Integer tradeId) {
 		// The entries to be passed to Trade Maximizer
-		String tradeMaximizerEntries = buildTradeMaximizerInput(tradeId);
-		LOGGER.info("Using TradeMaximizer input:\n{}", tradeMaximizerEntries);
-		InputStream tradeMaximizerInput = new ByteArrayInputStream(tradeMaximizerEntries.getBytes());
-		Output tradeMaximizerOutput = new Output(System.out);
-		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerInput, tradeMaximizerOutput);
+		String tradeMaximizerInputString = buildTradeMaximizerInput(tradeId);
+		LOGGER.info("Using TradeMaximizer input:\n{}", tradeMaximizerInputString);
+		InputStream tradeMaximizerInput = new ByteArrayInputStream(tradeMaximizerInputString.getBytes());
+		OutputStream tradeMaximizerOuput = new ByteArrayOutputStream();
+		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerInput, tradeMaximizerOuput);
 		tradeMaximizer.run();
-		String result = tradeMaximizerOutput.getOutputString();
+		String result = tradeMaximizerOuput.toString();
+		try {
+			tradeMaximizerOuput.close();
+		} catch (IOException e) {
+			tradeMaximizerOuput = null;
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
 		LOGGER.debug("TradeMaximizer output:\n{}", result);
 		return result;
 	}
