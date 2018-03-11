@@ -12,6 +12,7 @@ import java.util.List;
 public class SearchCriteria {
 
 	private List<Criterion> criteria = new ArrayList<>();
+	private List<Order> orders = new ArrayList<>();
 	private Pagination pagination;
 	
 	public SearchCriteria(Pagination pagination) {
@@ -32,6 +33,10 @@ public class SearchCriteria {
 		Criterion c = new Criterion(field, value, logicalOperator, restriction);
 		this.criteria.add(c);
 	}
+
+	public void addOrder(Order order) {
+		this.orders.add(order);
+	}	
 	
 	public List<Criterion> getCriteria() {
 		return criteria;
@@ -41,4 +46,7 @@ public class SearchCriteria {
 		return pagination;
 	}
 
+	public List<Order> getOrders() {
+		return orders;
+	}
 }

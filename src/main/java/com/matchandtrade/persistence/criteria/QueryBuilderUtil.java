@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import com.matchandtrade.persistence.common.Criterion;
 import com.matchandtrade.persistence.common.Criterion.LogicalOperator;
 import com.matchandtrade.persistence.common.Criterion.Restriction;
+import com.matchandtrade.persistence.common.Order;
 
 public class QueryBuilderUtil {
 
@@ -73,4 +74,14 @@ public class QueryBuilderUtil {
 		return result;
 	}
 	
+	public static <T extends Order> String buildOrderBy(List<T> list) {
+		if (list.size() < 1) {
+			return "";
+		}
+		StringBuilder result = new StringBuilder(" ORDER BY ");
+		list.forEach(order -> {
+			result.append(" " + order.alias() + " " + order.sortingType());
+		});
+		return result.toString();
+	}
 }

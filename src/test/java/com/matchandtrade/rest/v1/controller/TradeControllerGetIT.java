@@ -33,7 +33,7 @@ public class TradeControllerGetIT {
 			fixture = mockControllerFactory.getTradeController(true);
 		}
 	}
-
+	
 	@Test
 	public void get() {
 		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
@@ -47,7 +47,7 @@ public class TradeControllerGetIT {
 		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		SearchResult<TradeJson> response = fixture.get(null, null);
+		SearchResult<TradeJson> response = fixture.get(1, 2);
 		assertTrue(response.getPagination().getTotal() > 2);
 	}
 
