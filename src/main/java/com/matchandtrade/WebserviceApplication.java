@@ -230,7 +230,11 @@ public class WebserviceApplication {
 			LOGGER.debug("Found argument {}={}", CONFIGURATION_FILE_PROPERTY_KEY, cli.configurationFilePath());
 			configurationFile = cli.configurationFilePath();
 		}
-		LOGGER.debug("Setting environment propert {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
+		if (configurationFile == null) {
+			LOGGER.info("Unnable to start the application. A '{}' is required via argument or system property.", CONFIGURATION_FILE_PROPERTY_KEY);
+			System.exit(2);
+		}
+		LOGGER.info("Setting environment property {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
 		System.setProperty(CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
 		return configurationFile;
 	}
