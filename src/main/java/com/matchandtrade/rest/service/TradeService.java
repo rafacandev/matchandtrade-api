@@ -21,11 +21,13 @@ import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 public class TradeService {
 
 	@Autowired
+	private SearchService searchService;
+	@Autowired
 	private TradeRepositoryFacade tradeRepository;
 	@Autowired
 	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 	@Autowired
-	private SearchService searchService;
+	private TradeResultService tradeResultService;
 	
 	@Transactional
 	public void create(TradeEntity tradeEntity, UserEntity tradeOwner) {
@@ -61,6 +63,10 @@ public class TradeService {
 		tradeMembershipEntity.setTrade(tradeEntity);
 		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
 		tradeMembershipRepository.save(tradeMembershipEntity);
+		
+		if (TradeEntity.State.GENERATE_RESULTS == tradeEntity.getState()) {
+			tradeResultService.get(tradeEntity.getTradeId());
+		}
 	}
 	
 }

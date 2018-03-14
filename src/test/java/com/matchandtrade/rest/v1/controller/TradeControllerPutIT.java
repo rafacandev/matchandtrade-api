@@ -66,4 +66,13 @@ public class TradeControllerPutIT {
 		fixture.put(anotherExistingTrade.getTradeId(), request);
 	}
 
+	@Test
+	public void shouldSaveTradeAndTriggerResultsGenerationWhenStateIsGenerateResults() {
+		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeJson request = TradeTransformer.transform(existingTrade);
+		request.setState(TradeJson.State.GENERATE_RESULTS);
+		TradeJson response = fixture.put(existingTrade.getTradeId(), request);
+		System.out.println(response.getState());
+	}
+
 }
