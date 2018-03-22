@@ -13,7 +13,7 @@ services:
      - ./database:/matchandtrade/database
      - ./log:/matchandtrade/log
   mocked-oauth-server:
+    image: mocked-oauth-server:0.0-SNAPSHOT
     container_name: mocked-oauth-server
-    image: rafaelsantosbra/mocked-oauth-server:v0.1
     ports:
       - 8081:8081
