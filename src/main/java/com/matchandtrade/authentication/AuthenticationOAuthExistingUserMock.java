@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 /**
  * OAuth2 authentication for testing and development.
@@ -27,6 +29,9 @@ import org.slf4j.LoggerFactory;
  */
 public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth {
 	
+	@Autowired
+	private Environment environment;
+	
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
 
 	private String buidRandomAccessToken() {
@@ -36,9 +41,13 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 	
 	@Override
 	public void redirectToAuthorizationAuthority(HttpServletResponse response, String state, String clientId, String redirectURI) throws AuthenticationException {
+		String url = environment.getProperty("authentication.oauth.mock.url");
+		if (url == null || url.length() < 1) {
+			url = "http://localhost:8081/oauth/sign-in";
+		}
 		URI uri = null;
 		try {
-			uri = new URIBuilder("http://localhost:8081/sign-in")
+			uri = new URIBuilder(url)
 			        .setParameter("client_id", clientId)
 			        .setParameter("response_type", "code")
 			        .setParameter("scope", "openid email profile" )
