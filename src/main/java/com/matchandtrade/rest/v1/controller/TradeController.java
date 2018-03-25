@@ -19,7 +19,7 @@ import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
 
 @RestController
-@RequestMapping(path="/rest/v1/trades")
+@RequestMapping(path="/matchandtrade-web-api/v1/trades")
 public class TradeController implements Controller {
 
 	@Autowired

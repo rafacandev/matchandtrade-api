@@ -16,7 +16,7 @@ import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.rest.v1.validator.UserValidator;
 
 @RestController
-@RequestMapping(path="/rest/v1/users/")
+@RequestMapping(path="/matchandtrade-web-api/v1/users/")
 public class UserController implements Controller {
 
 	@Autowired

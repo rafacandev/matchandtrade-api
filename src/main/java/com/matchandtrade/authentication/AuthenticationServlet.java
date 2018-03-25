@@ -21,7 +21,7 @@ import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
 
 
-@WebServlet(name="authenticationServlet", urlPatterns="/authenticate/*")
+@WebServlet(name="authenticationServlet", urlPatterns="/matchandtrade-web-api/v1/authenticate/*")
 @Component
 public class AuthenticationServlet extends HttpServlet {
 	private static final long serialVersionUID = 373664290851751809L;

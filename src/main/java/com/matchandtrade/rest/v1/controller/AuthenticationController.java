@@ -12,7 +12,7 @@ import com.matchandtrade.rest.v1.link.AuthenticationLinkAssember;
 import com.matchandtrade.rest.v1.transformer.AuthenticationTransformer;
 
 @RestController
-@RequestMapping(path = "/rest/v1/authentications/")
+@RequestMapping(path = "/matchandtrade-web-api/v1/authentications/")
 public class AuthenticationController implements Controller {
 
 	@Autowired

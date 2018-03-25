@@ -20,7 +20,7 @@ import com.matchandtrade.rest.v1.transformer.ItemTransformer;
 import com.matchandtrade.rest.v1.validator.ItemValidator;
 
 @RestController
-@RequestMapping(path = "/rest/v1/trade-memberships")
+@RequestMapping(path = "/matchandtrade-web-api/v1/trade-memberships")
 public class ItemController implements Controller {
 
 	@Autowired

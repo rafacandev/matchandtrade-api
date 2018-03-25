@@ -24,7 +24,7 @@ import com.matchandtrade.rest.v1.transformer.SearchTransformer;
 import com.matchandtrade.rest.v1.validator.SearchValidator;
 
 @RestController
-@RequestMapping(path="/rest/v1/search")
+@RequestMapping(path="/matchandtrade-web-api/v1/search")
 public class SearchController implements Controller {
 
 	@Autowired
