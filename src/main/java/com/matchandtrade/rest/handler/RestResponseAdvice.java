@@ -77,9 +77,6 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		if (body instanceof SearchResult) {
 			// Handle SearchResult
 			SearchResult<Json> searchResult = (SearchResult) body;
-			if (searchResult.getResultList().isEmpty()) {
-				response.setStatusCode(HttpStatus.NOT_FOUND);
-			}
 			// Build pagination header
 			PaginationHeader paginationHeader = buildPaginationHeader(request, searchResult);
 			// Handle headers
