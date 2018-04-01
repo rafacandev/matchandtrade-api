@@ -90,7 +90,7 @@ public class RestResponseAdviceUT {
 		List<UserJson> response = (List<UserJson>) adivice.beforeBodyWrite(body, null, null, null, serverHttpResquest, serverHttpResponse);
 		assertTrue(response.isEmpty());
 		ServletServerHttpResponse servletResponse = (ServletServerHttpResponse) serverHttpResponse;
-		assertEquals(404, servletResponse.getServletResponse().getStatus());
+		assertEquals(200, servletResponse.getServletResponse().getStatus());
 	}
 	
 	@SuppressWarnings("unchecked")
