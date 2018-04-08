@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
@@ -27,7 +28,9 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.TradeResultEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.v1.json.TradeResultJson;
 import com.matchandtrade.rest.v1.transformer.TradeMaximizerTransformer;
+import com.matchandtrade.util.JsonUtil;
 
 import tm.TradeMaximizer;
 
@@ -97,39 +100,72 @@ public class TradeResultService {
 		try {
 			tradeMaximizerOuput.close();
 		} catch (IOException e) {
-			tradeMaximizerOuput = null;
-			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Error when build TradeMaximizer output. " + e.getMessage());
 		}
 		LOGGER.debug("TradeMaximizer output:\n{}", result);
 		return result;
 	}
 
-	/**
-	 * Get the results of a {@code Trade}
-	 * @param tradeId
-	 * @return
-	 */
 	@Transactional
-	public String get(Integer tradeId) {
+	public void generateResults(Integer tradeId) {
 		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
 		trade.setState(TradeEntity.State.GENERATING_RESULTS);
 		tradeRepositoryFacade.save(trade);
-		if (trade.getResult() == null) {
-			String tradeMaximizerOutput = buildTradeMaximizerOutput(tradeId);
-			TradeResultEntity tradeResult = new TradeResultEntity();
-			tradeResult.setTradeMaximizerOutput(tradeMaximizerOutput);
-			try {
-				String csv = tradeMaximizerTransformer.toCsv(tradeId, tradeMaximizerOutput);
-				LOGGER.debug("Trasnformed TradeMaximizer output into csv:\n{}", csv);
-				tradeResult.setCsv(csv);
-			} catch (IOException e) {
-				throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Not able to generate CSV. Exception message: " + e.getMessage());
-			}
-			trade.setResult(tradeResult);
-			trade.setState(TradeEntity.State.RESULTS_GENERATED);
-			tradeRepositoryFacade.save(trade);
+		String tradeMaximizerOutput = buildTradeMaximizerOutput(tradeId);
+		TradeResultEntity tradeResult = new TradeResultEntity();
+		tradeResult.setTradeMaximizerOutput(tradeMaximizerOutput);
+		trade.setResult(tradeResult);
+		tradeRepositoryFacade.save(trade);
+		trade.setState(TradeEntity.State.RESULTS_GENERATED);
+	}
+
+	@Transactional
+	public String getCsv(Integer tradeId) {
+		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
+		String csv;
+		// Return value from database if already exists; otherwhise generate it
+		if (trade.getResult().getCsv() != null) {
+			return trade.getResult().getCsv();
 		}
-		return trade.getResult().getCsv();
+		try {
+			csv = tradeMaximizerTransformer.toCsv(tradeId, trade.getResult().getTradeMaximizerOutput());
+		} catch (IOException e) {
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to parse results from tradeId " + tradeId + " in CSV format.");
+		}
+		LOGGER.debug("Transformed TradeMaximizer output into csv:\n{}", csv);
+		trade.getResult().setCsv(csv);
+		tradeRepositoryFacade.save(trade);
+		return csv;
+	}
+
+	
+	@Transactional
+	public TradeResultJson getJson(Integer tradeId) {
+		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
+		
+		String tradeResultJsonAsString;
+		TradeResultJson tradeResultJson;
+		// Return value from database if already exists; otherwhise generate it
+		if (trade.getResult().getJson() != null) {
+			tradeResultJsonAsString = trade.getResult().getJson();
+			try {
+				tradeResultJson = JsonUtil.fromString(tradeResultJsonAsString, TradeResultJson.class);
+			} catch (IOException e) {
+				throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to parse results from tradeId " + tradeId + " from JSON format.");
+			}
+		} else {
+			tradeResultJson = tradeMaximizerTransformer.toJson(tradeId, trade.getResult().getTradeMaximizerOutput());
+			try {
+				tradeResultJsonAsString = JsonUtil.toJson(tradeResultJson);
+				LOGGER.debug("Transformed TradeMaximizer output into json:\n{}", tradeResultJsonAsString);
+			} catch (JsonProcessingException e) {
+				throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to parse results from tradeId " + tradeId + " in JSON format.");
+			}
+		}
+
+		trade.getResult().setJson(tradeResultJsonAsString);
+		tradeRepositoryFacade.save(trade);
+		return tradeResultJson;
 	}
 
 	private SearchResult<ItemEntity> searchItems(Integer tradeId, Pagination pagination) {
@@ -139,13 +175,17 @@ public class TradeResultService {
 		LOGGER.debug("Found items with {} ", pagination);
 		return itemsResult;
 	}
-
+	
 	private TradeMembershipEntity searchMembership(ItemEntity item) {
 		SearchCriteria membershipCriteria = new SearchCriteria(new Pagination(1,1));
 		membershipCriteria.addCriterion(TradeMembershipQueryBuilder.Field.itemId, item.getItemId());
 		SearchResult<TradeMembershipEntity> membershipResult = searchService.search(membershipCriteria, TradeMembershipQueryBuilder.class);
-		TradeMembershipEntity membership = membershipResult.getResultList().get(0);
-		return membership;
+		if (membershipResult.getPagination().getTotal() > 1) {
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is more than one TradeMembership for the Item.itemId " + item.getItemId() + ". I am shocked! This should never ever happen :(");
+		} else if (membershipResult.getPagination().getTotal() < 1) {
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Generating result for an orphan Item.itemId " + item.getItemId() + ". We are extremelly sad that this happened.");
+		}
+		return membershipResult.getResultList().get(0);
 	}
 	
 }

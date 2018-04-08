@@ -15,9 +15,10 @@ public class TradeResultEntity implements com.matchandtrade.persistence.entity.E
 	private Integer tradeResultId;
 	private String tradeMaximizerOutput;
 	private String csv;
+	private String json;
 
 	@Lob
-	@Column(name = "csv", nullable = false, unique = false)
+	@Column(name = "csv", nullable = true, unique = false)
 	public String getCsv() {
 		return csv;
 	}
@@ -47,4 +48,13 @@ public class TradeResultEntity implements com.matchandtrade.persistence.entity.E
 		this.tradeResultId = tradeResultId;
 	}
 
+	@Lob
+	@Column(name = "json", nullable = true, unique = false)
+	public String getJson() {
+		return json;
+	}
+
+	public void setJson(String json) {
+		this.json = json;
+	}
 }

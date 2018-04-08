@@ -15,6 +15,8 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
+import com.matchandtrade.rest.v1.json.TradeResultJson;
+import com.matchandtrade.rest.v1.json.TradedItemJson;
 
 @Component
 public class TradeMaximizerTransformer {
@@ -195,6 +197,52 @@ public class TradeMaximizerTransformer {
 	    while (--n > 0 && pos != -1)
 	        pos = str.indexOf(criterion, pos + 1);
 	    return pos;
+	}
+	
+	public TradeResultJson toJson(Integer tradeId, String tradeMaximizerOutput) {
+		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
+		List<String> lines = transformTradeMaximizerToList(tradeMaximizerOutput);
+		int totalOfTradedItems = 0;
+		
+		TradeResultJson result = new TradeResultJson();
+		for(String line : lines) {
+			TradeLinePojo linePojo = transformLine(line);
+			//Skip items not traded (aka "receivingTradeMembershipId == null")
+			if (linePojo.receivingTradeMembershipId == null) {
+				continue;
+			}
+			totalOfTradedItems++;
+			
+			TradeMembershipEntity offeringMembership = tradeMembershipRepositoryFacade.get(linePojo.offeringTradeMembershipId);
+			TradedItemJson tradedItem = new TradedItemJson();
+			tradedItem.setUserId(offeringMembership.getUser().getUserId());
+			tradedItem.setUserName(offeringMembership.getUser().getName());
+			
+			ItemEntity offeringItem = itemRepositoryFacade.get(linePojo.offeringItemId);
+			tradedItem.setItemId(offeringItem.getItemId());
+			tradedItem.setItemName(offeringItem.getName());
+			
+			TradeMembershipEntity receivingMembership = tradeMembershipRepositoryFacade.get(linePojo.receivingTradeMembershipId);
+			tradedItem.setReceivingUserId(receivingMembership.getUser().getUserId());
+			tradedItem.setReceivingUserName(receivingMembership.getUser().getName());
+			
+			ItemEntity receivingItem = itemRepositoryFacade.get(linePojo.receivingItemId);
+			tradedItem.setReceivingItemId(receivingItem.getItemId());
+			tradedItem.setReceivingItemName(receivingItem.getName());
+			
+			TradeMembershipEntity sendingMemberhip = tradeMembershipRepositoryFacade.get(linePojo.sendingTradeMembershipId);
+			tradedItem.setSendingUserId(sendingMemberhip.getUser().getUserId());
+			tradedItem.setSendingUserName(sendingMemberhip.getUser().getName());
+
+			result.getTradedItems().add(tradedItem);
+		}
+		
+		result.setTradeId(tradeId);
+		result.setTradeName(trade.getName());
+		result.setTotalOfItems(lines.size());
+		result.setTotalOfTradedItems(totalOfTradedItems);
+		result.setTotalOfNotTradedItems(lines.size() - totalOfTradedItems);
+		return result;
 	}
 	
 }

@@ -1,75 +1,63 @@
 package com.matchandtrade.rest.v1.json;
 
-import org.springframework.hateoas.Link;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.matchandtrade.rest.JsonLinkSupport;
+public class TradeResultJson {
 
-public class TradeResultJson extends JsonLinkSupport {
+	private Integer tradeId;
+	private String tradeName;
+	private Integer totalOfItems;
+	private Integer totalOfTradedItems;
+	private Integer totalOfNotTradedItems;
+	private List<TradedItemJson> tradedItems = new ArrayList<>();
 
-	private Link offeringItem;
-	private Link receivingItem;
-
-	/**
-	 * Public default empty constructor
-	 */
-	public TradeResultJson() { }
-
-	/**
-	 * Basic constructor which sets the arguments as its properties.
-	 * @param offeringItem
-	 * @param receivingItem
-	 */
-	public TradeResultJson(Link offeringItem, Link receivingItem) {
-		this.offeringItem = offeringItem;
-		this.receivingItem = receivingItem;
-	}
-	
-	
-	public Link getOfferingItem() {
-		return offeringItem;
+	public Integer getTotalOfItems() {
+		return totalOfItems;
 	}
 
-	public void setOfferingItem(Link offeringItem) {
-		this.offeringItem = offeringItem;
+	public Integer getTotalOfNotTradedItems() {
+		return totalOfNotTradedItems;
 	}
 
-	public Link getReceivingItem() {
-		return receivingItem;
+	public Integer getTotalOfTradedItems() {
+		return totalOfTradedItems;
 	}
 
-	public void setReceivingItem(Link receivingItem) {
-		this.receivingItem = receivingItem;
+	public List<TradedItemJson> getTradedItems() {
+		return tradedItems;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((offeringItem == null) ? 0 : offeringItem.hashCode());
-		result = prime * result + ((receivingItem == null) ? 0 : receivingItem.hashCode());
-		return result;
+	public Integer getTradeId() {
+		return tradeId;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		TradeResultJson other = (TradeResultJson) obj;
-		if (offeringItem == null) {
-			if (other.offeringItem != null)
-				return false;
-		} else if (!offeringItem.equals(other.offeringItem))
-			return false;
-		if (receivingItem == null) {
-			if (other.receivingItem != null)
-				return false;
-		} else if (!receivingItem.equals(other.receivingItem))
-			return false;
-		return true;
+	public String getTradeName() {
+		return tradeName;
+	}
+
+	public void setTotalOfItems(Integer totalOfItems) {
+		this.totalOfItems = totalOfItems;
+	}
+
+	public void setTotalOfNotTradedItems(Integer totalOfNotTradedItems) {
+		this.totalOfNotTradedItems = totalOfNotTradedItems;
+	}
+
+	public void setTotalOfTradedItems(Integer totalOfTradedItems) {
+		this.totalOfTradedItems = totalOfTradedItems;
+	}
+
+	public void setTradedItems(List<TradedItemJson> tradedItems) {
+		this.tradedItems = tradedItems;
+	}
+
+	public void setTradeId(Integer tradeId) {
+		this.tradeId = tradeId;
+	}
+
+	public void setTradeName(String tradeName) {
+		this.tradeName = tradeName;
 	}
 
 }

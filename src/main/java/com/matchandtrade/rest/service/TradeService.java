@@ -59,13 +59,14 @@ public class TradeService {
 	public void update(TradeEntity tradeEntity) {
 		tradeRepository.save(tradeEntity);
 		// Make authenticated user the owner of the trade
+		// TODO: Review this, can we remove tradeMembership save from here?
 		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();
 		tradeMembershipEntity.setTrade(tradeEntity);
 		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
 		tradeMembershipRepository.save(tradeMembershipEntity);
 		
 		if (TradeEntity.State.GENERATE_RESULTS == tradeEntity.getState()) {
-			tradeResultService.get(tradeEntity.getTradeId());
+			tradeResultService.generateResults(tradeEntity.getTradeId());
 		}
 	}
 	
