@@ -27,10 +27,8 @@ public class AuthenticationInfoUtil {
 			return;
 		}
 		
-		Object callbackUrl = request.getSession().getAttribute(AuthenticationParameter.CALLBACK_URL.toString());
 		AuthenticationInfoJson authenticationInfoJson = new AuthenticationInfoJson();
 		authenticationInfoJson.setAuthenticationHeader(authorizationHeader);
-		authenticationInfoJson.setCallbackUrl(callbackUrl);
 
 		try {
 			String authenticationInfoJsonAsString = JsonUtil.toJson(authenticationInfoJson);

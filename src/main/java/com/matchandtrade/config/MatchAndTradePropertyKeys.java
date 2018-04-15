@@ -4,6 +4,7 @@ public enum MatchAndTradePropertyKeys {
 	AUTHENTICATION_CLIENT_ID("authentication.client.id"),
 	AUTHENTICATION_CLIENT_SECRET("authentication.client.secret"),
 	AUTHENTICATION_CLIENT_REDIRECT_URL("authentication.redirect.url"),
+	AUTHENTICATION_CLIENT_CALLBACK_URL("authentication.callback.url"),
 	AUTHENTICATION_SESSION_TIMEOUT("authentication.session.timeout"),
 	AUTHENTICATION_OAUTH_CLASS("authentication.oauth.class"),
 	CONFIG_FILE("matchandtrade.config.file"),

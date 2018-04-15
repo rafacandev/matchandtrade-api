@@ -92,6 +92,7 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 
 	@Override
 	public String obtainAccessToken(String codeParameter, String clientId, String clientSecret, String redirectURI) throws AuthenticationException {
+		logger.info("Obtaining access token for code: {}, redirectUrl: {}", codeParameter, redirectURI);
 		return codeParameter + "-" + buidRandomAccessToken();
 	}
 

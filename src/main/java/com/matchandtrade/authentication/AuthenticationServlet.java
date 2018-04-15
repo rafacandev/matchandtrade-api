@@ -61,7 +61,6 @@ public class AuthenticationServlet extends HttpServlet {
 				signOut(request, response);
 				break;
 			case AUTHENTICATE:
-				saveCallbackUrlInSession(request);
 				redirectToAuthenticationServer(response);
 				break;
 			case CALLBACK:
@@ -80,12 +79,6 @@ public class AuthenticationServlet extends HttpServlet {
 		}
 	}
 	
-	private void saveCallbackUrlInSession(HttpServletRequest request) {
-		String callbackUrl = request.getParameter(AuthenticationParameter.CALLBACK_URL.toString());
-		request.getSession().setAttribute(AuthenticationParameter.CALLBACK_URL.toString(), callbackUrl);
-		request.getSession().setMaxInactiveInterval(authenticationProperties.getSessionTimeout());
-	}
-
 	private String generateAntiForgeryToken() {
 	  return new BigInteger(130, new SecureRandom()).toString(32);
 	}

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.config.AuthenticationProperties;
+import com.matchandtrade.config.MatchAndTradePropertyKeys;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
@@ -40,6 +41,7 @@ public class AuthenticationCallback {
 		AuthenticationEntity authenticationEntity = authenticationRepository.findByAtiForgeryState(stateParameter);
 		// Return HTTP-STATUS 401 if anti-forgery state token is not found
 		if (authenticationEntity == null) {
+			LOGGER.debug("Invalidating session because there is no authentication for state parameter: [{}].", stateParameter);
 			response.setStatus(401);
 			request.getSession().invalidate();
 			return;
@@ -53,14 +55,19 @@ public class AuthenticationCallback {
 				authenticationProperties.getRedirectURI());
 		
 		// oAuth Step 5. Obtain user information from the ID token
+		LOGGER.debug("Obtaining user information by access token.");
 		AuthenticationResponsePojo userInfoFromAuthenticationAuthority = authenticationOAuth.obtainUserInformation(accessToken);
 		
 		// oAuth Step 6. Authenticate the user
+		LOGGER.debug("Authenticating user with email: {}", userInfoFromAuthenticationAuthority.getEmail());
 		AuthenticationResponsePojo persistedUserInfo = updateUserInfo(userInfoFromAuthenticationAuthority.getEmail(), userInfoFromAuthenticationAuthority.getName());
+		LOGGER.debug("Storing authentication for userId: {}", persistedUserInfo.getUserId());
 		updateAuthenticationInfo(authenticationEntity, persistedUserInfo.getUserId(), accessToken);
 		
 		// Using accessToken as AuthorizationToken since authorization is managed locally instead of the Authentication Authority
 		response.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
+		LOGGER.debug("Setting authentication in session for userId: {}", persistedUserInfo.getUserId());
+		request.getSession().setMaxInactiveInterval(authenticationProperties.getSessionTimeout());
 		request.getSession().setAttribute(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
 		
 		// Redirect the response
@@ -74,10 +81,9 @@ public class AuthenticationCallback {
 	 * @throws IOException
 	 */
 	private void redirectResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Object callbackUrl = request.getSession().getAttribute("callbackUrl");
-		if (callbackUrl != null && !callbackUrl.toString().isEmpty()) {
-			response.sendRedirect(callbackUrl.toString());
-		}
+		String callbackUrl = authenticationProperties.getCallbackUrl();
+		LOGGER.debug("Redirecting request with {} value: {}", MatchAndTradePropertyKeys.AUTHENTICATION_CLIENT_CALLBACK_URL, callbackUrl);
+		response.sendRedirect(callbackUrl);
 	}
 
 	/**

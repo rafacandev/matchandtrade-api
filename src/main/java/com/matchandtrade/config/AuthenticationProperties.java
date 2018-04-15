@@ -47,6 +47,7 @@ public class AuthenticationProperties {
 	private String clientId;
 	private String clientSecret;
 	private String redirectURI;
+	private String callbackUrl;
 	private Integer sessionTimeout;
 
 	public String getClientId() {
@@ -79,6 +80,14 @@ public class AuthenticationProperties {
 
 	public void setSessionTimeout(Integer sessionTimeout) {
 		this.sessionTimeout = sessionTimeout;
+	}
+
+	public String getCallbackUrl() {
+		return callbackUrl;
+	}
+
+	public void setCallbackUrl(String callbackUrl) {
+		this.callbackUrl = callbackUrl;
 	}
 
 }
