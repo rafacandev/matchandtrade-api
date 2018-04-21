@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchResult;
+import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.TradeMembershipService;
@@ -26,6 +27,7 @@ public class TradeMembershipValidator {
 	 * {@code TradeMembership.tradeId} must be valid.
 	 * {@code TradeMembership.userId} must be valid.
 	 * The combination of {@code TradeMembership.tradeId} and {@code TradeMembership.userId} must be unique.
+	 * Users can subscribe only when {@code Trade.State=SUBMITTING_ITEMS}
 	 * 
 	 * @param json to be validated
 	 */
@@ -33,9 +35,14 @@ public class TradeMembershipValidator {
 		if (userService.get(json.getUserId()) == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.userId must refer to an existing User.");
 		}
-		if (tradeService.get(json.getTradeId()) == null) {
+		
+		TradeEntity trade = tradeService.get(json.getTradeId());
+		if (trade == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.tradeId must refer to an existing Trade.");
+		} else if (trade.getState() != TradeEntity.State.SUBMITTING_ITEMS) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.State must be SUBMITTING_ITEMS when creating a new TradeMembership.");
 		}
+		
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.searchByTradeIdUserId(json.getTradeId(), json.getUserId(), 1, 1);
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "The combination of TradeMembership.tradeId and TradeMembership.userId must be unique.");
