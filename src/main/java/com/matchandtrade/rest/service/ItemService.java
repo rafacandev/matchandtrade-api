@@ -32,11 +32,18 @@ public class ItemService {
 	}
 
 	@Transactional
+	public void delete(Integer tradeMembershipId, Integer itemId) {
+		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
+		ItemEntity item = itemRepositoryFacade.get(itemId);
+		membership.getItems().remove(item);
+		tradeMembershipRepositoryFacade.save(membership);
+		itemRepositoryFacade.delete(itemId);
+	}
+
 	public ItemEntity get(Integer itemId) {
 		return itemRepositoryFacade.get(itemId);
 	}
 	
-	@Transactional
 	public boolean exists(Integer ...itemIds) {
 		return itemRepositoryFacade.exists(itemIds);
 	}
@@ -51,5 +58,5 @@ public class ItemService {
 	public void update(ItemEntity itemEntity) {
 		itemRepositoryFacade.save(itemEntity);
 	}
-	
+
 }

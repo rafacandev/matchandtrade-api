@@ -8,7 +8,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	ItemControllerPostIT.class,
 	ItemControllerGetIT.class,
-	ItemControllerPutIT.class
+	ItemControllerPutIT.class,
+	ItemControllerDeleteIT.class
 })
 public class ItemControllerSuite {
 

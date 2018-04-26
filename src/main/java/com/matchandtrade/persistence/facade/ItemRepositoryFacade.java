@@ -41,5 +41,9 @@ public class ItemRepositoryFacade {
 	public void save(ItemEntity entity) {
 		itemRepository.save(entity);
 	}
+
+	public void delete(Integer itemId) {
+		itemRepository.delete(itemId);
+	}
 	
 }

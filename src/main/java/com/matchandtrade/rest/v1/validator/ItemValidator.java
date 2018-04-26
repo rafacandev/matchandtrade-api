@@ -77,6 +77,24 @@ public class ItemValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name is mandatory and must be between 3 and 150 characters in length.");
 		}
 	}
+	
+	private void checkIfTrademembershipBelongsToUser(Integer tradeMembershipId, Integer userId) {
+		TradeMembershipEntity membership = tradeMembershipService.get(tradeMembershipId);
+		if (!membership.getUser().getUserId().equals(userId)) {
+			throw new RestException(HttpStatus.FORBIDDEN, "User.userId is not the owner of TradeMembership.tradeMembershipId");
+		}
+	}
+	
+	/**
+	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not the owner of {@code tradeMembershipId}
+	 * @param tradeMembershipId
+	 * @param itemId
+	 */
+	public void validateDelete(Integer tradeMembershipId, Integer userId) {
+		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
+		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
+		checkIfTrademembershipBelongsToUser(tradeMembershipId, userId);
+	}
 
 	/**
 	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
@@ -114,7 +132,7 @@ public class ItemValidator {
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName());
+		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName(), Restriction.EQUALS_IGNORE_CASE);
 		SearchResult<ItemEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");

@@ -30,6 +30,17 @@ public class ItemController implements Controller {
 	@Autowired
 	private ItemValidator itemValidator;
 
+	@RequestMapping(path="/{tradeMembershipId}/items/{itemId}", method=RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("itemId") Integer itemId) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		itemValidator.validateDelete(tradeMembershipId, authenticationProvider.getAuthentication().getUser().getUserId());
+		// Delegate to service layer
+		itemService.delete(tradeMembershipId, itemId);
+	}
+
 	@RequestMapping(path = "/{tradeMembershipId}/items", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public ItemJson post(@PathVariable Integer tradeMembershipId, @RequestBody ItemJson requestJson) {
