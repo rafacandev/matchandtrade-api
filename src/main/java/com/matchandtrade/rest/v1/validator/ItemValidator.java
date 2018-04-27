@@ -48,7 +48,7 @@ public class ItemValidator {
 	 */
 	private void checkIfUserIsAssociatedToTradeMembership(Integer userId, Integer tradeMembershipId, TradeMembershipEntity tradeMembershipEntity) {
 		if (!userId.equals(tradeMembershipEntity.getUser().getUserId())) {
-			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not associated to TradeMembership.tradeMembershipId: " + tradeMembershipId);
+			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not associated with TradeMembership.tradeMembershipId: " + tradeMembershipId);
 		}
 	}
 
@@ -64,7 +64,7 @@ public class ItemValidator {
 		criteria.addCriterion(TradeMembershipQueryBuilder.Field.userId, userId);
 		SearchResult<TradeMembershipEntity> searchResult = searchService.search(criteria, TradeMembershipQueryBuilder.class);
 		if (searchResult.getResultList().isEmpty()) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "User.userId: " + userId + " is not associated with the Trade.tradeId: " + tradeId);
+			throw new RestException(HttpStatus.BAD_REQUEST, "Authenticated user is not associated with Trade.tradeId: " + tradeId);
 		}
 	}
 	
