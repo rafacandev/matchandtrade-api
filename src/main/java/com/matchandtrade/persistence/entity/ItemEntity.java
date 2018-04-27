@@ -12,36 +12,8 @@ import javax.persistence.Table;
 public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 	
 	private Integer itemId;
+	private String description;
 	private String name;
-
-	@Id
-	@Column(name = "item_id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	public Integer getItemId() {
-		return itemId;
-	}
-
-	@Column(name = "name", length = 150, nullable = false, unique = false)
-	public String getName() {
-		return name;
-	}
-
-	public void setItemId(Integer itemId) {
-		this.itemId = itemId;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((itemId == null) ? 0 : itemId.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -63,6 +35,45 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	@Column(name = "description", length = 500, nullable = true, unique = false)
+	public String getDescription() {
+		return description;
+	}
+
+	@Id
+	@Column(name = "item_id")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	public Integer getItemId() {
+		return itemId;
+	}
+
+	@Column(name = "name", length = 150, nullable = false, unique = false)
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((itemId == null) ? 0 : itemId.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setItemId(Integer itemId) {
+		this.itemId = itemId;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

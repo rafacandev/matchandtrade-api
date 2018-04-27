@@ -1,5 +1,8 @@
 package com.matchandtrade.rest.v1.controller;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,10 +34,17 @@ public class ItemControllerPostIT {
 	}
 
 	@Test
-	public void post() {
+	public void shouldCreateItem() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemJson item = ItemRandom.nextJson();
-		fixture.post(existingTradeMemberhip.getTradeMembershipId(), item);
+		ItemJson request = ItemRandom.nextJson();
+		request.setName("ItemControllerPostIT.shouldCreateName.name");
+		request.setDescription("ItemControllerPostIT.shouldCreateName.description");
+		ItemJson response = fixture.post(existingTradeMemberhip.getTradeMembershipId(), request);
+		
+		assertNotNull(response.getItemId());
+		assertEquals(request.getName(), response.getName());
+		assertEquals(request.getDescription(), response.getDescription());
+		
 	}
 	
 	@Test(expected = RestException.class)

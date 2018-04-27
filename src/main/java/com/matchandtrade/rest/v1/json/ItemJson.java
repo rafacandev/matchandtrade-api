@@ -6,15 +6,12 @@ import com.matchandtrade.rest.JsonLinkSupport;
 
 public class ItemJson extends JsonLinkSupport {
 
-	private String name;
+	private String description;
 	private Integer itemId;
+	private String name;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public String getDescription() {
+		return this.description;
 	}
 
 	@JsonInclude(value=Include.NON_NULL)
@@ -22,8 +19,20 @@ public class ItemJson extends JsonLinkSupport {
 		return itemId;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public void setItemId(Integer itemId) {
 		this.itemId = itemId;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

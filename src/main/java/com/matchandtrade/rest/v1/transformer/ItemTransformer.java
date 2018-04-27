@@ -16,6 +16,7 @@ public class ItemTransformer {
 		ItemEntity result = new ItemEntity();
 		result.setName(json.getName());
 		result.setItemId(json.getItemId());
+		result.setDescription(json.getDescription());
 		return result;
 	}
 
@@ -23,6 +24,7 @@ public class ItemTransformer {
 		ItemJson result = new ItemJson();
 		result.setName(itemEntity.getName());
 		result.setItemId(itemEntity.getItemId());
+		result.setDescription(itemEntity.getDescription());
 		return result;
 	}
 
