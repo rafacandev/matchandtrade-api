@@ -77,6 +77,16 @@ public class ItemValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name is mandatory and must be between 3 and 150 characters in length.");
 		}
 	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.description} length is greater than 500.
+	 * @param name
+	 */
+	private void checkDescriptionLength(String description) {
+		if (description != null && description.length() > 500) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Item.description cannot be greater than 500 characters in length.");
+		}
+	}
 	
 	private void checkIfTrademembershipBelongsToUser(Integer tradeMembershipId, Integer userId) {
 		TradeMembershipEntity membership = tradeMembershipService.get(tradeMembershipId);
@@ -129,6 +139,7 @@ public class ItemValidator {
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
 		checkNameLength(json.getName());
+		checkDescriptionLength(json.getDescription());
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
@@ -157,6 +168,7 @@ public class ItemValidator {
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
 		checkNameLength(json.getName());
+		checkDescriptionLength(json.getDescription());
 
 		ItemEntity itemEntity = itemService.get(itemId);
 		if (itemEntity == null) {
