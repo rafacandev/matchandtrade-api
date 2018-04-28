@@ -11,7 +11,7 @@ the docker image to reflect the newly released version.
 mvn clean package
 
 # Copy the executable jar file to 'docker/mocked-oauth-server.jar'
-cp target/matchandtrade-web-api-1.3-exec.jar docker/matchandtrade-web-api-exec.jar
+cp target/matchandtrade-web-api-1.4-SNAPSHOT-exec.jar docker/matchandtrade-web-api-exec.jar
 
 # Build the docker image with a new tag
 sudo docker build -t rafaelsantosbra/matchandtrade-web-api:0.0-SNAPSHOT docker/
