@@ -64,13 +64,13 @@ public class TradeMembershipController implements Controller {
 	}
 	
 	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
-	public SearchResult<TradeMembershipJson> get(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<TradeMembershipJson> get(Integer tradeId, Integer userId, TradeMembershipEntity.Type type, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request - Nothing to validate
 		tradeMembershipValidador.validateGet(_pageNumber, _pageSize);
 		// Delegate to Service layer
-		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.searchByTradeIdUserId(tradeId, userId, _pageNumber, _pageSize);
+		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.searchByTradeIdUserIdType(tradeId, userId, type, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<TradeMembershipJson> response = TradeMembershipTransformer.transform(searchResult);
 		// Assemble links

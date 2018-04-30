@@ -30,4 +30,24 @@ public class UserService {
 		return userRepository.findByOfferId(offerId);
 	}
 
+	/**
+	 * Only return {@code UserEntity.userId and UserEntity.name}
+	 * if the authenticated user is requesting information from a user that is not their selves.
+	 * @param requestingUser
+	 * @param authenticatedUser
+	 * @return
+	 */
+	public UserEntity sanitize(UserEntity requestingUser, UserEntity authenticatedUser) {
+		if (requestingUser == null) {
+			return null;
+		} else if (requestingUser.getUserId().equals(authenticatedUser.getUserId())) {
+			return requestingUser;
+		} else {			
+			UserEntity result = new UserEntity();
+			result.setUserId(requestingUser.getUserId());
+			result.setName(requestingUser.getName());
+			return result;
+		}
+	}
+
 }

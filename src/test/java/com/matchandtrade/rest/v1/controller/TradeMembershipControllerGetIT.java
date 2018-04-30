@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeMembershipJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -47,7 +48,7 @@ public class TradeMembershipControllerGetIT {
 	@Test
 	public void getAll() {
 		tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, null);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, null, null);
 		assertTrue(getResponse.getResultList().size() > 0);
 	}
 	
@@ -55,14 +56,14 @@ public class TradeMembershipControllerGetIT {
 	public void getByTradeId() {
 		fixture = mockControllerFactory.getTradeMembershipController(false);
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(existingTradeMembership.getTrade().getTradeId(), null, null, null);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(existingTradeMembership.getTrade().getTradeId(), null, null, null, null);
 		assertEquals(existingTradeMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
 	}
 
 	@Test
 	public void getByTradeIdAndUserId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(existingTradeMembership.getTrade().getTradeId(), existingTradeMembership.getUser().getUserId(), null, null);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(existingTradeMembership.getTrade().getTradeId(), existingTradeMembership.getUser().getUserId(), null, null, null);
 		assertEquals(existingTradeMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
 		assertEquals(existingTradeMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
@@ -71,15 +72,24 @@ public class TradeMembershipControllerGetIT {
 	public void getByUserId() {
 		fixture = mockControllerFactory.getTradeMembershipController(false);
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, existingTradeMembership.getUser().getUserId(), null, null);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, existingTradeMembership.getUser().getUserId(), null, null, null);
 		assertEquals(existingTradeMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
 
+	@Test
+	public void shouldGetByTypeAndTradeId() {
+		fixture = mockControllerFactory.getTradeMembershipController(false);
+		UserEntity user = fixture.authenticationProvider.getAuthentication().getUser();
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(user);
+		SearchResult<TradeMembershipJson> response = fixture.get(existingTradeMembership.getTrade().getTradeId(), null, TradeMembershipEntity.Type.OWNER, null, null);
+		assertEquals(1, response.getResultList().size());
+		assertEquals(existingTradeMembership.getTradeMembershipId(), response.getResultList().get(0).getTradeMembershipId());
+	}
 		
 	@Test(expected=RestException.class)
 	public void getInvalidPageSize() {
 		tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, 51);
+		SearchResult<TradeMembershipJson> getResponse = fixture.get(null, null, null, null, 51);
 		assertTrue(getResponse.getResultList().size() > 0);
 	}
 	

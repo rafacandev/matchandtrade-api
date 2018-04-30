@@ -30,12 +30,12 @@ public class UserController implements Controller {
 	public UserJson get(@PathVariable("userId") Integer userId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Validate the request
-		userValidador.validateGetById(authenticationProvider.getAuthentication(), userId);
+		// Validate the request - nothing to validate
 		// Delegate to service
 		UserEntity userEntity = userService.get(userId);
+		UserEntity sanitizedUser = userService.sanitize(userEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
-		UserJson response = UserTransformer.transform(userEntity);
+		UserJson response = UserTransformer.transform(sanitizedUser);
 		// Assemble links
 		UserLinkAssember.assemble(response);
 		return response;

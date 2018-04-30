@@ -27,9 +27,4 @@ public class UserValidator {
 		}
 	}
 	
-	public void validateGetById(AuthenticationEntity authenticationEntity, Integer userId) {
-		if (!authenticationEntity.getUser().getUserId().equals(userId)) {
-			throw new RestException(HttpStatus.FORBIDDEN, "No permissions to get the User for this userId.");
-		}
-	}
 }

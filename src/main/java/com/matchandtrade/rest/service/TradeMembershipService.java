@@ -33,13 +33,16 @@ public class TradeMembershipService {
 		return tradeMembershipRepositoryFacade.get(tradeMembershipId);
 	}
 
-	public SearchResult<TradeMembershipEntity> searchByTradeIdUserId(Integer tradeId, Integer userId, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<TradeMembershipEntity> searchByTradeIdUserIdType(Integer tradeId, Integer userId, TradeMembershipEntity.Type type, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (userId != null) {
 			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.userId, userId);
 		}
 		if (tradeId != null) {
 			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, tradeId);
+		}
+		if (type != null) {
+			searchCriteria.addCriterion(TradeMembershipQueryBuilder.Field.type, type);
 		}
 		// Delegate to Repository layer
 		return searchService.search(searchCriteria, TradeMembershipQueryBuilder.class);
