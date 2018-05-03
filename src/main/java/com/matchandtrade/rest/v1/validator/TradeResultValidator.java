@@ -19,6 +19,9 @@ public class TradeResultValidator {
 		if (trade.getState() != TradeEntity.State.RESULTS_GENERATED) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeResult is only availble when Trade.State is RESULTS_GENERATED.");
 		}
+		if (trade.getResult() == null) {
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is no results for Trade.tradeId: " + tradeId);
+		}
 	}
 
 }

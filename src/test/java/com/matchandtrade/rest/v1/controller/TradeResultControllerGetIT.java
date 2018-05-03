@@ -237,5 +237,23 @@ public class TradeResultControllerGetIT {
 		TradeResultJson response3 = fixture.getJson(trade.getTradeId());
 		assertEquals(new Integer(trade.getTradeId()), response3.getTradeId());
 	}
+	
+	@Test(expected=RestException.class)
+	public void shouldThrowErrorWhenResultsAreNotGenerated() {
+		// Very rare case where the State.RESULTS_GENERATED but for some reason the results
+		// were not generated (prossibly due to error when generating the results)
+		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		trade.setState(TradeEntity.State.RESULTS_GENERATED);
+		tradeService.update(trade);
+		fixture.getJson(trade.getTradeId());
+	}
+
+	@Test(expected=RestException.class)
+	public void shouldThrowErrorWhenGettingResultsForTradeStateSubmittingItems() {
+		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		trade.setState(TradeEntity.State.SUBMITTING_ITEMS);
+		tradeService.update(trade);
+		fixture.getJson(trade.getTradeId());
+	}
 
 }
