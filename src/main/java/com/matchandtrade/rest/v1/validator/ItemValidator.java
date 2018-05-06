@@ -127,6 +127,19 @@ public class ItemValidator {
 	/**
 	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
 	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipId}
+	 * @param tradeMembership
+	 * @param itemId
+	 */
+	public void validateOwnership(Integer userId, Integer tradeMembershipId) {
+		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
+		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
+		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
+	}
+
+
+	/**
+	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
+	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipId}
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.name} is null or length is not between 3 and 150.
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Item.name} is not unique (case insensitive) within a TradeMembership. 
 	 * @param userId
@@ -135,9 +148,7 @@ public class ItemValidator {
 	 */
 	@Transactional
 	public void validatePost(Integer userId, Integer tradeMembershipId, ItemJson json) {
-		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
-		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
-		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
+		validateOwnership(userId, tradeMembershipId);
 		checkNameLength(json.getName());
 		checkDescriptionLength(json.getDescription());
 		

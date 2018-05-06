@@ -49,6 +49,8 @@ public class MockControllerFactory {
 	private UserController userController;
 	@Autowired
 	private UserRepositoryFacade userRepository;
+	@Autowired
+	private ItemFileController fileController;
 
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
@@ -116,6 +118,11 @@ public class MockControllerFactory {
 		result.offerTransformer = offerController.offerTransformer;
 		result.offerValidator = offerController.offerValidator;
 		return result;
+	}
+
+	public ItemFileController getFileController(boolean reusePreviousAuthentication) {
+		fileController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return fileController;
 	}
 
 }

@@ -39,5 +39,6 @@
     <logger level="INFO" name="com.matchandtrade.rest.service.TradeResultService" />
     <logger level="TRACE" name="com.matchandtrade.authentication.AuthenticationServlet" />
     <logger level="TRACE" name="com.matchandtrade.authentication.AuthenticationCallback" />
-	
+    <logger level="TRACE" name="com.matchandtrade.rest.service.FileService" />
+
 </configuration>

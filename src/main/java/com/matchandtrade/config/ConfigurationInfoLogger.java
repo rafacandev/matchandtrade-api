@@ -33,6 +33,7 @@ public class ConfigurationInfoLogger implements ApplicationRunner {
 		logger.info("| JDBC Url: {}", environment.getProperty(MatchAndTradePropertyKeys.DATA_SOURCE_JDBC_URL.toString()));
 		logger.info("| Log file: {}", environment.getProperty(MatchAndTradePropertyKeys.LOGGING_FILE.toString()));
 		logger.info("| Web Server Port: {}", environment.getProperty(MatchAndTradePropertyKeys.SERVER_PORT.toString()));
+		logger.info("| File Storage Root Folder: {}", environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString()));
 		logger.info("|===========================================================");
     }
 }
