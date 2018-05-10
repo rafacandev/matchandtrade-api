@@ -146,7 +146,7 @@ public class TradeResultService {
 		String tradeResultJsonAsString;
 		TradeResultJson tradeResultJson;
 		// Return value from database if already exists; otherwhise generate it
-		if (trade.getResult().getJson() != null) {
+		if (trade.getResult() != null && trade.getResult().getJson() != null) {
 			tradeResultJsonAsString = trade.getResult().getJson();
 			try {
 				tradeResultJson = JsonUtil.fromString(tradeResultJsonAsString, TradeResultJson.class);
