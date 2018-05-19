@@ -23,6 +23,7 @@ import com.matchandtrade.config.MatchAndTradePropertyKeys;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.v1.json.FileJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
@@ -34,26 +35,26 @@ public class ItemFileControllerIT {
 	
 	@Autowired
 	private Environment environment;
+	private Path fileStorageRootPath;
 	@Autowired
 	private ItemRandom itemRandom;
 	private MockMultipartFile file;
 	private ItemFileController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
-	private Path testFilePath;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
 	@Autowired
 	private UserRandom userRandom;
-	
+
 	@Before
 	public void before() throws IOException {
 		if (fixture == null) {
 			fixture = mockControllerFactory.getFileController(false);
 		}
 		String fileStorageRootFolder = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
-		Path fileStorageRootPath = Paths.get(fileStorageRootFolder);
-		testFilePath = Paths.get(fileStorageRootPath.toString(), "ItemFileControllerIT.txt");
+		fileStorageRootPath = Paths.get(fileStorageRootFolder);
+		Path testFilePath = Paths.get(fileStorageRootPath.toString(), "ItemFileControllerIT.txt");
 		Files.deleteIfExists(testFilePath);
 		file = new MockMultipartFile(
 			"test.txt",
@@ -62,15 +63,16 @@ public class ItemFileControllerIT {
 			"This is a test file for ItemFileControllerIT.java".getBytes()
 		);
 	}
-	
+
 	@Test
 	public void shouldUploadItemFile() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity item = itemRandom.nextPersistedEntity(membership);
-		fixture.post(membership.getTradeMembershipId(), item.getItemId(), file);
-		assertTrue(Files.isRegularFile(testFilePath));
+		FileJson response = fixture.post(membership.getTradeMembershipId(), item.getItemId(), file);
+		Path filePath = fileStorageRootPath.resolve(response.getRelativePath());		
+		assertTrue(Files.isRegularFile(filePath));
 	}
-	
+
 	@Test
 	public void shouldOnlyAllowTheItemOwnerToUploadFiles() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());

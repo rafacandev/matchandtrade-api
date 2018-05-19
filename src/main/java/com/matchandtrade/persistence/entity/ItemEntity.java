@@ -1,10 +1,16 @@
 package com.matchandtrade.persistence.entity;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -14,6 +20,7 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 	private Integer itemId;
 	private String description;
 	private String name;
+	private Set<FileEntity> files;
 
 	@Override
 	public boolean equals(Object obj) {
@@ -42,6 +49,14 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 		return description;
 	}
 
+	@OneToMany
+	@JoinTable(name = "item_to_file", 
+		joinColumns = @JoinColumn(name = "item_id", foreignKey = @ForeignKey(name = "item_to_file_item_id_fk")),
+		inverseJoinColumns = @JoinColumn(name = "file_id", foreignKey = @ForeignKey(name = "item_to_file_file_id_fk")))
+	public Set<FileEntity> getFiles() {
+		return files;
+	}
+
 	@Id
 	@Column(name = "item_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -66,6 +81,10 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public void setFiles(Set<FileEntity> files) {
+		this.files = files;
 	}
 
 	public void setItemId(Integer itemId) {

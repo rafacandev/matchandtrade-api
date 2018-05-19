@@ -18,7 +18,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.matchandtrade.config.MatchAndTradePropertyKeys;
@@ -44,23 +43,21 @@ public class FileStorageService {
 		rootFolder = targetRootPath;
 	}
 	
-	public void store(MultipartFile file) {
-		String filename = StringUtils.cleanPath(file.getOriginalFilename());
+	public void store(MultipartFile file, Path relativePath) {
 		try {
-			if (file.isEmpty()) {
-				throw new IllegalArgumentException("Failed to store empty file " + filename);
-			}
-			// Do not store filenames starting with .. as would cause it to be stored on the parent directory
-			if (filename.contains("..")) {
-				throw new IllegalArgumentException("Cannot store file when filename starts with '..'" + filename);
+			if (relativePath == null) {
+				throw new IllegalArgumentException("Relative path cannot be null.");
 			}
 			try (InputStream inputStream = file.getInputStream()) {
-				Files.copy(inputStream, rootFolder.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+				if (!Files.exists(rootFolder.resolve(relativePath.getParent()))) {					
+					Files.createDirectories(rootFolder.resolve(relativePath.getParent()));
+				}
+				Files.copy(inputStream, rootFolder.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
 			}
 		} catch (IOException e) {
-			RuntimeException unknownException = new RuntimeException("Failed to store file: " + filename + " at: " + rootFolder, e);
-			LOGGER.error(unknownException.getMessage(), e);
-			throw unknownException;
+			RuntimeException ioExceptionAsRuntimeException = new RuntimeException("Failed to store file: " + relativePath + " at: " + rootFolder, e);
+			LOGGER.error(ioExceptionAsRuntimeException.getMessage(), e);
+			throw ioExceptionAsRuntimeException;
 		}
 	}
 
