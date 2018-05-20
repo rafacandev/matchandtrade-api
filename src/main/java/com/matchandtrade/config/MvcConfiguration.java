@@ -26,8 +26,8 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		String fileStorageRootFolderProperty = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
-		String urlPattern = "/files/**";
+		String fileStorageRootFolderProperty = "file:" + environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
+		String urlPattern = "/matchandtrade-web-api/files/**";
 		LOGGER.info("Exposing static files with the patter [{}] from [{}].", urlPattern, fileStorageRootFolderProperty);
 		registry.addResourceHandler(urlPattern).addResourceLocations(fileStorageRootFolderProperty);
 	}
