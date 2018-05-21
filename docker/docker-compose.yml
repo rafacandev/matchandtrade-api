@@ -12,6 +12,7 @@ services:
      - ./config:/matchandtrade/config
      - ./database:/matchandtrade/database
      - ./log:/matchandtrade/log
+     - ./file-storage:/matchandtrade/file-storage
   mocked-oauth-server:
     image: mocked-oauth-server:0.0-SNAPSHOT
     container_name: mocked-oauth-server
