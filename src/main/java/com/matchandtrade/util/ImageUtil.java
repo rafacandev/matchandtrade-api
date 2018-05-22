@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.IOException;
 
 public class ImageUtil {
@@ -33,15 +32,14 @@ public class ImageUtil {
 	 * @param image
 	 * @param width
 	 * @param height
-	 * @return RenderedImage
+	 * @return Image
 	 */
-	public static RenderedImage obtainCenterCrop(Image image, final int width, final int height) {
+	public static Image obtainCenterCrop(Image image, final int width, final int height) {
 		int imageWidth = image.getWidth(null);
 		int imageHeight = image.getHeight(null);
 		int x = (int) (imageWidth / 2) - (width / 2);
 		int y = (int) (imageHeight / 2) - (height / 2);
-		BufferedImage result = buildBufferedImage(image).getSubimage(x, y, width, height);
-		return result;
+		return buildBufferedImage(image).getSubimage(x, y, width, height);
 	}
 
 	/**
@@ -54,10 +52,10 @@ public class ImageUtil {
 	 * 
 	 * @param image: the reference image
 	 * @param shortEdgeLength: the target value of the resulting image's short edge
-	 * @return RenderedImage
+	 * @return Image
 	 * @throws IOException
 	 */
-	public static RenderedImage obtainShortEdgeResizedImage(final Image image, final int shortEdgeLength) throws IOException {
+	public static Image obtainShortEdgeResizedImage(final Image image, final int shortEdgeLength) throws IOException {
 		int imageWidth = image.getWidth(null);
 		int imageHeight = image.getHeight(null);
 		double shortEdgeRatio;
