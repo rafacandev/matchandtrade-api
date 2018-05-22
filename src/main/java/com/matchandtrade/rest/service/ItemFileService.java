@@ -1,9 +1,18 @@
 package com.matchandtrade.rest.service;
 
+import java.awt.Image;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.imageio.ImageIO;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -19,9 +28,13 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.FileRepositoryFacade;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.rest.RestException;
+import com.matchandtrade.util.ImageUtil;
 
 @Service
 public class ItemFileService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ItemFileService.class);
 
 	@Autowired
 	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
@@ -71,28 +84,63 @@ public class ItemFileService {
 	@Autowired
 	private FileStorageService fileStorageService;
 	@Autowired
-	private FileRepositoryFacade fileRespositoryFacade;
+	private FileRepositoryFacade fileRepositoryFacade;
 	
 	@Transactional
 	public FileEntity create(Integer itemId, MultipartFile file) {
 		FileEntity result = new FileEntity();
 		result.setOriginalName(StringUtils.cleanPath(file.getOriginalFilename()));
-		fileRespositoryFacade.save(result);
+		fileRepositoryFacade.save(result);
 		Path relativePath = buildRelativePath(result.getFileId());
 		result.setRelativePath(relativePath.toString());
 		result.setContentType(file.getContentType());
-		fileRespositoryFacade.save(result);
 
+		// Store uploaded file
+		byte[] fileBytes;
+		try {
+			fileBytes = file.getBytes();
+		} catch (IOException e) {
+			LOGGER.error("Unable to ready file", e);
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to ready file. " + e.getMessage());
+		}
+		fileStorageService.store(fileBytes, relativePath);
+		
+		FileEntity thumbnail = createThumbnail(fileStorageService.load(result.getRelativePath()).toFile());
+		result.getRelatedFiles().put("THUMBNAIL", thumbnail);
+
+		fileRepositoryFacade.save(result);
 		ItemEntity item = itemRepositoryFacade.get(itemId);
 		item.getFiles().add(result);
 		itemRepositoryFacade.save(item);
-		
-		fileStorageService.store(file, relativePath);
+
+		return result;
+	}
+
+	private FileEntity createThumbnail(File file) {
+		FileEntity result = new FileEntity();
+		try {
+			// Generate thumbnail
+			Image image = ImageIO.read(file);
+			Image imageResized = ImageUtil.obtainShortEdgeResizedImage(image, 128);
+			Image imageThumbnail = ImageUtil.obtainCenterCrop(imageResized, 128, 128);
+			
+			fileRepositoryFacade.save(result);
+			Path relativePath = buildRelativePath(result.getFileId());
+			result.setRelativePath(relativePath.toString());
+			result.setContentType("image/jpeg");
+			fileRepositoryFacade.save(result);
+			
+			ByteArrayOutputStream thumbnailOuputStream = new ByteArrayOutputStream();
+			ImageIO.write(ImageUtil.buildBufferedImage(imageThumbnail), "JPG", thumbnailOuputStream);
+			fileStorageService.store(thumbnailOuputStream.toByteArray(), relativePath);
+		} catch (IOException e) {
+			LOGGER.warn("Unable to generate thubnail file.", e);
+		}
 		return result;
 	}
 
 	private Path buildRelativePath(Integer fileId) {
-		int basePath = (fileId / 100) + 100;
+		int basePath = (fileId / 100) + 1;
 		return Paths.get(String.valueOf(basePath), fileId + ".file");
 	}
 

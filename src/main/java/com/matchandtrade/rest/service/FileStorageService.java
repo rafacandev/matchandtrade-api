@@ -1,5 +1,6 @@
 package com.matchandtrade.rest.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -18,7 +19,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.matchandtrade.config.MatchAndTradePropertyKeys;
 
@@ -43,21 +43,26 @@ public class FileStorageService {
 		rootFolder = targetRootPath;
 	}
 	
-	public void store(MultipartFile file, Path relativePath) {
+	public void store(byte[] bytes, Path relativePath) {
+		InputStream inputStream = new ByteArrayInputStream(bytes);
 		try {
 			if (relativePath == null) {
 				throw new IllegalArgumentException("Relative path cannot be null.");
 			}
-			try (InputStream inputStream = file.getInputStream()) {
-				if (!Files.exists(rootFolder.resolve(relativePath.getParent()))) {					
-					Files.createDirectories(rootFolder.resolve(relativePath.getParent()));
-				}
-				Files.copy(inputStream, rootFolder.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
+			if (!Files.exists(rootFolder.resolve(relativePath.getParent()))) {					
+				Files.createDirectories(rootFolder.resolve(relativePath.getParent()));
 			}
+			Files.copy(inputStream, rootFolder.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			RuntimeException ioExceptionAsRuntimeException = new RuntimeException("Failed to store file: " + relativePath + " at: " + rootFolder, e);
 			LOGGER.error(ioExceptionAsRuntimeException.getMessage(), e);
 			throw ioExceptionAsRuntimeException;
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				LOGGER.error("Not possible to close input stream", e);
+			}
 		}
 	}
 

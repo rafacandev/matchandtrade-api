@@ -4,11 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import javax.ws.rs.core.MediaType;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,14 +53,9 @@ public class ItemFileControllerIT {
 		}
 		String fileStorageRootFolder = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
 		fileStorageRootPath = Paths.get(fileStorageRootFolder);
-		Path testFilePath = Paths.get(fileStorageRootPath.toString(), "ItemFileControllerIT.txt");
-		Files.deleteIfExists(testFilePath);
-		file = new MockMultipartFile(
-			"test.txt",
-			testFilePath.getFileName().toString(),
-			MediaType.TEXT_PLAIN,
-			"This is a test file for ItemFileControllerIT.java".getBytes()
-		);
+		String imageResource = "image-landscape.png";
+		InputStream imageInputStream = ImageUtilUT.class.getClassLoader().getResource(imageResource).openStream();
+		file = new MockMultipartFile(imageResource, imageResource, "image/jpeg", imageInputStream);
 	}
 
 	@Test

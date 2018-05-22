@@ -1,10 +1,18 @@
 package com.matchandtrade.persistence.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -15,6 +23,7 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 	private Integer fileId;
 	private String originalName;
 	private String relativePath;
+	private Map<String, FileEntity> relatedFiles = new HashMap<>();
 
 	@Override
 	public boolean equals(Object obj) {
@@ -61,6 +70,13 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 		return originalName;
 	}
 
+	@OneToMany
+	@JoinTable(name="file_to_related_file", joinColumns=@JoinColumn(name="file_id", foreignKey=@ForeignKey(name="file_to_file_id_fk")), inverseJoinColumns = @JoinColumn(name="related_file_id", foreignKey=@ForeignKey(name="file_to_related_file_id_fk")))
+	@MapKey
+	public Map<String, FileEntity> getRelatedFiles() {
+		return relatedFiles;
+	}
+
 	// Most file systems limits paths to ~3000. Choosing 500 arbitrarily which seems enough for our needs
 	@Column(name = "relative_path", length = 500, nullable = true, unique = false)
 	public String getRelativePath() {
@@ -87,6 +103,10 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	public void setOriginalName(String originalName) {
 		this.originalName = originalName;
+	}
+
+	public void setRelatedFiles(Map<String, FileEntity> relatedFiles) {
+		this.relatedFiles = relatedFiles;
 	}
 
 	public void setRelativePath(String relativePath) {
