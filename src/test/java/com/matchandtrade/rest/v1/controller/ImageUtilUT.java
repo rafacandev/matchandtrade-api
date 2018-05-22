@@ -3,7 +3,6 @@ package com.matchandtrade.rest.v1.controller;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;

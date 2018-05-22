@@ -11,6 +11,40 @@ import java.io.IOException;
 public class ImageUtil {
 
 	/**
+	 * Builds a @{code BufferedImage} of an {@code Image}
+	 * 
+	 * @see java.awt.image.BufferedImage
+	 * @see java.awt.Image
+	 * 
+	 * @param image
+	 * @return BufferedImage
+	 */
+	public static BufferedImage buildBufferedImage(Image image) {
+		BufferedImage result = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+	    Graphics2D graphics = result.createGraphics();
+	    graphics.drawImage(image, 0, 0, null);
+	    graphics.dispose();
+	    return result;
+	}
+
+	/**
+	 * Obtains an image resulted from cropping the center of the given {@code image} with the desired {@code width} and {@code height} 
+	 *  
+	 * @param image
+	 * @param width
+	 * @param height
+	 * @return RenderedImage
+	 */
+	public static RenderedImage obtainCenterCrop(Image image, final int width, final int height) {
+		int imageWidth = image.getWidth(null);
+		int imageHeight = image.getHeight(null);
+		int x = (int) (imageWidth / 2) - (width / 2);
+		int y = (int) (imageHeight / 2) - (height / 2);
+		BufferedImage result = buildBufferedImage(image).getSubimage(x, y, width, height);
+		return result;
+	}
+
+	/**
 	 * <p>Obtains a proportionally resized image where its shortest edge is resized to match {@code shortEdgeLength}.</p>
 	 * <p>Examples:<p>
 	 * <ul>
@@ -50,32 +84,5 @@ public class ImageUtil {
 		graphics2D.drawImage(image, 0, 0, thumbnailWidth, thumbnailHeight, null);
 		return result;
 	}
-
-	/**
-	 * Builds a @{code BufferedImage} of an {@code Image}
-	 * 
-	 * @see java.awt.image.BufferedImage
-	 * @see java.awt.Image
-	 * 
-	 * @param image
-	 * @return BufferedImage
-	 */
-	public static BufferedImage buildBufferedImage(Image image) {
-		BufferedImage result = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);
-	    Graphics2D graphics = result.createGraphics();
-	    graphics.drawImage(image, 0, 0, null);
-	    graphics.dispose();
-	    return result;
-	}
-
-	public static RenderedImage obtainCenterCrop(Image image, final int width, final int height) {
-		int imageWidth = image.getWidth(null);
-		int imageHeight = image.getHeight(null);
-		int x = (int) (imageWidth / 2) - (width / 2);
-		int y = (int) (imageHeight / 2) - (height / 2);
-		BufferedImage result = buildBufferedImage(image).getSubimage(x, y, width, height);
-		return result;
-	}
-
 
 }
