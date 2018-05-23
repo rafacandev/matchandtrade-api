@@ -20,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(MvcConfiguration.class);
+	public static final String FILES_URL_PATTERN = "/matchandtrade-web-api/files/**";
 	
 	@Autowired
 	private Environment environment;
@@ -27,9 +28,8 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		String fileStorageRootFolderProperty = "file:" + environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
-		String urlPattern = "/matchandtrade-web-api/files/**";
-		LOGGER.info("Exposing static files with the patter [{}] from [{}].", urlPattern, fileStorageRootFolderProperty);
-		registry.addResourceHandler(urlPattern).addResourceLocations(fileStorageRootFolderProperty);
+		LOGGER.info("Exposing static files with the patter [{}] from [{}].", FILES_URL_PATTERN, fileStorageRootFolderProperty);
+		registry.addResourceHandler(FILES_URL_PATTERN).addResourceLocations(fileStorageRootFolderProperty);
 	}
 
 }
