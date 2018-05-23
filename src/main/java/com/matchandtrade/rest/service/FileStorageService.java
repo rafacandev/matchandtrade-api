@@ -36,9 +36,9 @@ public class FileStorageService {
 		String rootFolderProperty = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString()); 
 		LOGGER.info("Initiating file service with root folder: {}", rootFolderProperty);
 		Path targetRootPath = Paths.get(rootFolderProperty);
-		if (!Files.exists(targetRootPath) || !Files.isDirectory(targetRootPath)) {
-			LOGGER.error("Root folder does not exist or is not a directory: {}", rootFolderProperty);
-			throw new IllegalArgumentException("Root folder does not exist or is not a directory: " + rootFolderProperty);
+		if (!targetRootPath.toFile().isDirectory()) {
+			LOGGER.error("Root folder is not a directory: {}", rootFolderProperty);
+			throw new IllegalArgumentException("Root is not a directory: " + rootFolderProperty);
 		}
 		rootFolder = targetRootPath;
 	}
@@ -49,7 +49,7 @@ public class FileStorageService {
 			if (relativePath == null) {
 				throw new IllegalArgumentException("Relative path cannot be null.");
 			}
-			if (!Files.exists(rootFolder.resolve(relativePath.getParent()))) {					
+			if (!rootFolder.resolve(relativePath.getParent()).toFile().exists()) {					
 				Files.createDirectories(rootFolder.resolve(relativePath.getParent()));
 			}
 			Files.copy(inputStream, rootFolder.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
@@ -81,7 +81,7 @@ public class FileStorageService {
 
 			}
 		} catch (MalformedURLException e) {
-			throw new RuntimeException("Could not read file: " + filename + ". " + e.getMessage());
+			throw new IllegalArgumentException("Could not read file: " + filename + ". " + e.getMessage());
 		}
 	}
 

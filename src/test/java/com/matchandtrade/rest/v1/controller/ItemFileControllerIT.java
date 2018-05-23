@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -19,6 +18,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.MatchAndTradePropertyKeys;
+import com.matchandtrade.config.MvcConfiguration;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
@@ -63,8 +63,13 @@ public class ItemFileControllerIT {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity item = itemRandom.nextPersistedEntity(membership);
 		FileJson response = fixture.post(membership.getTradeMembershipId(), item.getItemId(), file);
-		Path filePath = fileStorageRootPath.resolve(response.getRelativePath());		
-		assertTrue(Files.isRegularFile(filePath));
+		assertEquals(2, response.getLinks().size());
+		response.getLinks().forEach(v -> {
+			String filesUrlPattern = MvcConfiguration.FILES_URL_PATTERN.replace("*", "");
+			String fileLocation = fileStorageRootPath + "/" + v.getHref().replace(filesUrlPattern, "");
+			Path filePath = Paths.get(fileLocation);
+			assertTrue(filePath.toFile().exists());
+		});
 	}
 
 	@Test

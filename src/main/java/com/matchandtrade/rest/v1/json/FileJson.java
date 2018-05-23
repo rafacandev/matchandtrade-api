@@ -6,7 +6,6 @@ public class FileJson extends JsonLinkSupport {
 
 	private Integer fileId;
 	private String originalName;
-	private String relativePath;
 	private String contentType;
 
 	public String getContentType() {
@@ -21,10 +20,6 @@ public class FileJson extends JsonLinkSupport {
 		return originalName;
 	}
 
-	public String getRelativePath() {
-		return relativePath;
-	}
-
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
@@ -35,10 +30,6 @@ public class FileJson extends JsonLinkSupport {
 
 	public void setOriginalName(String originalName) {
 		this.originalName = originalName;
-	}
-
-	public void setRelativePath(String relativePath) {
-		this.relativePath = relativePath;
 	}
 
 }

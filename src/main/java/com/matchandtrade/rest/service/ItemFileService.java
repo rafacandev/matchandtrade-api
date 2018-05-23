@@ -2,7 +2,6 @@ package com.matchandtrade.rest.service;
 
 import java.awt.Image;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,19 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchCriteria;
-import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
+import com.matchandtrade.persistence.entity.EssenceEntity;
+import com.matchandtrade.persistence.entity.EssenceEntity.Type;
 import com.matchandtrade.persistence.entity.FileEntity;
 import com.matchandtrade.persistence.entity.ItemEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.facade.EssenceRepositoryFacade;
 import com.matchandtrade.persistence.facade.FileRepositoryFacade;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
-import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.util.ImageUtil;
 
@@ -37,111 +32,105 @@ public class ItemFileService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ItemFileService.class);
 
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
-	@Autowired
 	private ItemRepositoryFacade itemRepositoryFacade;
-	
-	
-	@Autowired
-	private SearchService searchService;
-
-	@Transactional
-	public void create(Integer tradeMembershipId, ItemEntity itemEntity) {
-		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepositoryFacade.get(tradeMembershipId);
-		itemRepositoryFacade.save(itemEntity);
-		tradeMembershipEntity.getItems().add(itemEntity);
-		tradeMembershipRepositoryFacade.save(tradeMembershipEntity);
-	}
-
-	@Transactional
-	public void delete(Integer tradeMembershipId, Integer itemId) {
-		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
-		ItemEntity item = itemRepositoryFacade.get(itemId);
-		membership.getItems().remove(item);
-		tradeMembershipRepositoryFacade.save(membership);
-		itemRepositoryFacade.delete(itemId);
-	}
-
-	public ItemEntity get(Integer itemId) {
-		return itemRepositoryFacade.get(itemId);
-	}
-	
-	public boolean exists(Integer ...itemIds) {
-		return itemRepositoryFacade.exists(itemIds);
-	}
-
-	@Transactional
-	public SearchResult<ItemEntity> searchByTradeMembershipIdName(Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
-		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
-		return searchService.search(searchCriteria, ItemQueryBuilder.class);
-	}
-
-	public void update(ItemEntity itemEntity) {
-		itemRepositoryFacade.save(itemEntity);
-	}
-
 	@Autowired
 	private FileStorageService fileStorageService;
 	@Autowired
 	private FileRepositoryFacade fileRepositoryFacade;
+	@Autowired
+	private EssenceRepositoryFacade essenceRepositoryFacade;
 	
+	private Path buildRelativePath(EssenceEntity essence) {
+		int basePath = (essence.getEssenceId() / 100) + 1;
+		return Paths.get(String.valueOf(basePath), essence.getEssenceId() + ".file");
+	}
+
 	@Transactional
 	public FileEntity create(Integer itemId, MultipartFile file) {
+		// Save original essence entity
+		EssenceEntity originalEssence = new EssenceEntity();
+		originalEssence.setType(Type.ORIGINAL);
+		essenceRepositoryFacade.save(originalEssence);
+		Path originalEssenceRelativePath = buildRelativePath(originalEssence);
+		// Store the original file
+		storeFile(file, originalEssenceRelativePath);
+		originalEssence.setRelativePath(originalEssenceRelativePath.toString());
+		essenceRepositoryFacade.save(originalEssence);
+		// Save file entity
 		FileEntity result = new FileEntity();
-		result.setOriginalName(StringUtils.cleanPath(file.getOriginalFilename()));
-		fileRepositoryFacade.save(result);
-		Path relativePath = buildRelativePath(result.getFileId());
-		result.setRelativePath(relativePath.toString());
 		result.setContentType(file.getContentType());
-
-		// Store uploaded file
-		byte[] fileBytes;
+		result.getEssences().add(originalEssence);
+		result.setOriginalName(file.getOriginalFilename());
+		fileRepositoryFacade.save(result);
+		// Save the thumbnail essence
+		EssenceEntity thumbnailEssence = saveAndStoreThumbnail(originalEssenceRelativePath);
+		if (thumbnailEssence != null) {
+			result.getEssences().add(thumbnailEssence);
+		}
+		// Assign the file entity to its item entity
+		ItemEntity item = itemRepositoryFacade.get(itemId);
+		item.getFiles().add(result);
+		itemRepositoryFacade.save(item);
+		return result;
+	}
+	
+	/**
+	 * Save thumbnail essence entity 
+	 * @param originalEssence
+	 * @param originalEssenceRelativePath
+	 * @param result
+	 */
+	private EssenceEntity saveAndStoreThumbnail(Path originalEssenceRelativePath) {
+		Image thumbnailImage = null;
+		EssenceEntity result = null;
 		try {
-			fileBytes = file.getBytes();
+			thumbnailImage = createThumbnailImage(originalEssenceRelativePath);
+		} catch (IllegalArgumentException e) {
+			LOGGER.warn("Unable to create thumbnail for the original essence located at: {}", originalEssenceRelativePath);
+		}
+		
+		if (thumbnailImage != null) {
+			EssenceEntity thumbnailEssence = new EssenceEntity();
+			try (ByteArrayOutputStream thumbnailOuputStream = new ByteArrayOutputStream()) {
+				ImageIO.write(ImageUtil.buildBufferedImage(thumbnailImage), "JPG", thumbnailOuputStream);
+				thumbnailEssence.setType(Type.THUMBNAIL);
+				essenceRepositoryFacade.save(thumbnailEssence);
+				Path thumbnailEssenceRelativePath = buildRelativePath(thumbnailEssence);
+				fileStorageService.store(thumbnailOuputStream.toByteArray(), thumbnailEssenceRelativePath);			
+				thumbnailEssence.setRelativePath(thumbnailEssenceRelativePath.toString());
+				essenceRepositoryFacade.save(thumbnailEssence);
+				result = thumbnailEssence;
+			} catch (IOException e) {
+				LOGGER.warn("Unable to write thumbnail OutputStream for the original essence located at: {}", originalEssenceRelativePath);
+				// Remove the possible orphan essence if something goes wrong
+				if (thumbnailEssence.getEssenceId() != null) {
+					essenceRepositoryFacade.delete(thumbnailEssence.getEssenceId());
+				}
+			}
+		}
+		return result;
+	}
+
+	private Image createThumbnailImage(Path relativePath) {
+		Image result;
+		try {
+			Path fullPath = fileStorageService.load(relativePath.toString());
+			Image image = ImageIO.read(fullPath.toFile());
+			Image imageResized = ImageUtil.obtainShortEdgeResizedImage(image, 128);
+			result = ImageUtil.obtainCenterCrop(imageResized, 128, 128);
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
+		}
+		return result;
+	}
+
+	private void storeFile(MultipartFile file, Path relativePath) {
+		try {
+			fileStorageService.store(file.getBytes(), relativePath);
 		} catch (IOException e) {
 			LOGGER.error("Unable to ready file", e);
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to ready file. " + e.getMessage());
 		}
-		fileStorageService.store(fileBytes, relativePath);
-		
-		FileEntity thumbnail = createThumbnail(fileStorageService.load(result.getRelativePath()).toFile());
-		result.getRelatedFiles().put("THUMBNAIL", thumbnail);
-
-		fileRepositoryFacade.save(result);
-		ItemEntity item = itemRepositoryFacade.get(itemId);
-		item.getFiles().add(result);
-		itemRepositoryFacade.save(item);
-
-		return result;
-	}
-
-	private FileEntity createThumbnail(File file) {
-		FileEntity result = new FileEntity();
-		try {
-			// Generate thumbnail
-			Image image = ImageIO.read(file);
-			Image imageResized = ImageUtil.obtainShortEdgeResizedImage(image, 128);
-			Image imageThumbnail = ImageUtil.obtainCenterCrop(imageResized, 128, 128);
-			
-			fileRepositoryFacade.save(result);
-			Path relativePath = buildRelativePath(result.getFileId());
-			result.setRelativePath(relativePath.toString());
-			result.setContentType("image/jpeg");
-			fileRepositoryFacade.save(result);
-			
-			ByteArrayOutputStream thumbnailOuputStream = new ByteArrayOutputStream();
-			ImageIO.write(ImageUtil.buildBufferedImage(imageThumbnail), "JPG", thumbnailOuputStream);
-			fileStorageService.store(thumbnailOuputStream.toByteArray(), relativePath);
-		} catch (IOException e) {
-			LOGGER.warn("Unable to generate thubnail file.", e);
-		}
-		return result;
-	}
-
-	private Path buildRelativePath(Integer fileId) {
-		int basePath = (fileId / 100) + 1;
-		return Paths.get(String.valueOf(basePath), fileId + ".file");
 	}
 
 }

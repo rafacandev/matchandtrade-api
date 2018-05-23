@@ -1,17 +1,17 @@
 package com.matchandtrade.persistence.entity;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -23,7 +23,7 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 	private Integer fileId;
 	private String originalName;
 	private String relativePath;
-	private Map<String, FileEntity> relatedFiles = new HashMap<>();
+	private Set<EssenceEntity> essences = new HashSet<>();
 
 	@Override
 	public boolean equals(Object obj) {
@@ -34,10 +34,10 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 		if (getClass() != obj.getClass())
 			return false;
 		FileEntity other = (FileEntity) obj;
-		if (fileId == null) {
-			if (other.fileId != null)
+		if (contentType == null) {
+			if (other.contentType != null)
 				return false;
-		} else if (!fileId.equals(other.fileId))
+		} else if (!contentType.equals(other.contentType))
 			return false;
 		if (originalName == null) {
 			if (other.originalName != null)
@@ -51,10 +51,16 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 			return false;
 		return true;
 	}
-	
+
 	@Column(name = "content_type", length = 128, nullable = true, unique = false)
 	public String getContentType() {
 		return contentType;
+	}
+
+	@OneToMany(fetch=FetchType.EAGER)
+	@JoinTable(name="file_to_essence", joinColumns=@JoinColumn(name="file_id", foreignKey=@ForeignKey(name="file_to_essence_file_id_fk")), inverseJoinColumns = @JoinColumn(name="essence_id", foreignKey=@ForeignKey(name="file_to_essence_essence_id_fk")))
+	public Set<EssenceEntity> getEssences() {
+		return essences;
 	}
 	
 	@Id
@@ -70,13 +76,6 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 		return originalName;
 	}
 
-	@OneToMany
-	@JoinTable(name="file_to_related_file", joinColumns=@JoinColumn(name="file_id", foreignKey=@ForeignKey(name="file_to_file_id_fk")), inverseJoinColumns = @JoinColumn(name="related_file_id", foreignKey=@ForeignKey(name="file_to_related_file_id_fk")))
-	@MapKey
-	public Map<String, FileEntity> getRelatedFiles() {
-		return relatedFiles;
-	}
-
 	// Most file systems limits paths to ~3000. Choosing 500 arbitrarily which seems enough for our needs
 	@Column(name = "relative_path", length = 500, nullable = true, unique = false)
 	public String getRelativePath() {
@@ -87,7 +86,7 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((fileId == null) ? 0 : fileId.hashCode());
+		result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
 		result = prime * result + ((originalName == null) ? 0 : originalName.hashCode());
 		result = prime * result + ((relativePath == null) ? 0 : relativePath.hashCode());
 		return result;
@@ -97,16 +96,16 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 		this.contentType = contentType;
 	}
 
+	public void setEssences(Set<EssenceEntity> essences) {
+		this.essences = essences;
+	}
+
 	public void setFileId(Integer fileId) {
 		this.fileId = fileId;
 	}
 
 	public void setOriginalName(String originalName) {
 		this.originalName = originalName;
-	}
-
-	public void setRelatedFiles(Map<String, FileEntity> relatedFiles) {
-		this.relatedFiles = relatedFiles;
 	}
 
 	public void setRelativePath(String relativePath) {

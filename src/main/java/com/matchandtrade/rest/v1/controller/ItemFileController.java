@@ -43,7 +43,7 @@ public class ItemFileController implements Controller {
 		// Transform the response
 		FileJson response = FileTransformer.transform(fileEntity);
 		// Assemble links
-		FileLinkAssember.assemble(response);
+		FileLinkAssember.assemble(response, fileEntity);
 		return response;
 	}
 
