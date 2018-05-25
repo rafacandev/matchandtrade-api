@@ -38,8 +38,6 @@ public class EssenceEntity implements com.matchandtrade.persistence.entity.Entit
 		if (getClass() != obj.getClass())
 			return false;
 		EssenceEntity other = (EssenceEntity) obj;
-		if (type != other.type)
-			return false;
 		if (relativePath == null) {
 			if (other.relativePath != null)
 				return false;
@@ -68,7 +66,6 @@ public class EssenceEntity implements com.matchandtrade.persistence.entity.Entit
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		result = prime * result + ((relativePath == null) ? 0 : relativePath.hashCode());
 		return result;
 	}

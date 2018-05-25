@@ -49,7 +49,7 @@ public class ItemFileControllerIT {
 	@Before
 	public void before() throws IOException {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getFileController(false);
+			fixture = mockControllerFactory.getItemFileController(false);
 		}
 		String fileStorageRootFolder = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
 		fileStorageRootPath = Paths.get(fileStorageRootFolder);

@@ -49,7 +49,7 @@ public class FileStorageService {
 			if (relativePath == null) {
 				throw new IllegalArgumentException("Relative path cannot be null.");
 			}
-			if (!rootFolder.resolve(relativePath.getParent()).toFile().exists()) {					
+			if (!rootFolder.resolve(relativePath.getParent()).toFile().exists()) {
 				Files.createDirectories(rootFolder.resolve(relativePath.getParent()));
 			}
 			Files.copy(inputStream, rootFolder.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
