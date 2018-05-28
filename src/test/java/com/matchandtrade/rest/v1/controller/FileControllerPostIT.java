@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -21,6 +20,7 @@ import com.matchandtrade.config.MatchAndTradePropertyKeys;
 import com.matchandtrade.config.MvcConfiguration;
 import com.matchandtrade.rest.v1.json.FileJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
+import com.matchandtrade.test.random.FileRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
@@ -33,6 +33,9 @@ public class FileControllerPostIT {
 	private Environment environment;
 	private Path fileStorageRootPath;
 	private MockMultipartFile file;
+	
+	@Autowired
+	private FileRandom fileRandom;
 
 	@Before
 	public void before() throws IOException {
@@ -41,9 +44,7 @@ public class FileControllerPostIT {
 		}
 		String fileStorageRootFolder = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
 		fileStorageRootPath = Paths.get(fileStorageRootFolder);
-		String imageResource = "image-landscape.png";
-		InputStream imageInputStream = ImageUtilUT.class.getClassLoader().getResource(imageResource).openStream();
-		file = new MockMultipartFile(imageResource, imageResource, "image/jpeg", imageInputStream);
+		file = fileRandom.newSampleMockMultiPartFile();
 	}
 	
 	@Test

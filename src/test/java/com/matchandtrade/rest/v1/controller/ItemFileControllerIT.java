@@ -1,88 +1,84 @@
 package com.matchandtrade.rest.v1.controller;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.config.MatchAndTradePropertyKeys;
-import com.matchandtrade.config.MvcConfiguration;
+import com.matchandtrade.persistence.entity.FileEntity;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.repository.ItemRepository;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.FileJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
+import com.matchandtrade.test.random.FileRandom;
 import com.matchandtrade.test.random.ItemRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
-import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
 public class ItemFileControllerIT {
 	
 	@Autowired
-	private Environment environment;
-	private Path fileStorageRootPath;
+	private EntityManager entityManager;
 	@Autowired
 	private ItemRandom itemRandom;
-	private MockMultipartFile file;
+	@Autowired
+	private ItemRepository itemRepository;
+	private FileEntity file;
+	@Autowired
+	private FileRandom fileRandom;
 	private ItemFileController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
-	@Autowired
-	private UserRandom userRandom;
-
+	
 	@Before
 	public void before() throws IOException {
 		if (fixture == null) {
 			fixture = mockControllerFactory.getItemFileController(false);
 		}
-		String fileStorageRootFolder = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
-		fileStorageRootPath = Paths.get(fileStorageRootFolder);
-		String imageResource = "image-landscape.png";
-		InputStream imageInputStream = ImageUtilUT.class.getClassLoader().getResource(imageResource).openStream();
-		file = new MockMultipartFile(imageResource, imageResource, "image/jpeg", imageInputStream);
+		file = fileRandom.nextPersistedEntity();
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Test
-	public void shouldUploadItemFile() {
+	public void shouldAddFileToItem() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity item = itemRandom.nextPersistedEntity(membership);
-		FileJson response = fixture.post(membership.getTradeMembershipId(), item.getItemId(), file);
-		assertEquals(2, response.getLinks().size());
-		response.getLinks().forEach(v -> {
-			String filesUrlPattern = MvcConfiguration.FILES_URL_PATTERN.replace("*", "");
-			String fileLocation = fileStorageRootPath + "/" + v.getHref().replace(filesUrlPattern, "");
-			Path filePath = Paths.get(fileLocation);
-			assertTrue(filePath.toFile().exists());
-		});
+		FileJson response = fixture.post(membership.getTradeMembershipId(), item.getItemId(), file.getFileId());
+		assertNotNull(response);
+		assertEquals(file.getFileId(), response.getFileId());
+		
+		// Simplest way to get files from an item without running in lazy loading exception nor dealing with aspect
+		List<FileEntity> actualFiles = (List<FileEntity>) entityManager
+				.createQuery("SELECT i.files FROM ItemEntity i WHERE i.itemId = :itemId")
+				.setParameter("itemId", item.getItemId())
+				.getResultList();
+		assertEquals(1, actualFiles.size());
+		assertEquals(file.getFileId(), actualFiles.get(0).getFileId());
 	}
 
-	@Test
-	public void shouldOnlyAllowTheItemOwnerToUploadFiles() {
-		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+	@Test(expected = RestException.class)
+	public void shouldFailToAddMoreThan3FilesToItem() {
+		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity item = itemRandom.nextPersistedEntity(membership);
-		HttpStatus httpStatus = null;
-		try {
-			fixture.post(membership.getTradeMembershipId(), item.getItemId(), file);			
-		} catch (RestException e) {
-			httpStatus = e.getHttpStatus();
-		}
-		assertEquals(HttpStatus.FORBIDDEN, httpStatus);
+		item.getFiles().add(fileRandom.nextPersistedEntity());
+		item.getFiles().add(fileRandom.nextPersistedEntity());
+		item.getFiles().add(fileRandom.nextPersistedEntity());
+		itemRepository.save(item);
+		fixture.post(membership.getTradeMembershipId(), item.getItemId(), file.getFileId());
 	}
 
 }

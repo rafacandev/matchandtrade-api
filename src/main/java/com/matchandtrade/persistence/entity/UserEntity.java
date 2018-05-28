@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user_tb") // 'user' is a reserved word in most databases, hence we prefix it with '_tb' 
+@Table(name = "user_tb") // 'user' is a reserved word in most databases, hence we are sufixing it with '_tb' 
 public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 	
 	public enum Role {

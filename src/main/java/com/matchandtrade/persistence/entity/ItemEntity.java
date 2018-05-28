@@ -1,5 +1,6 @@
 package com.matchandtrade.persistence.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -20,7 +21,7 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 	private Integer itemId;
 	private String description;
 	private String name;
-	private Set<FileEntity> files;
+	private Set<FileEntity> files = new HashSet<>();
 
 	@Override
 	public boolean equals(Object obj) {

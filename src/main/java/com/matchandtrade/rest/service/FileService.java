@@ -71,7 +71,7 @@ public class FileService {
 			Path thumbnailRelativePath = buildNewRelativePath();
 			LOGGER.debug("Attempting to generate thumbnail for content type: {}; from essence file: {}; to thumbnail file: {}", file.getContentType(), originalEssenceRelativePath, thumbnailRelativePath);
 			try {
-				storeThumbnailOnFileSystem(file, originalEssenceRelativePath, thumbnailRelativePath);
+				storeThumbnailOnFileSystem(originalEssenceRelativePath, thumbnailRelativePath);
 				LOGGER.debug("Saving thumbnail essence entity");
 				saveThumbnailEssence(result, thumbnailRelativePath);
 			} catch (IOException e) {
@@ -86,6 +86,10 @@ public class FileService {
 		Image image = ImageIO.read(fullPath.toFile());
 		Image imageResized = ImageUtil.obtainShortEdgeResizedImage(image, thumbnailSize);
 		return ImageUtil.obtainCenterCrop(imageResized, thumbnailSize, thumbnailSize);
+	}
+	
+	public FileEntity get(Integer fileId) {
+		return fileRepositoryFacade.get(fileId);
 	}
 
 	private void saveThumbnailEssence(FileEntity result, Path thumbnailRelativePath) {
@@ -107,7 +111,7 @@ public class FileService {
 		}
 	}
 
-	private void storeThumbnailOnFileSystem(MultipartFile file, Path originalEssenceRelativePath, Path thumbnailRelativePath) throws IOException {
+	private void storeThumbnailOnFileSystem(Path originalEssenceRelativePath, Path thumbnailRelativePath) throws IOException {
 		Image thumbnailImage = createThumbnailImage(originalEssenceRelativePath);
 		if (thumbnailImage != null) {
 			try (ByteArrayOutputStream thumbnailOuputStream = new ByteArrayOutputStream()) {
