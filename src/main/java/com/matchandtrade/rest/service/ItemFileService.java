@@ -27,7 +27,7 @@ public class ItemFileService {
 	}
 
 	public SearchResult<FileEntity> search(Integer itemId, Integer pageNumber, Integer pageSize) {
-		return itemRepositoryFacade.findFilesByItemId(itemId, pageNumber, pageSize);
+		return fileRepositoryFacade.findFilesByItemId(itemId, pageNumber, pageSize);
 	}
 
 }

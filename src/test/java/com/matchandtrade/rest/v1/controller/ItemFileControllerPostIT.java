@@ -15,6 +15,7 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.FileEntity;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.facade.FileRepositoryFacade;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.FileJson;
@@ -31,6 +32,8 @@ public class ItemFileControllerPostIT {
 	private ItemRandom itemRandom;
 	@Autowired
 	private ItemRepositoryFacade itemRepositoryFacade;
+	@Autowired
+	private FileRepositoryFacade fileRepositoryFacade;
 	private FileEntity file;
 	@Autowired
 	private FileRandom fileRandom;
@@ -39,7 +42,6 @@ public class ItemFileControllerPostIT {
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
-	
 	
 	@Before
 	public void before() throws IOException {
@@ -56,7 +58,7 @@ public class ItemFileControllerPostIT {
 		FileJson response = fixture.post(membership.getTradeMembershipId(), item.getItemId(), file.getFileId());
 		assertNotNull(response);
 		assertEquals(file.getFileId(), response.getFileId());
-		SearchResult<FileEntity> files = itemRepositoryFacade.findFilesByItemId(item.getItemId(), 1, 10);
+		SearchResult<FileEntity> files = fileRepositoryFacade.findFilesByItemId(item.getItemId(), 1, 10);
 		assertEquals(1, files.getResultList().size());
 		assertEquals(file.getFileId(), files.getResultList().get(0).getFileId());
 	}
