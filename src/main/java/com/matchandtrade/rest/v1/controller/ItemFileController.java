@@ -1,14 +1,14 @@
 package com.matchandtrade.rest.v1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.FileEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.FileService;
@@ -30,9 +30,10 @@ public class ItemFileController implements Controller {
 	private ItemFileService itemFileService;
 	@Autowired
 	private FileService fileService;
+	@Autowired
+	private FileLinkAssember fileLinkAssembler;
 
 	@PostMapping("/{tradeMembershipId}/items/{itemId}/files/{fileId}")
-	@ResponseStatus(code = HttpStatus.CREATED)
 	public FileJson post(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, @PathVariable Integer fileId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
@@ -46,6 +47,21 @@ public class ItemFileController implements Controller {
 		FileJson response = FileTransformer.transform(fileEntity);
 		// Assemble links
 		FileLinkAssember.assemble(response, fileEntity);
+		return response;
+	}
+
+	@RequestMapping(path={"/{tradeMembershipId}/items/{itemId}/files", "/{tradeMembershipId}/items/{itemId}/files/"}, method=RequestMethod.GET)
+	public SearchResult<FileJson> get(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, Integer _pageNumber, Integer _pageSize) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		itemFileValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, _pageNumber, _pageSize);
+		// Delegate to service layer
+		SearchResult<FileEntity> searchResult = itemFileService.search(itemId, _pageNumber, _pageSize);
+		// Transform the response
+		SearchResult<FileJson> response = FileTransformer.transform(searchResult);
+		// Assemble links
+		fileLinkAssembler.assemble(response);
 		return response;
 	}
 

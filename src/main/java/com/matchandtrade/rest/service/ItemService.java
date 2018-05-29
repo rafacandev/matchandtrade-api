@@ -48,6 +48,7 @@ public class ItemService {
 		return itemRepositoryFacade.exists(itemIds);
 	}
 
+	// TODO: Rename to searchByTradeMembershipId()
 	@Transactional
 	public SearchResult<ItemEntity> searchByTradeMembershipIdName(Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));

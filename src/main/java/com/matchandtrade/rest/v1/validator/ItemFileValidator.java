@@ -38,4 +38,8 @@ public class ItemFileValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Items cannot have more than 3 files.");
 		}
 	}
+
+	public void validateGet(Integer userId, Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
+		// TODO Auto-generated method stub
+	}
 }

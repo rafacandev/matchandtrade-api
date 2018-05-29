@@ -7,8 +7,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.matchandtrade.persistence.common.PersistenceUtil;
+import com.matchandtrade.persistence.common.SearchResult;
+import com.matchandtrade.persistence.entity.FileEntity;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.repository.ItemRepository;
 
@@ -44,6 +49,12 @@ public class ItemRepositoryFacade {
 
 	public void delete(Integer itemId) {
 		itemRepository.delete(itemId);
+	}
+
+	public SearchResult<FileEntity> findFilesByItemId(Integer itemId, Integer pageNumber, Integer pageSize) {
+		Pageable pageable = PersistenceUtil.buildPageable(pageNumber, pageSize);
+		Page<FileEntity> page = itemRepository.findFilesByItemId(itemId, pageable);
+		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
 	
 }

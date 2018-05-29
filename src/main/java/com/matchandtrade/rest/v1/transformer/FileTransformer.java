@@ -1,5 +1,9 @@
 package com.matchandtrade.rest.v1.transformer;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.FileEntity;
 import com.matchandtrade.rest.v1.json.FileJson;
 
@@ -14,6 +18,11 @@ public class FileTransformer {
 		result.setFileId(entity.getFileId());
 		result.setOriginalName(entity.getOriginalName());
 		return result;
+	}
+
+	public static SearchResult<FileJson> transform(SearchResult<FileEntity> searchResult) {
+		List<FileJson> files = searchResult.getResultList().stream().map(FileTransformer::transform).collect(Collectors.toList());
+		return new SearchResult<>(files, searchResult.getPagination());
 	}
 
 }
