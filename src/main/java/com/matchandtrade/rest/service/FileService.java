@@ -74,8 +74,8 @@ public class FileService {
 				storeThumbnailOnFileSystem(originalEssenceRelativePath, thumbnailRelativePath);
 				LOGGER.debug("Saving thumbnail essence entity");
 				saveThumbnailEssence(result, thumbnailRelativePath);
-			} catch (IOException e) {
-				LOGGER.warn("Unable to store and save thumbnail, proceding without a thumbnail.");
+			} catch (IOException | IllegalArgumentException e) {
+				LOGGER.warn("Unable to store and save thumbnail, proceding without a thumbnail. {}", e.getMessage());
 			}
 		}
 		return result;
@@ -84,6 +84,9 @@ public class FileService {
 	private Image createThumbnailImage(Path relativePath) throws IOException {
 		Path fullPath = fileStorageService.load(relativePath.toString());
 		Image image = ImageIO.read(fullPath.toFile());
+		if (image == null) {
+			throw new IllegalArgumentException("Could not read file as image.");
+		}
 		Image imageResized = ImageUtil.obtainShortEdgeResizedImage(image, thumbnailSize);
 		return ImageUtil.obtainCenterCrop(imageResized, thumbnailSize, thumbnailSize);
 	}
