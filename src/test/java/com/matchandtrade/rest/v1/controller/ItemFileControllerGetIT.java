@@ -65,7 +65,7 @@ public class ItemFileControllerGetIT {
 		FileJson fileResponse = response.getResultList().get(0);
 		assertEquals(fileResponse.getFileId(), file.getFileId());
 		assertEquals(fileResponse.getContentType(), file.getContentType());
-		assertEquals(fileResponse.getOriginalName(), file.getOriginalName());
+		assertEquals(fileResponse.getName(), file.getName());
 		// Two essences are expected one for ORIGINAL and one for THUMBNAIL
 		assertEquals(1, fileResponse.getLinks().stream().filter(v -> v.getRel().equals("original")).collect(Collectors.toList()).size());
 		assertEquals(1, fileResponse.getLinks().stream().filter(v -> v.getRel().equals("thumbnail")).collect(Collectors.toList()).size());

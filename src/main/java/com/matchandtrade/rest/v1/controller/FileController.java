@@ -14,6 +14,7 @@ import com.matchandtrade.rest.service.FileService;
 import com.matchandtrade.rest.v1.json.FileJson;
 import com.matchandtrade.rest.v1.link.FileLinkAssember;
 import com.matchandtrade.rest.v1.transformer.FileTransformer;
+import com.matchandtrade.rest.v1.validator.FileValidator;
 
 @RestController
 @RequestMapping(path="/matchandtrade-web-api/v1/files")
@@ -29,7 +30,8 @@ public class FileController implements Controller {
 	public FileJson post(MultipartFile file) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Validate the request - TODO: Add some sort of file upload quota
+		// Validate the request
+		FileValidator.validatePost(file);
 		// Transform the request - nothing to transform
 		// Delegate to service layer
 		FileEntity entity = fileService.create(file);

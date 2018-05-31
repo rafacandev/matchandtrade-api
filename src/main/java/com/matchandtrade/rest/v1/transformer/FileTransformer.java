@@ -16,7 +16,7 @@ public class FileTransformer {
 		FileJson result = new FileJson();
 		result.setContentType(entity.getContentType());
 		result.setFileId(entity.getFileId());
-		result.setOriginalName(entity.getOriginalName());
+		result.setName(entity.getName());
 		return result;
 	}
 

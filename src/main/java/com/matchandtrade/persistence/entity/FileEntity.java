@@ -21,7 +21,7 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	private String contentType;
 	private Integer fileId;
-	private String originalName;
+	private String name;
 	private Set<EssenceEntity> essences = new HashSet<>();
 
 	@Override
@@ -48,15 +48,15 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 				return false;
 		} else if (!fileId.equals(other.fileId))
 			return false;
-		if (originalName == null) {
-			if (other.originalName != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!originalName.equals(other.originalName))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
 
-	@Column(name = "content_type", length = 128, nullable = true, unique = false)
+	@Column(name = "content_type", length = 150, nullable = true, unique = false)
 	public String getContentType() {
 		return contentType;
 	}
@@ -75,9 +75,9 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 	}
 
 	// Most file systems limit filenames to 255 in length
-	@Column(name = "original_name", length = 255, nullable = true, unique = false)
-	public String getOriginalName() {
-		return originalName;
+	@Column(name = "name", length = 255, nullable = true, unique = false)
+	public String getName() {
+		return name;
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 		result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
 		result = prime * result + ((essences == null) ? 0 : essences.hashCode());
 		result = prime * result + ((fileId == null) ? 0 : fileId.hashCode());
-		result = prime * result + ((originalName == null) ? 0 : originalName.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -103,8 +103,8 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 		this.fileId = fileId;
 	}
 
-	public void setOriginalName(String originalName) {
-		this.originalName = originalName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

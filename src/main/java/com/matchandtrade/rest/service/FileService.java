@@ -63,7 +63,7 @@ public class FileService {
 		LOGGER.debug("Saving file entity with original essence entity");
 		FileEntity result = new FileEntity();
 		result.setContentType(file.getContentType());
-		result.setOriginalName(file.getOriginalFilename());
+		result.setName(file.getOriginalFilename());
 		result.getEssences().add(originalEssence);
 		fileRepositoryFacade.save(result);
 

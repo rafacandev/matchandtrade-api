@@ -5,7 +5,7 @@ import com.matchandtrade.rest.JsonLinkSupport;
 public class FileJson extends JsonLinkSupport {
 
 	private Integer fileId;
-	private String originalName;
+	private String name;
 	private String contentType;
 
 	public String getContentType() {
@@ -16,8 +16,8 @@ public class FileJson extends JsonLinkSupport {
 		return fileId;
 	}
 
-	public String getOriginalName() {
-		return originalName;
+	public String getName() {
+		return name;
 	}
 
 	public void setContentType(String contentType) {
@@ -28,8 +28,8 @@ public class FileJson extends JsonLinkSupport {
 		this.fileId = fileId;
 	}
 
-	public void setOriginalName(String originalName) {
-		this.originalName = originalName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

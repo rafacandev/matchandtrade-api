@@ -1,10 +1,12 @@
 package com.matchandtrade.rest.v1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
@@ -34,6 +36,7 @@ public class ItemFileController implements Controller {
 	private FileLinkAssember fileLinkAssembler;
 
 	@PostMapping("/{tradeMembershipId}/items/{itemId}/files/{fileId}")
+	@ResponseStatus(HttpStatus.CREATED)
 	public FileJson post(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, @PathVariable Integer fileId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
