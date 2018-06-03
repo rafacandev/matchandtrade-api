@@ -14,15 +14,16 @@ import com.matchandtrade.rest.v1.json.FileJson;
 public class FileLinkAssember {
 	
 	@Autowired
-	FileService fileService;
+	private FileService fileService;
+	private static final String FILES_URL_PATTERN = MvcConfiguration.FILES_URL_PATTERN.replace("*", "");
 	
 	// Utility classes, which are a collection of static members, are not meant to be instantiated. Hence, at least one non-public constructor should be defined.
 	private FileLinkAssember() {}
 
 	public static void assemble(FileJson json, FileEntity entity) {
-		String filesUrlPattern = MvcConfiguration.FILES_URL_PATTERN.replace("*", "");
+		// TODO: add self link when FileController.get(id) is implemented
 		entity.getEssences().forEach(v -> {
-			Link link = new Link(filesUrlPattern + v.getRelativePath(), v.getType().toString().toLowerCase());
+			Link link = new Link(FILES_URL_PATTERN + v.getRelativePath(), v.getType().toString().toLowerCase());
 			json.getLinks().add(link);
 		});
 	}

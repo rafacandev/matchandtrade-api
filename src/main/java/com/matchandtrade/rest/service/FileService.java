@@ -42,15 +42,19 @@ public class FileService {
 	private final int thumbnailSize = 128;
 	
 	// TODO: Potentially move this to FileStorageService
-	private Path buildNewRelativePath() {
+	private Path buildNewRelativePath(String filename) {
+		String fileExtention = ".file";
+		if (filename != null && !filename.isEmpty() && filename.lastIndexOf(".") < filename.length()) {
+			fileExtention = filename.substring(filename.lastIndexOf("."));
+		}
 		LocalDate now = LocalDate.now();
-		String pathAsString = now.getYear() + "" + File.separatorChar + "" + now.getMonthValue() + File.separatorChar + UUID.randomUUID().toString() + ".file";
+		String pathAsString = now.getYear() + "" + File.separatorChar + "" + now.getMonthValue() + File.separatorChar + UUID.randomUUID().toString() + fileExtention;
 		return Paths.get(pathAsString);
 	}
 
 	@Transactional
 	public FileEntity create(MultipartFile file) {
-		Path originalEssenceRelativePath = buildNewRelativePath();
+		Path originalEssenceRelativePath = buildNewRelativePath(file.getOriginalFilename());
 		LOGGER.debug("Storing original essence file at: {}", originalEssenceRelativePath);
 		storeFileOnFileSystem(file, originalEssenceRelativePath);
 
@@ -68,7 +72,7 @@ public class FileService {
 		fileRepositoryFacade.save(result);
 
 		if (file.getContentType().contains("image")) {
-			Path thumbnailRelativePath = buildNewRelativePath();
+			Path thumbnailRelativePath = buildNewRelativePath(file.getOriginalFilename());
 			LOGGER.debug("Attempting to generate thumbnail for content type: {}; from essence file: {}; to thumbnail file: {}", file.getContentType(), originalEssenceRelativePath, thumbnailRelativePath);
 			try {
 				storeThumbnailOnFileSystem(originalEssenceRelativePath, thumbnailRelativePath);
