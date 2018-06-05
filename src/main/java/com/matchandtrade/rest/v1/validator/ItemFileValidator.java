@@ -18,6 +18,10 @@ public class ItemFileValidator {
 	@Autowired
 	private ItemRepositoryFacade itemRepositoryFacade;
 	
+	public void validateDelete(Integer userId, Integer tradeMembershipId, Integer itemId) {
+		itemValidator.validateOwnership(userId, tradeMembershipId);
+	}
+	
 	/**
 	 * Same as in {@link com.matchandtrade.rest.v1.validator.ItemValidator.validateOwnership()}.
 	 * Also validates if the target {@code Item} for the given {@code itemId} has less than two files.
@@ -39,7 +43,8 @@ public class ItemFileValidator {
 		}
 	}
 
-	public void validateGet(Integer userId, Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
-		// TODO Auto-generated method stub
+	public void validateGet(Integer userId, Integer tradeMembershipId, Integer pageNumber, Integer pageSize) {
+		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
 	}
+
 }

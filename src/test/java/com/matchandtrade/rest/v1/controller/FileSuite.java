@@ -6,9 +6,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	ItemFileControllerPostIT.class,
 	FileControllerPostIT.class,
-	ItemFileControllerGetIT.class
+	ItemFileControllerPostIT.class,
+	ItemFileControllerGetIT.class,
+	ItemFileControllerDeleteIT.class
 })
 public class FileSuite {
 

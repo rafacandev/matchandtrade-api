@@ -88,6 +88,11 @@ public class ItemValidator {
 		}
 	}
 	
+	/**
+	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a the owner of {@code tradeMembershipId}
+	 * @param tradeMembershipId
+	 * @param userId
+	 */
 	private void checkIfTrademembershipBelongsToUser(Integer tradeMembershipId, Integer userId) {
 		TradeMembershipEntity membership = tradeMembershipService.get(tradeMembershipId);
 		if (!membership.getUser().getUserId().equals(userId)) {
@@ -96,14 +101,12 @@ public class ItemValidator {
 	}
 	
 	/**
-	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not the owner of {@code tradeMembershipId}
+	 * An item can be deleted only by their owners. See {@code validateOwndership()}
 	 * @param tradeMembershipId
 	 * @param itemId
 	 */
 	public void validateDelete(Integer tradeMembershipId, Integer userId) {
-		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
-		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
-		checkIfTrademembershipBelongsToUser(tradeMembershipId, userId);
+		validateOwnership(userId, tradeMembershipId);
 	}
 
 	/**
@@ -114,7 +117,6 @@ public class ItemValidator {
 	 */
 	public void validateGet(Integer userId, Integer tradeMembershipId, Integer pageNumber, Integer pageSize) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
-		
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTrade(userId, tradeMembershipEntity);
@@ -135,7 +137,6 @@ public class ItemValidator {
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
 	}
-
 
 	/**
 	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
@@ -177,7 +178,7 @@ public class ItemValidator {
 	public void validatePut(Integer userId, Integer tradeMembershipId, Integer itemId, ItemJson json) {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
-		checkIfUserIsAssociatedToTradeMembership(userId, tradeMembershipId, tradeMembershipEntity);
+		checkIfTrademembershipBelongsToUser(tradeMembershipId, userId);
 		checkNameLength(json.getName());
 		checkDescriptionLength(json.getDescription());
 

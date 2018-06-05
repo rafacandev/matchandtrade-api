@@ -2,6 +2,7 @@ package com.matchandtrade.rest.v1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +53,18 @@ public class ItemFileController implements Controller {
 		FileLinkAssember.assemble(response, fileEntity);
 		return response;
 	}
+	
+	@DeleteMapping("/{tradeMembershipId}/items/{itemId}/files/{fileId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, @PathVariable Integer fileId) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		itemFileValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, itemId);
+		// Delegate to service layer
+		itemFileService.deleteFileFromItem(itemId, fileId);
+	}
+
 
 	@RequestMapping(path={"/{tradeMembershipId}/items/{itemId}/files", "/{tradeMembershipId}/items/{itemId}/files/"}, method=RequestMethod.GET)
 	public SearchResult<FileJson> get(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, Integer _pageNumber, Integer _pageSize) {

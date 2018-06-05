@@ -30,4 +30,14 @@ public class ItemFileService {
 		return fileRepositoryFacade.findFilesByItemId(itemId, pageNumber, pageSize);
 	}
 
+	@Transactional
+	public void deleteFileFromItem(Integer itemId, Integer fileId) {
+		FileEntity file = fileRepositoryFacade.get(fileId);
+		ItemEntity item = itemRepositoryFacade.get(itemId);
+		if (item.getFiles().remove(file)) {
+			itemRepositoryFacade.save(item);
+			fileRepositoryFacade.delete(fileId);
+		}
+	}
+
 }
