@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.matchandtrade.persistence.entity.FileEntity;
 import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.facade.FileRepositoryFacade;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 
@@ -14,12 +16,18 @@ public class ItemFileValidator {
 	
 	@Autowired
 	private ItemValidator itemValidator;
-	
 	@Autowired
 	private ItemRepositoryFacade itemRepositoryFacade;
+	@Autowired
+	private FileRepositoryFacade fileRespositoryFacade;
 	
-	public void validateDelete(Integer userId, Integer tradeMembershipId, Integer itemId) {
+	public void validateDelete(Integer userId, Integer tradeMembershipId, Integer itemId, Integer fileId) {
 		itemValidator.validateOwnership(userId, tradeMembershipId);
+		FileEntity file = fileRespositoryFacade.get(fileId);
+		if (file == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "There is no File for the given File.fileId.");
+		}
+		
 	}
 	
 	/**

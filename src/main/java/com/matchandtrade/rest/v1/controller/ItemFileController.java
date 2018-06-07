@@ -60,7 +60,7 @@ public class ItemFileController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		itemFileValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, itemId);
+		itemFileValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, itemId, fileId);
 		// Delegate to service layer
 		itemFileService.deleteFileFromItem(itemId, fileId);
 	}

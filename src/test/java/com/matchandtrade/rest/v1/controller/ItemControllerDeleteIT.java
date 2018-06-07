@@ -52,7 +52,7 @@ public class ItemControllerDeleteIT {
 	}
 
 	@Test(expected=RestException.class)
-	public void shouldNotDeleteItemBelongingToADifferentUser() {
+	public void shouldErrorWhenDeletingItemBelongingToADifferentUser() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		ItemEntity item = itemRandom.nextPersistedEntity(membership);
 		try {
@@ -62,5 +62,12 @@ public class ItemControllerDeleteIT {
 			throw e;
 		}
 	}
+	
+	@Test(expected=RestException.class)
+	public void shouldErrorWhenDeletingItemWithInvalidId() {
+		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		fixture.delete(membership.getTradeMembershipId(), -1);
+	}
+
 	
 }

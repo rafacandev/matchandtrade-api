@@ -36,7 +36,7 @@ public class ItemController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		itemValidator.validateDelete(tradeMembershipId, authenticationProvider.getAuthentication().getUser().getUserId());
+		itemValidator.validateDelete(tradeMembershipId, authenticationProvider.getAuthentication().getUser().getUserId(), itemId);
 		// Delegate to service layer
 		itemService.delete(tradeMembershipId, itemId);
 	}

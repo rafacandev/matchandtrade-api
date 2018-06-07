@@ -73,4 +73,11 @@ public class ItemFileControllerDeleteIT {
 		fixture.delete(membership.getTradeMembershipId(), item.getItemId(), file.getFileId());
 	}
 
+	@Test(expected = RestException.class)
+	public void shouldErrorIfFileDoesNotExist() {
+		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ItemEntity item = itemRandom.nextPersistedEntity(membership);
+		fixture.delete(membership.getTradeMembershipId(), item.getItemId(), -1);
+	}
+
 }

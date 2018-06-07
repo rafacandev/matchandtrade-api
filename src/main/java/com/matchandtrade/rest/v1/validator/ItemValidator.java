@@ -29,6 +29,36 @@ public class ItemValidator {
 	@Autowired
 	private SearchService searchService;
 
+
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.description} length is greater than 500.
+	 * @param name
+	 */
+	private void checkDescriptionLength(String description) {
+		if (description != null && description.length() > 500) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Item.description cannot be greater than 500 characters in length.");
+		}
+	}
+	
+	private void checkIfItemExists(Integer itemId) {
+		ItemEntity item = itemService.get(itemId);
+		if (item == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "There is no Item for the given Item.itemId");
+		}
+	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a the owner of {@code tradeMembershipId}
+	 * @param tradeMembershipId
+	 * @param userId
+	 */
+	private void checkIfTrademembershipBelongsToUser(Integer tradeMembershipId, Integer userId) {
+		TradeMembershipEntity membership = tradeMembershipService.get(tradeMembershipId);
+		if (!membership.getUser().getUserId().equals(userId)) {
+			throw new RestException(HttpStatus.FORBIDDEN, "User.userId is not the owner of TradeMembership.tradeMembershipId");
+		}
+	}
+
 	/**
 	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
 	 * @param tradeMembershipId
@@ -39,19 +69,7 @@ public class ItemValidator {
 			throw new RestException(HttpStatus.NOT_FOUND, "There is no TradeMembeship.tradeMembershipId: " + tradeMembershipId);
 		}
 	}
-
-	/**
-	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipId}
-	 * @param userId
-	 * @param tradeMembershipId
-	 * @param tradeMembershipEntity
-	 */
-	private void checkIfUserIsAssociatedToTradeMembership(Integer userId, Integer tradeMembershipId, TradeMembershipEntity tradeMembershipEntity) {
-		if (!userId.equals(tradeMembershipEntity.getUser().getUserId())) {
-			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not associated with TradeMembership.tradeMembershipId: " + tradeMembershipId);
-		}
-	}
-
+	
 	/**
 	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipEntity.getTradeId()}
 	 * @param userId
@@ -67,6 +85,18 @@ public class ItemValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Authenticated user is not associated with Trade.tradeId: " + tradeId);
 		}
 	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipId}
+	 * @param userId
+	 * @param tradeMembershipId
+	 * @param tradeMembershipEntity
+	 */
+	private void checkIfUserIsAssociatedToTradeMembership(Integer userId, Integer tradeMembershipId, TradeMembershipEntity tradeMembershipEntity) {
+		if (!userId.equals(tradeMembershipEntity.getUser().getUserId())) {
+			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not associated with TradeMembership.tradeMembershipId: " + tradeMembershipId);
+		}
+	}
 	
 	/**
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.name} is null or length is not between 3 and 150.
@@ -77,36 +107,20 @@ public class ItemValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name is mandatory and must be between 3 and 150 characters in length.");
 		}
 	}
-
-	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.description} length is greater than 500.
-	 * @param name
-	 */
-	private void checkDescriptionLength(String description) {
-		if (description != null && description.length() > 500) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Item.description cannot be greater than 500 characters in length.");
-		}
-	}
-	
-	/**
-	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a the owner of {@code tradeMembershipId}
-	 * @param tradeMembershipId
-	 * @param userId
-	 */
-	private void checkIfTrademembershipBelongsToUser(Integer tradeMembershipId, Integer userId) {
-		TradeMembershipEntity membership = tradeMembershipService.get(tradeMembershipId);
-		if (!membership.getUser().getUserId().equals(userId)) {
-			throw new RestException(HttpStatus.FORBIDDEN, "User.userId is not the owner of TradeMembership.tradeMembershipId");
-		}
-	}
 	
 	/**
 	 * An item can be deleted only by their owners. See {@code validateOwndership()}
+	 * Item must exist.
 	 * @param tradeMembershipId
 	 * @param itemId
 	 */
-	public void validateDelete(Integer tradeMembershipId, Integer userId) {
+	public void validateDelete(Integer tradeMembershipId, Integer userId, Integer itemId) {
 		validateOwnership(userId, tradeMembershipId);
+		checkIfItemExists(itemId);
+	}
+
+	public void validateGet(Integer userId, Integer tradeMembershipId) {
+		validateGet(userId, tradeMembershipId, null, null);
 	}
 
 	/**
@@ -120,10 +134,6 @@ public class ItemValidator {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfUserIsAssociatedToTrade(userId, tradeMembershipEntity);
-	}
-
-	public void validateGet(Integer userId, Integer tradeMembershipId) {
-		validateGet(userId, tradeMembershipId, null, null);
 	}
 
 	/**
