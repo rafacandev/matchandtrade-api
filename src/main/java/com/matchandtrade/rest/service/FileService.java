@@ -45,7 +45,7 @@ public class FileService {
 	private Path buildNewRelativePath(String filename) {
 		String fileExtention = ".file";
 		if (filename != null && !filename.isEmpty() && filename.lastIndexOf(".") < filename.length()) {
-			fileExtention = filename.substring(filename.lastIndexOf("."));
+			fileExtention = filename.substring(filename.lastIndexOf(".")).toLowerCase();
 		}
 		LocalDate now = LocalDate.now();
 		String pathAsString = now.getYear() + "" + File.separatorChar + "" + now.getMonthValue() + File.separatorChar + UUID.randomUUID().toString() + fileExtention;
