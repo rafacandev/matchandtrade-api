@@ -46,6 +46,29 @@ public class OfferService {
 		tradeMembershipRepositoryFacade.save(membership);
 		offerRepositoryFacade.delete(offerId);
 	}
+
+	private void delete(Integer tradeMembershipId, OfferQueryBuilder.Field wantedOrOfferedField, Integer itemId) {
+		Pagination pagination = new Pagination(1, 50);
+		SearchCriteria criteria = new SearchCriteria(pagination);
+		criteria.addCriterion(OfferQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
+		criteria.addCriterion(wantedOrOfferedField, itemId);
+		do {
+			SearchResult<OfferEntity> searchResult = searchService.search(criteria, OfferQueryBuilder.class);
+			searchResult.getResultList().forEach(offer -> delete(tradeMembershipId, offer.getOfferId()));
+		} while (pagination.hasNextPage());
+	}
+
+	/**
+	 * Delete all offers where either {@code Offer.wantedItem.itemId} or {@code Offer.offeredItem.itemId}
+	 * is equals to {@code itemId}
+	 * @param tradeMembershipId
+	 * @param itemId
+	 */
+	@Transactional
+	public void deleteOffersForItem(Integer tradeMembershipId, Integer itemId) {
+		delete(tradeMembershipId, OfferQueryBuilder.Field.wantedItemId, itemId);
+		delete(tradeMembershipId, OfferQueryBuilder.Field.offeredItemId, itemId);
+	}
 	
 	public OfferEntity get(Integer offerId) {
 		return offerRepositoryFacade.get(offerId);

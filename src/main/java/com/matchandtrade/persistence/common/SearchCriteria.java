@@ -19,6 +19,10 @@ public class SearchCriteria {
 		this.pagination = pagination;
 	}
 	
+	public void addCriterion(Criterion criterion) {
+		this.criteria.add(criterion);
+	}
+
 	public void addCriterion(Field field, Object value) {
 		Criterion c = new Criterion(field, value);
 		this.criteria.add(c);

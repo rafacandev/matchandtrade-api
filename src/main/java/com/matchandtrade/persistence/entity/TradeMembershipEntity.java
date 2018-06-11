@@ -3,6 +3,7 @@ package com.matchandtrade.persistence.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -38,7 +39,7 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 		return items;
 	}
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name="trade_membership_to_offer", joinColumns=@JoinColumn(name="trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_offer_trade_membership_id_fk")), inverseJoinColumns=@JoinColumn(name="offer_id", foreignKey=@ForeignKey(name="trade_membership_to_offer_offer_id_fk")))
 	public Set<OfferEntity> getOffers() {
 		return offers;

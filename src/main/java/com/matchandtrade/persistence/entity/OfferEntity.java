@@ -52,7 +52,8 @@ public class OfferEntity implements com.matchandtrade.persistence.entity.Entity 
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((offerId == null) ? 0 : offerId.hashCode());
+		result = prime * result + ((offeredItem == null) ? 0 : offeredItem.hashCode());
+		result = prime * result + ((wantedItem == null) ? 0 : wantedItem.hashCode());
 		return result;
 	}
 
@@ -65,10 +66,15 @@ public class OfferEntity implements com.matchandtrade.persistence.entity.Entity 
 		if (getClass() != obj.getClass())
 			return false;
 		OfferEntity other = (OfferEntity) obj;
-		if (offerId == null) {
-			if (other.offerId != null)
+		if (offeredItem == null) {
+			if (other.offeredItem != null)
 				return false;
-		} else if (!offerId.equals(other.offerId))
+		} else if (!offeredItem.equals(other.offeredItem))
+			return false;
+		if (wantedItem == null) {
+			if (other.wantedItem != null)
+				return false;
+		} else if (!wantedItem.equals(other.wantedItem))
 			return false;
 		return true;
 	}

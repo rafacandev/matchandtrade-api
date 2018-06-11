@@ -22,6 +22,8 @@ public class ItemService {
 	private ItemRepositoryFacade itemRepositoryFacade;
 	@Autowired
 	private SearchService searchService;
+	@Autowired
+	private OfferService offerService;
 
 	@Transactional
 	public void create(Integer tradeMembershipId, ItemEntity itemEntity) {
@@ -33,6 +35,7 @@ public class ItemService {
 
 	@Transactional
 	public void delete(Integer tradeMembershipId, Integer itemId) {
+		offerService.deleteOffersForItem(tradeMembershipId, itemId);
 		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
 		ItemEntity item = itemRepositoryFacade.get(itemId);
 		membership.getItems().remove(item);
