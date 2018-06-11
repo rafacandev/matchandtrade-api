@@ -8,8 +8,10 @@ import org.springframework.stereotype.Repository;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 
 @Repository
-public interface TradeMembershipRepository extends CrudRepository<TradeMembershipEntity, Integer>{
+public interface TradeMembershipRepository extends CrudRepository<TradeMembershipEntity, Integer> {
 
 	List<TradeMembershipEntity> findByTrade_TradeId(Integer tradeId);
-	
+
+	TradeMembershipEntity findByOffers_OfferId(Integer offerId);
+
 }

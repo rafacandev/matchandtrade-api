@@ -35,7 +35,7 @@ public class ItemService {
 
 	@Transactional
 	public void delete(Integer tradeMembershipId, Integer itemId) {
-		offerService.deleteOffersForItem(tradeMembershipId, itemId);
+		offerService.deleteOffersForItem(itemId);
 		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
 		ItemEntity item = itemRepositoryFacade.get(itemId);
 		membership.getItems().remove(item);

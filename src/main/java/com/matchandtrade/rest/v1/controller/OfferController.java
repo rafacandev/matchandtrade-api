@@ -39,7 +39,7 @@ public class OfferController implements Controller {
 		// Validate the request
 		offerValidator.validateDelete(tradeMembershipId, offerId, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Delegate to Service layer
-		offerService.delete(tradeMembershipId, offerId);
+		offerService.delete(offerId);
 	}
 
 	@RequestMapping(path="/{tradeMembershipId}/offers/{offerId}", method=RequestMethod.GET)

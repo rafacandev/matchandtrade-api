@@ -20,6 +20,10 @@ public class TradeMembershipRepositoryFacade {
 		return tradeMembershipRepository.findOne(tradeMembershipId);
 	}
 
+	public TradeMembershipEntity getByOfferId(Integer offerId) {
+		return tradeMembershipRepository.findByOffers_OfferId(offerId);
+	}
+
 	public void save(TradeMembershipEntity entity) {
 		tradeMembershipRepository.save(entity);
 	}

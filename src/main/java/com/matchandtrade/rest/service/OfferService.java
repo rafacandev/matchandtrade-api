@@ -39,22 +39,21 @@ public class OfferService {
 	}
 
 	@Transactional
-	public void delete(Integer tradeMembershipId, Integer offerId) {
-		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
+	public void delete(Integer offerId) {
+		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.getByOfferId(offerId);
 		OfferEntity offer = offerRepositoryFacade.get(offerId);
 		membership.getOffers().remove(offer);
 		tradeMembershipRepositoryFacade.save(membership);
 		offerRepositoryFacade.delete(offerId);
 	}
 
-	private void delete(Integer tradeMembershipId, OfferQueryBuilder.Field wantedOrOfferedField, Integer itemId) {
+	private void delete(OfferQueryBuilder.Field wantedOrOfferedField, Integer itemId) {
 		Pagination pagination = new Pagination(1, 50);
 		SearchCriteria criteria = new SearchCriteria(pagination);
-		criteria.addCriterion(OfferQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
 		criteria.addCriterion(wantedOrOfferedField, itemId);
 		do {
 			SearchResult<OfferEntity> searchResult = searchService.search(criteria, OfferQueryBuilder.class);
-			searchResult.getResultList().forEach(offer -> delete(tradeMembershipId, offer.getOfferId()));
+			searchResult.getResultList().forEach(offer -> delete(offer.getOfferId()));
 		} while (pagination.hasNextPage());
 	}
 
@@ -65,9 +64,9 @@ public class OfferService {
 	 * @param itemId
 	 */
 	@Transactional
-	public void deleteOffersForItem(Integer tradeMembershipId, Integer itemId) {
-		delete(tradeMembershipId, OfferQueryBuilder.Field.wantedItemId, itemId);
-		delete(tradeMembershipId, OfferQueryBuilder.Field.offeredItemId, itemId);
+	public void deleteOffersForItem(Integer itemId) {
+		delete(OfferQueryBuilder.Field.wantedItemId, itemId);
+		delete(OfferQueryBuilder.Field.offeredItemId, itemId);
 	}
 	
 	public OfferEntity get(Integer offerId) {

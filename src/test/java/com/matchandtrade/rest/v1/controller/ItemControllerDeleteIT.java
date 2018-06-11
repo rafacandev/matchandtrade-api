@@ -81,23 +81,27 @@ public class ItemControllerDeleteIT {
 	
 	@Test
 	public void shouldDeleteOffersWhenDeletingItem() {
-		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity item1 = itemRandom.nextPersistedEntity(membership);
-		ItemEntity item2 = itemRandom.nextPersistedEntity(membership);
-		ItemEntity item3 = itemRandom.nextPersistedEntity(membership);
-		ItemEntity item4 = itemRandom.nextPersistedEntity(membership);
+		TradeMembershipEntity owner = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeMembershipEntity member = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		ItemEntity item1 = itemRandom.nextPersistedEntity(owner, "item1");
+		ItemEntity item2 = itemRandom.nextPersistedEntity(owner, "item2");
+		ItemEntity item3 = itemRandom.nextPersistedEntity(member, "item3");
+		ItemEntity item4 = itemRandom.nextPersistedEntity(member, "item4");
 		// Offer to be deleted
-		offerRandom.nextPersistedEntity(membership.getTradeMembershipId(), item1.getItemId(), item2.getItemId());
-		offerRandom.nextPersistedEntity(membership.getTradeMembershipId(), item3.getItemId(), item1.getItemId());
+		offerRandom.nextPersistedEntity(owner.getTradeMembershipId(), item1.getItemId(), item3.getItemId());
+		offerRandom.nextPersistedEntity(owner.getTradeMembershipId(), item1.getItemId(), item4.getItemId());
+		offerRandom.nextPersistedEntity(member.getTradeMembershipId(), item4.getItemId(), item1.getItemId());
 		// Offer to keep
-		OfferEntity offerToKeep1 = offerRandom.nextPersistedEntity(membership.getTradeMembershipId(), item2.getItemId(), item3.getItemId());
-		OfferEntity offerToKeep2 = offerRandom.nextPersistedEntity(membership.getTradeMembershipId(), item3.getItemId(), item4.getItemId());
-		fixture.delete(membership.getTradeMembershipId(), item1.getItemId());
-		// Assert if offer to keep was not deleted
-		List<OfferEntity> offers = testQuery.findOffersByTradeMembership(membership.getTradeMembershipId());
-		assertEquals(2, offers.size());
-		assertTrue(offers.contains(offerToKeep1));
-		assertTrue(offers.contains(offerToKeep2));
+		OfferEntity offerToKeep1 = offerRandom.nextPersistedEntity(owner.getTradeMembershipId(), item2.getItemId(), item3.getItemId());
+		OfferEntity offerToKeep2 = offerRandom.nextPersistedEntity(member.getTradeMembershipId(), item4.getItemId(), item2.getItemId());
+		fixture.delete(owner.getTradeMembershipId(), item1.getItemId());
+		// Assert if offers to keep was not deleted
+		List<OfferEntity> offersOwner = testQuery.findOffersByTradeMembership(owner.getTradeMembershipId());
+		assertEquals(1, offersOwner.size());
+		assertTrue(offersOwner.contains(offerToKeep1));
+		List<OfferEntity> offersMember = testQuery.findOffersByTradeMembership(member.getTradeMembershipId());
+		assertEquals(1, offersMember.size());
+		assertTrue(offersMember.contains(offerToKeep2));
 	}
 
 	
