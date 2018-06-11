@@ -8,7 +8,7 @@ the docker image to reflect the newly released version.
 
 ```
 # Build 'matchandtrade-web-api'
-mvn clean package
+mvn clean verify
 
 # Copy the executable jar file to 'docker/mocked-oauth-server.jar'
 cp target/matchandtrade-web-api-1.4-SNAPSHOT-exec.jar docker/matchandtrade-web-api-exec.jar
