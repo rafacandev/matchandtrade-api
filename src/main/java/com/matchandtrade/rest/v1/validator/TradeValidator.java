@@ -33,7 +33,16 @@ public class TradeValidator {
 	 */
 	private void checkNameLength(String name) {
 		if (name == null || name.length() < 3 || name.length() > 150) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and its length must be between 3 and 150.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name is mandatory and its length must be between 3 and 150 in length.");
+		}
+	}
+
+	/*
+	 * Check if description is be between 3 and 1000 characters in length.
+	 */
+	private void checkDescriptionLength(String description) {
+		if (description != null && (description.length() < 3 || description.length() > 1000)) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.description must be between 3 and 1000 in length.");
 		}
 	}
 
@@ -44,6 +53,7 @@ public class TradeValidator {
 	 */
 	public void validatePost(TradeJson json) {
 		checkNameLength(json.getName());
+		checkDescriptionLength(json.getDescription());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(TradeQueryBuilder.Field.name, json.getName(), Restriction.EQUALS_IGNORE_CASE);
 		SearchResult<TradeEntity> searchResult = searchService.search(searchCriteria, TradeQueryBuilder.class);
@@ -63,6 +73,7 @@ public class TradeValidator {
 	@Transactional
 	public void validatePut(TradeJson json, UserEntity user) {
 		checkNameLength(json.getName());
+		checkDescriptionLength(json.getDescription());
 
 		// Validates if the Trade.tradeId exists otherwise return status NOT_FOUND
 		TradeEntity t = tradeService.get(json.getTradeId());

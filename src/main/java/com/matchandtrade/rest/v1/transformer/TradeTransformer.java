@@ -79,6 +79,7 @@ public class TradeTransformer {
 	public static TradeEntity transform(TradeJson json) {
 		TradeEntity result;
 		result = new TradeEntity();
+		result.setDescription(json.getDescription());
 		result.setName(json.getName());
 		result.setTradeId(json.getTradeId());
 		result.setState(buildState(json.getState()));
@@ -90,6 +91,7 @@ public class TradeTransformer {
 			return null;
 		}
 		TradeJson result = new TradeJson();
+		result.setDescription(entity.getDescription());
 		result.setName(entity.getName());
 		result.setTradeId(entity.getTradeId());
 		result.setState(buildState(entity.getState()));

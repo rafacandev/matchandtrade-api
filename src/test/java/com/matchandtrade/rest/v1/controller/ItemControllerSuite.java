@@ -9,7 +9,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	ItemControllerPostIT.class,
 	ItemControllerGetIT.class,
 	ItemControllerPutIT.class,
-	ItemControllerDeleteIT.class
 })
 public class ItemControllerSuite {
 

@@ -15,10 +15,15 @@ public class TradeJson extends JsonLinkSupport {
 		RESULTS_GENERATED,
 		CANCELED
 	}
-	
+
+	private String description;
 	private String name;
 	private Integer tradeId;
 	private State state;
+	
+	public String getDescription() {
+		return description;
+	}
 
 	public String getName() {
 		return name;
@@ -35,6 +40,10 @@ public class TradeJson extends JsonLinkSupport {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@JsonInclude(value=Include.NON_NULL)

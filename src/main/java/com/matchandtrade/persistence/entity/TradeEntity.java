@@ -26,10 +26,16 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 		CANCELED
 	}
 	
+	private String description;
 	private Integer tradeId;
 	private String name;
 	private State state;
 	private TradeResultEntity result;
+	
+	@Column(name = "description", length = 1000, nullable = true, unique = false)
+	public String getDescription() {
+		return description;
+	}
 	
 	@Column(name = "name", length = 150, nullable = false, unique = true)
 	public String getName() {
@@ -53,6 +59,10 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Integer getTradeId() {
 		return tradeId;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void setName(String name) {
