@@ -5,11 +5,10 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.common.Order;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.common.SortingType;
+import com.matchandtrade.persistence.common.Sort;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -51,7 +50,7 @@ public class TradeService {
 
 	public SearchResult<TradeEntity> search(Integer pageNumber, Integer pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
-		searchCriteria.addOrder(new Order(TradeQueryBuilder.Field.tradeId.alias(), SortingType.DESC));
+		searchCriteria.addSort(new Sort(TradeQueryBuilder.Field.tradeId, Sort.Type.DESC));
 		return searchService.search(searchCriteria, TradeQueryBuilder.class);
 	}
 

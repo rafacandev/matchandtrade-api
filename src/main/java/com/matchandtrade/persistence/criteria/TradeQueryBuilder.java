@@ -39,7 +39,7 @@ public class TradeQueryBuilder implements QueryBuilder {
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
 		StringBuilder hql = new StringBuilder(BASIC_HQL);
-		hql.append(QueryBuilderUtil.buildOrderBy(searchCriteria.getOrders()));
+		hql.append(QueryBuilderUtil.parameterizeSort(searchCriteria.getSortList()));
 		return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
 	}
 	
