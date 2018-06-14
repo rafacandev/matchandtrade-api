@@ -39,16 +39,18 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
-    	return parameterizeQuery(searchCriteria, hql);
+    	parameterizeHql(searchCriteria, hql);
+    	return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager, true);
     }
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
 		StringBuilder hql = new StringBuilder("SELECT tradeMembership " + BASIC_HQL);
-		return parameterizeQuery(searchCriteria, hql);
+		parameterizeHql(searchCriteria, hql);
+		return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager);
 	}
 	
-	private Query parameterizeQuery(SearchCriteria searchCriteria, StringBuilder hql) {
+	private void parameterizeHql(SearchCriteria searchCriteria, StringBuilder hql) {
 		boolean isTradeJoinRequired = false;
 		boolean isUserJoinRequired = false;
 		boolean isItemsJoinRequired = false;
@@ -73,8 +75,6 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 		if (isTradeJoinRequired) {
 			hql.append(" INNER JOIN tradeMembership.trade AS trade");
 		}
-		
-		return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
 	}
 	
 }

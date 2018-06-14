@@ -9,6 +9,10 @@ public class PersistenceUtil {
 	// Utility classes should not have public constructors
 	private PersistenceUtil() { }	
 	
+	public static Pageable buildPageable() {
+		return buildPageable(null, null);
+	}
+	
 	public static Pageable buildPageable(Integer pageNumber, Integer pageSize) {
 		int page = 1;
 		int size = 10;

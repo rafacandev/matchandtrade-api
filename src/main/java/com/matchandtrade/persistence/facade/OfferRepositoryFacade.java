@@ -1,17 +1,17 @@
 package com.matchandtrade.persistence.facade;
 
-import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.matchandtrade.persistence.common.PersistenceUtil;
 import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.repository.OfferRepository;
+import com.matchandtrade.persistence.repository.TradeRepository;
 
 @Repository
 public class OfferRepositoryFacade {
@@ -20,26 +20,16 @@ public class OfferRepositoryFacade {
 	private OfferRepository offerRepository;
 	
 	@Autowired
-	private EntityManager entityManager;
-
+	private TradeRepository tradeRepository;
+	
 	/**
 	 * True if all items are associated to the same {@code Trade}.
 	 * @param itemIds: {@code Item.itemId} of all {@Items} to verify.
 	 */
 	public boolean areItemsAssociatedToSameTrade(Integer[] itemIds) {
-		StringBuilder hql = new StringBuilder();
-		hql.append("SELECT trade FROM TradeMembershipEntity AS tradeMembership");
-		hql.append(" INNER JOIN tradeMembership.trade AS trade");
-		hql.append(" INNER JOIN tradeMembership.items AS item");
-		hql.append(" WHERE");
-		hql.append(" item.itemId IN (:ids)");
-		hql.append(" GROUP BY trade");
-		List<Integer> ids = Arrays.asList(itemIds);
-		TypedQuery<TradeEntity> query = entityManager.createQuery(hql.toString(), TradeEntity.class);
-		query.setParameter("ids", ids);
-		query.setMaxResults(2);
-		List<TradeEntity> resultList = query.getResultList();
-		return (resultList.size() == 1);
+		Pageable pageable = PersistenceUtil.buildPageable();
+		Page<TradeEntity> page = tradeRepository.findInItemIdsGroupByTrade(itemIds, pageable);
+		return page.getNumberOfElements() == 1;
 	}
 	
 	public void delete(Integer offerId) {

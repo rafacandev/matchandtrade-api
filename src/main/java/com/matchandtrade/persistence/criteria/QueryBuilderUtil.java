@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import com.matchandtrade.persistence.common.Criterion;
 import com.matchandtrade.persistence.common.Criterion.LogicalOperator;
 import com.matchandtrade.persistence.common.Criterion.Restriction;
+import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.Sort;
 
 public class QueryBuilderUtil {
@@ -67,12 +68,12 @@ public class QueryBuilderUtil {
 	 * @param entityManager to create the Query
 	 * @return parameterized query for the given criteria
 	 */
-	public static Query parameterizeQuery(List<Criterion> criteria, StringBuilder hql, EntityManager entityManager) {
-		hql.append(QueryBuilderUtil.buildClauses(criteria));
-		Query result = entityManager.createQuery(hql.toString());
-		criteria.forEach(c -> result.setParameter(c.getField().name(), c.getValue()));
-		return result;
-	}
+//	public static Query parameterizeQuery(List<Criterion> criteria, StringBuilder hql, EntityManager entityManager) {
+//		hql.append(QueryBuilderUtil.buildClauses(criteria));
+//		Query result = entityManager.createQuery(hql.toString());
+//		criteria.forEach(c -> result.setParameter(c.getField().name(), c.getValue()));
+//		return result;
+//	}
 	
 	public static <T extends Sort> String parameterizeSort(List<T> list) {
 		if (list.isEmpty()) {
@@ -83,5 +84,30 @@ public class QueryBuilderUtil {
 			result.append(" " + sort.field().alias() + " " + sort.type());
 		});
 		return result.toString();
+	}
+
+	public static Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql, EntityManager entityManager) {
+		return buildQuery(searchCriteria, hql, entityManager, false);
+	}
+
+	private static String buildSort(List<Sort> sortList) {
+		if (sortList.isEmpty()) {
+			return "";
+		}
+		StringBuilder result = new StringBuilder(" ORDER BY ");
+		sortList.forEach(sort -> {
+			result.append(" " + sort.field().alias() + " " + sort.type());
+		});
+		return result.toString();
+	}
+
+	public static Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql, EntityManager entityManager, boolean skipSorting) {
+		hql.append(buildClauses(searchCriteria.getCriteria()));
+		if (!skipSorting) {
+			hql.append(buildSort(searchCriteria.getSortList()));
+		}
+		Query result = entityManager.createQuery(hql.toString());
+		searchCriteria.getCriteria().forEach(c -> result.setParameter(c.getField().name(), c.getValue()));
+		return result;
 	}
 }

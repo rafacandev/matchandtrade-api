@@ -40,19 +40,20 @@ public class ItemRecipeQueryBuilder implements QueryBuilder {
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
-    	return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
+    	return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager, true);
     }
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
 		StringBuilder hql = new StringBuilder("SELECT tradeMembership.tradeMembershipId, item " + BASIC_HQL);
-		return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
+		return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager);
 	}
 
 	public ResultTransformer makeResultTransformer() {
 		return new ItemAndTradeMembershipId();
 	}
 	
+	// TODO: Review this, is there a simpler way to solve this problem? 
 	public class ItemAndTradeMembershipId implements ResultTransformer {
 		private static final long serialVersionUID = -912373493890582112L;
 

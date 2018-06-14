@@ -39,13 +39,13 @@ public class ItemQueryBuilder implements QueryBuilder {
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
-    	return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
+    	return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager, true);
     }
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT item " + BASIC_HQL);
-		return QueryBuilderUtil.parameterizeQuery(searchCriteria.getCriteria(), hql, entityManager);
+		return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager);
 	}
 
 }
