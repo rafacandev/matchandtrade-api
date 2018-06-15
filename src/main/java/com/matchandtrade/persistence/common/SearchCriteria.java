@@ -40,7 +40,11 @@ public class SearchCriteria {
 
 	public void addSort(Sort sort) {
 		this.sortList.add(sort);
-	}	
+	}
+
+	public void addSort(Field field, Sort.Type sortType) {
+		addSort(new Sort(field, sortType));
+	}
 	
 	public List<Criterion> getCriteria() {
 		return criteria;

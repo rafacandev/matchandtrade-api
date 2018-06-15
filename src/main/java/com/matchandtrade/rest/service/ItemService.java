@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
+import com.matchandtrade.persistence.common.Sort;
 import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -51,11 +52,11 @@ public class ItemService {
 		return itemRepositoryFacade.exists(itemIds);
 	}
 
-	// TODO: Rename to searchByTradeMembershipId()
 	@Transactional
-	public SearchResult<ItemEntity> searchByTradeMembershipIdName(Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<ItemEntity> searchByTradeMembershipId(Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addSort(ItemQueryBuilder.Field.name, Sort.Type.ASC);
 		return searchService.search(searchCriteria, ItemQueryBuilder.class);
 	}
 

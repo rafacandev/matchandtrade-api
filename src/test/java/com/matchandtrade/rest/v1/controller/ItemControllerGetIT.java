@@ -49,6 +49,22 @@ public class ItemControllerGetIT {
 		SearchResult<ItemJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), null, null);
 		assertEquals(3, response.getResultList().size());
 	}
+	
+	@Test
+	public void shouldGetAllItemsByTradeMembershipIdSortedByItemName() {
+		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		String firstName = "alpha";
+		String secondName = "beta";
+		String thirdName = "charlie";
+		itemRandom.nextPersistedEntity(existingTradeMembership, thirdName);
+		itemRandom.nextPersistedEntity(existingTradeMembership, secondName);
+		itemRandom.nextPersistedEntity(existingTradeMembership, firstName);
+		SearchResult<ItemJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), null, null);
+		assertEquals(3, response.getResultList().size());
+		assertEquals(firstName, response.getResultList().get(0).getName());
+		assertEquals(secondName, response.getResultList().get(1).getName());
+		assertEquals(thirdName, response.getResultList().get(2).getName());
+	}
 
 	@Test
 	public void shouldGetItemByTradeMemberhipId() {
