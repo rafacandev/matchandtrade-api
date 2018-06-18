@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.persistence.repository.TradeRepository;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeRandom;
+import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
@@ -23,41 +25,37 @@ public class TradeControllerPutIT {
 	private MockControllerFactory mockControllerFactory;
 	private TradeController fixture;
 	@Autowired
+	private UserRandom userRandom;
+	@Autowired
 	private TradeRandom tradeRandom;
+	@Autowired
+	private TradeRepository tradeRepository;
 
 	@Before
 	public void before() {
-		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeController(false);
-		}
+		fixture = mockControllerFactory.getTradeController(false);
 	}
 	
 	@Test
-	public void put() {
+	public void shouldEditTrade() {
 		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		TradeJson tradeRequest = TradeTransformer.transform(existingTrade);
-		tradeRequest.setName(tradeRequest.getName() + " - Trade.name after PUT");
-		TradeJson tradeResponse = fixture.put(tradeRequest.getTradeId(), tradeRequest);
-		assertEquals(tradeRequest.getName(), tradeResponse.getName());
+		TradeJson request = TradeTransformer.transform(existingTrade);
+		request.setName(request.getName() + " - Trade.name after PUT");
+		request.setDescription(request.getName() + "- Trade.description after PUT");
+		TradeJson response = fixture.put(request.getTradeId(), request);
+		assertEquals(request.getName(), response.getName());
+		assertEquals(request.getDescription(), response.getDescription());
 	}
 
 	@Test(expected=RestException.class)
-	public void putNotFound() {
-		// Try to PUT a trade that does not exist
-		TradeJson tradePutRequest = TradeRandom.nextJson();
-		fixture.put(-1, tradePutRequest);
+	public void shouldErrorWhenEditingTradeOfDifferentOwner() {
+		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeJson request = TradeTransformer.transform(existingTrade);
+		fixture.put(request.getTradeId(), request);
 	}
 	
 	@Test(expected=RestException.class)
-	public void putNotTradeOwner() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		TradeJson tradeRequest = TradeTransformer.transform(existingTrade);
-		mockControllerFactory.getTradeController(false);
-		fixture.put(tradeRequest.getTradeId(), tradeRequest);
-	}
-
-	@Test(expected=RestException.class)
-	public void putDuplicatedName() {
+	public void shouldErrorWhenEditingTradeWithAnExistingName() {
 		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		TradeEntity anotherExistingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		TradeJson request = new TradeJson();
@@ -66,13 +64,28 @@ public class TradeControllerPutIT {
 		fixture.put(anotherExistingTrade.getTradeId(), request);
 	}
 
+	@Test(expected=RestException.class)
+	public void shouldErrorWhenTryingToEditInexistingTrade() {
+		TradeJson request = TradeRandom.nextJson();
+		fixture.put(-1, request);
+	}
+
 	@Test
 	public void shouldSaveTradeAndTriggerResultsGenerationWhenStateIsGenerateResults() {
 		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		TradeJson request = TradeTransformer.transform(existingTrade);
 		request.setState(TradeJson.State.GENERATE_RESULTS);
-		TradeJson response = fixture.put(existingTrade.getTradeId(), request);
-		System.out.println(response.getState());
+		TradeJson response = fixture.put(existingTrade.getTradeId(), request);		
+		assertEquals(TradeJson.State.GENERATE_RESULTS, response.getState());
+		TradeEntity actualTrade = tradeRepository.findOne(response.getTradeId());
+		
+		/*
+		 * It is kind of tricky to assert the results in a Integration Test.
+		 * They could be either GENERATING_RESULTS or RESULTS_GENERATED, it depends on how fast the sever processes the results.
+		 */
+		boolean isActualStateIsGeneratingOrGenerated = 
+				(actualTrade.getState() == TradeEntity.State.GENERATING_RESULTS || actualTrade.getState() == TradeEntity.State.RESULTS_GENERATED);
+		assertEquals(true, isActualStateIsGeneratingOrGenerated);
 	}
 
 }

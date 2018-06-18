@@ -89,8 +89,11 @@ public class MockControllerFactory {
 	}
 	
 	public TradeController getTradeController(boolean reusePreviousAuthentication) {
-		tradeController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
-		return tradeController;
+		TradeController result = new TradeController();
+		result.tradeService = tradeController.tradeService;
+		result.tradeValidador = tradeController.tradeValidador;
+		result.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return result;
 	}
 
 	public TradeResultController getTradeResultController(boolean reusePreviousAuthentication) {

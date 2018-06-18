@@ -29,21 +29,11 @@ public class TradeControllerGetIT {
 	
 	@Before
 	public void before() {
-		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeController(true);
-		}
+		fixture = mockControllerFactory.getTradeController(true);
 	}
 	
 	@Test
-	public void get() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		TradeJson response = fixture.get(existingTrade.getTradeId());
-		assertNotNull(response.getTradeId());
-		assertEquals(existingTrade.getName(), response.getName());
-	}
-
-	@Test
-	public void getAll() {
+	public void shouldGetAllTrades() {
 		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
@@ -52,7 +42,15 @@ public class TradeControllerGetIT {
 	}
 
 	@Test
-	public void getInvalid() {
+	public void shouldGetTradeById() {
+		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeJson response = fixture.get(existingTrade.getTradeId());
+		assertNotNull(response.getTradeId());
+		assertEquals(existingTrade.getName(), response.getName());
+	}
+
+	@Test
+	public void shouldReturnNullWhenGettingTradeByNonExistingId() {
 		TradeJson response = fixture.get(-1);
 		assertNull(response);
 	}
