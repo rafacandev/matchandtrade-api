@@ -18,15 +18,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.MatchAndTradePropertyKeys;
 import com.matchandtrade.config.MvcConfiguration;
-import com.matchandtrade.rest.v1.json.FileJson;
+import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.FileRandom;
+import com.matchandtrade.test.random.AttachmentRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class FileControllerPostIT {
+public class AttachmentControllerPostIT {
 	
-	private FileController fixture;
+	private AttachmentController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
@@ -35,7 +35,7 @@ public class FileControllerPostIT {
 	private MockMultipartFile file;
 	
 	@Autowired
-	private FileRandom fileRandom;
+	private AttachmentRandom fileRandom;
 
 	@Before
 	public void before() throws IOException {
@@ -49,9 +49,9 @@ public class FileControllerPostIT {
 	
 	@Test
 	public void shouldCreateFile() {
-		FileJson response = fixture.post(file);
+		AttachmentJson response = fixture.post(file);
 		assertNotNull(response);
-		assertNotNull(response.getFileId());
+		assertNotNull(response.getAttachmentId());
 		assertEquals("image/jpeg", response.getContentType());
 		assertEquals(2, response.getLinks().size());
 		String originalLink = response.getLinks().stream().filter(v -> "original".equals(v.getRel())).findFirst().get().getHref();

@@ -10,7 +10,7 @@ import org.springframework.hateoas.Link;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.rest.v1.controller.ItemController;
-import com.matchandtrade.rest.v1.controller.ItemFileController;
+import com.matchandtrade.rest.v1.controller.ItemAttachmentController;
 import com.matchandtrade.rest.v1.json.ItemJson;
 
 public class ItemLinkAssember {
@@ -21,7 +21,7 @@ public class ItemLinkAssember {
 	private static Set<Link> buildLink(Integer tradeMembershipId, Integer itemId) {
 		Set<Link> result = new HashSet<>();
 		result.add(linkTo(methodOn(ItemController.class).get(tradeMembershipId, itemId)).withSelfRel());
-		result.add(linkTo(methodOn(ItemFileController.class).get(tradeMembershipId, itemId, null, null)).withRel("files"));
+		result.add(linkTo(methodOn(ItemAttachmentController.class).get(tradeMembershipId, itemId, null, null)).withRel("files"));
 		return result;
 	}
 	

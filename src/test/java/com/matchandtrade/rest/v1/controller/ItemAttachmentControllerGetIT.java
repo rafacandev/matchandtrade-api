@@ -13,29 +13,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.entity.FileEntity;
+import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.ItemEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.repository.ItemRepository;
-import com.matchandtrade.rest.v1.json.FileJson;
+import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.FileRandom;
+import com.matchandtrade.test.random.AttachmentRandom;
 import com.matchandtrade.test.random.ItemRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class ItemFileControllerGetIT {
+public class ItemAttachmentControllerGetIT {
 	
 	@Autowired
 	private ItemRandom itemRandom;
 	@Autowired
 	private ItemRepository itemRepository;
 	private ItemEntity item;
-	private FileEntity file;
+	private AttachmentEntity file;
 	@Autowired
-	private FileRandom fileRandom;
-	private ItemFileController fixture;
+	private AttachmentRandom fileRandom;
+	private ItemAttachmentController fixture;
 	private TradeMembershipEntity membership;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
@@ -50,20 +50,20 @@ public class ItemFileControllerGetIT {
 		file = fileRandom.nextPersistedEntity();
 		membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		item = itemRandom.nextPersistedEntity(membership);
-		item.getFiles().add(file);
+		item.getAttachments().add(file);
 		itemRepository.save(item);
 	}
 	
 	@Test
 	public void shouldGetItemFiles() {
-		SearchResult<FileJson> response = fixture.get(membership.getTradeMembershipId(), item.getItemId(), 1, 1);
+		SearchResult<AttachmentJson> response = fixture.get(membership.getTradeMembershipId(), item.getItemId(), 1, 1);
 		assertNotNull(response);
 		assertEquals(1, response.getPagination().getNumber());
 		assertEquals(1, response.getPagination().getTotal());
 		assertEquals(1, response.getPagination().getSize());
 		assertEquals(1, response.getResultList().size());
-		FileJson fileResponse = response.getResultList().get(0);
-		assertEquals(fileResponse.getFileId(), file.getFileId());
+		AttachmentJson fileResponse = response.getResultList().get(0);
+		assertEquals(fileResponse.getAttachmentId(), file.getAttachmentId());
 		assertEquals(fileResponse.getContentType(), file.getContentType());
 		assertEquals(fileResponse.getName(), file.getName());
 		// Two essences are expected one for ORIGINAL and one for THUMBNAIL

@@ -8,30 +8,30 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.matchandtrade.persistence.entity.FileEntity;
-import com.matchandtrade.rest.service.FileService;
+import com.matchandtrade.persistence.entity.AttachmentEntity;
+import com.matchandtrade.rest.service.AttachmentService;
 
 @Component
-public class FileRandom {
+public class AttachmentRandom {
 
 	@Autowired
-	private FileService fileService;
+	private AttachmentService attachmentService;
 	
-	public FileEntity nextPersistedEntity() {
+	public AttachmentEntity nextPersistedEntity() {
 		MultipartFile file = newSampleMockMultiPartFile();
-		return fileService.create(file);
+		return attachmentService.create(file);
 	}
 
 	public MockMultipartFile newSampleMockMultiPartFile() {
 		String imageResource = "image-landscape.png";
-		MockMultipartFile file;
+		MockMultipartFile multipartFile;
 		try {
-			InputStream imageInputStream = FileRandom.class.getClassLoader().getResource(imageResource).openStream();
-			file = new MockMultipartFile(imageResource, imageResource, "image/jpeg", imageInputStream);
+			InputStream imageInputStream = AttachmentRandom.class.getClassLoader().getResource(imageResource).openStream();
+			multipartFile = new MockMultipartFile(imageResource, imageResource, "image/jpeg", imageInputStream);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return file;
+		return multipartFile;
 	}
 
 }

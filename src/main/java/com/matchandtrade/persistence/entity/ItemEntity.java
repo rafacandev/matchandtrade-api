@@ -21,7 +21,7 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 	private Integer itemId;
 	private String description;
 	private String name;
-	private Set<FileEntity> files = new HashSet<>();
+	private Set<AttachmentEntity> attachments = new HashSet<>();
 
 	@Override
 	public boolean equals(Object obj) {
@@ -51,11 +51,11 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 	}
 
 	@OneToMany
-	@JoinTable(name = "item_to_file", 
-		joinColumns = @JoinColumn(name = "item_id", foreignKey = @ForeignKey(name = "item_to_file_item_id_fk")),
-		inverseJoinColumns = @JoinColumn(name = "file_id", foreignKey = @ForeignKey(name = "item_to_file_file_id_fk")))
-	public Set<FileEntity> getFiles() {
-		return files;
+	@JoinTable(name = "item_to_attachment", 
+		joinColumns = @JoinColumn(name = "item_id", foreignKey = @ForeignKey(name = "item_to_attachment_item_id_fk")),
+		inverseJoinColumns = @JoinColumn(name = "attachment_id", foreignKey = @ForeignKey(name = "item_to_attachment_attachment_id_fk")))
+	public Set<AttachmentEntity> getAttachments() {
+		return attachments;
 	}
 
 	@Id
@@ -84,8 +84,8 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 		this.description = description;
 	}
 
-	public void setFiles(Set<FileEntity> files) {
-		this.files = files;
+	public void setAttachments(Set<AttachmentEntity> attachments) {
+		this.attachments = attachments;
 	}
 
 	public void setItemId(Integer itemId) {

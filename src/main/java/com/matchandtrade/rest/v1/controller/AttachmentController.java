@@ -8,37 +8,37 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
-import com.matchandtrade.persistence.entity.FileEntity;
+import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
-import com.matchandtrade.rest.service.FileService;
-import com.matchandtrade.rest.v1.json.FileJson;
-import com.matchandtrade.rest.v1.link.FileLinkAssember;
-import com.matchandtrade.rest.v1.transformer.FileTransformer;
+import com.matchandtrade.rest.service.AttachmentService;
+import com.matchandtrade.rest.v1.json.AttachmentJson;
+import com.matchandtrade.rest.v1.link.AttachmentLinkAssember;
+import com.matchandtrade.rest.v1.transformer.AttachmentTransformer;
 import com.matchandtrade.rest.v1.validator.FileValidator;
 
 @RestController
 @RequestMapping(path="/matchandtrade-web-api/v1/files")
-public class FileController implements Controller {
+public class AttachmentController implements Controller {
 
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
-	private FileService fileService;
+	private AttachmentService attachmentService;
 
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public FileJson post(MultipartFile file) {
+	public AttachmentJson post(MultipartFile multipartFile) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		FileValidator.validatePost(file);
+		FileValidator.validatePost(multipartFile);
 		// Transform the request - nothing to transform
 		// Delegate to service layer
-		FileEntity entity = fileService.create(file);
+		AttachmentEntity entity = attachmentService.create(multipartFile);
 		// Transform the response
-		FileJson response = FileTransformer.transform(entity);
+		AttachmentJson response = AttachmentTransformer.transform(entity);
 		// Assemble links
-		FileLinkAssember.assemble(response, entity);
+		AttachmentLinkAssember.assemble(response, entity);
 		return response;
 	}
 	

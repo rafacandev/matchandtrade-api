@@ -16,11 +16,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "file_tb") // 'file' is a reserved word in most databases, hence we are sufixing it with '_tb'
-public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
+@Table(name = "attachment")
+public class AttachmentEntity implements com.matchandtrade.persistence.entity.Entity {
 
+	private Integer attachmentId;
 	private String contentType;
-	private Integer fileId;
 	private String name;
 	private Set<EssenceEntity> essences = new HashSet<>();
 
@@ -32,7 +32,7 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		FileEntity other = (FileEntity) obj;
+		AttachmentEntity other = (AttachmentEntity) obj;
 		if (contentType == null) {
 			if (other.contentType != null)
 				return false;
@@ -43,10 +43,10 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 				return false;
 		} else if (!essences.equals(other.essences))
 			return false;
-		if (fileId == null) {
-			if (other.fileId != null)
+		if (attachmentId == null) {
+			if (other.attachmentId != null)
 				return false;
-		} else if (!fileId.equals(other.fileId))
+		} else if (!attachmentId.equals(other.attachmentId))
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -62,16 +62,16 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 	}
 	
 	@OneToMany(fetch=FetchType.EAGER)
-	@JoinTable(name="file_to_essence", joinColumns=@JoinColumn(name="file_id", foreignKey=@ForeignKey(name="file_to_essence_file_id_fk")), inverseJoinColumns = @JoinColumn(name="essence_id", foreignKey=@ForeignKey(name="file_to_essence_essence_id_fk")))
+	@JoinTable(name="attachment_to_essence", joinColumns=@JoinColumn(name="attachment_id", foreignKey=@ForeignKey(name="attachment_to_essence_attachment_id_fk")), inverseJoinColumns = @JoinColumn(name="essence_id", foreignKey=@ForeignKey(name="attachment_to_essence_essence_id_fk")))
 	public Set<EssenceEntity> getEssences() {
 		return essences;
 	}
 	
 	@Id
-	@Column(name = "file_id")
+	@Column(name = "attachment_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	public Integer getFileId() {
-		return fileId;
+	public Integer getAttachmentId() {
+		return attachmentId;
 	}
 
 	// Most file systems limit filenames to 255 in length
@@ -86,7 +86,7 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 		int result = 1;
 		result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
 		result = prime * result + ((essences == null) ? 0 : essences.hashCode());
-		result = prime * result + ((fileId == null) ? 0 : fileId.hashCode());
+		result = prime * result + ((attachmentId == null) ? 0 : attachmentId.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -99,8 +99,8 @@ public class FileEntity implements com.matchandtrade.persistence.entity.Entity {
 		this.essences = essences;
 	}
 
-	public void setFileId(Integer fileId) {
-		this.fileId = fileId;
+	public void setAttachmentId(Integer attachmentId) {
+		this.attachmentId = attachmentId;
 	}
 
 	public void setName(String name) {
