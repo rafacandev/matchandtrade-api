@@ -13,30 +13,29 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.MatchAndTradePropertyKeys;
 import com.matchandtrade.config.MvcConfiguration;
+import com.matchandtrade.persistence.entity.AttachmentEntity;
+import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.AttachmentRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class AttachmentControllerPostIT {
+public class AttachmentControllerGetIT {
 	
-	private AttachmentController fixture;
 	@Autowired
-	private MockControllerFactory mockControllerFactory;
+	private AttachmentRandom attachmentRandom;
 	@Autowired
 	private Environment environment;
+	private AttachmentController fixture;
 	private Path fileStorageRootPath;
-	private MockMultipartFile file;
-	
 	@Autowired
-	private AttachmentRandom fileRandom;
-
+	private MockControllerFactory mockControllerFactory;
+	
 	@Before
 	public void before() throws IOException {
 		if (fixture == null) {
@@ -44,16 +43,18 @@ public class AttachmentControllerPostIT {
 		}
 		String fileStorageRootFolder = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
 		fileStorageRootPath = Paths.get(fileStorageRootFolder);
-		file = fileRandom.newSampleMockMultiPartFile();
 	}
 	
 	@Test
-	public void shouldCreateFile() {
-		AttachmentJson response = fixture.post(file);
+	public void shouldGetAttachment() {
+		AttachmentEntity entity = attachmentRandom.nextPersistedEntity();
+		AttachmentJson response = fixture.get(entity.getAttachmentId());
 		assertNotNull(response);
-		assertNotNull(response.getAttachmentId());
-		assertEquals("image/jpeg", response.getContentType());
+		assertEquals(entity.getAttachmentId(), response.getAttachmentId());
+		assertEquals(entity.getContentType(), response.getContentType());
 		assertEquals(3, response.getLinks().size());
+		assertEquals(entity.getName(), response.getName());
+		
 		String originalLink = response.getLinks().stream().filter(v -> "original".equals(v.getRel())).findFirst().get().getHref();
 		assertNotNull(originalLink);
 		Path originalFilePath = fileStorageRootPath.resolve(originalLink.replace(MvcConfiguration.FILES_URL_PATTERN.replace("*", ""), ""));
@@ -62,5 +63,10 @@ public class AttachmentControllerPostIT {
 		Path thumbnailFilePath = fileStorageRootPath.resolve(thumbnailLink.replace(MvcConfiguration.FILES_URL_PATTERN.replace("*", ""), ""));
 		assertTrue(thumbnailFilePath.toFile().exists());
 	}
-	
+
+	@Test(expected = RestException.class)
+	public void shouldErrorWhenAttachmentIdIsInvalid() {
+		fixture.get(-1);
+	}
+
 }

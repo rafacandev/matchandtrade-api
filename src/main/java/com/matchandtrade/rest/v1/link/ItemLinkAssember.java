@@ -21,7 +21,7 @@ public class ItemLinkAssember {
 	private static Set<Link> buildLink(Integer tradeMembershipId, Integer itemId) {
 		Set<Link> result = new HashSet<>();
 		result.add(linkTo(methodOn(ItemController.class).get(tradeMembershipId, itemId)).withSelfRel());
-		result.add(linkTo(methodOn(ItemAttachmentController.class).get(tradeMembershipId, itemId, null, null)).withRel("files"));
+		result.add(linkTo(methodOn(ItemAttachmentController.class).get(tradeMembershipId, itemId, null, null)).withRel("attachments"));
 		return result;
 	}
 	

@@ -7,6 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	AttachmentControllerPostIT.class,
+	AttachmentControllerGetIT.class,
 	ItemAttachmentControllerPostIT.class,
 	ItemAttachmentControllerGetIT.class,
 	ItemAttachmentControllerDeleteIT.class
