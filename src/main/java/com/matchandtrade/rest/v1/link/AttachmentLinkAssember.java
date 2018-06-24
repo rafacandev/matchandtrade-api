@@ -19,7 +19,7 @@ public class AttachmentLinkAssember {
 	
 	@Autowired
 	private AttachmentService attachmentService;
-	private static final String FILES_URL_PATTERN = MvcConfiguration.FILES_URL_PATTERN.replace("*", "");
+	private static final String FILES_URL_PATTERN = MvcConfiguration.ESSENCES_URL_PATTERN.replace("*", "");
 	
 	public static void assemble(AttachmentJson json, AttachmentEntity entity) {
 		if (json != null) {

@@ -12,8 +12,8 @@ public enum MatchAndTradePropertyKeys {
 	DATA_SOURCE_JDBC_URL("datasource.jdbc.url"),
 	DATA_SOURCE_PASSWORD("datasource.password"),
 	DATA_SOURCE_USER("datasource.user"),
+	ESSENCE_STORAGE_ROOT_FOLDER("essence.storage.root.folder"),
 	LOGGING_FILE("logging.file"),
-	FILE_STORAGE_ROOT_FOLDER("file.storage.root.folder"),
 	SERVER_PORT("server.port");
 
 	private final String key;

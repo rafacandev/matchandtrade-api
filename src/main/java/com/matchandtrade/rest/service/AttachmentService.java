@@ -33,7 +33,7 @@ public class AttachmentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentService.class);
 
 	@Autowired
-	private FileStorageService fileStorageService;
+	private EssenceStorageService fileStorageService;
 	@Autowired
 	private AttachmentRepositoryFacade attachmentRepositoryFacade;
 	@Autowired

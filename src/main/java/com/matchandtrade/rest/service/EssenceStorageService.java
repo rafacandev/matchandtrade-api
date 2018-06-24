@@ -23,9 +23,9 @@ import org.springframework.util.FileSystemUtils;
 import com.matchandtrade.config.MatchAndTradePropertyKeys;
 
 @Service
-public class FileStorageService {
+public class EssenceStorageService {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(FileStorageService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EssenceStorageService.class);
 	
 	@Autowired
 	private Environment environment;
@@ -33,8 +33,8 @@ public class FileStorageService {
 
 	@PostConstruct
 	private void init() {
-		String rootFolderProperty = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString()); 
-		LOGGER.info("Initiating file service with root folder: {}", rootFolderProperty);
+		String rootFolderProperty = environment.getProperty(MatchAndTradePropertyKeys.ESSENCE_STORAGE_ROOT_FOLDER.toString()); 
+		LOGGER.info("Initiating essence service with root folder: {}", rootFolderProperty);
 		Path targetRootPath = Paths.get(rootFolderProperty);
 		if (!targetRootPath.toFile().isDirectory()) {
 			LOGGER.error("Root folder is not a directory: {}", rootFolderProperty);
@@ -54,7 +54,7 @@ public class FileStorageService {
 			}
 			Files.copy(inputStream, rootFolder.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
-			RuntimeException ioExceptionAsRuntimeException = new RuntimeException("Failed to store file: " + relativePath + " at: " + rootFolder, e);
+			RuntimeException ioExceptionAsRuntimeException = new RuntimeException("Failed to store essence file: " + relativePath + " at: " + rootFolder, e);
 			LOGGER.error(ioExceptionAsRuntimeException.getMessage(), e);
 			throw ioExceptionAsRuntimeException;
 		} finally {
@@ -72,16 +72,16 @@ public class FileStorageService {
 
 	public Resource loadAsResource(String filename) {
 		try {
-			Path file = load(filename);
-			Resource resource = new UrlResource(file.toUri());
+			Path filePath = load(filename);
+			Resource resource = new UrlResource(filePath.toUri());
 			if (resource.exists() || resource.isReadable()) {
 				return resource;
 			} else {
-				throw new RuntimeException("Could not read file: " + filename);
+				throw new RuntimeException("Could not read essence file: " + filename);
 
 			}
 		} catch (MalformedURLException e) {
-			throw new IllegalArgumentException("Could not read file: " + filename + ". " + e.getMessage());
+			throw new IllegalArgumentException("Could not read essence file: " + filename + ". " + e.getMessage());
 		}
 	}
 

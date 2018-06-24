@@ -28,12 +28,12 @@ public class ConfigurationInfoLogger implements ApplicationRunner {
 		logger.info("| Build Number: {}", versionUtil.buildNumber());
 		logger.info("| Build Timestamp: {}", versionUtil.buildTimestamp());
 		logger.info("|");
-		logger.info("| Configuration file: {}", environment.getProperty(MatchAndTradePropertyKeys.CONFIG_FILE.toString()));
-		logger.info("| OAuth implementation: {}", environment.getProperty(MatchAndTradePropertyKeys.AUTHENTICATION_OAUTH_CLASS.toString()));
-		logger.info("| JDBC Url: {}", environment.getProperty(MatchAndTradePropertyKeys.DATA_SOURCE_JDBC_URL.toString()));
-		logger.info("| Log file: {}", environment.getProperty(MatchAndTradePropertyKeys.LOGGING_FILE.toString()));
-		logger.info("| Web Server Port: {}", environment.getProperty(MatchAndTradePropertyKeys.SERVER_PORT.toString()));
-		logger.info("| File Storage Root Folder: {}", environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString()));
+		logger.info("| {}: {}", MatchAndTradePropertyKeys.AUTHENTICATION_OAUTH_CLASS.toString(), environment.getProperty(MatchAndTradePropertyKeys.AUTHENTICATION_OAUTH_CLASS.toString()));
+		logger.info("| {}: {}", MatchAndTradePropertyKeys.DATA_SOURCE_JDBC_URL.toString(), environment.getProperty(MatchAndTradePropertyKeys.DATA_SOURCE_JDBC_URL.toString()));
+		logger.info("| {}: {}", MatchAndTradePropertyKeys.LOGGING_FILE.toString(), environment.getProperty(MatchAndTradePropertyKeys.LOGGING_FILE.toString()));
+		logger.info("| {}: {}", MatchAndTradePropertyKeys.CONFIG_FILE.toString(), environment.getProperty(MatchAndTradePropertyKeys.CONFIG_FILE.toString()));
+		logger.info("| {}: {}", MatchAndTradePropertyKeys.ESSENCE_STORAGE_ROOT_FOLDER.toString(), environment.getProperty(MatchAndTradePropertyKeys.ESSENCE_STORAGE_ROOT_FOLDER.toString()));
+		logger.info("| {}: {}", MatchAndTradePropertyKeys.SERVER_PORT.toString(), environment.getProperty(MatchAndTradePropertyKeys.SERVER_PORT.toString()));
 		logger.info("|===========================================================");
     }
 }

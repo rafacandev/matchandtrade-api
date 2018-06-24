@@ -42,7 +42,7 @@ public class AttachmentControllerPostIT {
 		if (fixture == null) {
 			fixture = mockControllerFactory.getFileController(true);
 		}
-		String fileStorageRootFolder = environment.getProperty(MatchAndTradePropertyKeys.FILE_STORAGE_ROOT_FOLDER.toString());
+		String fileStorageRootFolder = environment.getProperty(MatchAndTradePropertyKeys.ESSENCE_STORAGE_ROOT_FOLDER.toString());
 		fileStorageRootPath = Paths.get(fileStorageRootFolder);
 		file = fileRandom.newSampleMockMultiPartFile();
 	}
@@ -56,10 +56,10 @@ public class AttachmentControllerPostIT {
 		assertEquals(3, response.getLinks().size());
 		String originalLink = response.getLinks().stream().filter(v -> "original".equals(v.getRel())).findFirst().get().getHref();
 		assertNotNull(originalLink);
-		Path originalFilePath = fileStorageRootPath.resolve(originalLink.replace(MvcConfiguration.FILES_URL_PATTERN.replace("*", ""), ""));
+		Path originalFilePath = fileStorageRootPath.resolve(originalLink.replace(MvcConfiguration.ESSENCES_URL_PATTERN.replace("*", ""), ""));
 		assertTrue(originalFilePath.toFile().exists());
 		String thumbnailLink = response.getLinks().stream().filter(v -> "original".equals(v.getRel())).findFirst().get().getHref();
-		Path thumbnailFilePath = fileStorageRootPath.resolve(thumbnailLink.replace(MvcConfiguration.FILES_URL_PATTERN.replace("*", ""), ""));
+		Path thumbnailFilePath = fileStorageRootPath.resolve(thumbnailLink.replace(MvcConfiguration.ESSENCES_URL_PATTERN.replace("*", ""), ""));
 		assertTrue(thumbnailFilePath.toFile().exists());
 	}
 	
