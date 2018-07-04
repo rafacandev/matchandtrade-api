@@ -43,7 +43,7 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 	}
 
 	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="tradeResultId")
+	@JoinColumn(name="trade_result_id")
 	public TradeResultEntity getResult() {
 		return result;
 	}
