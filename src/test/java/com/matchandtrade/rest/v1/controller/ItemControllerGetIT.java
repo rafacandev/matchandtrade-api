@@ -70,7 +70,7 @@ public class ItemControllerGetIT {
 	public void shouldGetItemByTradeMemberhipId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
-		ItemJson response = fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getItemId());
+		ItemJson response = fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getArticleId());
 		assertNotNull(response);
 	}
 
@@ -81,14 +81,14 @@ public class ItemControllerGetIT {
 		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
 		// Create member's items (country names)
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(ownerTradeMemberhip.getTrade(), fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getItemId());
+		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getArticleId());
 	}
 	
 	@Test(expected = RestException.class)
  	public void shouldNotGetItemForInexistingTradeMembershipId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
-		fixture.get(-1, existingItem.getItemId());
+		fixture.get(-1, existingItem.getArticleId());
 	}
 
 	@Test(expected=RestException.class)
@@ -98,7 +98,7 @@ public class ItemControllerGetIT {
 		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
 		// Create member's items (country names)
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getItemId());
+		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getArticleId());
 	}
 
 }

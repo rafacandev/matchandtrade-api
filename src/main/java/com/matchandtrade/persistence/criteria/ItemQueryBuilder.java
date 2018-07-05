@@ -12,7 +12,7 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class ItemQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		itemId("item.itemId"),
+		articleId("item.articleId"),
 		name("item.name"),
 		tradeId("trade.tradeId"),
 		tradeMembershipId("tm.tradeMembershipId");

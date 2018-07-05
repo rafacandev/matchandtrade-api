@@ -42,8 +42,8 @@ public class OfferControllerPostIT {
 
 	private void assertOffer(ItemEntity offered, ItemEntity wanted, OfferJson json) {
 		assertNotNull(json.getOfferId());
-		assertEquals(offered.getItemId(), json.getOfferedItemId());
-		assertEquals(wanted.getItemId(), json.getWantedItemId());
+		assertEquals(offered.getArticleId(), json.getOfferedArticleId());
+		assertEquals(wanted.getArticleId(), json.getWantedArticleId());
 	}
 	
 	@Before
@@ -71,27 +71,27 @@ public class OfferControllerPostIT {
 		ItemEntity cuba = itemRandom.nextPersistedEntity(memberTradeMemberhip);
 
 		// Owner offers Alpha for Australia
-		OfferJson alphaForAustralia = OfferRandom.nextJson(alpha.getItemId(), australia.getItemId());
+		OfferJson alphaForAustralia = OfferRandom.nextJson(alpha.getArticleId(), australia.getArticleId());
 		alphaForAustralia = fixture.post(ownerTradeMemberhip.getTradeMembershipId(), alphaForAustralia);
 		assertOffer(alpha, australia, alphaForAustralia);
 		
 		// Owner offers Alpha for Cuba
-		OfferJson alphaForCuba = OfferRandom.nextJson(alpha.getItemId(), cuba.getItemId());
+		OfferJson alphaForCuba = OfferRandom.nextJson(alpha.getArticleId(), cuba.getArticleId());
 		alphaForCuba = fixture.post(ownerTradeMemberhip.getTradeMembershipId(), alphaForCuba);
 		assertOffer(alpha, cuba, alphaForCuba);
 
 		// Member offers Beta for Brazil
-		OfferJson betaForBrazil = OfferRandom.nextJson(beta.getItemId(), brazil.getItemId());
+		OfferJson betaForBrazil = OfferRandom.nextJson(beta.getArticleId(), brazil.getArticleId());
 		betaForBrazil = fixture.post(ownerTradeMemberhip.getTradeMembershipId(), betaForBrazil);
 		assertOffer(beta, brazil, betaForBrazil);
 
 		// Member offers Australia for Alpha
-		OfferJson australiaForAlpha = OfferRandom.nextJson(australia.getItemId(), alpha.getItemId());
+		OfferJson australiaForAlpha = OfferRandom.nextJson(australia.getArticleId(), alpha.getArticleId());
 		australiaForAlpha = memberController.post(memberTradeMemberhip.getTradeMembershipId(), australiaForAlpha);
 		assertOffer(australia, alpha, australiaForAlpha);
 		
 		// Member offers Cuba for Beta
-		OfferJson cubaForAlpha = OfferRandom.nextJson(cuba.getItemId(), alpha.getItemId());
+		OfferJson cubaForAlpha = OfferRandom.nextJson(cuba.getArticleId(), alpha.getArticleId());
 		cubaForAlpha = memberController.post(memberTradeMemberhip.getTradeMembershipId(), cubaForAlpha);
 		assertOffer(cuba, alpha, cubaForAlpha);
 	}
@@ -100,12 +100,12 @@ public class OfferControllerPostIT {
 	public void shouldNotCreateOfferWhenItemDoesNotExist() {
 		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerMembership);
-		OfferJson request = OfferRandom.nextJson(alpha.getItemId(), 99999999);
+		OfferJson request = OfferRandom.nextJson(alpha.getArticleId(), 99999999);
 		try {
 			fixture.post(ownerMembership.getTradeMembershipId(), request);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertTrue(e.getMessage().contains("Offer.offeredItemId and Offer.wantedItemId must belong to existing Items"));
+			assertTrue(e.getMessage().contains("Offer.offeredArticleId and Offer.wantedArticleId must belong to existing Items"));
 			throw e;
 		}
 	}
@@ -121,7 +121,7 @@ public class OfferControllerPostIT {
 		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(tradeRandom.nextPersistedEntity(member), member, TradeMembershipEntity.Type.MEMBER);
 		ItemEntity memberItem = itemRandom.nextPersistedEntity(memberMembership);
 
-		OfferJson request = OfferRandom.nextJson(ownerItem.getItemId(), memberItem.getItemId());
+		OfferJson request = OfferRandom.nextJson(ownerItem.getArticleId(), memberItem.getArticleId());
 		try {
 			fixture.post(ownerMembership.getTradeMembershipId(), request);
 		} catch (RestException e) {
@@ -142,12 +142,12 @@ public class OfferControllerPostIT {
 		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(trade, member, TradeMembershipEntity.Type.MEMBER);
 		ItemEntity memberItem = itemRandom.nextPersistedEntity(memberMembership);
 
-		OfferJson request = OfferRandom.nextJson(memberItem.getItemId(), ownerItem.getItemId());
+		OfferJson request = OfferRandom.nextJson(memberItem.getArticleId(), ownerItem.getArticleId());
 		try {
 			fixture.post(ownerMembership.getTradeMembershipId(), request);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertTrue(e.getMessage().contains("Offer.offeredItemId must belong to the offering User.userId."));
+			assertTrue(e.getMessage().contains("Offer.offeredArticleId must belong to the offering User.userId."));
 			throw e;
 		}
 	}
@@ -166,11 +166,11 @@ public class OfferControllerPostIT {
 		ItemEntity australia = itemRandom.nextPersistedEntity(memberTradeMemberhip);
 		
 		// Owner offers Alpha for Australia
-		OfferJson alphaForAustralia = OfferRandom.nextJson(alpha.getItemId(), australia.getItemId());
+		OfferJson alphaForAustralia = OfferRandom.nextJson(alpha.getArticleId(), australia.getArticleId());
 		alphaForAustralia = fixture.post(ownerTradeMemberhip.getTradeMembershipId(), alphaForAustralia);
 		
 		// Member offers Australia for Alpha
-		OfferJson australiaForAlpha = OfferRandom.nextJson(australia.getItemId(), alpha.getItemId());
+		OfferJson australiaForAlpha = OfferRandom.nextJson(australia.getArticleId(), alpha.getArticleId());
 		try {
 			australiaForAlpha = fixture.post(memberTradeMemberhip.getTradeMembershipId(), australiaForAlpha);
 		} catch (RestException e) {
@@ -190,7 +190,7 @@ public class OfferControllerPostIT {
 		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(trade, member, TradeMembershipEntity.Type.MEMBER);
 		ItemEntity memberItem = itemRandom.nextPersistedEntity(memberMembership);
 
-		OfferJson request = OfferRandom.nextJson(ownerItem.getItemId(), memberItem.getItemId());
+		OfferJson request = OfferRandom.nextJson(ownerItem.getArticleId(), memberItem.getArticleId());
 		OfferJson response = fixture.post(ownerMembership.getTradeMembershipId(), request);
 		assertNotNull(response);
 		assertNotNull(response.getOfferId());

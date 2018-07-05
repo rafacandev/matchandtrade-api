@@ -17,16 +17,16 @@ public class OfferRandom {
 	@Autowired
 	private OfferService offerService;
 
-	public static OfferJson nextJson(Integer offeredItemId, Integer wantedItemId) {
+	public static OfferJson nextJson(Integer offeredArticleId, Integer wantedArticleId) {
 		OfferJson result = new OfferJson();
-		result.setOfferedItemId(offeredItemId);
-		result.setWantedItemId(wantedItemId);
+		result.setOfferedArticleId(offeredArticleId);
+		result.setWantedArticleId(wantedArticleId);
 		return result;
 	}
 
-	public OfferEntity nextPersistedEntity(Integer tradeMembershipId, Integer offeredItemId, Integer wantedItemId) {
-		ItemEntity offeredItem = itemService.get(offeredItemId);
-		ItemEntity wantedItem = itemService.get(wantedItemId);
+	public OfferEntity nextPersistedEntity(Integer tradeMembershipId, Integer offeredArticleId, Integer wantedArticleId) {
+		ItemEntity offeredItem = itemService.get(offeredArticleId);
+		ItemEntity wantedItem = itemService.get(wantedArticleId);
 		
 		OfferEntity offer = new OfferEntity();
 		offer.setOfferedItem(offeredItem);

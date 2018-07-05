@@ -18,16 +18,16 @@ public class ItemLinkAssember {
 	// Utility classes, which are a collection of static members, are not meant to be instantiated. Hence, at least one non-public constructor should be defined.
 	private ItemLinkAssember() {}
 
-	private static Set<Link> buildLink(Integer tradeMembershipId, Integer itemId) {
+	private static Set<Link> buildLink(Integer tradeMembershipId, Integer articleId) {
 		Set<Link> result = new HashSet<>();
-		result.add(linkTo(methodOn(ItemController.class).get(tradeMembershipId, itemId)).withSelfRel());
-		result.add(linkTo(methodOn(ItemAttachmentController.class).get(tradeMembershipId, itemId, null, null)).withRel("attachments"));
+		result.add(linkTo(methodOn(ItemController.class).get(tradeMembershipId, articleId)).withSelfRel());
+		result.add(linkTo(methodOn(ItemAttachmentController.class).get(tradeMembershipId, articleId, null, null)).withRel("attachments"));
 		return result;
 	}
 	
 	public static void assemble(ItemJson json, Integer tradeMembershipId) {
 		if (json != null) {
-			json.getLinks().addAll(buildLink(tradeMembershipId, json.getItemId()));
+			json.getLinks().addAll(buildLink(tradeMembershipId, json.getArticleId()));
 		}
 	}
 

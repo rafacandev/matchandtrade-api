@@ -3,25 +3,25 @@ package com.matchandtrade.rest.v1.json;
 public class TradedItemJson {
 	private Integer userId;
 	private String userName;
-	private Integer itemId;
+	private Integer articleId;
 	private String itemName;
 	private Integer receivingUserId;
 	private String receivingUserName;
-	private Integer receivingItemId;
+	private Integer receivingArticleId;
 	private String receivingItemName;
 	private Integer sendingUserId;
 	private String sendingUserName;
 
-	public Integer getItemId() {
-		return itemId;
+	public Integer getArticleId() {
+		return articleId;
 	}
 
 	public String getItemName() {
 		return itemName;
 	}
 
-	public Integer getReceivingItemId() {
-		return receivingItemId;
+	public Integer getReceivingArticleId() {
+		return receivingArticleId;
 	}
 
 	public String getReceivingItemName() {
@@ -52,16 +52,16 @@ public class TradedItemJson {
 		return userName;
 	}
 
-	public void setItemId(Integer itemId) {
-		this.itemId = itemId;
+	public void setArticleId(Integer articleId) {
+		this.articleId = articleId;
 	}
 
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
 	}
 
-	public void setReceivingItemId(Integer receivingItemId) {
-		this.receivingItemId = receivingItemId;
+	public void setReceivingArticleId(Integer receivingArticleId) {
+		this.receivingArticleId = receivingArticleId;
 	}
 
 	public void setReceivingItemName(String receivingItemName) {

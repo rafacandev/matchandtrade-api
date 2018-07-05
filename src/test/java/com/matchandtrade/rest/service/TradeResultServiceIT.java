@@ -78,9 +78,9 @@ public class TradeResultServiceIT {
 		TradeMembershipEntity ordinalMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), TradeMembershipEntity.Type.MEMBER);
 		ItemEntity first = itemRandom.nextPersistedEntity(ordinalMemberhip);
 
-		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getItemId(), brazil.getItemId());
-		offerRandom.nextPersistedEntity(countryMemberhip.getTradeMembershipId(), brazil.getItemId(), first.getItemId());
-		offerRandom.nextPersistedEntity(ordinalMemberhip.getTradeMembershipId(), first.getItemId(), beta.getItemId());
+		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), brazil.getArticleId());
+		offerRandom.nextPersistedEntity(countryMemberhip.getTradeMembershipId(), brazil.getArticleId(), first.getArticleId());
+		offerRandom.nextPersistedEntity(ordinalMemberhip.getTradeMembershipId(), first.getArticleId(), beta.getArticleId());
 		
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
@@ -89,11 +89,11 @@ public class TradeResultServiceIT {
 		// Remove white spaces and tabs to facilitate assertion
 		response = response.replace(" ", "").replaceAll("\t", "");
 		
-		String expectedBetaLine = "("+greekMembership.getTradeMembershipId()+")" + beta.getItemId() + "receives("+countryMemberhip.getTradeMembershipId()+")" + brazil.getItemId();
+		String expectedBetaLine = "("+greekMembership.getTradeMembershipId()+")" + beta.getArticleId() + "receives("+countryMemberhip.getTradeMembershipId()+")" + brazil.getArticleId();
 		assertTrue(response.contains(expectedBetaLine));
-		String expectedBrazilLine = "("+countryMemberhip.getTradeMembershipId()+")" + brazil.getItemId() + "receives("+ordinalMemberhip.getTradeMembershipId()+")" + first.getItemId();
+		String expectedBrazilLine = "("+countryMemberhip.getTradeMembershipId()+")" + brazil.getArticleId() + "receives("+ordinalMemberhip.getTradeMembershipId()+")" + first.getArticleId();
 		assertTrue(response.contains(expectedBrazilLine));
-		String expectedFirstLine = "("+ordinalMemberhip.getTradeMembershipId()+")" + first.getItemId() + "receives("+greekMembership.getTradeMembershipId()+")" + beta.getItemId();
+		String expectedFirstLine = "("+ordinalMemberhip.getTradeMembershipId()+")" + first.getArticleId() + "receives("+greekMembership.getTradeMembershipId()+")" + beta.getArticleId();
 		assertTrue(response.contains(expectedFirstLine));
 	}
 	
@@ -140,28 +140,28 @@ public class TradeResultServiceIT {
 		ItemEntity six = itemRandom.nextPersistedEntity(fionaMembership);
 
 		//(Alice) 1 : 3 2 6
-		offerRandom.nextPersistedEntity(aliceMembership.getTradeMembershipId(), one.getItemId(), three.getItemId());
-		offerRandom.nextPersistedEntity(aliceMembership.getTradeMembershipId(), one.getItemId(), two.getItemId());
-		offerRandom.nextPersistedEntity(aliceMembership.getTradeMembershipId(), one.getItemId(), six.getItemId());
+		offerRandom.nextPersistedEntity(aliceMembership.getTradeMembershipId(), one.getArticleId(), three.getArticleId());
+		offerRandom.nextPersistedEntity(aliceMembership.getTradeMembershipId(), one.getArticleId(), two.getArticleId());
+		offerRandom.nextPersistedEntity(aliceMembership.getTradeMembershipId(), one.getArticleId(), six.getArticleId());
 		//(Betty) 2 : 1 6 4 3
-		offerRandom.nextPersistedEntity(bettyMembership.getTradeMembershipId(), two.getItemId(), one.getItemId());
-		offerRandom.nextPersistedEntity(bettyMembership.getTradeMembershipId(), two.getItemId(), six.getItemId());
-		offerRandom.nextPersistedEntity(bettyMembership.getTradeMembershipId(), two.getItemId(), four.getItemId());
-		offerRandom.nextPersistedEntity(bettyMembership.getTradeMembershipId(), two.getItemId(), three.getItemId());
+		offerRandom.nextPersistedEntity(bettyMembership.getTradeMembershipId(), two.getArticleId(), one.getArticleId());
+		offerRandom.nextPersistedEntity(bettyMembership.getTradeMembershipId(), two.getArticleId(), six.getArticleId());
+		offerRandom.nextPersistedEntity(bettyMembership.getTradeMembershipId(), two.getArticleId(), four.getArticleId());
+		offerRandom.nextPersistedEntity(bettyMembership.getTradeMembershipId(), two.getArticleId(), three.getArticleId());
 		//(Craig) 3 : 6 2
-		offerRandom.nextPersistedEntity(craigMembership.getTradeMembershipId(), three.getItemId(), six.getItemId());
-		offerRandom.nextPersistedEntity(craigMembership.getTradeMembershipId(), three.getItemId(), two.getItemId());
+		offerRandom.nextPersistedEntity(craigMembership.getTradeMembershipId(), three.getArticleId(), six.getArticleId());
+		offerRandom.nextPersistedEntity(craigMembership.getTradeMembershipId(), three.getArticleId(), two.getArticleId());
 		//(David) 4 : 2
-		offerRandom.nextPersistedEntity(davidMembership.getTradeMembershipId(), four.getItemId(), two.getItemId());
+		offerRandom.nextPersistedEntity(davidMembership.getTradeMembershipId(), four.getArticleId(), two.getArticleId());
 		//(Ethan) 5 : 1 2 3 4 6
-		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getItemId(), one.getItemId());
-		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getItemId(), two.getItemId());
-		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getItemId(), three.getItemId());
-		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getItemId(), four.getItemId());
-		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getItemId(), six.getItemId());
+		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getArticleId(), one.getArticleId());
+		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getArticleId(), two.getArticleId());
+		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getArticleId(), three.getArticleId());
+		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getArticleId(), four.getArticleId());
+		offerRandom.nextPersistedEntity(ethanMembership.getTradeMembershipId(), five.getArticleId(), six.getArticleId());
 		//(Fiona) 6 : 1 2
-		offerRandom.nextPersistedEntity(fionaMembership.getTradeMembershipId(), six.getItemId(), one.getItemId());
-		offerRandom.nextPersistedEntity(fionaMembership.getTradeMembershipId(), six.getItemId(), two.getItemId());
+		offerRandom.nextPersistedEntity(fionaMembership.getTradeMembershipId(), six.getArticleId(), one.getArticleId());
+		offerRandom.nextPersistedEntity(fionaMembership.getTradeMembershipId(), six.getArticleId(), two.getArticleId());
 
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
@@ -169,11 +169,11 @@ public class TradeResultServiceIT {
 		String response = tradeResultService.buildTradeMaximizerOutput(trade.getTradeId());
 
 		List<String> assertions = new ArrayList<>();
-		assertions.add("("+aliceMembership.getTradeMembershipId()+")"+one.getItemId()+"receives("+craigMembership.getTradeMembershipId()+")"+three.getItemId());
-		assertions.add("("+craigMembership.getTradeMembershipId()+")"+three.getItemId()+"receives("+fionaMembership.getTradeMembershipId()+")"+six.getItemId());
-		assertions.add("("+fionaMembership.getTradeMembershipId()+")"+six.getItemId()+"receives("+aliceMembership.getTradeMembershipId()+")"+one.getItemId());
-		assertions.add("("+bettyMembership.getTradeMembershipId()+")"+two.getItemId()+"receives("+davidMembership.getTradeMembershipId()+")"+four.getItemId());
-		assertions.add("("+davidMembership.getTradeMembershipId()+")"+four.getItemId()+"receives("+bettyMembership.getTradeMembershipId()+")"+two.getItemId());
+		assertions.add("("+aliceMembership.getTradeMembershipId()+")"+one.getArticleId()+"receives("+craigMembership.getTradeMembershipId()+")"+three.getArticleId());
+		assertions.add("("+craigMembership.getTradeMembershipId()+")"+three.getArticleId()+"receives("+fionaMembership.getTradeMembershipId()+")"+six.getArticleId());
+		assertions.add("("+fionaMembership.getTradeMembershipId()+")"+six.getArticleId()+"receives("+aliceMembership.getTradeMembershipId()+")"+one.getArticleId());
+		assertions.add("("+bettyMembership.getTradeMembershipId()+")"+two.getArticleId()+"receives("+davidMembership.getTradeMembershipId()+")"+four.getArticleId());
+		assertions.add("("+davidMembership.getTradeMembershipId()+")"+four.getArticleId()+"receives("+bettyMembership.getTradeMembershipId()+")"+two.getArticleId());
 		
 		// Remove white spaces and tabs to facilitate assertion
 		response = response.replace(" ", "").replace("\t", "");

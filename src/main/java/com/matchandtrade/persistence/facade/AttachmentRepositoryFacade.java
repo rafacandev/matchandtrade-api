@@ -28,9 +28,9 @@ public class AttachmentRepositoryFacade {
 		attachmentRepository.delete(fileId);
 	}
 
-	public SearchResult<AttachmentEntity> findAttachmentsByItemId(Integer itemId, Integer pageNumber, Integer pageSize) {
+	public SearchResult<AttachmentEntity> findAttachmentsByArticleId(Integer articleId, Integer pageNumber, Integer pageSize) {
 		Pageable pageable = PersistenceUtil.buildPageable(pageNumber, pageSize);
-		Page<AttachmentEntity> page = attachmentRepository.findAttachmentsByItemId(itemId, pageable);
+		Page<AttachmentEntity> page = attachmentRepository.findAttachmentsByArticleId(articleId, pageable);
 		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
 	

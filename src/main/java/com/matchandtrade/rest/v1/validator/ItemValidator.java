@@ -40,10 +40,10 @@ public class ItemValidator {
 		}
 	}
 	
-	private void checkIfItemExists(Integer itemId) {
-		ItemEntity item = itemService.get(itemId);
+	private void checkIfItemExists(Integer articleId) {
+		ItemEntity item = itemService.get(articleId);
 		if (item == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "There is no Item for the given Item.itemId");
+			throw new RestException(HttpStatus.BAD_REQUEST, "There is no Item for the given Item.articleId");
 		}
 	}
 
@@ -112,11 +112,11 @@ public class ItemValidator {
 	 * An item can be deleted only by their owners. See {@code validateOwndership()}
 	 * Item must exist.
 	 * @param tradeMembershipId
-	 * @param itemId
+	 * @param articleId
 	 */
-	public void validateDelete(Integer tradeMembershipId, Integer userId, Integer itemId) {
+	public void validateDelete(Integer tradeMembershipId, Integer userId, Integer articleId) {
 		validateOwnership(userId, tradeMembershipId);
-		checkIfItemExists(itemId);
+		checkIfItemExists(articleId);
 	}
 
 	public void validateGet(Integer userId, Integer tradeMembershipId) {
@@ -140,7 +140,7 @@ public class ItemValidator {
 	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
 	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipId}
 	 * @param tradeMembership
-	 * @param itemId
+	 * @param articleId
 	 */
 	public void validateOwnership(Integer userId, Integer tradeMembershipId) {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
@@ -181,27 +181,27 @@ public class ItemValidator {
 	 * Class {@code validatePost()}
 	 * @param userId
 	 * @param tradeMembershipId
-	 * @param itemId
+	 * @param articleId
 	 * @param json
 	 */
 	@Transactional
-	public void validatePut(Integer userId, Integer tradeMembershipId, Integer itemId, ItemJson json) {
+	public void validatePut(Integer userId, Integer tradeMembershipId, Integer articleId, ItemJson json) {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfTrademembershipBelongsToUser(tradeMembershipId, userId);
 		checkNameLength(json.getName());
 		checkDescriptionLength(json.getDescription());
 
-		ItemEntity itemEntity = itemService.get(itemId);
+		ItemEntity itemEntity = itemService.get(articleId);
 		if (itemEntity == null) {
-			throw new RestException(HttpStatus.NOT_FOUND, "Did not find resource for the given Item.itemId");
+			throw new RestException(HttpStatus.NOT_FOUND, "Did not find resource for the given Item.articleId");
 		}
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName(), Restriction.LIKE_IGNORE_CASE);
-		// Required to check if is not the same itemId because to guarantee PUT idempotency
-		searchCriteria.addCriterion(ItemQueryBuilder.Field.itemId, json.getItemId(), Restriction.NOT_EQUALS);
+		// Required to check if is not the same articleId because to guarantee PUT idempotency
+		searchCriteria.addCriterion(ItemQueryBuilder.Field.articleId, json.getArticleId(), Restriction.NOT_EQUALS);
 		SearchResult<ItemEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");

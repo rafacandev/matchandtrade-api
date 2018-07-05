@@ -96,12 +96,12 @@ public class TradeResultControllerGetIT {
 		TradeMembershipEntity ordinalMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), TradeMembershipEntity.Type.MEMBER);
 		ItemEntity first = itemRandom.nextPersistedEntity(ordinalMemberhip, "first");
 
-		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), alpha.getItemId(), canada.getItemId());
-		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getItemId(), argentina.getItemId());
-		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getItemId(), brazil.getItemId());
-		offerRandom.nextPersistedEntity(countryMemberhip.getTradeMembershipId(), brazil.getItemId(), first.getItemId());
-		offerRandom.nextPersistedEntity(countryMemberhip.getTradeMembershipId(), canada.getItemId(), alpha.getItemId());
-		offerRandom.nextPersistedEntity(ordinalMemberhip.getTradeMembershipId(), first.getItemId(), beta.getItemId());
+		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), alpha.getArticleId(), canada.getArticleId());
+		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), argentina.getArticleId());
+		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), brazil.getArticleId());
+		offerRandom.nextPersistedEntity(countryMemberhip.getTradeMembershipId(), brazil.getArticleId(), first.getArticleId());
+		offerRandom.nextPersistedEntity(countryMemberhip.getTradeMembershipId(), canada.getArticleId(), alpha.getArticleId());
+		offerRandom.nextPersistedEntity(ordinalMemberhip.getTradeMembershipId(), first.getArticleId(), beta.getArticleId());
 		
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
@@ -110,13 +110,13 @@ public class TradeResultControllerGetIT {
 		// Remove white spaces and tabs to facilitate assertion
 		response = response.replace(" ", "").replace("\t", "");
 		
-		String csvLine = greekMembership.getUser().getUserId() + "," + greekMembership.getUser().getName() + "," + alpha.getItemId() + "," + alpha.getName() + ",:RECEIVES:," +
-				countryMemberhip.getUser().getUserId() + "," + countryMemberhip.getUser().getName() + "," + canada.getItemId() + "," + canada.getName() + ",:SENDS:," +
+		String csvLine = greekMembership.getUser().getUserId() + "," + greekMembership.getUser().getName() + "," + alpha.getArticleId() + "," + alpha.getName() + ",:RECEIVES:," +
+				countryMemberhip.getUser().getUserId() + "," + countryMemberhip.getUser().getName() + "," + canada.getArticleId() + "," + canada.getName() + ",:SENDS:," +
 				countryMemberhip.getUser().getUserId() + "," + countryMemberhip.getUser().getName();
 		assertTrue(response.contains(csvLine));
 		
-		csvLine = greekMembership.getUser().getUserId() + "," + greekMembership.getUser().getName() + "," + beta.getItemId() + "," + beta.getName() + ",:RECEIVES:," +
-				countryMemberhip.getUser().getUserId() + "," + countryMemberhip.getUser().getName() + "," + brazil.getItemId() + "," + brazil.getName() + ",:SENDS:," +
+		csvLine = greekMembership.getUser().getUserId() + "," + greekMembership.getUser().getName() + "," + beta.getArticleId() + "," + beta.getName() + ",:RECEIVES:," +
+				countryMemberhip.getUser().getUserId() + "," + countryMemberhip.getUser().getName() + "," + brazil.getArticleId() + "," + brazil.getName() + ",:SENDS:," +
 				ordinalMemberhip.getUser().getUserId() + "," + ordinalMemberhip.getUser().getName();
 		assertTrue(response.contains(csvLine));
 	}
@@ -141,12 +141,12 @@ public class TradeResultControllerGetIT {
 		TradeMembershipEntity ordinalMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), TradeMembershipEntity.Type.MEMBER);
 		ItemEntity first = itemRandom.nextPersistedEntity(ordinalMembership, "first");
 
-		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), alpha.getItemId(), canada.getItemId());
-		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getItemId(), argentina.getItemId());
-		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getItemId(), brazil.getItemId());
-		offerRandom.nextPersistedEntity(countryMembership.getTradeMembershipId(), brazil.getItemId(), first.getItemId());
-		offerRandom.nextPersistedEntity(countryMembership.getTradeMembershipId(), canada.getItemId(), alpha.getItemId());
-		offerRandom.nextPersistedEntity(ordinalMembership.getTradeMembershipId(), first.getItemId(), beta.getItemId());
+		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), alpha.getArticleId(), canada.getArticleId());
+		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), argentina.getArticleId());
+		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), brazil.getArticleId());
+		offerRandom.nextPersistedEntity(countryMembership.getTradeMembershipId(), brazil.getArticleId(), first.getArticleId());
+		offerRandom.nextPersistedEntity(countryMembership.getTradeMembershipId(), canada.getArticleId(), alpha.getArticleId());
+		offerRandom.nextPersistedEntity(ordinalMembership.getTradeMembershipId(), first.getArticleId(), beta.getArticleId());
 		
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
@@ -172,47 +172,47 @@ public class TradeResultControllerGetIT {
 		boolean foundArgentinaInTradeResults = false;
 		for(TradedItemJson tradedItem : response.getTradedItems()) {
 			if (greekMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& alpha.getItemId().equals(tradedItem.getItemId())
+					&& alpha.getArticleId().equals(tradedItem.getArticleId())
 					&& countryMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& canada.getItemId().equals(tradedItem.getReceivingItemId())
+					&& canada.getArticleId().equals(tradedItem.getReceivingArticleId())
 					&& countryMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
 				greekOfferedAlphaReceivesCanadaSendsToCountry = true;
 				continue;
 			}
 			if (greekMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& beta.getItemId().equals(tradedItem.getItemId())
+					&& beta.getArticleId().equals(tradedItem.getArticleId())
 					&& countryMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& brazil.getItemId().equals(tradedItem.getReceivingItemId())
+					&& brazil.getArticleId().equals(tradedItem.getReceivingArticleId())
 					&& ordinalMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
 				greekOfferedBetaReceivesBrazilSendsToOrdinal = true;
 				continue;
 			}
 			if (countryMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& brazil.getItemId().equals(tradedItem.getItemId())
+					&& brazil.getArticleId().equals(tradedItem.getArticleId())
 					&& ordinalMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& first.getItemId().equals(tradedItem.getReceivingItemId())
+					&& first.getArticleId().equals(tradedItem.getReceivingArticleId())
 					&& greekMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
 				countryOfferedBrazilRecivesFirstSendsToGreek = true;
 				continue;
 			}
 			if (countryMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& canada.getItemId().equals(tradedItem.getItemId())
+					&& canada.getArticleId().equals(tradedItem.getArticleId())
 					&& greekMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& alpha.getItemId().equals(tradedItem.getReceivingItemId())
+					&& alpha.getArticleId().equals(tradedItem.getReceivingArticleId())
 					&& greekMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
 				countryOfferedCanadaReceivesAlphaSendsToGreek = true;
 				continue;
 			}
 			if (ordinalMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& first.getItemId().equals(tradedItem.getItemId())
+					&& first.getArticleId().equals(tradedItem.getArticleId())
 					&& greekMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& beta.getItemId().equals(tradedItem.getReceivingItemId())
+					&& beta.getArticleId().equals(tradedItem.getReceivingArticleId())
 					&& countryMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
 				ordinalOfferedFirstReceivesBetaSendsToCountry = true;
 				continue;
 			}
 			if (countryMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& argentina.getItemId().equals(tradedItem.getItemId())) {
+					&& argentina.getArticleId().equals(tradedItem.getArticleId())) {
 				foundArgentinaInTradeResults = true;
 			}
 			

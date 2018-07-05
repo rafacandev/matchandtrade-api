@@ -5,31 +5,31 @@ import com.matchandtrade.rest.JsonLinkSupport;
 public class OfferJson extends JsonLinkSupport {
 
 	private Integer offerId;
-	private Integer offeredItemId;
-	private Integer wantedItemId;
+	private Integer offeredArticleId;
+	private Integer wantedArticleId;
 
-	public Integer getOfferedItemId() {
-		return offeredItemId;
+	public Integer getOfferedArticleId() {
+		return offeredArticleId;
 	}
 
 	public Integer getOfferId() {
 		return offerId;
 	}
 
-	public Integer getWantedItemId() {
-		return wantedItemId;
+	public Integer getWantedArticleId() {
+		return wantedArticleId;
 	}
 
-	public void setOfferedItemId(Integer offeredItemId) {
-		this.offeredItemId = offeredItemId;
+	public void setOfferedArticleId(Integer offeredArticleId) {
+		this.offeredArticleId = offeredArticleId;
 	}
 
 	public void setOfferId(Integer offerId) {
 		this.offerId = offerId;
 	}
 
-	public void setWantedItemId(Integer wantedItemId) {
-		this.wantedItemId = wantedItemId;
+	public void setWantedArticleId(Integer wantedArticleId) {
+		this.wantedArticleId = wantedArticleId;
 	}
 
 }

@@ -36,17 +36,17 @@ public class ItemAttachmentController implements Controller {
 	@Autowired
 	private AttachmentLinkAssember attachmentLinkAssembler;
 
-	@PostMapping("/{tradeMembershipId}/items/{itemId}/attachments/{attachmentId}")
+	@PostMapping("/{tradeMembershipId}/items/{articleId}/attachments/{attachmentId}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public AttachmentJson post(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, @PathVariable Integer attachmentId) {
+	public AttachmentJson post(@PathVariable Integer tradeMembershipId, @PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		itemAttachmentValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, itemId);
+		itemAttachmentValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, articleId);
 		// Transform the request
 		AttachmentEntity attachmentEntity = attachmentService.get(attachmentId);
 		// Delegate to service layer
-		itemAttachmentService.addAttachmentToItem(itemId, attachmentId);
+		itemAttachmentService.addAttachmentToItem(articleId, attachmentId);
 		// Transform the response
 		AttachmentJson response = AttachmentTransformer.transform(attachmentEntity);
 		// Assemble links
@@ -54,26 +54,26 @@ public class ItemAttachmentController implements Controller {
 		return response;
 	}
 	
-	@DeleteMapping("/{tradeMembershipId}/items/{itemId}/attachments/{attachmentId}")
+	@DeleteMapping("/{tradeMembershipId}/items/{articleId}/attachments/{attachmentId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, @PathVariable Integer attachmentId) {
+	public void delete(@PathVariable Integer tradeMembershipId, @PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		itemAttachmentValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, itemId, attachmentId);
+		itemAttachmentValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, articleId, attachmentId);
 		// Delegate to service layer
-		itemAttachmentService.deleteAttachmentFromItem(itemId, attachmentId);
+		itemAttachmentService.deleteAttachmentFromItem(articleId, attachmentId);
 	}
 
 
-	@RequestMapping(path={"/{tradeMembershipId}/items/{itemId}/attachments", "/{tradeMembershipId}/items/{itemId}/attachments/"}, method=RequestMethod.GET)
-	public SearchResult<AttachmentJson> get(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, Integer _pageNumber, Integer _pageSize) {
+	@RequestMapping(path={"/{tradeMembershipId}/items/{articleId}/attachments", "/{tradeMembershipId}/items/{articleId}/attachments/"}, method=RequestMethod.GET)
+	public SearchResult<AttachmentJson> get(@PathVariable Integer tradeMembershipId, @PathVariable Integer articleId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		itemAttachmentValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, _pageNumber, _pageSize);
 		// Delegate to service layer
-		SearchResult<AttachmentEntity> searchResult = itemAttachmentService.search(itemId, _pageNumber, _pageSize);
+		SearchResult<AttachmentEntity> searchResult = itemAttachmentService.search(articleId, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<AttachmentJson> response = AttachmentTransformer.transform(searchResult);
 		// Assemble links

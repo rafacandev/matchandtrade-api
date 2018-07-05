@@ -41,7 +41,7 @@ public class ItemControllerPostIT {
 		request.setDescription("ItemControllerPostIT.shouldCreateName.description");
 		ItemJson response = fixture.post(existingTradeMemberhip.getTradeMembershipId(), request);
 		
-		assertNotNull(response.getItemId());
+		assertNotNull(response.getArticleId());
 		assertEquals(request.getName(), response.getName());
 		assertEquals(request.getDescription(), response.getDescription());
 		

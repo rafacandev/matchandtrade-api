@@ -51,13 +51,13 @@ public class ItemControllerPutIT {
 		request.setName(itemName);
 		request.setDescription(itemDescription);
 		
-		ItemJson response = fixture.put(existingTradeMemberhip.getTradeMembershipId(), request.getItemId(), request);
+		ItemJson response = fixture.put(existingTradeMemberhip.getTradeMembershipId(), request.getArticleId(), request);
 		assertEquals(itemName, response.getName());
 		assertEquals(itemDescription, response.getDescription());
 	}	
 
 	@Test(expected=RestException.class)
-	public void shouldErrorWhenEditingAnInvalidItemId() {
+	public void shouldErrorWhenEditingAnInvalidArticleId() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemJson request = ItemRandom.nextJson();
 		fixture.put(existingTradeMemberhip.getTradeMembershipId(), -1, request);
@@ -70,7 +70,7 @@ public class ItemControllerPutIT {
 		ItemEntity existingItem2 = itemRandom.nextPersistedEntity(existingTradeMemberhip);
 		ItemJson request = new ItemJson();
 		request.setName(existingItem.getName());
-		fixture.put(existingTradeMemberhip.getTradeMembershipId(), existingItem2.getItemId(), request);
+		fixture.put(existingTradeMemberhip.getTradeMembershipId(), existingItem2.getArticleId(), request);
 	}
 	
 	@Test(expected=RestException.class)
@@ -79,7 +79,7 @@ public class ItemControllerPutIT {
 		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
 		ItemJson request = ItemTransformer.transform(existingItem);
 		request.setName(request.getName() + "-Updated");
-		fixture.put(existingTradeMemberhip.getTradeMembershipId(), request.getItemId(), request);
+		fixture.put(existingTradeMemberhip.getTradeMembershipId(), request.getArticleId(), request);
 	}
 	
 }

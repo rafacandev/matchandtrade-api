@@ -64,7 +64,7 @@ public class SearchController implements Controller {
 				ItemAndTradeMembershipIdDto tradeMembershipAndItemDto = (ItemAndTradeMembershipIdDto) v;
 				response.getResultList().forEach(json -> {
 					ItemJson itemJson = (ItemJson) json;
-					if (itemJson.getItemId() == tradeMembershipAndItemDto.getItem().getItemId()) {
+					if (itemJson.getArticleId() == tradeMembershipAndItemDto.getItem().getArticleId()) {
 						ItemLinkAssember.assemble(itemJson, tradeMembershipAndItemDto.getTradeMembershipId());
 					}
 				});

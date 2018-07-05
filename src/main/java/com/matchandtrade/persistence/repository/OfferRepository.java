@@ -8,6 +8,6 @@ import com.matchandtrade.persistence.entity.OfferEntity;
 
 public interface OfferRepository extends CrudRepository<OfferEntity, Integer>{
 
-	List<OfferEntity> findByOfferedItemItemId(Integer offeredItemId);
+	List<OfferEntity> findByOfferedItemArticleId(Integer offeredArticleId);
 	
 }

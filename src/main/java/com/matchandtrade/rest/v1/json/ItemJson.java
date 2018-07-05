@@ -7,7 +7,7 @@ import com.matchandtrade.rest.JsonLinkSupport;
 public class ItemJson extends JsonLinkSupport {
 
 	private String description;
-	private Integer itemId;
+	private Integer articleId;
 	private String name;
 
 	public String getDescription() {
@@ -15,8 +15,8 @@ public class ItemJson extends JsonLinkSupport {
 	}
 
 	@JsonInclude(value=Include.NON_NULL)
-	public Integer getItemId() {
-		return itemId;
+	public Integer getArticleId() {
+		return articleId;
 	}
 
 	public String getName() {
@@ -27,8 +27,8 @@ public class ItemJson extends JsonLinkSupport {
 		this.description = description;
 	}
 
-	public void setItemId(Integer itemId) {
-		this.itemId = itemId;
+	public void setArticleId(Integer articleId) {
+		this.articleId = articleId;
 	}
 	
 	public void setName(String name) {

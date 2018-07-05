@@ -18,8 +18,8 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 			+ " INNER JOIN tm.trade AS t"
 			+ " INNER JOIN tm.items AS i"
 			+ " WHERE"
-			+ " i.itemId = :itemId")
-	UserEntity findByItemId(@Param("itemId") Integer itemId);
+			+ " i.articleId = :articleId")
+	UserEntity findByArticleId(@Param("articleId") Integer articleId);
 
 	
 	@Query("SELECT u "

@@ -16,8 +16,8 @@ public interface TradeRepository extends CrudRepository<TradeEntity, Integer>{
 			+ " INNER JOIN tradeMembership.trade AS trade"
 			+ " INNER JOIN tradeMembership.items AS item"
 			+ " WHERE"
-			+ " item.itemId IN (:itemIds)"
+			+ " item.articleId IN (:articleIds)"
 			+ " GROUP BY trade")
-	Page<TradeEntity> findInItemIdsGroupByTrade(@Param("itemIds") Integer[] itemIds, Pageable pageable);
+	Page<TradeEntity> findInArticleIdsGroupByTrade(@Param("articleIds") Integer[] articleIds, Pageable pageable);
 	
 }

@@ -35,21 +35,21 @@ public class ItemService {
 	}
 
 	@Transactional
-	public void delete(Integer tradeMembershipId, Integer itemId) {
-		offerService.deleteOffersForItem(itemId);
+	public void delete(Integer tradeMembershipId, Integer articleId) {
+		offerService.deleteOffersForItem(articleId);
 		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
-		ItemEntity item = itemRepositoryFacade.get(itemId);
+		ItemEntity item = itemRepositoryFacade.get(articleId);
 		membership.getItems().remove(item);
 		tradeMembershipRepositoryFacade.save(membership);
-		itemRepositoryFacade.delete(itemId);
+		itemRepositoryFacade.delete(articleId);
 	}
 
-	public ItemEntity get(Integer itemId) {
-		return itemRepositoryFacade.get(itemId);
+	public ItemEntity get(Integer articleId) {
+		return itemRepositoryFacade.get(articleId);
 	}
 	
-	public boolean exists(Integer ...itemIds) {
-		return itemRepositoryFacade.exists(itemIds);
+	public boolean exists(Integer ...articleIds) {
+		return itemRepositoryFacade.exists(articleIds);
 	}
 
 	@Transactional

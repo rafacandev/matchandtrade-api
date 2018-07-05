@@ -63,7 +63,7 @@ public class OfferControllerDeleteIT {
 		ItemEntity australia = itemRandom.nextPersistedEntity(memberMemberhip);
 
 		// Owner offers Alpha for Australia
-		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getItemId(), australia.getItemId());
+		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
 		fixture.delete(ownerMembership.getTradeMembershipId(), alphaForAustralia.getOfferId());
 		assertNull(offerRepositoryFacade.get(alphaForAustralia.getOfferId()));
@@ -83,7 +83,7 @@ public class OfferControllerDeleteIT {
 		ItemEntity australia = itemRandom.nextPersistedEntity(memberMembership);
 
 		// Owner offers Alpha for Australia
-		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getItemId(), australia.getItemId());
+		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
 		try {
 			fixture.delete(memberMembership.getTradeMembershipId(), alphaForAustralia.getOfferId());

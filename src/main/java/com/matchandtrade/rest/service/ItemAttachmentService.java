@@ -19,21 +19,21 @@ public class ItemAttachmentService {
 	private AttachmentRepositoryFacade attachmentRepositoryFacade;
 
 	@Transactional
-	public void addAttachmentToItem(Integer itemId, Integer attachmentId) {
+	public void addAttachmentToItem(Integer articleId, Integer attachmentId) {
 		AttachmentEntity attachment = attachmentRepositoryFacade.get(attachmentId);
-		ItemEntity item = itemRepositoryFacade.get(itemId);
+		ItemEntity item = itemRepositoryFacade.get(articleId);
 		item.getAttachments().add(attachment);
 		itemRepositoryFacade.save(item);
 	}
 
-	public SearchResult<AttachmentEntity> search(Integer itemId, Integer pageNumber, Integer pageSize) {
-		return attachmentRepositoryFacade.findAttachmentsByItemId(itemId, pageNumber, pageSize);
+	public SearchResult<AttachmentEntity> search(Integer articleId, Integer pageNumber, Integer pageSize) {
+		return attachmentRepositoryFacade.findAttachmentsByArticleId(articleId, pageNumber, pageSize);
 	}
 
 	@Transactional
-	public void deleteAttachmentFromItem(Integer itemId, Integer attachmentId) {
+	public void deleteAttachmentFromItem(Integer articleId, Integer attachmentId) {
 		AttachmentEntity attachment = attachmentRepositoryFacade.get(attachmentId);
-		ItemEntity item = itemRepositoryFacade.get(itemId);
+		ItemEntity item = itemRepositoryFacade.get(articleId);
 		if (item.getAttachments().remove(attachment)) {
 			itemRepositoryFacade.save(item);
 			attachmentRepositoryFacade.delete(attachmentId);

@@ -50,10 +50,10 @@ public class TradeResultService {
 
 
 	private StringBuilder buildOfferLine(TradeMembershipEntity membership, ItemEntity item) {
-		StringBuilder line = new StringBuilder("(" + membership.getTradeMembershipId() + ") " + item.getItemId() + " :");
-		List<OfferEntity> offers = offerService.searchByOfferedItemId(item.getItemId());
+		StringBuilder line = new StringBuilder("(" + membership.getTradeMembershipId() + ") " + item.getArticleId() + " :");
+		List<OfferEntity> offers = offerService.searchByOfferedArticleId(item.getArticleId());
 		offers.forEach(offer -> {
-			line.append(" " + offer.getWantedItem().getItemId());
+			line.append(" " + offer.getWantedItem().getArticleId());
 		});
 		return line;
 	}
@@ -178,12 +178,12 @@ public class TradeResultService {
 	
 	private TradeMembershipEntity searchMembership(ItemEntity item) {
 		SearchCriteria membershipCriteria = new SearchCriteria(new Pagination(1,1));
-		membershipCriteria.addCriterion(TradeMembershipQueryBuilder.Field.itemId, item.getItemId());
+		membershipCriteria.addCriterion(TradeMembershipQueryBuilder.Field.articleId, item.getArticleId());
 		SearchResult<TradeMembershipEntity> membershipResult = searchService.search(membershipCriteria, TradeMembershipQueryBuilder.class);
 		if (membershipResult.getPagination().getTotal() > 1) {
-			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is more than one TradeMembership for the Item.itemId " + item.getItemId() + ". I am shocked! This should never ever happen :(");
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is more than one TradeMembership for the Item.articleId " + item.getArticleId() + ". I am shocked! This should never ever happen :(");
 		} else if (membershipResult.getPagination().getTotal() < 1) {
-			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Generating result for an orphan Item.itemId " + item.getItemId() + ". We are extremelly sad that this happened.");
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Generating result for an orphan Item.articleId " + item.getArticleId() + ". We are extremelly sad that this happened.");
 		}
 		return membershipResult.getResultList().get(0);
 	}

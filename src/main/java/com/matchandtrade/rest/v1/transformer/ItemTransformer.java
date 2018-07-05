@@ -15,7 +15,7 @@ public class ItemTransformer {
 	public static ItemEntity transform(ItemJson json) {
 		ItemEntity result = new ItemEntity();
 		result.setName(json.getName());
-		result.setItemId(json.getItemId());
+		result.setArticleId(json.getArticleId());
 		result.setDescription(json.getDescription());
 		return result;
 	}
@@ -23,7 +23,7 @@ public class ItemTransformer {
 	public static ItemJson transform(ItemEntity itemEntity) {
 		ItemJson result = new ItemJson();
 		result.setName(itemEntity.getName());
-		result.setItemId(itemEntity.getItemId());
+		result.setArticleId(itemEntity.getArticleId());
 		result.setDescription(itemEntity.getDescription());
 		return result;
 	}

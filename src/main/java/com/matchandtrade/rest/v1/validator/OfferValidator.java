@@ -42,7 +42,7 @@ public class OfferValidator {
 		}
 	}
 
-	public void validateGetAll(Integer tradeMembershipId, Integer offeredItemId, Integer wantedItemId,
+	public void validateGetAll(Integer tradeMembershipId, Integer offeredArticleId, Integer wantedArticleId,
 			Integer pageNumber, Integer pageSize, Integer authenticatedUserId) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);	
 		TradeMembershipEntity tradeMembership = tradeMembershipService.get(tradeMembershipId);
@@ -59,21 +59,21 @@ public class OfferValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer is mandatory.");
 		}
 
-		if (offer.getOfferedItemId() == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredItemId is mandatory.");
+		if (offer.getOfferedArticleId() == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId is mandatory.");
 		}
 
-		if (offer.getWantedItemId() == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.wantedItemId is mandatory.");
+		if (offer.getWantedArticleId() == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.wantedArticleId is mandatory.");
 		}
 		
-		if (offer.getOfferedItemId().equals(offer.getWantedItemId())) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredItemId and Offer.wantedItemId must differ.");
+		if (offer.getOfferedArticleId().equals(offer.getWantedArticleId())) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must differ.");
 		}
 		
-		boolean itemsExist = itemService.exists(offer.getOfferedItemId(), offer.getWantedItemId());
+		boolean itemsExist = itemService.exists(offer.getOfferedArticleId(), offer.getWantedArticleId());
 		if (!itemsExist) {	
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredItemId and Offer.wantedItemId must belong to existing Items.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must belong to existing Items.");
 		}
 		
 		TradeMembershipEntity tradeMembership = tradeMembershipService.get(tradeMembershipId);
@@ -81,14 +81,14 @@ public class OfferValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership must belong to the current authenticated User.");
 		}
 		
-		UserEntity offeredItemUser = userService.searchByItemId(offer.getOfferedItemId());
+		UserEntity offeredItemUser = userService.searchByArticleId(offer.getOfferedArticleId());
 		if (offeredItemUser == null || !offeredItemUser.getUserId().equals(offeringUserId)) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredItemId must belong to the offering User.userId.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId must belong to the offering User.userId.");
 		}
 		
-		boolean itemsAssociatedToSameTrade = offerService.areItemsAssociatedToSameTrade(offer.getOfferedItemId(), offer.getWantedItemId());
+		boolean itemsAssociatedToSameTrade = offerService.areItemsAssociatedToSameTrade(offer.getOfferedArticleId(), offer.getWantedArticleId());
 		if (!itemsAssociatedToSameTrade) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredItemId and Offer.wantedItemId must be associated to the same Trade.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must be associated to the same Trade.");
 		}
 	}
 

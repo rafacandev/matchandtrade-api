@@ -30,15 +30,15 @@ public class ItemController implements Controller {
 	@Autowired
 	private ItemValidator itemValidator;
 
-	@RequestMapping(path="/{tradeMembershipId}/items/{itemId}", method=RequestMethod.DELETE)
+	@RequestMapping(path="/{tradeMembershipId}/items/{articleId}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("itemId") Integer itemId) {
+	public void delete(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("articleId") Integer articleId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		itemValidator.validateDelete(tradeMembershipId, authenticationProvider.getAuthentication().getUser().getUserId(), itemId);
+		itemValidator.validateDelete(tradeMembershipId, authenticationProvider.getAuthentication().getUser().getUserId(), articleId);
 		// Delegate to service layer
-		itemService.delete(tradeMembershipId, itemId);
+		itemService.delete(tradeMembershipId, articleId);
 	}
 
 	@RequestMapping(path = "/{tradeMembershipId}/items", method = RequestMethod.POST)
@@ -59,13 +59,13 @@ public class ItemController implements Controller {
 		return response;
 	}
 
-	@RequestMapping(path = "/{tradeMembershipId}/items/{itemId}", method = RequestMethod.PUT)
-	public ItemJson put(@PathVariable Integer tradeMembershipId, @PathVariable Integer itemId, @RequestBody ItemJson requestJson) {
+	@RequestMapping(path = "/{tradeMembershipId}/items/{articleId}", method = RequestMethod.PUT)
+	public ItemJson put(@PathVariable Integer tradeMembershipId, @PathVariable Integer articleId, @RequestBody ItemJson requestJson) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		requestJson.setItemId(itemId); // Always get the id from the URL when working on PUT methods
-		itemValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, itemId, requestJson);
+		requestJson.setArticleId(articleId); // Always get the id from the URL when working on PUT methods
+		itemValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, articleId, requestJson);
 		// Transform the request
 		ItemEntity itemEntity = ItemTransformer.transform(requestJson);
 		// Delegate to service layer
@@ -77,14 +77,14 @@ public class ItemController implements Controller {
 		return response;
 	}
 
-	@RequestMapping(path="/{tradeMembershipId}/items/{itemId}", method=RequestMethod.GET)
-	public ItemJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("itemId") Integer itemId) {
+	@RequestMapping(path="/{tradeMembershipId}/items/{articleId}", method=RequestMethod.GET)
+	public ItemJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("articleId") Integer articleId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId);
 		// Delegate to service layer
-		ItemEntity itemEntity = itemService.get(itemId);
+		ItemEntity itemEntity = itemService.get(articleId);
 		// Transform the response
 		ItemJson response = ItemTransformer.transform(itemEntity);
 		// Assemble links

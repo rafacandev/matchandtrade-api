@@ -56,7 +56,7 @@ public class ItemAttachmentControllerGetIT {
 	
 	@Test
 	public void shouldGetItemFiles() {
-		SearchResult<AttachmentJson> response = fixture.get(membership.getTradeMembershipId(), item.getItemId(), 1, 1);
+		SearchResult<AttachmentJson> response = fixture.get(membership.getTradeMembershipId(), item.getArticleId(), 1, 1);
 		assertNotNull(response);
 		assertEquals(1, response.getPagination().getNumber());
 		assertEquals(1, response.getPagination().getTotal());

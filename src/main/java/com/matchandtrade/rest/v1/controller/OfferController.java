@@ -57,13 +57,13 @@ public class OfferController implements Controller {
 	}
 
 	@RequestMapping(path="/{tradeMembershipId}/offers", method=RequestMethod.GET)
-	public SearchResult<OfferJson> get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, Integer offeredItemId, Integer wantedItemId, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<OfferJson> get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, Integer offeredArticleId, Integer wantedArticleId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validateGetAll(tradeMembershipId, offeredItemId, wantedItemId, _pageNumber, _pageSize, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validateGetAll(tradeMembershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Delegate to service layer
-		SearchResult<OfferEntity> searchResult = offerService.search(tradeMembershipId, offeredItemId, wantedItemId, _pageNumber, _pageSize);
+		SearchResult<OfferEntity> searchResult = offerService.search(tradeMembershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<OfferJson> response = OfferTransformer.transform(searchResult);
 		// TODO: Assemble links

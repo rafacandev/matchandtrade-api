@@ -58,12 +58,12 @@ public class OfferControllerGetIT {
 		ItemEntity australia = itemRandom.nextPersistedEntity(memberTradeMemberhip);
 
 		// Owner offers Alpha for Australia
-		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australia.getItemId());
+		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
 		OfferJson response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), alphaForAustralia.getOfferId());
 		assertEquals(alphaForAustralia.getOfferId(), response.getOfferId());
-		assertEquals(alphaForAustralia.getOfferedItem().getItemId(), response.getOfferedItemId());
-		assertEquals(alphaForAustralia.getWantedItem().getItemId(), response.getWantedItemId());
+		assertEquals(alphaForAustralia.getOfferedItem().getArticleId(), response.getOfferedArticleId());
+		assertEquals(alphaForAustralia.getWantedItem().getArticleId(), response.getWantedArticleId());
 	}
 
 	@Test
@@ -83,9 +83,9 @@ public class OfferControllerGetIT {
 		ItemEntity canada = itemRandom.nextPersistedEntity(memberTradeMemberhip);
 		
 		// Owner offers Alpha for Australia
-		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australia.getItemId());
-		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), brazil.getItemId());
-		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), canada.getItemId());
+		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
+		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), brazil.getArticleId());
+		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), canada.getArticleId());
 		
 		SearchResult<OfferJson> response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), null, null, 1, 10);
 		assertEquals(3, response.getPagination().getTotal());
@@ -93,7 +93,7 @@ public class OfferControllerGetIT {
 	}
 	
 	@Test
-	public void shouldGetByOfferedItemId() {
+	public void shouldGetByOfferedArticleId() {
 		// Create a trade
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
@@ -110,16 +110,16 @@ public class OfferControllerGetIT {
 		ItemEntity canada = itemRandom.nextPersistedEntity(memberTradeMemberhip);
 		
 		// Owner offers Alpha for Australia
-		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australia.getItemId());
-		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), brazil.getItemId());
-		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), beta.getItemId(), canada.getItemId());
+		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
+		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), brazil.getArticleId());
+		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), beta.getArticleId(), canada.getArticleId());
 		
-		SearchResult<OfferJson> response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), null, 1, 10);
+		SearchResult<OfferJson> response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), null, 1, 10);
 		assertEquals(2, response.getPagination().getTotal());
 	}
 
 	@Test
-	public void shouldGetByWantedItemId() {
+	public void shouldGetByWantedArticleId() {
 		// Create a trade
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
@@ -136,11 +136,11 @@ public class OfferControllerGetIT {
 		ItemEntity canada = itemRandom.nextPersistedEntity(memberTradeMemberhip);
 		
 		// Owner offers Alpha for Australia
-		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), australia.getItemId());
-		OfferEntity offer = offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getItemId(), brazil.getItemId());
-		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), beta.getItemId(), canada.getItemId());
+		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
+		OfferEntity offer = offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), brazil.getArticleId());
+		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), beta.getArticleId(), canada.getArticleId());
 		
-		SearchResult<OfferJson> response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), null, brazil.getItemId(), 1, 10);
+		SearchResult<OfferJson> response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), null, brazil.getArticleId(), 1, 10);
 		assertEquals(1, response.getPagination().getTotal());
 		assertEquals(offer.getOfferId(), response.getResultList().get(0).getOfferId());
 	}

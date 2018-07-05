@@ -10,8 +10,8 @@ import com.matchandtrade.persistence.entity.AttachmentEntity;
 
 public interface AttachmentRepository extends CrudRepository<AttachmentEntity, Integer>{
 
-	@Query( value = "SELECT i.attachments FROM ItemEntity i WHERE i.itemId = :itemId",
-			countQuery = "SELECT COUNT(*) FROM ItemEntity i INNER JOIN i.attachments AS file WHERE i.itemId = :itemId")
-	Page<AttachmentEntity> findAttachmentsByItemId(@Param("itemId")Integer itemId, Pageable pageable);
+	@Query( value = "SELECT i.attachments FROM ItemEntity i WHERE i.articleId = :articleId",
+			countQuery = "SELECT COUNT(*) FROM ItemEntity i INNER JOIN i.attachments AS file WHERE i.articleId = :articleId")
+	Page<AttachmentEntity> findAttachmentsByArticleId(@Param("articleId")Integer articleId, Pageable pageable);
 
 }

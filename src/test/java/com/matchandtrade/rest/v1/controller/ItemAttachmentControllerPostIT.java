@@ -55,10 +55,10 @@ public class ItemAttachmentControllerPostIT {
 	public void shouldAddFileToItem() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity item = itemRandom.nextPersistedEntity(membership);
-		AttachmentJson response = fixture.post(membership.getTradeMembershipId(), item.getItemId(), file.getAttachmentId());
+		AttachmentJson response = fixture.post(membership.getTradeMembershipId(), item.getArticleId(), file.getAttachmentId());
 		assertNotNull(response);
 		assertEquals(file.getAttachmentId(), response.getAttachmentId());
-		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByItemId(item.getItemId(), 1, 10);
+		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByArticleId(item.getArticleId(), 1, 10);
 		assertEquals(1, files.getResultList().size());
 		assertEquals(file.getAttachmentId(), files.getResultList().get(0).getAttachmentId());
 	}
@@ -71,7 +71,7 @@ public class ItemAttachmentControllerPostIT {
 		item.getAttachments().add(fileRandom.nextPersistedEntity());
 		item.getAttachments().add(fileRandom.nextPersistedEntity());
 		itemRepositoryFacade.save(item);
-		fixture.post(membership.getTradeMembershipId(), item.getItemId(), file.getAttachmentId());
+		fixture.post(membership.getTradeMembershipId(), item.getArticleId(), file.getAttachmentId());
 	}
 
 }

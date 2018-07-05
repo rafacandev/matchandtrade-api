@@ -24,11 +24,11 @@ public class OfferRepositoryFacade {
 	
 	/**
 	 * True if all items are associated to the same {@code Trade}.
-	 * @param itemIds: {@code Item.itemId} of all {@Items} to verify.
+	 * @param articleIds: {@code Item.articleId} of all {@Items} to verify.
 	 */
-	public boolean areItemsAssociatedToSameTrade(Integer[] itemIds) {
+	public boolean areItemsAssociatedToSameTrade(Integer[] articleIds) {
 		Pageable pageable = PersistenceUtil.buildPageable();
-		Page<TradeEntity> page = tradeRepository.findInItemIdsGroupByTrade(itemIds, pageable);
+		Page<TradeEntity> page = tradeRepository.findInArticleIdsGroupByTrade(articleIds, pageable);
 		return page.getNumberOfElements() == 1;
 	}
 	
@@ -40,8 +40,8 @@ public class OfferRepositoryFacade {
 		return offerRepository.findOne(offerId);
 	}
 
-	public List<OfferEntity> getByOfferedItemId(Integer offeredItemId) {
-		return offerRepository.findByOfferedItemItemId(offeredItemId);
+	public List<OfferEntity> getByOfferedArticleId(Integer offeredArticleId) {
+		return offerRepository.findByOfferedItemArticleId(offeredArticleId);
 	}
 
 	public void save(OfferEntity entity) {

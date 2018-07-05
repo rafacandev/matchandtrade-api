@@ -6,9 +6,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
@@ -16,38 +13,26 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "item")
-public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
+public class ItemEntity extends ArticleEntity {
 	
-	private Integer itemId;
 	private String description;
-	private String name;
 	private Set<AttachmentEntity> attachments = new HashSet<>();
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		ItemEntity other = (ItemEntity) obj;
-		if (itemId == null) {
-			if (other.itemId != null)
+		if (description == null) {
+			if (other.description != null)
 				return false;
-		} else if (!itemId.equals(other.itemId))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
+		} else if (!description.equals(other.description))
 			return false;
 		return true;
-	}
-
-	@Column(name = "description", length = 500, nullable = true, unique = false)
-	public String getDescription() {
-		return description;
 	}
 
 	@OneToMany
@@ -58,42 +43,25 @@ public class ItemEntity implements com.matchandtrade.persistence.entity.Entity {
 		return attachments;
 	}
 
-	@Id
-	@Column(name = "item_id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	public Integer getItemId() {
-		return itemId;
-	}
-
-	@Column(name = "name", length = 150, nullable = false, unique = false)
-	public String getName() {
-		return name;
+	@Column(name = "description", length = 500, nullable = true, unique = false)
+	public String getDescription() {
+		return description;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((itemId == null) ? 0 : itemId.hashCode());
+		int result = super.hashCode();
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public void setAttachments(Set<AttachmentEntity> attachments) {
 		this.attachments = attachments;
 	}
 
-	public void setItemId(Integer itemId) {
-		this.itemId = itemId;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

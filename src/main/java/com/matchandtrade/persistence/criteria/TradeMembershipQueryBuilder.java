@@ -13,7 +13,7 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class TradeMembershipQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		itemId("item.itemId"),
+		articleId("item.articleId"),
 		tradeId("trade.tradeId"), 
 		tradeMembershipId("tradeMembership.tradeMembershipId"), 
 		type("tradeMembership.type"),
@@ -55,7 +55,7 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 		boolean isUserJoinRequired = false;
 		boolean isItemsJoinRequired = false;
 		for(Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Field.itemId)) {
+			if (c.getField().equals(Field.articleId)) {
 				isItemsJoinRequired = true;
 			}
 			if (c.getField().equals(Field.tradeId)) {

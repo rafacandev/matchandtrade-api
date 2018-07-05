@@ -47,10 +47,10 @@ public class OfferService {
 		offerRepositoryFacade.delete(offerId);
 	}
 
-	private void delete(OfferQueryBuilder.Field wantedOrOfferedField, Integer itemId) {
+	private void delete(OfferQueryBuilder.Field wantedOrOfferedField, Integer articleId) {
 		Pagination pagination = new Pagination(1, 50);
 		SearchCriteria criteria = new SearchCriteria(pagination);
-		criteria.addCriterion(wantedOrOfferedField, itemId);
+		criteria.addCriterion(wantedOrOfferedField, articleId);
 		do {
 			SearchResult<OfferEntity> searchResult = searchService.search(criteria, OfferQueryBuilder.class);
 			searchResult.getResultList().forEach(offer -> delete(offer.getOfferId()));
@@ -58,38 +58,38 @@ public class OfferService {
 	}
 
 	/**
-	 * Delete all offers where either {@code Offer.wantedItem.itemId} or {@code Offer.offeredItem.itemId}
-	 * is equals to {@code itemId}
+	 * Delete all offers where either {@code Offer.wantedItem.articleId} or {@code Offer.offeredItem.articleId}
+	 * is equals to {@code articleId}
 	 * @param tradeMembershipId
-	 * @param itemId
+	 * @param articleId
 	 */
 	@Transactional
-	public void deleteOffersForItem(Integer itemId) {
-		delete(OfferQueryBuilder.Field.wantedItemId, itemId);
-		delete(OfferQueryBuilder.Field.offeredItemId, itemId);
+	public void deleteOffersForItem(Integer articleId) {
+		delete(OfferQueryBuilder.Field.wantedArticleId, articleId);
+		delete(OfferQueryBuilder.Field.offeredArticleId, articleId);
 	}
 	
 	public OfferEntity get(Integer offerId) {
 		return offerRepositoryFacade.get(offerId);
 	}
 
-	public SearchResult<OfferEntity> search(Integer tradeMembershipId, Integer offeredItemId, Integer wantedItemId,
+	public SearchResult<OfferEntity> search(Integer tradeMembershipId, Integer offeredArticleId, Integer wantedArticleId,
 			Integer pageNumber, Integer pageSize) {
 		SearchCriteria criteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
 		if (tradeMembershipId != null) {
 			criteria.addCriterion(OfferQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
 		}
-		if (offeredItemId != null) {
-			criteria.addCriterion(OfferQueryBuilder.Field.offeredItemId, offeredItemId);
+		if (offeredArticleId != null) {
+			criteria.addCriterion(OfferQueryBuilder.Field.offeredArticleId, offeredArticleId);
 		}
-		if (wantedItemId != null) {
-			criteria.addCriterion(OfferQueryBuilder.Field.wantedItemId, wantedItemId);
+		if (wantedArticleId != null) {
+			criteria.addCriterion(OfferQueryBuilder.Field.wantedArticleId, wantedArticleId);
 		}
 		return searchService.search(criteria, OfferQueryBuilder.class);
 	}
 
-	public List<OfferEntity> searchByOfferedItemId(Integer offeredItemId) {
-		return offerRepositoryFacade.getByOfferedItemId(offeredItemId);
+	public List<OfferEntity> searchByOfferedArticleId(Integer offeredArticleId) {
+		return offerRepositoryFacade.getByOfferedArticleId(offeredArticleId);
 	}
 
 }

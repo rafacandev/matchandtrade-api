@@ -58,8 +58,8 @@ public class ItemAttachmentControllerDeleteIT {
 		ItemEntity item = itemRandom.nextPersistedEntity(membership);
 		item.getAttachments().add(file);
 		itemRepositoryFacade.save(item);
-		fixture.delete(membership.getTradeMembershipId(), item.getItemId(), file.getAttachmentId());
-		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByItemId(item.getItemId(), 1, 10);
+		fixture.delete(membership.getTradeMembershipId(), item.getArticleId(), file.getAttachmentId());
+		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByArticleId(item.getArticleId(), 1, 10);
 		assertEquals(0, files.getResultList().size());
 		assertEquals(0, files.getPagination().getTotal());
 	}
@@ -70,14 +70,14 @@ public class ItemAttachmentControllerDeleteIT {
 		ItemEntity item = itemRandom.nextPersistedEntity(membership);
 		item.getAttachments().add(file);
 		itemRepositoryFacade.save(item);
-		fixture.delete(membership.getTradeMembershipId(), item.getItemId(), file.getAttachmentId());
+		fixture.delete(membership.getTradeMembershipId(), item.getArticleId(), file.getAttachmentId());
 	}
 
 	@Test(expected = RestException.class)
 	public void shouldErrorIfFileDoesNotExist() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemEntity item = itemRandom.nextPersistedEntity(membership);
-		fixture.delete(membership.getTradeMembershipId(), item.getItemId(), -1);
+		fixture.delete(membership.getTradeMembershipId(), item.getArticleId(), -1);
 	}
 
 }

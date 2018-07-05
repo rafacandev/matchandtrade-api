@@ -21,29 +21,29 @@ public class ItemRepositoryFacade {
 	@Autowired
 	private EntityManager entityManger;
 
-	public ItemEntity get(Integer itemId) {
-		return itemRepository.findOne(itemId);
+	public ItemEntity get(Integer articleId) {
+		return itemRepository.findOne(articleId);
 	}
 
 	/**
-	 * True if all itemIds belong to an existing {@code Item} 
-	 * @param itemIds
+	 * True if all articleIds belong to an existing {@code Item} 
+	 * @param articleIds
 	 */
-	public boolean exists(Integer[] itemIds) {
-		List<Integer> ids = Arrays.asList(itemIds);
-		TypedQuery<Integer> query = entityManger.createQuery("SELECT item.itemId FROM ItemEntity AS item WHERE item.itemId IN (:ids)", Integer.class);
+	public boolean exists(Integer[] articleIds) {
+		List<Integer> ids = Arrays.asList(articleIds);
+		TypedQuery<Integer> query = entityManger.createQuery("SELECT item.articleId FROM ItemEntity AS item WHERE item.articleId IN (:ids)", Integer.class);
 		query.setParameter("ids", ids);
-		query.setMaxResults(itemIds.length);
+		query.setMaxResults(articleIds.length);
 		List<Integer> resultList = query.getResultList();
-		return (resultList.size() == itemIds.length);
+		return (resultList.size() == articleIds.length);
 	}
 	
 	public void save(ItemEntity entity) {
 		itemRepository.save(entity);
 	}
 
-	public void delete(Integer itemId) {
-		itemRepository.delete(itemId);
+	public void delete(Integer articleId) {
+		itemRepository.delete(articleId);
 	}
 	
 }
