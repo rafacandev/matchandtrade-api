@@ -14,7 +14,7 @@ public interface TradeRepository extends CrudRepository<TradeEntity, Integer>{
 
 	@Query("SELECT trade FROM TradeMembershipEntity AS tradeMembership"
 			+ " INNER JOIN tradeMembership.trade AS trade"
-			+ " INNER JOIN tradeMembership.items AS item"
+			+ " INNER JOIN tradeMembership.articles AS item"
 			+ " WHERE"
 			+ " item.articleId IN (:articleIds)"
 			+ " GROUP BY trade")

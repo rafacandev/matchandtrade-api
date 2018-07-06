@@ -16,7 +16,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 			+ " FROM TradeMembershipEntity tm"
 			+ " INNER JOIN tm.user AS u"
 			+ " INNER JOIN tm.trade AS t"
-			+ " INNER JOIN tm.items AS i"
+			+ " INNER JOIN tm.articles AS i"
 			+ " WHERE"
 			+ " i.articleId = :articleId")
 	UserEntity findByArticleId(@Param("articleId") Integer articleId);

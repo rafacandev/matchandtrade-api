@@ -23,16 +23,16 @@ public class OfferTransformer {
 	public OfferEntity transform(OfferJson json) {
 		OfferEntity result = new OfferEntity();
 		result.setOfferId(json.getOfferId());
-		result.setOfferedItem(itemRepository.findOne(json.getOfferedArticleId()));
-		result.setWantedItem(itemRepository.findOne(json.getWantedArticleId()));
+		result.setOfferedArticle(itemRepository.findOne(json.getOfferedArticleId()));
+		result.setWantedArticle(itemRepository.findOne(json.getWantedArticleId()));
 		return result;
 	}
 
 	public static OfferJson transform(OfferEntity entity) {
 		OfferJson result = new OfferJson();
 		result.setOfferId(entity.getOfferId());
-		result.setOfferedArticleId(entity.getOfferedItem().getArticleId());
-		result.setWantedArticleId(entity.getWantedItem().getArticleId());
+		result.setOfferedArticleId(entity.getOfferedArticle().getArticleId());
+		result.setWantedArticleId(entity.getWantedArticle().getArticleId());
 		return result;
 	}
 	

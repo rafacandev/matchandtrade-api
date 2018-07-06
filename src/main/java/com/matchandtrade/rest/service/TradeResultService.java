@@ -53,7 +53,7 @@ public class TradeResultService {
 		StringBuilder line = new StringBuilder("(" + membership.getTradeMembershipId() + ") " + item.getArticleId() + " :");
 		List<OfferEntity> offers = offerService.searchByOfferedArticleId(item.getArticleId());
 		offers.forEach(offer -> {
-			line.append(" " + offer.getWantedItem().getArticleId());
+			line.append(" " + offer.getWantedArticle().getArticleId());
 		});
 		return line;
 	}

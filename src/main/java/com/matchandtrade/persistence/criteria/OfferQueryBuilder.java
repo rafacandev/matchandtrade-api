@@ -12,9 +12,9 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class OfferQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		offeredArticleId("offeredItem.articleId"),
+		offeredArticleId("offeredArticle.articleId"),
 		tradeMembershipId("membership.tradeMembershipId"),
-		wantedArticleId("wantedItem.articleId");
+		wantedArticleId("wantedArticle.articleId");
 		
 		private String alias;
 
@@ -35,8 +35,8 @@ public class OfferQueryBuilder implements QueryBuilder {
     	  " FROM TradeMembershipEntity AS membership"
     	+ " INNER JOIN membership.offers AS offer"
     	+ " INNER JOIN membership.user AS user"
-    	+ " INNER JOIN offer.offeredItem AS offeredItem"
-    	+ " INNER JOIN offer.wantedItem AS wantedItem";
+    	+ " INNER JOIN offer.offeredArticle AS offeredArticle"
+    	+ " INNER JOIN offer.wantedArticle AS wantedArticle";
 
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {

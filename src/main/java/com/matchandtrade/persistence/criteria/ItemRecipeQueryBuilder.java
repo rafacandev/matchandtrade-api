@@ -32,7 +32,7 @@ public class ItemRecipeQueryBuilder implements QueryBuilder {
 	}
 	
     private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tradeMembership"
-    		+ " INNER JOIN tradeMembership.items AS item";
+    		+ " INNER JOIN tradeMembership.articles AS item";
 
     @Autowired
     private EntityManager entityManager;

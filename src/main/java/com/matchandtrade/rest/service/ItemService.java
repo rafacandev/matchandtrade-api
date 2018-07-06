@@ -30,7 +30,7 @@ public class ItemService {
 	public void create(Integer tradeMembershipId, ItemEntity itemEntity) {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepositoryFacade.get(tradeMembershipId);
 		itemRepositoryFacade.save(itemEntity);
-		tradeMembershipEntity.getItems().add(itemEntity);
+		tradeMembershipEntity.getArticles().add(itemEntity);
 		tradeMembershipRepositoryFacade.save(tradeMembershipEntity);
 	}
 
@@ -39,7 +39,7 @@ public class ItemService {
 		offerService.deleteOffersForItem(articleId);
 		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
 		ItemEntity item = itemRepositoryFacade.get(articleId);
-		membership.getItems().remove(item);
+		membership.getArticles().remove(item);
 		tradeMembershipRepositoryFacade.save(membership);
 		itemRepositoryFacade.delete(articleId);
 	}

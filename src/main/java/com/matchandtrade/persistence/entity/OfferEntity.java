@@ -14,13 +14,13 @@ import javax.persistence.Table;
 public class OfferEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	private Integer offerId;
-	private ItemEntity offeredItem;
-	private ItemEntity wantedItem;
+	private ArticleEntity offeredArticle;
+	private ArticleEntity wantedArticle;
 	
 	@OneToOne
-	@JoinColumn(name="offered_item_id")
-	public ItemEntity getOfferedItem() {
-		return offeredItem;
+	@JoinColumn(name="offered_article_id")
+	public ArticleEntity getOfferedArticle() {
+		return offeredArticle;
 	}
 
 	@Id
@@ -31,29 +31,29 @@ public class OfferEntity implements com.matchandtrade.persistence.entity.Entity 
 	}
 
 	@OneToOne
-	@JoinColumn(name="wanted_item_id")
-	public ItemEntity getWantedItem() {
-		return wantedItem;
+	@JoinColumn(name="wanted_article_id")
+	public ArticleEntity getWantedArticle() {
+		return wantedArticle;
 	}
 
-	public void setOfferedItem(ItemEntity offeredItem) {
-		this.offeredItem = offeredItem;
+	public void setOfferedArticle(ArticleEntity offeredArticle) {
+		this.offeredArticle = offeredArticle;
 	}
 
 	public void setOfferId(Integer offerId) {
 		this.offerId = offerId;
 	}
 
-	public void setWantedItem(ItemEntity wantedItem) {
-		this.wantedItem = wantedItem;
+	public void setWantedArticle(ArticleEntity wantedArticle) {
+		this.wantedArticle = wantedArticle;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((offeredItem == null) ? 0 : offeredItem.hashCode());
-		result = prime * result + ((wantedItem == null) ? 0 : wantedItem.hashCode());
+		result = prime * result + ((offeredArticle == null) ? 0 : offeredArticle.hashCode());
+		result = prime * result + ((wantedArticle == null) ? 0 : wantedArticle.hashCode());
 		return result;
 	}
 
@@ -66,15 +66,15 @@ public class OfferEntity implements com.matchandtrade.persistence.entity.Entity 
 		if (getClass() != obj.getClass())
 			return false;
 		OfferEntity other = (OfferEntity) obj;
-		if (offeredItem == null) {
-			if (other.offeredItem != null)
+		if (offeredArticle == null) {
+			if (other.offeredArticle != null)
 				return false;
-		} else if (!offeredItem.equals(other.offeredItem))
+		} else if (!offeredArticle.equals(other.offeredArticle))
 			return false;
-		if (wantedItem == null) {
-			if (other.wantedItem != null)
+		if (wantedArticle == null) {
+			if (other.wantedArticle != null)
 				return false;
-		} else if (!wantedItem.equals(other.wantedItem))
+		} else if (!wantedArticle.equals(other.wantedArticle))
 			return false;
 		return true;
 	}

@@ -26,7 +26,7 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 		OWNER, MEMBER
 	}
 	
-	private Set<ItemEntity> items = new HashSet<>();
+	private Set<ArticleEntity> articles = new HashSet<>();
 	private Set<OfferEntity> offers = new HashSet<>();
 	private TradeEntity trade;
 	private Integer tradeMembershipId;
@@ -34,9 +34,9 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	private UserEntity user;
 
 	@OneToMany
-	@JoinTable(name="trade_membership_to_item", joinColumns=@JoinColumn(name="trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_item_trade_membership_id_fk")), inverseJoinColumns = @JoinColumn(name="item_id", foreignKey=@ForeignKey(name="trade_membership_to_item_item_id_fk")))
-	public Set<ItemEntity> getItems() {
-		return items;
+	@JoinTable(name="trade_membership_to_article", joinColumns=@JoinColumn(name="trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_article_trade_membership_id_fk")), inverseJoinColumns = @JoinColumn(name="article_id", foreignKey=@ForeignKey(name="trade_membership_to_article_article_id_fk")))
+	public Set<ArticleEntity> getArticles() {
+		return articles;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL)
@@ -70,8 +70,8 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 		return user;
 	}
 
-	public void setItems(Set<ItemEntity> items) {
-		this.items = items;
+	public void setArticles(Set<ArticleEntity> articles) {
+		this.articles = articles;
 	}
 
 	public void setOffers(Set<OfferEntity> offers) {

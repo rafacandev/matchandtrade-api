@@ -67,7 +67,7 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 		}
 		
 		if (isItemsJoinRequired) {
-			hql.append(" INNER JOIN tradeMembership.items AS item");
+			hql.append(" INNER JOIN tradeMembership.articles AS item");
 		}
 		if (isUserJoinRequired) {
 			hql.append(" INNER JOIN tradeMembership.user AS user");

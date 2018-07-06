@@ -62,8 +62,8 @@ public class OfferControllerGetIT {
 
 		OfferJson response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), alphaForAustralia.getOfferId());
 		assertEquals(alphaForAustralia.getOfferId(), response.getOfferId());
-		assertEquals(alphaForAustralia.getOfferedItem().getArticleId(), response.getOfferedArticleId());
-		assertEquals(alphaForAustralia.getWantedItem().getArticleId(), response.getWantedArticleId());
+		assertEquals(alphaForAustralia.getOfferedArticle().getArticleId(), response.getOfferedArticleId());
+		assertEquals(alphaForAustralia.getWantedArticle().getArticleId(), response.getWantedArticleId());
 	}
 
 	@Test

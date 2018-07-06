@@ -41,7 +41,7 @@ public class OfferRepositoryFacade {
 	}
 
 	public List<OfferEntity> getByOfferedArticleId(Integer offeredArticleId) {
-		return offerRepository.findByOfferedItemArticleId(offeredArticleId);
+		return offerRepository.findByOfferedArticleArticleId(offeredArticleId);
 	}
 
 	public void save(OfferEntity entity) {

@@ -29,8 +29,8 @@ public class OfferRandom {
 		ItemEntity wantedItem = itemService.get(wantedArticleId);
 		
 		OfferEntity offer = new OfferEntity();
-		offer.setOfferedItem(offeredItem);
-		offer.setWantedItem(wantedItem);
+		offer.setOfferedArticle(offeredItem);
+		offer.setWantedArticle(wantedItem);
 		
 		offerService.create(tradeMembershipId, offer);
 		return offer;

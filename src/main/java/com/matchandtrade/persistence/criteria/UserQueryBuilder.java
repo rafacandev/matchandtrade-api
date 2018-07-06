@@ -32,7 +32,7 @@ public class UserQueryBuilder implements QueryBuilder {
 	private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tm"
     		+ " INNER JOIN tm.user AS user"
     		+ " INNER JOIN tm.trade AS trade"
-    		+ " INNER JOIN tm.items AS item";
+    		+ " INNER JOIN tm.articles AS item";
 
 	@Override
 	public Query buildCountQuery(SearchCriteria searchCriteria) {

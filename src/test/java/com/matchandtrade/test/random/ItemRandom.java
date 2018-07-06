@@ -38,7 +38,7 @@ public class ItemRandom {
 		TradeMembershipEntity tme = tradeMembershipRepository.get(tradeMembership.getTradeMembershipId());
 		ItemEntity result = nextEntity();
 		itemRepository.save(result);
-		tme.getItems().add(result);
+		tme.getArticles().add(result);
 		tradeMembershipRepository.save(tme);
 		return result;
 	}
@@ -49,7 +49,7 @@ public class ItemRandom {
 		ItemEntity result = new ItemEntity();
 		result.setName(name);
 		itemRepository.save(result);
-		tme.getItems().add(result);
+		tme.getArticles().add(result);
 		tradeMembershipRepository.save(tme);
 		return result;
 	}
