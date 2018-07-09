@@ -17,6 +17,7 @@ import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ItemService;
 import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.rest.service.TradeMembershipService;
+import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.json.ItemJson;
 
 @Component
@@ -102,7 +103,7 @@ public class ItemValidator {
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.name} is null or length is not between 3 and 150.
 	 * @param name
 	 */
-	private void checkNameLength(String name) {
+	private void checkIfNameExistsAndHasMoreThanThreeCharacters(String name) {
 		if (name == null || name.length() < 3 || name.length() > 150) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name is mandatory and must be between 3 and 150 characters in length.");
 		}
@@ -159,9 +160,10 @@ public class ItemValidator {
 	 */
 	@Transactional
 	public void validatePost(Integer userId, Integer tradeMembershipId, ItemJson json) {
-		validateOwnership(userId, tradeMembershipId);
-		checkNameLength(json.getName());
+		checkType(json);
+		checkIfNameExistsAndHasMoreThanThreeCharacters(json.getName());
 		checkDescriptionLength(json.getDescription());
+		validateOwnership(userId, tradeMembershipId);
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
@@ -169,6 +171,16 @@ public class ItemValidator {
 		SearchResult<ItemEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
+		}
+	}
+
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.type} is null
+	 * @param json
+	 */
+	private void checkType(ItemJson json) {
+		if (json.getType() != ArticleJson.Type.ITEM) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Article.type is mandatory.");
 		}
 	}
 
@@ -189,7 +201,7 @@ public class ItemValidator {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfTrademembershipBelongsToUser(tradeMembershipId, userId);
-		checkNameLength(json.getName());
+		checkIfNameExistsAndHasMoreThanThreeCharacters(json.getName());
 		checkDescriptionLength(json.getDescription());
 
 		ItemEntity itemEntity = itemService.get(articleId);

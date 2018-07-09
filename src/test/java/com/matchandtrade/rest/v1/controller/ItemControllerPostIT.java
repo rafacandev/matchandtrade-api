@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.json.ItemJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ItemRandom;
@@ -37,6 +38,7 @@ public class ItemControllerPostIT {
 	public void shouldCreateItem() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ItemJson request = ItemRandom.nextJson();
+		request.setType(ArticleJson.Type.ITEM);
 		request.setName("ItemControllerPostIT.shouldCreateName.name");
 		request.setDescription("ItemControllerPostIT.shouldCreateName.description");
 		ItemJson response = fixture.post(existingTradeMemberhip.getTradeMembershipId(), request);
@@ -44,7 +46,6 @@ public class ItemControllerPostIT {
 		assertNotNull(response.getArticleId());
 		assertEquals(request.getName(), response.getName());
 		assertEquals(request.getDescription(), response.getDescription());
-		
 	}
 	
 	@Test(expected = RestException.class)
