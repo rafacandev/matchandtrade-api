@@ -33,7 +33,7 @@ public class ArticleJson extends JsonLinkSupport {
 		this.name = name;
 	}
 	
-	public void setType(Type type) {
+	void setType(Type type) {
 		this.type = type;
 	}
 	
