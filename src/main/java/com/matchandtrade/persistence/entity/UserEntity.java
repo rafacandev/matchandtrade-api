@@ -1,12 +1,19 @@
 package com.matchandtrade.persistence.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -17,11 +24,20 @@ public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 		ADMINISTRATOR, USER
 	}
 
+	private Set<ArticleEntity> articles = new HashSet<>();
 	private Integer userId;
 	private String email;
 	private String name;
 	private Role role = Role.USER;
 
+	@OneToMany
+	@JoinTable(name="user_to_article",
+		joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name="user_to_article_user_id_fk")),
+		inverseJoinColumns = @JoinColumn(name="article_id", foreignKey=@ForeignKey(name="user_to_article_article_id_fk")))
+	public Set<ArticleEntity> getArticles() {
+		return articles;
+	}
+	
 	@Column(name = "email", length = 500, nullable = false, unique = true)
 	public String getEmail() {
 		return email;
@@ -37,6 +53,10 @@ public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Integer getUserId() {
 		return userId;
+	}
+	
+	public void setArticles(Set<ArticleEntity> articles) {
+		this.articles = articles;
 	}
 
 	public void setEmail(String email) {

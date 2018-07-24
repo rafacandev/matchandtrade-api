@@ -29,6 +29,8 @@ import com.matchandtrade.test.random.UserRandom;
 public class MockControllerFactory {
 
 	@Autowired
+	private ArticleController articleController;
+	@Autowired
 	private AuthenticationRespositoryFacade authentRepository;
 	@Autowired
 	private AuthenticationController authenticationController;
@@ -133,6 +135,11 @@ public class MockControllerFactory {
 	public AttachmentController getFileController(boolean reusePreviousAuthentication) {
 		fileController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return fileController;
+	}
+
+	public ArticleController getArticleController(boolean reusePreviousAuthentication) {
+		articleController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return articleController;
 	}
 
 }
