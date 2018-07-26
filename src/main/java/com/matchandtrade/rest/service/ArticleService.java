@@ -18,4 +18,8 @@ public class ArticleService {
 		articleRepositoryFacade.save(entity);
 	}
 
+	public ArticleEntity get(Integer articleId) {
+		return articleRepositoryFacade.get(articleId);
+	}
+
 }

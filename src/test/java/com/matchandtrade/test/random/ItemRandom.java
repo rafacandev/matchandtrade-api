@@ -10,6 +10,7 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.repository.UserRepository;
 import com.matchandtrade.rest.v1.json.ItemJson;
 import com.matchandtrade.rest.v1.transformer.ItemTransformer;
 
@@ -22,6 +23,9 @@ public class ItemRandom {
 	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
+	@Autowired
+	private UserRepository userRepository;
+	
 
 	public static ItemEntity nextEntity() {
 		return ItemTransformer.transform(nextJson());
@@ -58,6 +62,18 @@ public class ItemRandom {
 	public ItemEntity nextPersistedEntity(UserEntity tradeOwner) {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(tradeOwner);
 		return nextPersistedEntity(existingTradeMemberhip);
+	}
+
+	@Transactional
+	public ItemEntity nextPersistedEntity(UserEntity user, boolean shouldCreateTrade) {
+		if (shouldCreateTrade == true) {
+			return nextPersistedEntity(user);
+		}
+		ItemEntity result = nextEntity();
+		itemRepository.save(result);
+		user.getArticles().add(result);
+		userRepository.save(user);
+		return result;
 	}
 
 }

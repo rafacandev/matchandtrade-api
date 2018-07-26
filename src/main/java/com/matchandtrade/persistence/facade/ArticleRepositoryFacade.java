@@ -15,5 +15,9 @@ public class ArticleRepositoryFacade {
 	public void save(ArticleEntity entity) {
 		articleRepository.save(entity);
 	}
+
+	public ArticleEntity get(Integer articleId) {
+		return articleRepository.findOne(articleId);
+	}
 	
 }
