@@ -108,6 +108,5 @@ public class ArticleControllerPostIT {
 			throw e;
 		}
 	}
-	
 
 }

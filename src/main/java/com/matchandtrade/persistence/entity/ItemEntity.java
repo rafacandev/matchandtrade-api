@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
@@ -13,8 +15,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "item")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class ItemEntity extends ArticleEntity {
-	
+
 	private String description;
 	private Set<AttachmentEntity> attachments = new HashSet<>();
 

@@ -30,4 +30,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 			+ " o.offerId = :offerId")
 	UserEntity findByOfferId(@Param("offerId")Integer offerId);
 
+	UserEntity findByArticles_ArticleId(Integer articleId);
+
 }

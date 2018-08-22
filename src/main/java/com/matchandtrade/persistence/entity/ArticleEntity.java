@@ -67,7 +67,5 @@ public class ArticleEntity implements com.matchandtrade.persistence.entity.Entit
 			return false;
 		return true;
 	}
-	
-	
 
 }

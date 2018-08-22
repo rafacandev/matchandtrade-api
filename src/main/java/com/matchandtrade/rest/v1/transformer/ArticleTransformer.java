@@ -7,20 +7,31 @@ import com.matchandtrade.rest.v1.json.ItemJson;
 
 public class ArticleTransformer {
 	
+	// Utility classes should not have public constructors
+	private ArticleTransformer() {}
+	
 	public static ArticleEntity transform(ArticleJson json) {
 		if (json instanceof ItemJson) {
-			ItemJson itemJson = (ItemJson) json;
-			return ItemTransformer.transform(itemJson);
+			ItemJson item = (ItemJson) json;
+			return ItemTransformer.transform(item);
+		} else {
+			ArticleEntity entity = new ArticleEntity();
+			entity.setArticleId(json.getArticleId());
+			entity.setName(json.getName());
+			return entity;
 		}
-		throw new IllegalArgumentException("ArticleJson must be an instance of ItemJson.");
 	}
 
 	public static ArticleJson transform(ArticleEntity entity) {
 		if (entity instanceof ItemEntity) {
-			ItemEntity itemEntity = (ItemEntity) entity;
-			return ItemTransformer.transform(itemEntity);
+			ItemEntity item = (ItemEntity) entity;
+			return ItemTransformer.transform(item);
+		} else {
+			ArticleJson json = new ArticleJson();
+			json.setArticleId(entity.getArticleId());
+			json.setName(entity.getName());
+			return json;
 		}
-		throw new IllegalArgumentException("ArticleEntity must be an instance of ItemEntity.");
 	}
 
 }

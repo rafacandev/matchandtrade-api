@@ -60,5 +60,23 @@ public class ArticleController implements Controller {
 		ArticleLinkAssember.assemble(response);
 		return response;
 	}
+	
+	@RequestMapping(path = "/{articleId}", method = RequestMethod.PUT)
+	public ArticleJson put(@PathVariable Integer articleId, @RequestBody ArticleJson requestJson) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		requestJson.setArticleId(articleId); // Always get the id from the URL when working on PUT methods
+		articleValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), articleId, requestJson);
+		// Transform the request
+		ArticleEntity entity = ArticleTransformer.transform(requestJson);
+		// Delegate to service layer
+		articleService.update(entity);
+		// Transform the response
+		ArticleJson response = ArticleTransformer.transform(entity);
+		// Assemble links
+		ArticleLinkAssember.assemble(response);
+		return response;
+	}
 
 }

@@ -1,14 +1,20 @@
 package com.matchandtrade.rest.v1.validator;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.json.ItemJson;
 
 @Component
 public class ArticleValidator {
+	
+	@Autowired
+	private UserRepositoryFacade userRepositoryFacade;
 
 	/**
 	 * Throws RestException when: <br>
@@ -53,6 +59,20 @@ public class ArticleValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Article must be of type Item.");
 		}
 		
+	}
+
+	// TODO: Lots to validate here
+	public void validatePut(Integer userId, Integer articleId, ArticleJson article) {
+		verifyType(article);
+		verifyName(article.getName());
+		verifyOwnership(userId, articleId);
+	}
+
+	private void verifyOwnership(Integer userId, Integer articleId) {
+		UserEntity articleOwner = userRepositoryFacade.findUserByArticleId(articleId);
+		if (articleOwner == null || !userId.equals(articleOwner.getUserId())) {
+			throw new RestException(HttpStatus.FORBIDDEN, "Article does not belong to authenticated user.");
+		}
 	}
 
 }

@@ -2,6 +2,7 @@ package com.matchandtrade.persistence.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,7 +19,7 @@ public class OfferEntity implements com.matchandtrade.persistence.entity.Entity 
 	private ArticleEntity wantedArticle;
 	
 	@OneToOne
-	@JoinColumn(name="offered_article_id")
+	@JoinColumn(name="offered_article_id", foreignKey = @ForeignKey(name = "offer_offered_article_id_fk"))
 	public ArticleEntity getOfferedArticle() {
 		return offeredArticle;
 	}
@@ -31,7 +32,7 @@ public class OfferEntity implements com.matchandtrade.persistence.entity.Entity 
 	}
 
 	@OneToOne
-	@JoinColumn(name="wanted_article_id")
+	@JoinColumn(name="wanted_article_id", foreignKey = @ForeignKey(name = "offer_wanted_article_id_fk"))
 	public ArticleEntity getWantedArticle() {
 		return wantedArticle;
 	}
