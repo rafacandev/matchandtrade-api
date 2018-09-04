@@ -27,7 +27,7 @@ public class TradeMembershipValidator {
 	 * {@code TradeMembership.tradeId} must be valid.
 	 * {@code TradeMembership.userId} must be valid.
 	 * The combination of {@code TradeMembership.tradeId} and {@code TradeMembership.userId} must be unique.
-	 * Users can subscribe only when {@code Trade.State=SUBMITTING_ITEMS}
+	 * Users can subscribe only when {@code Trade.State=SUBMITTING_ARTICLES}
 	 * 
 	 * @param json to be validated
 	 */
@@ -39,8 +39,8 @@ public class TradeMembershipValidator {
 		TradeEntity trade = tradeService.get(json.getTradeId());
 		if (trade == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.tradeId must refer to an existing Trade.");
-		} else if (trade.getState() != TradeEntity.State.SUBMITTING_ITEMS) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.State must be SUBMITTING_ITEMS when creating a new TradeMembership.");
+		} else if (trade.getState() != TradeEntity.State.SUBMITTING_ARTICLES) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.State must be SUBMITTING_ARTICLES when creating a new TradeMembership.");
 		}
 		
 		SearchResult<TradeMembershipEntity> searchResult = tradeMembershipService.searchByTradeIdUserIdType(json.getTradeId(), json.getUserId(), null, 1, 1);

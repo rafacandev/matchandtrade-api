@@ -11,14 +11,14 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.persistence.repository.UserRepository;
-import com.matchandtrade.rest.v1.json.ItemJson;
-import com.matchandtrade.rest.v1.transformer.ItemTransformer;
+import com.matchandtrade.rest.v1.json.ArticleJson;
+import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 
 @Component
-public class ItemRandom {
+public class ArticleRandom {
 	
 	@Autowired
-	private ArticleRepositoryFacade itemRepository;
+	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private TradeMembershipRepositoryFacade tradeMembershipRepository;
 	@Autowired
@@ -28,11 +28,11 @@ public class ItemRandom {
 	
 
 	public static ArticleEntity nextEntity() {
-		return ItemTransformer.transform(nextJson());
+		return ArticleTransformer.transform(nextJson());
 	}
 	
-	public static ItemJson nextJson() {
-		ItemJson result = new ItemJson();
+	public static ArticleJson nextJson() {
+		ArticleJson result = new ArticleJson();
 		result.setName(StringRandom.nextName());
 		return result;
 	}
@@ -41,7 +41,7 @@ public class ItemRandom {
 	public ArticleEntity nextPersistedEntity(TradeMembershipEntity tradeMembership) {
 		TradeMembershipEntity tme = tradeMembershipRepository.get(tradeMembership.getTradeMembershipId());
 		ArticleEntity result = nextEntity();
-		itemRepository.save(result);
+		articleRepositoryFacade.save(result);
 		tme.getArticles().add(result);
 		tradeMembershipRepository.save(tme);
 		return result;
@@ -52,7 +52,7 @@ public class ItemRandom {
 		TradeMembershipEntity tme = tradeMembershipRepository.get(tradeMembership.getTradeMembershipId());
 		ArticleEntity result = new ArticleEntity();
 		result.setName(name);
-		itemRepository.save(result);
+		articleRepositoryFacade.save(result);
 		tme.getArticles().add(result);
 		tradeMembershipRepository.save(tme);
 		return result;
@@ -70,7 +70,7 @@ public class ItemRandom {
 			return nextPersistedEntity(user);
 		}
 		ArticleEntity result = nextEntity();
-		itemRepository.save(result);
+		articleRepositoryFacade.save(result);
 		user.getArticles().add(result);
 		userRepository.save(user);
 		return result;

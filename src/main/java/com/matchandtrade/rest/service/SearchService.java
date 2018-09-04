@@ -22,7 +22,7 @@ import com.matchandtrade.persistence.facade.QueryableRepository;
 public class SearchService {
 
 	@Autowired
-	private QueryableRepository<ArticleEntity> queryableItem;
+	private QueryableRepository<ArticleEntity> queryableArticle;
 	@Autowired
 	private QueryableRepository<OfferEntity> queryableOffer;
 	@Autowired
@@ -34,7 +34,7 @@ public class SearchService {
 	@Autowired
 	private OfferQueryBuilder offerQueryBuilder;
 	@Autowired
-	private ArticleQueryBuilder itemQueryBuilder;
+	private ArticleQueryBuilder articleQueryBuilder;
 	@Autowired
 	private TradeQueryBuilder tradeQueryBuilder;
 	@Autowired
@@ -46,7 +46,7 @@ public class SearchService {
 	@SuppressWarnings("unchecked")
 	public <T> SearchResult<T> search(SearchCriteria searchCriteria, Class<? extends QueryBuilder> queryBuilderClass) {
 		if (ArticleQueryBuilder.class.equals(queryBuilderClass)) {
-			return (SearchResult<T>) queryableItem.query(searchCriteria, itemQueryBuilder);
+			return (SearchResult<T>) queryableArticle.query(searchCriteria, articleQueryBuilder);
 		}
 		if (OfferQueryBuilder.class.equals(queryBuilderClass)) {
 			return (SearchResult<T>) queryableOffer.query(searchCriteria, offerQueryBuilder);

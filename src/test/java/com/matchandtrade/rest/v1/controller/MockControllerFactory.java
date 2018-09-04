@@ -33,7 +33,7 @@ public class MockControllerFactory {
 	@Autowired
 	private AuthenticationController authenticationController;
 	@Autowired
-	private ItemController itemController;
+	private ArticleController articleController;
 	private MockAuthenticationProvider lastMockAuthenticationProvider;
 	@Autowired
 	private OfferController offerController;
@@ -50,7 +50,7 @@ public class MockControllerFactory {
 	@Autowired
 	private UserRepositoryFacade userRepository;
 	@Autowired
-	private ItemAttachmentController itemFileController;
+	private ArticleAttachmentController articleFileController;
 	@Autowired
 	private AttachmentController fileController;
 
@@ -83,9 +83,9 @@ public class MockControllerFactory {
 		return authenticationController;
 	}
 	
-	public ItemController getItemController(boolean reusePreviousAuthentication) {
-		itemController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
-		return itemController;
+	public ArticleController getArticleController(boolean reusePreviousAuthentication) {
+		articleController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return articleController;
 	}
 	
 	public TradeController getTradeController(boolean reusePreviousAuthentication) {
@@ -125,9 +125,9 @@ public class MockControllerFactory {
 		return result;
 	}
 
-	public ItemAttachmentController getItemFileController(boolean reusePreviousAuthentication) {
-		itemFileController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
-		return itemFileController;
+	public ArticleAttachmentController getArticleFileController(boolean reusePreviousAuthentication) {
+		articleFileController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return articleFileController;
 	}
 
 	public AttachmentController getFileController(boolean reusePreviousAuthentication) {

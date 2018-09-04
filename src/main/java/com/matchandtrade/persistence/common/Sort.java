@@ -10,8 +10,8 @@ package com.matchandtrade.persistence.common;
  * 
  * Example: Imagine the following JPA Query
  * <pre>
- *     FROM ItemEntity AS i ORDER BY i.name ASC;
- *     -- i.name is the field
+ *     FROM TradEntity AS trade ORDER BY trade.name ASC;
+ *     -- trade.name is the field
  *     -- ASC is the type
  * <pre>
  * @return

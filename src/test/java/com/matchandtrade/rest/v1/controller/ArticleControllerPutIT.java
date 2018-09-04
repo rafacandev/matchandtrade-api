@@ -11,73 +11,72 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.v1.json.ItemJson;
-import com.matchandtrade.rest.v1.transformer.ItemTransformer;
+import com.matchandtrade.rest.v1.json.ArticleJson;
+import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.ItemRandom;
+import com.matchandtrade.test.random.ArticleRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class ItemControllerPutIT {
+public class ArticleControllerPutIT {
 
-	private ItemController fixture;
+	private ArticleController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
 	@Autowired
-	private ItemRandom itemRandom;
+	private ArticleRandom articleRandom;
 	@Autowired
 	private UserRandom userRandom;
-	
 
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getItemController(true);
+			fixture = mockControllerFactory.getArticleController(true);
 		}
 	}
 
 	@Test
-	public void shouldEditItem() {
+	public void shouldEditArticle() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
-		ItemJson request = ItemTransformer.transform(existingItem);
+		ArticleEntity existingArticle = articleRandom.nextPersistedEntity(existingTradeMemberhip);
+		ArticleJson request = ArticleTransformer.transform(existingArticle);
 		
-		String itemName = "ItemName";
-		String itemDescription = "ItemDescription";
-		request.setName(itemName);
-		request.setDescription(itemDescription);
+		String articleName = "ArticleName";
+		String articleDescription = "ArticleDescription";
+		request.setName(articleName);
+		request.setDescription(articleDescription);
 		
-		ItemJson response = fixture.put(existingTradeMemberhip.getTradeMembershipId(), request.getArticleId(), request);
-		assertEquals(itemName, response.getName());
-		assertEquals(itemDescription, response.getDescription());
+		ArticleJson response = fixture.put(existingTradeMemberhip.getTradeMembershipId(), request.getArticleId(), request);
+		assertEquals(articleName, response.getName());
+		assertEquals(articleDescription, response.getDescription());
 	}	
 
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenEditingAnInvalidArticleId() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemJson request = ItemRandom.nextJson();
+		ArticleJson request = ArticleRandom.nextJson();
 		fixture.put(existingTradeMemberhip.getTradeMembershipId(), -1, request);
 	}
 
 	@Test(expected=RestException.class)
-	public void shouldErrorWhenAnItemWithTheSameNameAlreadyExists() {
+	public void shouldErrorWhenAnArticleWithTheSameNameAlreadyExists() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
-		ArticleEntity existingItem2 = itemRandom.nextPersistedEntity(existingTradeMemberhip);
-		ItemJson request = new ItemJson();
-		request.setName(existingItem.getName());
-		fixture.put(existingTradeMemberhip.getTradeMembershipId(), existingItem2.getArticleId(), request);
+		ArticleEntity existingArticle = articleRandom.nextPersistedEntity(existingTradeMemberhip);
+		ArticleEntity existingArticle2 = articleRandom.nextPersistedEntity(existingTradeMemberhip);
+		ArticleJson request = new ArticleJson();
+		request.setName(existingArticle.getName());
+		fixture.put(existingTradeMemberhip.getTradeMembershipId(), existingArticle2.getArticleId(), request);
 	}
 	
 	@Test(expected=RestException.class)
-	public void shouldErrorTryingToEditAnItemThatNotBelongsToTheCurrentUser() {
+	public void shouldErrorTryingToEditAnArticleThatNotBelongsToTheCurrentUser() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
-		ItemJson request = ItemTransformer.transform(existingItem);
+		ArticleEntity existingArticle = articleRandom.nextPersistedEntity(existingTradeMemberhip);
+		ArticleJson request = ArticleTransformer.transform(existingArticle);
 		request.setName(request.getName() + "-Updated");
 		fixture.put(existingTradeMemberhip.getTradeMembershipId(), request.getArticleId(), request);
 	}

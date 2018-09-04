@@ -11,19 +11,19 @@ import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 
 @Service
-public class ItemAttachmentService {
+public class ArticleAttachmentService {
 	
 	@Autowired
-	private ArticleRepositoryFacade itemRepositoryFacade;
+	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade attachmentRepositoryFacade;
 
 	@Transactional
-	public void addAttachmentToItem(Integer articleId, Integer attachmentId) {
+	public void addAttachmentToArticle(Integer articleId, Integer attachmentId) {
 		AttachmentEntity attachment = attachmentRepositoryFacade.get(attachmentId);
-		ArticleEntity item = itemRepositoryFacade.get(articleId);
-		item.getAttachments().add(attachment);
-		itemRepositoryFacade.save(item);
+		ArticleEntity article = articleRepositoryFacade.get(articleId);
+		article.getAttachments().add(attachment);
+		articleRepositoryFacade.save(article);
 	}
 
 	public SearchResult<AttachmentEntity> search(Integer articleId, Integer pageNumber, Integer pageSize) {
@@ -31,11 +31,11 @@ public class ItemAttachmentService {
 	}
 
 	@Transactional
-	public void deleteAttachmentFromItem(Integer articleId, Integer attachmentId) {
+	public void deleteAttachmentFromArticle(Integer articleId, Integer attachmentId) {
 		AttachmentEntity attachment = attachmentRepositoryFacade.get(attachmentId);
-		ArticleEntity item = itemRepositoryFacade.get(articleId);
-		if (item.getAttachments().remove(attachment)) {
-			itemRepositoryFacade.save(item);
+		ArticleEntity article = articleRepositoryFacade.get(articleId);
+		if (article.getAttachments().remove(attachment)) {
+			articleRepositoryFacade.save(article);
 			attachmentRepositoryFacade.delete(attachmentId);
 		}
 	}

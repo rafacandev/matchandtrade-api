@@ -1,7 +1,6 @@
 package com.matchandtrade.rest.v1.controller;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
@@ -18,60 +17,67 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.AttachmentRandom;
-import com.matchandtrade.test.random.ItemRandom;
+import com.matchandtrade.test.random.ArticleRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
+import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class ItemAttachmentControllerPostIT {
+public class ArticleAttachmentControllerDeleteIT {
 	
 	@Autowired
-	private ItemRandom itemRandom;
+	private ArticleRandom articleRandom;
 	@Autowired
-	private ArticleRepositoryFacade itemRepositoryFacade;
+	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade fileRepositoryFacade;
 	private AttachmentEntity file;
 	@Autowired
 	private AttachmentRandom fileRandom;
-	private ItemAttachmentController fixture;
+	private ArticleAttachmentController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
+	@Autowired
+	private UserRandom userRandom;
 	
 	@Before
 	public void before() throws IOException {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getItemFileController(false);
+			fixture = mockControllerFactory.getArticleFileController(false);
 		}
 		file = fileRandom.nextPersistedEntity();
 	}
 	
 	@Test
-	public void shouldAddFileToItem() {
+	public void shouldDeleteFileFromArticle() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity item = itemRandom.nextPersistedEntity(membership);
-		AttachmentJson response = fixture.post(membership.getTradeMembershipId(), item.getArticleId(), file.getAttachmentId());
-		assertNotNull(response);
-		assertEquals(file.getAttachmentId(), response.getAttachmentId());
-		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByArticleId(item.getArticleId(), 1, 10);
-		assertEquals(1, files.getResultList().size());
-		assertEquals(file.getAttachmentId(), files.getResultList().get(0).getAttachmentId());
+		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
+		article.getAttachments().add(file);
+		articleRepositoryFacade.save(article);
+		fixture.delete(membership.getTradeMembershipId(), article.getArticleId(), file.getAttachmentId());
+		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByArticleId(article.getArticleId(), 1, 10);
+		assertEquals(0, files.getResultList().size());
+		assertEquals(0, files.getPagination().getTotal());
 	}
 
 	@Test(expected = RestException.class)
-	public void shouldFailToAddMoreThan3FilesToItem() {
+	public void shouldErrorIfArticleDoesNotBelongToUser() {
+		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
+		article.getAttachments().add(file);
+		articleRepositoryFacade.save(article);
+		fixture.delete(membership.getTradeMembershipId(), article.getArticleId(), file.getAttachmentId());
+	}
+
+	@Test(expected = RestException.class)
+	public void shouldErrorIfFileDoesNotExist() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity item = itemRandom.nextPersistedEntity(membership);
-		item.getAttachments().add(fileRandom.nextPersistedEntity());
-		item.getAttachments().add(fileRandom.nextPersistedEntity());
-		item.getAttachments().add(fileRandom.nextPersistedEntity());
-		itemRepositoryFacade.save(item);
-		fixture.post(membership.getTradeMembershipId(), item.getArticleId(), file.getAttachmentId());
+		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
+		fixture.delete(membership.getTradeMembershipId(), article.getArticleId(), -1);
 	}
 
 }

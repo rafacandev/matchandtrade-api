@@ -14,17 +14,16 @@ import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.service.ItemService;
+import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.v1.json.ArticleJson;
-import com.matchandtrade.rest.v1.json.ItemJson;
 
 @Component
-public class ItemValidator {
+public class ArticleValidator {
 
 	@Autowired
-	private ItemService itemService;
+	private ArticleService articleService;
 	@Autowired
 	private TradeMembershipService tradeMembershipService;
 	@Autowired
@@ -32,19 +31,19 @@ public class ItemValidator {
 
 
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.description} length is greater than 500.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Article.description} length is greater than 500.
 	 * @param name
 	 */
 	private void checkDescriptionLength(String description) {
 		if (description != null && description.length() > 500) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Item.description cannot be greater than 500 characters in length.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Article.description cannot be greater than 500 characters in length.");
 		}
 	}
 	
-	private void checkIfItemExists(Integer articleId) {
-		ArticleEntity item = itemService.get(articleId);
-		if (item == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "There is no Item for the given Item.articleId");
+	private void checkIfArticleExists(Integer articleId) {
+		ArticleEntity article = articleService.get(articleId);
+		if (article == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "There is no Article for the given Article.articleId");
 		}
 	}
 
@@ -100,24 +99,24 @@ public class ItemValidator {
 	}
 	
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.name} is null or length is not between 3 and 150.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Article.name} is null or length is not between 3 and 150.
 	 * @param name
 	 */
 	private void checkIfNameExistsAndHasMoreThanThreeCharacters(String name) {
 		if (name == null || name.length() < 3 || name.length() > 150) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name is mandatory and must be between 3 and 150 characters in length.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Article.name is mandatory and must be between 3 and 150 characters in length.");
 		}
 	}
 	
 	/**
-	 * An item can be deleted only by their owners. See {@code validateOwndership()}
-	 * Item must exist.
+	 * An article can be deleted only by their owners. See {@code validateOwndership()}
+	 * Article must exist.
 	 * @param tradeMembershipId
 	 * @param articleId
 	 */
 	public void validateDelete(Integer tradeMembershipId, Integer userId, Integer articleId) {
 		validateOwnership(userId, tradeMembershipId);
-		checkIfItemExists(articleId);
+		checkIfArticleExists(articleId);
 	}
 
 	public void validateGet(Integer userId, Integer tradeMembershipId) {
@@ -152,71 +151,60 @@ public class ItemValidator {
 	/**
 	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
 	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipId}
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.name} is null or length is not between 3 and 150.
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Item.name} is not unique (case insensitive) within a TradeMembership. 
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Article.name} is null or length is not between 3 and 150.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Article.name} is not unique (case insensitive) within a TradeMembership. 
 	 * @param userId
 	 * @param tradeMembershipId
-	 * @param json
+	 * @param article
 	 */
 	@Transactional
-	public void validatePost(Integer userId, Integer tradeMembershipId, ItemJson json) {
-		checkType(json);
-		checkIfNameExistsAndHasMoreThanThreeCharacters(json.getName());
-		checkDescriptionLength(json.getDescription());
+	public void validatePost(Integer userId, Integer tradeMembershipId, ArticleJson article) {
+		checkIfNameExistsAndHasMoreThanThreeCharacters(article.getName());
+		checkDescriptionLength(article.getDescription());
 		validateOwnership(userId, tradeMembershipId);
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(ArticleQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ArticleQueryBuilder.Field.name, json.getName(), Restriction.EQUALS_IGNORE_CASE);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.name, article.getName(), Restriction.EQUALS_IGNORE_CASE);
 		SearchResult<ArticleEntity> searchResult = searchService.search(searchCriteria, ArticleQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
-		}
-	}
-
-	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.type} is null
-	 * @param json
-	 */
-	private void checkType(ItemJson json) {
-		if (json.getType() != ArticleJson.Type.ITEM) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Article.type is mandatory.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Article.name must be unique (case insensitive) within a TradeMembership.");
 		}
 	}
 
 	/**
 	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code tradeMembershipId} returns no TradeMembership
 	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code tradeMembershipId}
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code json.name} is null or length is not between 3 and 150.
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Item.name} is not unique (case insensitive) within a TradeMembership. 
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Item.name} is not unique (case insensitive) within a TradeMembership. 
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Article.name} is null or length is not between 3 and 150.
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Article.name} is not unique (case insensitive) within a TradeMembership. 
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Article.name} is not unique (case insensitive) within a TradeMembership. 
 	 * Class {@code validatePost()}
 	 * @param userId
 	 * @param tradeMembershipId
 	 * @param articleId
-	 * @param json
+	 * @param article
 	 */
 	@Transactional
-	public void validatePut(Integer userId, Integer tradeMembershipId, Integer articleId, ItemJson json) {
+	public void validatePut(Integer userId, Integer tradeMembershipId, Integer articleId, ArticleJson article) {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipService.get(tradeMembershipId);
 		checkIfTradeMembershipFound(tradeMembershipId, tradeMembershipEntity);
 		checkIfTrademembershipBelongsToUser(tradeMembershipId, userId);
-		checkIfNameExistsAndHasMoreThanThreeCharacters(json.getName());
-		checkDescriptionLength(json.getDescription());
+		checkIfNameExistsAndHasMoreThanThreeCharacters(article.getName());
+		checkDescriptionLength(article.getDescription());
 
-		ArticleEntity itemEntity = itemService.get(articleId);
-		if (itemEntity == null) {
-			throw new RestException(HttpStatus.NOT_FOUND, "Did not find resource for the given Item.articleId");
+		ArticleEntity articleEntity = articleService.get(articleId);
+		if (articleEntity == null) {
+			throw new RestException(HttpStatus.NOT_FOUND, "Did not find resource for the given Article.articleId");
 		}
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(ArticleQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ArticleQueryBuilder.Field.name, json.getName(), Restriction.LIKE_IGNORE_CASE);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.name, article.getName(), Restriction.LIKE_IGNORE_CASE);
 		// Required to check if is not the same articleId because to guarantee PUT idempotency
-		searchCriteria.addCriterion(ArticleQueryBuilder.Field.articleId, json.getArticleId(), Restriction.NOT_EQUALS);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.articleId, article.getArticleId(), Restriction.NOT_EQUALS);
 		SearchResult<ArticleEntity> searchResult = searchService.search(searchCriteria, ArticleQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Article.name must be unique (case insensitive) within a TradeMembership.");
 		}
 	}
 

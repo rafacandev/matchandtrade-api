@@ -12,17 +12,17 @@ import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 
 @Component
-public class ItemFileValidator {
+public class ArticleFileValidator {
 	
 	@Autowired
-	private ItemValidator itemValidator;
+	private ArticleValidator articleValidator;
 	@Autowired
-	private ArticleRepositoryFacade itemRepositoryFacade;
+	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade fileRespositoryFacade;
 	
 	public void validateDelete(Integer userId, Integer tradeMembershipId, Integer articleId, Integer fileId) {
-		itemValidator.validateOwnership(userId, tradeMembershipId);
+		articleValidator.validateOwnership(userId, tradeMembershipId);
 		AttachmentEntity file = fileRespositoryFacade.get(fileId);
 		if (file == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "There is no File for the given File.fileId.");
@@ -31,8 +31,8 @@ public class ItemFileValidator {
 	}
 	
 	/**
-	 * Same as in {@link com.matchandtrade.rest.v1.validator.ItemValidator.validateOwnership()}.
-	 * Also validates if the target {@code Item} for the given {@code articleId} has less than two files.
+	 * Same as in {@link com.matchandtrade.rest.v1.validator.ArticleValidator.validateOwnership()}.
+	 * Also validates if the target {@code Article} for the given {@code articleId} has less than two files.
 	 * 
 	 * @param userId
 	 * @param tradeMembershipId
@@ -40,14 +40,14 @@ public class ItemFileValidator {
 	 */
 	@Transactional
 	public void validatePost(Integer userId, Integer tradeMembershipId, Integer articleId) {
-		itemValidator.validateOwnership(userId, tradeMembershipId);
-		validateThatItemHasLessThanTwoFiles(articleId);
+		articleValidator.validateOwnership(userId, tradeMembershipId);
+		validateThatArticleHasLessThanTwoFiles(articleId);
 	}
 
-	private void validateThatItemHasLessThanTwoFiles(Integer articleId) {
-		ArticleEntity item = itemRepositoryFacade.get(articleId);
-		if (item.getAttachments().size() > 2) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Items cannot have more than 3 files.");
+	private void validateThatArticleHasLessThanTwoFiles(Integer articleId) {
+		ArticleEntity article = articleRepositoryFacade.get(articleId);
+		if (article.getAttachments().size() > 2) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Articles cannot have more than 3 files.");
 		}
 	}
 

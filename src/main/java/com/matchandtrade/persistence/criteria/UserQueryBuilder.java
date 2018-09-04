@@ -12,7 +12,7 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class UserQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		articleId("item.articleId");
+		articleId("article.articleId");
 		
 		private String alias;
 
@@ -32,7 +32,7 @@ public class UserQueryBuilder implements QueryBuilder {
 	private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tm"
     		+ " INNER JOIN tm.user AS user"
     		+ " INNER JOIN tm.trade AS trade"
-    		+ " INNER JOIN tm.articles AS item";
+    		+ " INNER JOIN tm.articles AS article";
 
 	@Override
 	public Query buildCountQuery(SearchCriteria searchCriteria) {

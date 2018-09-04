@@ -2,18 +2,18 @@ package com.matchandtrade.persistence.dto;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 
-public class ItemAndTradeMembershipIdDto implements Dto {
+public class ArticleAndTradeMembershipIdDto implements Dto {
 
-	private ArticleEntity item;
+	private ArticleEntity article;
 	private Integer tradeMembershipId;
 
-	public ItemAndTradeMembershipIdDto(ArticleEntity item, Integer tradeMembershipId) {
+	public ArticleAndTradeMembershipIdDto(ArticleEntity article, Integer tradeMembershipId) {
 		this.tradeMembershipId = tradeMembershipId;
-		this.item = item;
+		this.article = article;
 	}
 	
-	public ArticleEntity getItem() {
-		return item;
+	public ArticleEntity getArticle() {
+		return article;
 	}
 
 	public Integer getTradeMembershipId() {

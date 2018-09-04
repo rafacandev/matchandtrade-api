@@ -12,8 +12,8 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class ArticleQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		articleId("item.articleId"),
-		name("item.name"),
+		articleId("article.articleId"),
+		name("article.name"),
 		tradeId("trade.tradeId"),
 		tradeMembershipId("tm.tradeMembershipId");
 		
@@ -34,7 +34,7 @@ public class ArticleQueryBuilder implements QueryBuilder {
 	
     private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tm"
     		+ " INNER JOIN tm.trade AS trade"
-    		+ " INNER JOIN tm.articles AS item";
+    		+ " INNER JOIN tm.articles AS article";
 
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
@@ -44,7 +44,7 @@ public class ArticleQueryBuilder implements QueryBuilder {
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
-    	StringBuilder hql = new StringBuilder("SELECT item " + BASIC_HQL);
+    	StringBuilder hql = new StringBuilder("SELECT article " + BASIC_HQL);
 		return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager);
 	}
 

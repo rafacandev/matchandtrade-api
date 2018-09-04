@@ -10,8 +10,8 @@ import com.matchandtrade.persistence.common.Field;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemRecipeQueryBuilder;
-import com.matchandtrade.persistence.dto.ItemAndTradeMembershipIdDto;
+import com.matchandtrade.persistence.criteria.ArticleRecipeQueryBuilder;
+import com.matchandtrade.persistence.dto.ArticleAndTradeMembershipIdDto;
 import com.matchandtrade.persistence.entity.Entity;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.v1.json.search.Matcher;
@@ -24,9 +24,9 @@ public class SearchTransformer {
 	public static SearchResult<Json> transform(SearchResult<Entity> searchResult, Recipe recipe) {
 		List<Json> resultList = searchResult.getResultList().stream()
 			.map(entity -> {
-				if (Recipe.ITEMS == recipe) {
-					ItemAndTradeMembershipIdDto tradeMembershipAndItemDto = (ItemAndTradeMembershipIdDto) entity;
-					return ItemTransformer.transform(tradeMembershipAndItemDto.getItem());
+				if (Recipe.ARTICLES == recipe) {
+					ArticleAndTradeMembershipIdDto tradeMembershipAndArticleDto = (ArticleAndTradeMembershipIdDto) entity;
+					return ArticleTransformer.transform(tradeMembershipAndArticleDto.getArticle());
 				} else {
 					throw new InvalidParameterException("Unsupported recipe: " + recipe);
 				}
@@ -36,8 +36,8 @@ public class SearchTransformer {
 	}
 
 	public static SearchCriteria transform(SearchCriteriaJson request, Pagination pagination) {
-		if (Recipe.ITEMS == request.getRecipe()) {
-			return transformItemsRecipe(request, pagination);
+		if (Recipe.ARTICLES == request.getRecipe()) {
+			return transformArticlesRecipe(request, pagination);
 		} else {
 			throw new InvalidParameterException("Unable to transform SearchCriteria with recipe: " + request.getRecipe());
 		}
@@ -70,14 +70,14 @@ public class SearchTransformer {
 		return new Criterion(field, value, persistenceOperator, persistanceRestriction);
 	}
 	
-	private static SearchCriteria transformItemsRecipe(SearchCriteriaJson request, Pagination pagination) {
+	private static SearchCriteria transformArticlesRecipe(SearchCriteriaJson request, Pagination pagination) {
 		SearchCriteria result = new SearchCriteria(pagination);
 		request.getCriteria().forEach(entry -> {
 			if ("Trade.tradeId".equals(entry.getKey())) {
-				result.getCriteria().add(transformCriterion(ItemRecipeQueryBuilder.Field.TRADE_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
+				result.getCriteria().add(transformCriterion(ArticleRecipeQueryBuilder.Field.TRADE_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
 			}
 			if ("TradeMembership.tradeMembershipId".equals(entry.getKey())) {
-				result.getCriteria().add(transformCriterion(ItemRecipeQueryBuilder.Field.TRADE_MEMBERSHIP_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
+				result.getCriteria().add(transformCriterion(ArticleRecipeQueryBuilder.Field.TRADE_MEMBERSHIP_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
 			}
 		});
 		return result;

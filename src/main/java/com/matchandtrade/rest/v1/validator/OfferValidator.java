@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.service.ItemService;
+import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.OfferService;
 import com.matchandtrade.rest.service.TradeMembershipService;
 import com.matchandtrade.rest.service.UserService;
@@ -21,7 +21,7 @@ public class OfferValidator {
 	@Autowired
 	private TradeMembershipService tradeMembershipService;
 	@Autowired
-	private ItemService itemService;
+	private ArticleService articleService;
 	@Autowired
 	private UserService userService;
 
@@ -36,8 +36,8 @@ public class OfferValidator {
 		tradeMembershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 		
 		
-		UserEntity offeredItemUser = userService.searchByOfferId(offerId);
-		if (offeredItemUser == null || !offeredItemUser.getUserId().equals(authenticatedUserId)) {
+		UserEntity offeredArticleUser = userService.searchByOfferId(offerId);
+		if (offeredArticleUser == null || !offeredArticleUser.getUserId().equals(authenticatedUserId)) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offerId must bellong to the offering User.userId.");
 		}
 	}
@@ -71,8 +71,8 @@ public class OfferValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must differ.");
 		}
 		
-		boolean itemsExist = itemService.exists(offer.getOfferedArticleId(), offer.getWantedArticleId());
-		if (!itemsExist) {	
+		boolean articlesExist = articleService.exists(offer.getOfferedArticleId(), offer.getWantedArticleId());
+		if (!articlesExist) {	
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must belong to existing Articles.");
 		}
 		
@@ -81,13 +81,13 @@ public class OfferValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership must belong to the current authenticated User.");
 		}
 		
-		UserEntity offeredItemUser = userService.searchByArticleId(offer.getOfferedArticleId());
-		if (offeredItemUser == null || !offeredItemUser.getUserId().equals(offeringUserId)) {
+		UserEntity offeredArticleUser = userService.searchByArticleId(offer.getOfferedArticleId());
+		if (offeredArticleUser == null || !offeredArticleUser.getUserId().equals(offeringUserId)) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId must belong to the offering User.userId.");
 		}
 		
-		boolean itemsAssociatedToSameTrade = offerService.areItemsAssociatedToSameTrade(offer.getOfferedArticleId(), offer.getWantedArticleId());
-		if (!itemsAssociatedToSameTrade) {
+		boolean articlesAssociatedToSameTrade = offerService.areArticlesAssociatedToSameTrade(offer.getOfferedArticleId(), offer.getWantedArticleId());
+		if (!articlesAssociatedToSameTrade) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must be associated to the same Trade.");
 		}
 	}

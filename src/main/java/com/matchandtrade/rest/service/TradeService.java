@@ -30,7 +30,7 @@ public class TradeService {
 	
 	@Transactional
 	public void create(TradeEntity tradeEntity, UserEntity tradeOwner) {
-		tradeEntity.setState(TradeEntity.State.SUBMITTING_ITEMS); // State is SUBMITTING_ITEMS when creating a new Trade
+		tradeEntity.setState(TradeEntity.State.SUBMITTING_ARTICLES);
 		tradeRepository.save(tradeEntity);
 		// Make authenticated user the owner of the trade
 		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();

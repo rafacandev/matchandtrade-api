@@ -5,14 +5,14 @@ import java.util.List;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.rest.v1.json.ItemJson;
+import com.matchandtrade.rest.v1.json.ArticleJson;
 
-public class ItemTransformer {
+public class ArticleTransformer {
 	
 	// Utility classes should not have public constructors
-	private ItemTransformer() {}
+	private ArticleTransformer() {}
 
-	public static ArticleEntity transform(ItemJson json) {
+	public static ArticleEntity transform(ArticleJson json) {
 		ArticleEntity result = new ArticleEntity();
 		result.setName(json.getName());
 		result.setArticleId(json.getArticleId());
@@ -20,16 +20,16 @@ public class ItemTransformer {
 		return result;
 	}
 
-	public static ItemJson transform(ArticleEntity itemEntity) {
-		ItemJson result = new ItemJson();
-		result.setName(itemEntity.getName());
-		result.setArticleId(itemEntity.getArticleId());
-		result.setDescription(itemEntity.getDescription());
+	public static ArticleJson transform(ArticleEntity entity) {
+		ArticleJson result = new ArticleJson();
+		result.setName(entity.getName());
+		result.setArticleId(entity.getArticleId());
+		result.setDescription(entity.getDescription());
 		return result;
 	}
 
-	public static SearchResult<ItemJson> transform(SearchResult<ArticleEntity> searchResult) {
-		List<ItemJson> resultList = new ArrayList<>();
+	public static SearchResult<ArticleJson> transform(SearchResult<ArticleEntity> searchResult) {
+		List<ArticleJson> resultList = new ArrayList<>();
 		for (ArticleEntity e : searchResult.getResultList()) {
 			resultList.add(transform(e));
 		}

@@ -20,22 +20,22 @@ import com.matchandtrade.persistence.repository.ArticleRepository;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.AttachmentRandom;
-import com.matchandtrade.test.random.ItemRandom;
+import com.matchandtrade.test.random.ArticleRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class ItemAttachmentControllerGetIT {
+public class ArticleAttachmentControllerGetIT {
 	
 	@Autowired
-	private ItemRandom itemRandom;
+	private ArticleRandom articleRandom;
 	@Autowired
-	private ArticleRepository itemRepository;
-	private ArticleEntity item;
+	private ArticleRepository articleRepository;
+	private ArticleEntity article;
 	private AttachmentEntity file;
 	@Autowired
 	private AttachmentRandom fileRandom;
-	private ItemAttachmentController fixture;
+	private ArticleAttachmentController fixture;
 	private TradeMembershipEntity membership;
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
@@ -45,18 +45,18 @@ public class ItemAttachmentControllerGetIT {
 	@Before
 	public void before() throws IOException {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getItemFileController(false);
+			fixture = mockControllerFactory.getArticleFileController(false);
 		}
 		file = fileRandom.nextPersistedEntity();
 		membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		item = itemRandom.nextPersistedEntity(membership);
-		item.getAttachments().add(file);
-		itemRepository.save(item);
+		article = articleRandom.nextPersistedEntity(membership);
+		article.getAttachments().add(file);
+		articleRepository.save(article);
 	}
 	
 	@Test
-	public void shouldGetItemFiles() {
-		SearchResult<AttachmentJson> response = fixture.get(membership.getTradeMembershipId(), item.getArticleId(), 1, 1);
+	public void shouldGetArticleFiles() {
+		SearchResult<AttachmentJson> response = fixture.get(membership.getTradeMembershipId(), article.getArticleId(), 1, 1);
 		assertNotNull(response);
 		assertEquals(1, response.getPagination().getNumber());
 		assertEquals(1, response.getPagination().getTotal());

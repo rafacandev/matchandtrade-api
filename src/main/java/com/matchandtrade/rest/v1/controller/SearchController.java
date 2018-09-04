@@ -10,16 +10,16 @@ import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.dto.ItemAndTradeMembershipIdDto;
+import com.matchandtrade.persistence.dto.ArticleAndTradeMembershipIdDto;
 import com.matchandtrade.persistence.entity.Entity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.SearchWithRecipeService;
-import com.matchandtrade.rest.v1.json.ItemJson;
+import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.json.search.Recipe;
 import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
-import com.matchandtrade.rest.v1.link.ItemLinkAssember;
+import com.matchandtrade.rest.v1.link.ArticleLinkAssember;
 import com.matchandtrade.rest.v1.transformer.SearchTransformer;
 import com.matchandtrade.rest.v1.validator.SearchValidator;
 
@@ -50,22 +50,22 @@ public class SearchController implements Controller {
 	}
 
 	private SearchResult<Entity> search(Recipe recipe, SearchCriteria searchCriteria) {
-		if (Recipe.ITEMS != recipe) {
+		if (Recipe.ARTICLES != recipe) {
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid SearchCriteriaJson.recipe: " + recipe);
 		} else {
-			return searchService.itemRecipe(searchCriteria);
+			return searchService.articleRecipe(searchCriteria);
 		}
 	}
 
 	private void assembleLinks(SearchResult<Json> response, Recipe recipe, SearchResult<Entity> searchResult) {
-		if (Recipe.ITEMS == recipe) {
+		if (Recipe.ARTICLES == recipe) {
 			// Sub-optimum performance but nice separation of concerns. If performance becomes issue then we need to assemble links along with with json transformation.
 			searchResult.getResultList().forEach(v -> {
-				ItemAndTradeMembershipIdDto tradeMembershipAndItemDto = (ItemAndTradeMembershipIdDto) v;
+				ArticleAndTradeMembershipIdDto articleAndTrademembershipIdDto = (ArticleAndTradeMembershipIdDto) v;
 				response.getResultList().forEach(json -> {
-					ItemJson itemJson = (ItemJson) json;
-					if (itemJson.getArticleId() == tradeMembershipAndItemDto.getItem().getArticleId()) {
-						ItemLinkAssember.assemble(itemJson, tradeMembershipAndItemDto.getTradeMembershipId());
+					ArticleJson articleJson = (ArticleJson) json;
+					if (articleJson.getArticleId() == articleAndTrademembershipIdDto.getArticle().getArticleId()) {
+						ArticleLinkAssember.assemble(articleJson, articleAndTrademembershipIdDto.getTradeMembershipId());
 					}
 				});
 			});

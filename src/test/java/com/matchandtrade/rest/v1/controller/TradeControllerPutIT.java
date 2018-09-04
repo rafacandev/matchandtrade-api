@@ -39,14 +39,14 @@ public class TradeControllerPutIT {
 	@Test
 	public void shouldEditTrade() {
 		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		existingTrade.setState(TradeEntity.State.MATCHING_ITEMS);
+		existingTrade.setState(TradeEntity.State.MATCHING_ARTICLES);
 		TradeJson request = TradeTransformer.transform(existingTrade);
 		request.setName(request.getName() + " - Trade.name after PUT");
 		request.setDescription(request.getName() + "- Trade.description after PUT");
 		TradeJson response = fixture.put(request.getTradeId(), request);
 		assertEquals(request.getName(), response.getName());
 		assertEquals(request.getDescription(), response.getDescription());
-		assertEquals(TradeJson.State.MATCHING_ITEMS, response.getState());
+		assertEquals(TradeJson.State.MATCHING_ARTICLES, response.getState());
 	}
 
 	@Test(expected=RestException.class)
@@ -62,7 +62,7 @@ public class TradeControllerPutIT {
 		TradeEntity anotherExistingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		TradeJson request = new TradeJson();
 		request.setName(existingTrade.getName());
-		request.setState(TradeJson.State.SUBMITTING_ITEMS);
+		request.setState(TradeJson.State.SUBMITTING_ARTICLES);
 		fixture.put(anotherExistingTrade.getTradeId(), request);
 	}
 

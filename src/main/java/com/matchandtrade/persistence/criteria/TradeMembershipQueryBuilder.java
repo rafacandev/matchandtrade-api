@@ -13,7 +13,7 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class TradeMembershipQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		articleId("item.articleId"),
+		articleId("article.articleId"),
 		tradeId("trade.tradeId"), 
 		tradeMembershipId("tradeMembership.tradeMembershipId"), 
 		type("tradeMembership.type"),
@@ -53,10 +53,10 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 	private void parameterizeHql(SearchCriteria searchCriteria, StringBuilder hql) {
 		boolean isTradeJoinRequired = false;
 		boolean isUserJoinRequired = false;
-		boolean isItemsJoinRequired = false;
+		boolean isArticlesJoinRequired = false;
 		for(Criterion c : searchCriteria.getCriteria()) {
 			if (c.getField().equals(Field.articleId)) {
-				isItemsJoinRequired = true;
+				isArticlesJoinRequired = true;
 			}
 			if (c.getField().equals(Field.tradeId)) {
 				isTradeJoinRequired = true;
@@ -66,8 +66,8 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 			}
 		}
 		
-		if (isItemsJoinRequired) {
-			hql.append(" INNER JOIN tradeMembership.articles AS item");
+		if (isArticlesJoinRequired) {
+			hql.append(" INNER JOIN tradeMembership.articles AS article");
 		}
 		if (isUserJoinRequired) {
 			hql.append(" INNER JOIN tradeMembership.user AS user");

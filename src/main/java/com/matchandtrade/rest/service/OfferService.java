@@ -26,8 +26,8 @@ public class OfferService {
 	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
 
 	@Transactional
-	public boolean areItemsAssociatedToSameTrade(Integer ...items) {
-		return offerRepositoryFacade.areItemsAssociatedToSameTrade(items);
+	public boolean areArticlesAssociatedToSameTrade(Integer ...articles) {
+		return offerRepositoryFacade.areArticlesAssociatedToSameTrade(articles);
 	}
 
 	@Transactional
@@ -58,13 +58,13 @@ public class OfferService {
 	}
 
 	/**
-	 * Delete all offers where either {@code Offer.wantedItem.articleId} or {@code Offer.offeredItem.articleId}
+	 * Delete all offers where either {@code Offer.wantedArticle.articleId} or {@code Offer.offeredArticle.articleId}
 	 * is equals to {@code articleId}
 	 * @param tradeMembershipId
 	 * @param articleId
 	 */
 	@Transactional
-	public void deleteOffersForItem(Integer articleId) {
+	public void deleteOffersForArticle(Integer articleId) {
 		delete(OfferQueryBuilder.Field.wantedArticleId, articleId);
 		delete(OfferQueryBuilder.Field.offeredArticleId, articleId);
 	}

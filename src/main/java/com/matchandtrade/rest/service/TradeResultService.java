@@ -49,9 +49,9 @@ public class TradeResultService {
 	private TradeMaximizerTransformer tradeMaximizerTransformer;
 
 
-	private StringBuilder buildOfferLine(TradeMembershipEntity membership, ArticleEntity item) {
-		StringBuilder line = new StringBuilder("(" + membership.getTradeMembershipId() + ") " + item.getArticleId() + " :");
-		List<OfferEntity> offers = offerService.searchByOfferedArticleId(item.getArticleId());
+	private StringBuilder buildOfferLine(TradeMembershipEntity membership, ArticleEntity article) {
+		StringBuilder line = new StringBuilder("(" + membership.getTradeMembershipId() + ") " + article.getArticleId() + " :");
+		List<OfferEntity> offers = offerService.searchByOfferedArticleId(article.getArticleId());
 		offers.forEach(offer -> {
 			line.append(" " + offer.getWantedArticle().getArticleId());
 		});
@@ -65,19 +65,19 @@ public class TradeResultService {
 	 */
 	private String buildTradeMaximizerInput(Integer tradeId) {
 		StringBuilder tradeMaximizerEntries = new StringBuilder();
-		LOGGER.debug("Finding all items for Trade.tradeId: {}", tradeId);
+		LOGGER.debug("Finding all articles for Trade.tradeId: {}", tradeId);
 		
 		int pageNumber = 1;
 		int pageSize = 50;
-		SearchResult<ArticleEntity> itemsResult = null;
+		SearchResult<ArticleEntity> articlesResult = null;
 		do {
-			itemsResult = searchItems(tradeId, new Pagination(pageNumber++, pageSize));
-			itemsResult.getResultList().forEach(item -> {
-				TradeMembershipEntity membership = searchMembership(item);
-				StringBuilder line = buildOfferLine(membership, item);
+			articlesResult = searchArticles(tradeId, new Pagination(pageNumber++, pageSize));
+			articlesResult.getResultList().forEach(article -> {
+				TradeMembershipEntity membership = searchMembership(article);
+				StringBuilder line = buildOfferLine(membership, article);
 				tradeMaximizerEntries.append(line.toString() + "\n");
 			});
-		} while (itemsResult.getPagination().hasNextPage());
+		} while (articlesResult.getPagination().hasNextPage());
 		return tradeMaximizerEntries.toString();
 	}
 
@@ -168,22 +168,22 @@ public class TradeResultService {
 		return tradeResultJson;
 	}
 
-	private SearchResult<ArticleEntity> searchItems(Integer tradeId, Pagination pagination) {
-		SearchCriteria itemsCriteria = new SearchCriteria(pagination);
-		itemsCriteria.addCriterion(ArticleQueryBuilder.Field.tradeId, tradeId);
-		SearchResult<ArticleEntity> itemsResult = searchService.search(itemsCriteria, ArticleQueryBuilder.class);
-		LOGGER.debug("Found items with {} ", pagination);
-		return itemsResult;
+	private SearchResult<ArticleEntity> searchArticles(Integer tradeId, Pagination pagination) {
+		SearchCriteria articlesCriteria = new SearchCriteria(pagination);
+		articlesCriteria.addCriterion(ArticleQueryBuilder.Field.tradeId, tradeId);
+		SearchResult<ArticleEntity> result = searchService.search(articlesCriteria, ArticleQueryBuilder.class);
+		LOGGER.debug("Found articles with {} ", pagination);
+		return result;
 	}
 	
-	private TradeMembershipEntity searchMembership(ArticleEntity item) {
+	private TradeMembershipEntity searchMembership(ArticleEntity article) {
 		SearchCriteria membershipCriteria = new SearchCriteria(new Pagination(1,1));
-		membershipCriteria.addCriterion(TradeMembershipQueryBuilder.Field.articleId, item.getArticleId());
+		membershipCriteria.addCriterion(TradeMembershipQueryBuilder.Field.articleId, article.getArticleId());
 		SearchResult<TradeMembershipEntity> membershipResult = searchService.search(membershipCriteria, TradeMembershipQueryBuilder.class);
 		if (membershipResult.getPagination().getTotal() > 1) {
-			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is more than one TradeMembership for the Item.itemId " + item.getArticleId() + ". I am shocked! This should never ever happen :(");
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is more than one TradeMembership for the Article.articleId " + article.getArticleId() + ". I am shocked! This should never ever happen :(");
 		} else if (membershipResult.getPagination().getTotal() < 1) {
-			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Generating result for an orphan Item.articleId " + item.getArticleId() + ". We are extremelly sad that this happened.");
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Generating result for an orphan Article.articleId " + article.getArticleId() + ". We are extremelly sad that this happened.");
 		}
 		return membershipResult.getResultList().get(0);
 	}

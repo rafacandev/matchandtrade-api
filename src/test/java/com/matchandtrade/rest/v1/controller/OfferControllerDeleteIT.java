@@ -16,7 +16,7 @@ import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.ItemRandom;
+import com.matchandtrade.test.random.ArticleRandom;
 import com.matchandtrade.test.random.OfferRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 import com.matchandtrade.test.random.TradeRandom;
@@ -30,7 +30,7 @@ public class OfferControllerDeleteIT {
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
-	private ItemRandom itemRandom;
+	private ArticleRandom articleRandom;
 	@Autowired
 	private OfferRandom offerRandom;
 	@Autowired
@@ -54,13 +54,13 @@ public class OfferControllerDeleteIT {
 		// Create a trade for a random user
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
-		// Create owner's items (Greek letters)
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerMembership);
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerMembership);
 		
-		// Create member's items (country names)
+		// Create member's articles (country names)
 		TradeMembershipEntity memberMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity australia = itemRandom.nextPersistedEntity(memberMemberhip);
+		ArticleEntity australia = articleRandom.nextPersistedEntity(memberMemberhip);
 
 		// Owner offers Alpha for Australia
 		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
@@ -74,13 +74,13 @@ public class OfferControllerDeleteIT {
 		// Create a trade for a random user
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
-		// Create owner's items (Greek letters)
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerMembership);
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerMembership);
 		
-		// Create member's items (country names)
+		// Create member's articles (country names)
 		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity australia = itemRandom.nextPersistedEntity(memberMembership);
+		ArticleEntity australia = articleRandom.nextPersistedEntity(memberMembership);
 
 		// Owner offers Alpha for Australia
 		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());

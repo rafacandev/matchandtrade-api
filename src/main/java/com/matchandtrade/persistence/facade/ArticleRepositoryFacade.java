@@ -26,7 +26,7 @@ public class ArticleRepositoryFacade {
 	}
 
 	/**
-	 * True if all articleIds belong to an existing {@code Item} 
+	 * True if all articleIds belong to an existing {@code Article} 
 	 * @param articleIds
 	 */
 	public boolean exists(Integer[] articleIds) {

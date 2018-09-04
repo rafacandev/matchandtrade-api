@@ -8,9 +8,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	AttachmentControllerPostIT.class,
 	AttachmentControllerGetIT.class,
-	ItemAttachmentControllerPostIT.class,
-	ItemAttachmentControllerGetIT.class,
-	ItemAttachmentControllerDeleteIT.class
+	ArticleAttachmentControllerPostIT.class,
+	ArticleAttachmentControllerGetIT.class,
+	ArticleAttachmentControllerDeleteIT.class
 })
 public class AttachmentSuite {
 

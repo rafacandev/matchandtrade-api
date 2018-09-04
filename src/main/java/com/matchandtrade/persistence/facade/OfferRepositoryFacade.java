@@ -23,10 +23,10 @@ public class OfferRepositoryFacade {
 	private TradeRepository tradeRepository;
 	
 	/**
-	 * True if all items are associated to the same {@code Trade}.
-	 * @param articleIds: {@code Item.articleId} of all {@Items} to verify.
+	 * True if all articles are associated to the same {@code Trade}.
+	 * @param articleIds: {@code Article.articleId} of all {@Articles} to verify.
 	 */
-	public boolean areItemsAssociatedToSameTrade(Integer[] articleIds) {
+	public boolean areArticlesAssociatedToSameTrade(Integer[] articleIds) {
 		Pageable pageable = PersistenceUtil.buildPageable();
 		Page<TradeEntity> page = tradeRepository.findInArticleIdsGroupByTrade(articleIds, pageable);
 		return page.getNumberOfElements() == 1;

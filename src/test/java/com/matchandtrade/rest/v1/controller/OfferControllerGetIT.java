@@ -15,7 +15,7 @@ import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.v1.json.OfferJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.ItemRandom;
+import com.matchandtrade.test.random.ArticleRandom;
 import com.matchandtrade.test.random.OfferRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 import com.matchandtrade.test.random.TradeRandom;
@@ -28,7 +28,7 @@ public class OfferControllerGetIT {
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
-	private ItemRandom itemRandom;
+	private ArticleRandom articleRandom;
 	@Autowired
 	private OfferRandom offerRandom;
 	@Autowired
@@ -48,14 +48,14 @@ public class OfferControllerGetIT {
 		// Create a trade
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
-		// Create owner's items (Greek letters)
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerTradeMemberhip);
 		
-		// Create member's items (country names)
+		// Create member's articles (country names)
 		OfferController memberController = mockControllerFactory.getOfferController(false);
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberController.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity australia = itemRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity australia = articleRandom.nextPersistedEntity(memberTradeMemberhip);
 
 		// Owner offers Alpha for Australia
 		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
@@ -71,16 +71,16 @@ public class OfferControllerGetIT {
 		// Create a trade
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
-		// Create owner's items (Greek letters)
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerTradeMemberhip);
 		
-		// Create member's items (country names)
+		// Create member's articles (country names)
 		OfferController memberController = mockControllerFactory.getOfferController(false);
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberController.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity australia = itemRandom.nextPersistedEntity(memberTradeMemberhip);
-		ArticleEntity brazil = itemRandom.nextPersistedEntity(memberTradeMemberhip);
-		ArticleEntity canada = itemRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity australia = articleRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity brazil = articleRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity canada = articleRandom.nextPersistedEntity(memberTradeMemberhip);
 		
 		// Owner offers Alpha for Australia
 		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
@@ -93,21 +93,21 @@ public class OfferControllerGetIT {
 	}
 	
 	@Test
-	public void shouldGetByOfferedItemId() {
+	public void shouldGetByOfferedArticleId() {
 		// Create a trade
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
-		// Create owner's items (Greek letters)
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
-		ArticleEntity beta = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerTradeMemberhip);
+		ArticleEntity beta = articleRandom.nextPersistedEntity(ownerTradeMemberhip);
 		
-		// Create member's items (country names)
+		// Create member's articles (country names)
 		OfferController memberController = mockControllerFactory.getOfferController(false);
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberController.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity australia = itemRandom.nextPersistedEntity(memberTradeMemberhip);
-		ArticleEntity brazil = itemRandom.nextPersistedEntity(memberTradeMemberhip);
-		ArticleEntity canada = itemRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity australia = articleRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity brazil = articleRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity canada = articleRandom.nextPersistedEntity(memberTradeMemberhip);
 		
 		// Owner offers Alpha for Australia
 		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
@@ -119,21 +119,21 @@ public class OfferControllerGetIT {
 	}
 
 	@Test
-	public void shouldGetByWantedItemId() {
+	public void shouldGetByWantedArticleId() {
 		// Create a trade
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
-		// Create owner's items (Greek letters)
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
-		ArticleEntity beta = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerTradeMemberhip);
+		ArticleEntity beta = articleRandom.nextPersistedEntity(ownerTradeMemberhip);
 		
-		// Create member's items (country names)
+		// Create member's articles (country names)
 		OfferController memberController = mockControllerFactory.getOfferController(false);
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, memberController.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity australia = itemRandom.nextPersistedEntity(memberTradeMemberhip);
-		ArticleEntity brazil = itemRandom.nextPersistedEntity(memberTradeMemberhip);
-		ArticleEntity canada = itemRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity australia = articleRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity brazil = articleRandom.nextPersistedEntity(memberTradeMemberhip);
+		ArticleEntity canada = articleRandom.nextPersistedEntity(memberTradeMemberhip);
 		
 		// Owner offers Alpha for Australia
 		offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());

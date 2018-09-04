@@ -74,17 +74,17 @@ public class TradeMembershipControllerPostIT {
 	}
 	
 	@Test
-	public void shouldOnlySubscribeToTradeWhenTradeStatusIsSubmitingItems() {
+	public void shouldOnlySubscribeToTradeWhenTradeStatusIsSubmitingArticles() {
 		TradeMembershipJson requestForCanceled = createTradeForRandomExistingUser(TradeEntity.State.CANCELED);
 		assertThatThrowsInvalidArgumentException(requestForCanceled);
 		TradeMembershipJson requestForGenerateResults = createTradeForRandomExistingUser(TradeEntity.State.GENERATE_RESULTS);
 		assertThatThrowsInvalidArgumentException(requestForGenerateResults);
 		TradeMembershipJson requestForGeneratingResults = createTradeForRandomExistingUser(TradeEntity.State.GENERATING_RESULTS);
 		assertThatThrowsInvalidArgumentException(requestForGeneratingResults);
-		TradeMembershipJson requestForItemsMatchedResults = createTradeForRandomExistingUser(TradeEntity.State.ITEMS_MATCHED);
-		assertThatThrowsInvalidArgumentException(requestForItemsMatchedResults);
-		TradeMembershipJson requestForMatchingItemsResults = createTradeForRandomExistingUser(TradeEntity.State.MATCHING_ITEMS);
-		assertThatThrowsInvalidArgumentException(requestForMatchingItemsResults);
+		TradeMembershipJson requestForArticlesMatchedResults = createTradeForRandomExistingUser(TradeEntity.State.ARTICLES_MATCHED);
+		assertThatThrowsInvalidArgumentException(requestForArticlesMatchedResults);
+		TradeMembershipJson requestForMatchingArticlesResults = createTradeForRandomExistingUser(TradeEntity.State.MATCHING_ARTICLES);
+		assertThatThrowsInvalidArgumentException(requestForMatchingArticlesResults);
 		TradeMembershipJson requestForResultsGenerated = createTradeForRandomExistingUser(TradeEntity.State.RESULTS_GENERATED);
 		assertThatThrowsInvalidArgumentException(requestForResultsGenerated);
 	}

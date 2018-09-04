@@ -5,9 +5,9 @@ package com.matchandtrade.persistence.common;
  * 
  * Example: Imagine the following JPA Query
  * <pre>
- *     SELECT i.name FROM ItemEntity AS i.name=:itemName;
- *     -- i.name is the alias
- *     -- itemName is the param
+ *     SELECT trade.name FROM TradeEntity AS trade WHERE trade.name=:tradeName;
+ *     -- trade.name is the alias
+ *     -- tradeName is the parameter
  * <pre>
  * @return
  */
@@ -19,6 +19,7 @@ public interface Field {
 	 */
 	String alias();
 	
+	// TODO: Review this name(), can we rename this to parameter? What's the purpose of it?
 	/**
 	 * The parameter for this field
 	 * @return

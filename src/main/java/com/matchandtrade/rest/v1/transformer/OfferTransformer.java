@@ -15,7 +15,7 @@ import com.matchandtrade.rest.v1.json.OfferJson;
 public class OfferTransformer {
 	
 	@Autowired
-	private ArticleRepository itemRepository;
+	private ArticleRepository articleRepository;
 	
 	// Utility classes should not have public constructors
 	private OfferTransformer() {}
@@ -23,8 +23,8 @@ public class OfferTransformer {
 	public OfferEntity transform(OfferJson json) {
 		OfferEntity result = new OfferEntity();
 		result.setOfferId(json.getOfferId());
-		result.setOfferedArticle(itemRepository.findOne(json.getOfferedArticleId()));
-		result.setWantedArticle(itemRepository.findOne(json.getWantedArticleId()));
+		result.setOfferedArticle(articleRepository.findOne(json.getOfferedArticleId()));
+		result.setWantedArticle(articleRepository.findOne(json.getWantedArticleId()));
 		return result;
 	}
 

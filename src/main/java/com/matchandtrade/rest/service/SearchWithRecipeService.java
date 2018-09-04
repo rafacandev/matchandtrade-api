@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemRecipeQueryBuilder;
+import com.matchandtrade.persistence.criteria.ArticleRecipeQueryBuilder;
 import com.matchandtrade.persistence.entity.Entity;
 import com.matchandtrade.persistence.facade.QueryableRepository;
 
@@ -15,10 +15,10 @@ public class SearchWithRecipeService {
 	@Autowired
 	private QueryableRepository<Entity> queryableEntity;
 	@Autowired
-	private ItemRecipeQueryBuilder itemRecipeQueryBuilder;
+	private ArticleRecipeQueryBuilder articleRecipeQueryBuilder;
 	
-	public SearchResult<Entity> itemRecipe(SearchCriteria searchCriteria) {
-		return queryableEntity.query(searchCriteria, itemRecipeQueryBuilder, itemRecipeQueryBuilder.makeResultTransformer());
+	public SearchResult<Entity> articleRecipe(SearchCriteria searchCriteria) {
+		return queryableEntity.query(searchCriteria, articleRecipeQueryBuilder, articleRecipeQueryBuilder.makeResultTransformer());
 	}
 	
 }

@@ -18,9 +18,9 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeResultJson;
-import com.matchandtrade.rest.v1.json.TradedItemJson;
+import com.matchandtrade.rest.v1.json.TradedArticleJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.ItemRandom;
+import com.matchandtrade.test.random.ArticleRandom;
 import com.matchandtrade.test.random.OfferRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 import com.matchandtrade.test.random.TradeRandom;
@@ -39,7 +39,7 @@ public class TradeResultControllerGetIT {
 	@Autowired
 	private TradeMembershipRandom tradeMembershipRandom;
 	@Autowired
-	private ItemRandom itemRandom;
+	private ArticleRandom articleRandom;
 	@Autowired
 	private OfferRandom offerRandom;
 	@Autowired
@@ -55,7 +55,7 @@ public class TradeResultControllerGetIT {
 	}
 	
 	@Test(expected = RestException.class)
-	public void shouldNotGenerateResultsWhenStatusIsSubmittingItems() {
+	public void shouldNotGenerateResultsWhenStatusIsSubmittingArticles() {
 		UserEntity tradeOwner = fixture.authenticationProvider.getAuthentication().getUser();
 		TradeEntity trade = tradeRandom.nextPersistedEntity(tradeOwner);
 		try {
@@ -81,20 +81,20 @@ public class TradeResultControllerGetIT {
 		// Create a trade for a random user
 		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		
-		// Create owner's items (Greek letters)
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity greekMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("GREEK"), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(greekMembership, "alpha");
-		ArticleEntity beta = itemRandom.nextPersistedEntity(greekMembership, "beta");
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership, "alpha");
+		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership, "beta");
 		
-		// Create member's items (country names)
+		// Create member's articles (country names)
 		TradeMembershipEntity countryMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("COUNTRY"), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity argentina = itemRandom.nextPersistedEntity(countryMemberhip, "argentina");
-		ArticleEntity brazil = itemRandom.nextPersistedEntity(countryMemberhip, "brazil");
-		ArticleEntity canada = itemRandom.nextPersistedEntity(countryMemberhip, "canada");
+		ArticleEntity argentina = articleRandom.nextPersistedEntity(countryMemberhip, "argentina");
+		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryMemberhip, "brazil");
+		ArticleEntity canada = articleRandom.nextPersistedEntity(countryMemberhip, "canada");
 
-		// Create member's items (ordinal numbers)
+		// Create member's articles (ordinal numbers)
 		TradeMembershipEntity ordinalMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity first = itemRandom.nextPersistedEntity(ordinalMemberhip, "first");
+		ArticleEntity first = articleRandom.nextPersistedEntity(ordinalMemberhip, "first");
 
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), alpha.getArticleId(), canada.getArticleId());
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), argentina.getArticleId());
@@ -126,20 +126,20 @@ public class TradeResultControllerGetIT {
 		// Create a trade for a random user
 		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		
-		// Create owner's items (Greek letters)
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity greekMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("GREEK"), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(greekMembership, "alpha");
-		ArticleEntity beta = itemRandom.nextPersistedEntity(greekMembership, "beta");
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership, "alpha");
+		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership, "beta");
 		
-		// Create member's items (country names)
+		// Create member's articles (country names)
 		TradeMembershipEntity countryMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("COUNTRY"), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity argentina = itemRandom.nextPersistedEntity(countryMembership, "argentina");
-		ArticleEntity brazil = itemRandom.nextPersistedEntity(countryMembership, "brazil");
-		ArticleEntity canada = itemRandom.nextPersistedEntity(countryMembership, "canada");
+		ArticleEntity argentina = articleRandom.nextPersistedEntity(countryMembership, "argentina");
+		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryMembership, "brazil");
+		ArticleEntity canada = articleRandom.nextPersistedEntity(countryMembership, "canada");
 
-		// Create member's items (ordinal numbers)
+		// Create member's articles (ordinal numbers)
 		TradeMembershipEntity ordinalMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity first = itemRandom.nextPersistedEntity(ordinalMembership, "first");
+		ArticleEntity first = articleRandom.nextPersistedEntity(ordinalMembership, "first");
 
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), alpha.getArticleId(), canada.getArticleId());
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), argentina.getArticleId());
@@ -155,9 +155,9 @@ public class TradeResultControllerGetIT {
 		
 		assertEquals(trade.getTradeId(), response.getTradeId());
 		assertEquals(trade.getName(), response.getTradeName());
-		assertEquals(new Integer(6), response.getTotalOfItems());
-		assertEquals(new Integer(1), response.getTotalOfNotTradedItems());
-		assertEquals(new Integer(5), response.getTotalOfTradedItems());
+		assertEquals(new Integer(6), response.getTotalOfArticles());
+		assertEquals(new Integer(1), response.getTotalOfNotTradedArticles());
+		assertEquals(new Integer(5), response.getTotalOfTradedArticles());
 		
 		// 1100,GREEK,1005,alpha,:RECEIVES:,1101,COUNTRY,1009,canada,:SENDS:,1101,COUNTRY
 		boolean greekOfferedAlphaReceivesCanadaSendsToCountry = false;
@@ -170,49 +170,49 @@ public class TradeResultControllerGetIT {
 		// 1422,ORDINAL,1330,first,:RECEIVES:,1420,GREEK,1326,beta,:SENDS:,1421,COUNTRY
 		boolean ordinalOfferedFirstReceivesBetaSendsToCountry = false;
 		boolean foundArgentinaInTradeResults = false;
-		for(TradedItemJson tradedItem : response.getTradedItems()) {
-			if (greekMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& alpha.getArticleId().equals(tradedItem.getArticleId())
-					&& countryMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& canada.getArticleId().equals(tradedItem.getReceivingArticleId())
-					&& countryMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
+		for(TradedArticleJson tradedArticle : response.getTradedArticles()) {
+			if (greekMembership.getUser().getUserId().equals(tradedArticle.getUserId())
+					&& alpha.getArticleId().equals(tradedArticle.getArticleId())
+					&& countryMembership.getUser().getUserId().equals(tradedArticle.getReceivingUserId())
+					&& canada.getArticleId().equals(tradedArticle.getReceivingArticleId())
+					&& countryMembership.getUser().getUserId().equals(tradedArticle.getSendingUserId())) {
 				greekOfferedAlphaReceivesCanadaSendsToCountry = true;
 				continue;
 			}
-			if (greekMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& beta.getArticleId().equals(tradedItem.getArticleId())
-					&& countryMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& brazil.getArticleId().equals(tradedItem.getReceivingArticleId())
-					&& ordinalMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
+			if (greekMembership.getUser().getUserId().equals(tradedArticle.getUserId())
+					&& beta.getArticleId().equals(tradedArticle.getArticleId())
+					&& countryMembership.getUser().getUserId().equals(tradedArticle.getReceivingUserId())
+					&& brazil.getArticleId().equals(tradedArticle.getReceivingArticleId())
+					&& ordinalMembership.getUser().getUserId().equals(tradedArticle.getSendingUserId())) {
 				greekOfferedBetaReceivesBrazilSendsToOrdinal = true;
 				continue;
 			}
-			if (countryMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& brazil.getArticleId().equals(tradedItem.getArticleId())
-					&& ordinalMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& first.getArticleId().equals(tradedItem.getReceivingArticleId())
-					&& greekMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
+			if (countryMembership.getUser().getUserId().equals(tradedArticle.getUserId())
+					&& brazil.getArticleId().equals(tradedArticle.getArticleId())
+					&& ordinalMembership.getUser().getUserId().equals(tradedArticle.getReceivingUserId())
+					&& first.getArticleId().equals(tradedArticle.getReceivingArticleId())
+					&& greekMembership.getUser().getUserId().equals(tradedArticle.getSendingUserId())) {
 				countryOfferedBrazilRecivesFirstSendsToGreek = true;
 				continue;
 			}
-			if (countryMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& canada.getArticleId().equals(tradedItem.getArticleId())
-					&& greekMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& alpha.getArticleId().equals(tradedItem.getReceivingArticleId())
-					&& greekMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
+			if (countryMembership.getUser().getUserId().equals(tradedArticle.getUserId())
+					&& canada.getArticleId().equals(tradedArticle.getArticleId())
+					&& greekMembership.getUser().getUserId().equals(tradedArticle.getReceivingUserId())
+					&& alpha.getArticleId().equals(tradedArticle.getReceivingArticleId())
+					&& greekMembership.getUser().getUserId().equals(tradedArticle.getSendingUserId())) {
 				countryOfferedCanadaReceivesAlphaSendsToGreek = true;
 				continue;
 			}
-			if (ordinalMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& first.getArticleId().equals(tradedItem.getArticleId())
-					&& greekMembership.getUser().getUserId().equals(tradedItem.getReceivingUserId())
-					&& beta.getArticleId().equals(tradedItem.getReceivingArticleId())
-					&& countryMembership.getUser().getUserId().equals(tradedItem.getSendingUserId())) {
+			if (ordinalMembership.getUser().getUserId().equals(tradedArticle.getUserId())
+					&& first.getArticleId().equals(tradedArticle.getArticleId())
+					&& greekMembership.getUser().getUserId().equals(tradedArticle.getReceivingUserId())
+					&& beta.getArticleId().equals(tradedArticle.getReceivingArticleId())
+					&& countryMembership.getUser().getUserId().equals(tradedArticle.getSendingUserId())) {
 				ordinalOfferedFirstReceivesBetaSendsToCountry = true;
 				continue;
 			}
-			if (countryMembership.getUser().getUserId().equals(tradedItem.getUserId())
-					&& argentina.getArticleId().equals(tradedItem.getArticleId())) {
+			if (countryMembership.getUser().getUserId().equals(tradedArticle.getUserId())
+					&& argentina.getArticleId().equals(tradedArticle.getArticleId())) {
 				foundArgentinaInTradeResults = true;
 			}
 			
@@ -249,9 +249,9 @@ public class TradeResultControllerGetIT {
 	}
 
 	@Test(expected=RestException.class)
-	public void shouldThrowErrorWhenGettingResultsForTradeStateSubmittingItems() {
+	public void shouldThrowErrorWhenGettingResultsForTradeStateSubmittingArticles() {
 		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		trade.setState(TradeEntity.State.SUBMITTING_ITEMS);
+		trade.setState(TradeEntity.State.SUBMITTING_ARTICLES);
 		tradeService.update(trade);
 		fixture.getJson(trade.getTradeId());
 	}

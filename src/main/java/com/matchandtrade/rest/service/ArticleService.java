@@ -15,41 +15,41 @@ import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 
 @Service
-public class ItemService {
+public class ArticleService {
 
 	@Autowired
 	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
 	@Autowired
-	private ArticleRepositoryFacade itemRepositoryFacade;
+	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private SearchService searchService;
 	@Autowired
 	private OfferService offerService;
 
 	@Transactional
-	public void create(Integer tradeMembershipId, ArticleEntity itemEntity) {
+	public void create(Integer tradeMembershipId, ArticleEntity articleEntity) {
 		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepositoryFacade.get(tradeMembershipId);
-		itemRepositoryFacade.save(itemEntity);
-		tradeMembershipEntity.getArticles().add(itemEntity);
+		articleRepositoryFacade.save(articleEntity);
+		tradeMembershipEntity.getArticles().add(articleEntity);
 		tradeMembershipRepositoryFacade.save(tradeMembershipEntity);
 	}
 
 	@Transactional
 	public void delete(Integer tradeMembershipId, Integer articleId) {
-		offerService.deleteOffersForItem(articleId);
+		offerService.deleteOffersForArticle(articleId);
 		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
-		ArticleEntity item = itemRepositoryFacade.get(articleId);
-		membership.getArticles().remove(item);
+		ArticleEntity article = articleRepositoryFacade.get(articleId);
+		membership.getArticles().remove(article);
 		tradeMembershipRepositoryFacade.save(membership);
-		itemRepositoryFacade.delete(articleId);
+		articleRepositoryFacade.delete(articleId);
 	}
 
 	public ArticleEntity get(Integer articleId) {
-		return itemRepositoryFacade.get(articleId);
+		return articleRepositoryFacade.get(articleId);
 	}
 	
 	public boolean exists(Integer ...articleIds) {
-		return itemRepositoryFacade.exists(articleIds);
+		return articleRepositoryFacade.exists(articleIds);
 	}
 
 	@Transactional
@@ -60,8 +60,8 @@ public class ItemService {
 		return searchService.search(searchCriteria, ArticleQueryBuilder.class);
 	}
 
-	public void update(ArticleEntity itemEntity) {
-		itemRepositoryFacade.save(itemEntity);
+	public void update(ArticleEntity article) {
+		articleRepositoryFacade.save(article);
 	}
 
 }

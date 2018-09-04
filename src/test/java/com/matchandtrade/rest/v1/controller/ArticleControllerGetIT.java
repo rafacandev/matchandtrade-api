@@ -13,19 +13,19 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.v1.json.ItemJson;
+import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.ItemRandom;
+import com.matchandtrade.test.random.ArticleRandom;
 import com.matchandtrade.test.random.TradeMembershipRandom;
 import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class ItemControllerGetIT {
+public class ArticleControllerGetIT {
 
-	private ItemController fixture;
+	private ArticleController fixture;
 	@Autowired
-	private ItemRandom itemRandom;
+	private ArticleRandom articleRandom;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
@@ -36,30 +36,30 @@ public class ItemControllerGetIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getItemController(true);
+			fixture = mockControllerFactory.getArticleController(true);
 		}
 	}
 
 	@Test
-	public void shouldGetAllItemsByTradeMembershipId() {
+	public void shouldGetAllArticlesByTradeMembershipId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		itemRandom.nextPersistedEntity(existingTradeMembership);
-		itemRandom.nextPersistedEntity(existingTradeMembership);
-		itemRandom.nextPersistedEntity(existingTradeMembership);
-		SearchResult<ItemJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), null, null);
+		articleRandom.nextPersistedEntity(existingTradeMembership);
+		articleRandom.nextPersistedEntity(existingTradeMembership);
+		articleRandom.nextPersistedEntity(existingTradeMembership);
+		SearchResult<ArticleJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), null, null);
 		assertEquals(3, response.getResultList().size());
 	}
 	
 	@Test
-	public void shouldGetAllItemsByTradeMembershipIdSortedByItemName() {
+	public void shouldGetAllArticlesByTradeMembershipIdSortedByArticleName() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		String firstName = "alpha";
 		String secondName = "beta";
 		String thirdName = "charlie";
-		itemRandom.nextPersistedEntity(existingTradeMembership, thirdName);
-		itemRandom.nextPersistedEntity(existingTradeMembership, secondName);
-		itemRandom.nextPersistedEntity(existingTradeMembership, firstName);
-		SearchResult<ItemJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), null, null);
+		articleRandom.nextPersistedEntity(existingTradeMembership, thirdName);
+		articleRandom.nextPersistedEntity(existingTradeMembership, secondName);
+		articleRandom.nextPersistedEntity(existingTradeMembership, firstName);
+		SearchResult<ArticleJson> response = fixture.get(existingTradeMembership.getTradeMembershipId(), null, null);
 		assertEquals(3, response.getResultList().size());
 		assertEquals(firstName, response.getResultList().get(0).getName());
 		assertEquals(secondName, response.getResultList().get(1).getName());
@@ -67,36 +67,36 @@ public class ItemControllerGetIT {
 	}
 
 	@Test
-	public void shouldGetItemByTradeMemberhipId() {
+	public void shouldGetArticleByTradeMemberhipId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
-		ItemJson response = fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getArticleId());
+		ArticleEntity existingArticle = articleRandom.nextPersistedEntity(existingTradeMembership);
+		ArticleJson response = fixture.get(existingTradeMembership.getTradeMembershipId(), existingArticle.getArticleId());
 		assertNotNull(response);
 	}
 
 	@Test
- 	public void shouldGetItemsWhenUserIsAssociatedWithTrade() {
-		// Create owner's items (Greek letters)
+ 	public void shouldGetArticlesWhenUserIsAssociatedWithTrade() {
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
-		// Create member's items (country names)
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerTradeMemberhip);
+		// Create member's articles (country names)
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(ownerTradeMemberhip.getTrade(), fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
 		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getArticleId());
 	}
 	
 	@Test(expected = RestException.class)
- 	public void shouldNotGetItemForInexistingTradeMembershipId() {
+ 	public void shouldNotGetArticleForInexistingTradeMembershipId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
-		fixture.get(-1, existingItem.getArticleId());
+		ArticleEntity existingArticle = articleRandom.nextPersistedEntity(existingTradeMembership);
+		fixture.get(-1, existingArticle.getArticleId());
 	}
 
 	@Test(expected=RestException.class)
-	public void shouldNotGetItemsWhenUserIsAssociatedWithTrade() {
-		// Create owner's items (Greek letters)
+	public void shouldNotGetArticlesWhenUserIsAssociatedWithTrade() {
+		// Create owner's articles (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
-		// Create member's items (country names)
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerTradeMemberhip);
+		// Create member's articles (country names)
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getArticleId());
 	}
