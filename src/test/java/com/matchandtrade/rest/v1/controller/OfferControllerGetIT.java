@@ -60,8 +60,8 @@ public class OfferControllerGetIT {
 		// Owner offers Alpha for Australia
 		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerTradeMemberhip.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
-		OfferJson response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), alphaForAustralia.getOfferId());
-		assertEquals(alphaForAustralia.getOfferId(), response.getOfferId());
+		OfferJson response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), alphaForAustralia.getArticleId());
+		assertEquals(alphaForAustralia.getArticleId(), response.getOfferId());
 		assertEquals(alphaForAustralia.getOfferedArticle().getArticleId(), response.getOfferedArticleId());
 		assertEquals(alphaForAustralia.getWantedArticle().getArticleId(), response.getWantedArticleId());
 	}
@@ -89,7 +89,7 @@ public class OfferControllerGetIT {
 		
 		SearchResult<OfferJson> response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), null, null, 1, 10);
 		assertEquals(3, response.getPagination().getTotal());
-		assertEquals(alphaForAustralia.getOfferId(), response.getResultList().get(0).getOfferId());
+		assertEquals(alphaForAustralia.getArticleId(), response.getResultList().get(0).getOfferId());
 	}
 	
 	@Test
@@ -142,7 +142,7 @@ public class OfferControllerGetIT {
 		
 		SearchResult<OfferJson> response = fixture.get(ownerTradeMemberhip.getTradeMembershipId(), null, brazil.getArticleId(), 1, 10);
 		assertEquals(1, response.getPagination().getTotal());
-		assertEquals(offer.getOfferId(), response.getResultList().get(0).getOfferId());
+		assertEquals(offer.getArticleId(), response.getResultList().get(0).getOfferId());
 	}
 
 

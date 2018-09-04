@@ -17,7 +17,6 @@ public class ArticleTransformer {
 		} else {
 			ArticleEntity entity = new ArticleEntity();
 			entity.setArticleId(json.getArticleId());
-			entity.setName(json.getName());
 			return entity;
 		}
 	}
@@ -29,7 +28,6 @@ public class ArticleTransformer {
 		} else {
 			ArticleJson json = new ArticleJson();
 			json.setArticleId(entity.getArticleId());
-			json.setName(entity.getName());
 			return json;
 		}
 	}

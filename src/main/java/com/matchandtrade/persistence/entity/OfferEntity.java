@@ -1,20 +1,15 @@
 package com.matchandtrade.persistence.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="offer")
-public class OfferEntity implements com.matchandtrade.persistence.entity.Entity {
+public class OfferEntity extends ArticleEntity {
 
-	private Integer offerId;
 	private ArticleEntity offeredArticle;
 	private ArticleEntity wantedArticle;
 	
@@ -22,13 +17,6 @@ public class OfferEntity implements com.matchandtrade.persistence.entity.Entity 
 	@JoinColumn(name="offered_article_id", foreignKey = @ForeignKey(name = "offer_offered_article_id_fk"))
 	public ArticleEntity getOfferedArticle() {
 		return offeredArticle;
-	}
-
-	@Id
-	@Column(name="offer_id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	public Integer getOfferId() {
-		return offerId;
 	}
 
 	@OneToOne
@@ -39,10 +27,6 @@ public class OfferEntity implements com.matchandtrade.persistence.entity.Entity 
 
 	public void setOfferedArticle(ArticleEntity offeredArticle) {
 		this.offeredArticle = offeredArticle;
-	}
-
-	public void setOfferId(Integer offerId) {
-		this.offerId = offerId;
 	}
 
 	public void setWantedArticle(ArticleEntity wantedArticle) {

@@ -12,6 +12,6 @@ public interface TradeMembershipRepository extends CrudRepository<TradeMembershi
 
 	List<TradeMembershipEntity> findByTrade_TradeId(Integer tradeId);
 
-	TradeMembershipEntity findByOffers_OfferId(Integer offerId);
+	TradeMembershipEntity findByOffers_ArticleId(Integer articleId);
 
 }

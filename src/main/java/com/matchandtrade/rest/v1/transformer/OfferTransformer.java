@@ -22,7 +22,7 @@ public class OfferTransformer {
 
 	public OfferEntity transform(OfferJson json) {
 		OfferEntity result = new OfferEntity();
-		result.setOfferId(json.getOfferId());
+		result.setArticleId(json.getOfferId());
 		result.setOfferedArticle(itemRepository.findOne(json.getOfferedArticleId()));
 		result.setWantedArticle(itemRepository.findOne(json.getWantedArticleId()));
 		return result;
@@ -30,7 +30,7 @@ public class OfferTransformer {
 
 	public static OfferJson transform(OfferEntity entity) {
 		OfferJson result = new OfferJson();
-		result.setOfferId(entity.getOfferId());
+		result.setOfferId(entity.getArticleId());
 		result.setOfferedArticleId(entity.getOfferedArticle().getArticleId());
 		result.setWantedArticleId(entity.getWantedArticle().getArticleId());
 		return result;

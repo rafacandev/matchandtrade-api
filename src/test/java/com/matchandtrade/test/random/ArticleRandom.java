@@ -21,9 +21,7 @@ public class ArticleRandom {
 	}
 	
 	public static ArticleJson nextJson() {
-		ArticleJson result = new ArticleJson();
-		result.setName(StringRandom.nextName());
-		return result;
+		return new ArticleJson();
 	}
 	
 	@Transactional
@@ -36,7 +34,6 @@ public class ArticleRandom {
 	@Transactional
 	public ArticleEntity nextPersistedEntity(String name) {
 		ArticleEntity result = new ArticleEntity();
-		result.setName(name);
 		articleRepository.save(result);
 		return result;
 	}
