@@ -53,7 +53,7 @@ public class OfferService {
 		criteria.addCriterion(wantedOrOfferedField, articleId);
 		do {
 			SearchResult<OfferEntity> searchResult = searchService.search(criteria, OfferQueryBuilder.class);
-			searchResult.getResultList().forEach(offer -> delete(offer.getArticleId()));
+			searchResult.getResultList().forEach(offer -> delete(offer.getOfferId()));
 		} while (pagination.hasNextPage());
 	}
 

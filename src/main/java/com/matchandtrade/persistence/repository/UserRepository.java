@@ -27,8 +27,8 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 			+ " INNER JOIN tm.user AS u"
 			+ " INNER JOIN tm.offers AS o"
 			+ " WHERE"
-			+ " o.articleId = :articleId")
-	UserEntity findByOfferId(@Param("articleId")Integer offerId);
+			+ " o.offerId = :offerId")
+	UserEntity findByOfferId(@Param("offerId")Integer offerId);
 
 	UserEntity findByArticles_ArticleId(Integer articleId);
 

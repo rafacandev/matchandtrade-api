@@ -21,7 +21,7 @@ public class TradeMembershipRepositoryFacade {
 	}
 
 	public TradeMembershipEntity getByOfferId(Integer offerId) {
-		return tradeMembershipRepository.findByOffers_ArticleId(offerId);
+		return tradeMembershipRepository.findByOffers_OfferId(offerId);
 	}
 
 	public void save(TradeMembershipEntity entity) {

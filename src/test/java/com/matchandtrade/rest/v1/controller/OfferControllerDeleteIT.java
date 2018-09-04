@@ -65,8 +65,8 @@ public class OfferControllerDeleteIT {
 		// Owner offers Alpha for Australia
 		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
-		fixture.delete(ownerMembership.getTradeMembershipId(), alphaForAustralia.getArticleId());
-		assertNull(offerRepositoryFacade.get(alphaForAustralia.getArticleId()));
+		fixture.delete(ownerMembership.getTradeMembershipId(), alphaForAustralia.getOfferId());
+		assertNull(offerRepositoryFacade.get(alphaForAustralia.getOfferId()));
 	}
 
 	@Test(expected=RestException.class)
@@ -86,7 +86,7 @@ public class OfferControllerDeleteIT {
 		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
 		try {
-			fixture.delete(memberMembership.getTradeMembershipId(), alphaForAustralia.getArticleId());
+			fixture.delete(memberMembership.getTradeMembershipId(), alphaForAustralia.getOfferId());
 		} catch (RestException e) {
 			assertTrue(e.getMessage().contains("TradeMembership.tradeMembershipId must belong to the authenticated User"));
 			throw e;
