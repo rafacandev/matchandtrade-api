@@ -9,7 +9,7 @@ import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
+import com.matchandtrade.persistence.criteria.ArticleQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -166,9 +166,9 @@ public class ItemValidator {
 		validateOwnership(userId, tradeMembershipId);
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName(), Restriction.EQUALS_IGNORE_CASE);
-		SearchResult<ArticleEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.name, json.getName(), Restriction.EQUALS_IGNORE_CASE);
+		SearchResult<ArticleEntity> searchResult = searchService.search(searchCriteria, ArticleQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
 		}
@@ -210,11 +210,11 @@ public class ItemValidator {
 		}
 		
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName(), Restriction.LIKE_IGNORE_CASE);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.name, json.getName(), Restriction.LIKE_IGNORE_CASE);
 		// Required to check if is not the same articleId because to guarantee PUT idempotency
-		searchCriteria.addCriterion(ItemQueryBuilder.Field.articleId, json.getArticleId(), Restriction.NOT_EQUALS);
-		SearchResult<ArticleEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.articleId, json.getArticleId(), Restriction.NOT_EQUALS);
+		SearchResult<ArticleEntity> searchResult = searchService.search(searchCriteria, ArticleQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
 		}

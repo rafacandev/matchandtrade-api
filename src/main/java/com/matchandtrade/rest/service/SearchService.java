@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
+import com.matchandtrade.persistence.criteria.ArticleQueryBuilder;
 import com.matchandtrade.persistence.criteria.OfferQueryBuilder;
 import com.matchandtrade.persistence.criteria.QueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
@@ -34,7 +34,7 @@ public class SearchService {
 	@Autowired
 	private OfferQueryBuilder offerQueryBuilder;
 	@Autowired
-	private ItemQueryBuilder itemQueryBuilder;
+	private ArticleQueryBuilder itemQueryBuilder;
 	@Autowired
 	private TradeQueryBuilder tradeQueryBuilder;
 	@Autowired
@@ -45,7 +45,7 @@ public class SearchService {
 	
 	@SuppressWarnings("unchecked")
 	public <T> SearchResult<T> search(SearchCriteria searchCriteria, Class<? extends QueryBuilder> queryBuilderClass) {
-		if (ItemQueryBuilder.class.equals(queryBuilderClass)) {
+		if (ArticleQueryBuilder.class.equals(queryBuilderClass)) {
 			return (SearchResult<T>) queryableItem.query(searchCriteria, itemQueryBuilder);
 		}
 		if (OfferQueryBuilder.class.equals(queryBuilderClass)) {

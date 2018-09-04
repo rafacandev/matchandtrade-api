@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
+import com.matchandtrade.persistence.criteria.ArticleQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
@@ -170,8 +170,8 @@ public class TradeResultService {
 
 	private SearchResult<ArticleEntity> searchItems(Integer tradeId, Pagination pagination) {
 		SearchCriteria itemsCriteria = new SearchCriteria(pagination);
-		itemsCriteria.addCriterion(ItemQueryBuilder.Field.tradeId, tradeId);
-		SearchResult<ArticleEntity> itemsResult = searchService.search(itemsCriteria, ItemQueryBuilder.class);
+		itemsCriteria.addCriterion(ArticleQueryBuilder.Field.tradeId, tradeId);
+		SearchResult<ArticleEntity> itemsResult = searchService.search(itemsCriteria, ArticleQueryBuilder.class);
 		LOGGER.debug("Found items with {} ", pagination);
 		return itemsResult;
 	}

@@ -8,7 +8,7 @@ import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.common.Sort;
-import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
+import com.matchandtrade.persistence.criteria.ArticleQueryBuilder;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
@@ -55,9 +55,9 @@ public class ItemService {
 	@Transactional
 	public SearchResult<ArticleEntity> searchByTradeMembershipId(Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
-		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
-		searchCriteria.addSort(ItemQueryBuilder.Field.name, Sort.Type.ASC);
-		return searchService.search(searchCriteria, ItemQueryBuilder.class);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addSort(ArticleQueryBuilder.Field.name, Sort.Type.ASC);
+		return searchService.search(searchCriteria, ArticleQueryBuilder.class);
 	}
 
 	public void update(ArticleEntity itemEntity) {
