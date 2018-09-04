@@ -3,7 +3,7 @@ package com.matchandtrade.test.random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.rest.service.ItemService;
 import com.matchandtrade.rest.service.OfferService;
@@ -25,8 +25,8 @@ public class OfferRandom {
 	}
 
 	public OfferEntity nextPersistedEntity(Integer tradeMembershipId, Integer offeredArticleId, Integer wantedArticleId) {
-		ItemEntity offeredItem = itemService.get(offeredArticleId);
-		ItemEntity wantedItem = itemService.get(wantedArticleId);
+		ArticleEntity offeredItem = itemService.get(offeredArticleId);
+		ArticleEntity wantedItem = itemService.get(wantedArticleId);
 		
 		OfferEntity offer = new OfferEntity();
 		offer.setOfferedArticle(offeredItem);

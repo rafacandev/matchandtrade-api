@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -83,18 +83,18 @@ public class TradeResultControllerGetIT {
 		
 		// Create owner's items (Greek letters)
 		TradeMembershipEntity greekMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("GREEK"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity alpha = itemRandom.nextPersistedEntity(greekMembership, "alpha");
-		ItemEntity beta = itemRandom.nextPersistedEntity(greekMembership, "beta");
+		ArticleEntity alpha = itemRandom.nextPersistedEntity(greekMembership, "alpha");
+		ArticleEntity beta = itemRandom.nextPersistedEntity(greekMembership, "beta");
 		
 		// Create member's items (country names)
 		TradeMembershipEntity countryMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("COUNTRY"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity argentina = itemRandom.nextPersistedEntity(countryMemberhip, "argentina");
-		ItemEntity brazil = itemRandom.nextPersistedEntity(countryMemberhip, "brazil");
-		ItemEntity canada = itemRandom.nextPersistedEntity(countryMemberhip, "canada");
+		ArticleEntity argentina = itemRandom.nextPersistedEntity(countryMemberhip, "argentina");
+		ArticleEntity brazil = itemRandom.nextPersistedEntity(countryMemberhip, "brazil");
+		ArticleEntity canada = itemRandom.nextPersistedEntity(countryMemberhip, "canada");
 
 		// Create member's items (ordinal numbers)
 		TradeMembershipEntity ordinalMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity first = itemRandom.nextPersistedEntity(ordinalMemberhip, "first");
+		ArticleEntity first = itemRandom.nextPersistedEntity(ordinalMemberhip, "first");
 
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), alpha.getArticleId(), canada.getArticleId());
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), argentina.getArticleId());
@@ -128,18 +128,18 @@ public class TradeResultControllerGetIT {
 		
 		// Create owner's items (Greek letters)
 		TradeMembershipEntity greekMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("GREEK"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity alpha = itemRandom.nextPersistedEntity(greekMembership, "alpha");
-		ItemEntity beta = itemRandom.nextPersistedEntity(greekMembership, "beta");
+		ArticleEntity alpha = itemRandom.nextPersistedEntity(greekMembership, "alpha");
+		ArticleEntity beta = itemRandom.nextPersistedEntity(greekMembership, "beta");
 		
 		// Create member's items (country names)
 		TradeMembershipEntity countryMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("COUNTRY"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity argentina = itemRandom.nextPersistedEntity(countryMembership, "argentina");
-		ItemEntity brazil = itemRandom.nextPersistedEntity(countryMembership, "brazil");
-		ItemEntity canada = itemRandom.nextPersistedEntity(countryMembership, "canada");
+		ArticleEntity argentina = itemRandom.nextPersistedEntity(countryMembership, "argentina");
+		ArticleEntity brazil = itemRandom.nextPersistedEntity(countryMembership, "brazil");
+		ArticleEntity canada = itemRandom.nextPersistedEntity(countryMembership, "canada");
 
 		// Create member's items (ordinal numbers)
 		TradeMembershipEntity ordinalMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity first = itemRandom.nextPersistedEntity(ordinalMembership, "first");
+		ArticleEntity first = itemRandom.nextPersistedEntity(ordinalMembership, "first");
 
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), alpha.getArticleId(), canada.getArticleId());
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), argentina.getArticleId());

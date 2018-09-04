@@ -14,9 +14,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.persistence.repository.ItemRepository;
+import com.matchandtrade.persistence.repository.ArticleRepository;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.AttachmentRandom;
@@ -30,8 +30,8 @@ public class ItemAttachmentControllerGetIT {
 	@Autowired
 	private ItemRandom itemRandom;
 	@Autowired
-	private ItemRepository itemRepository;
-	private ItemEntity item;
+	private ArticleRepository itemRepository;
+	private ArticleEntity item;
 	private AttachmentEntity file;
 	@Autowired
 	private AttachmentRandom fileRandom;

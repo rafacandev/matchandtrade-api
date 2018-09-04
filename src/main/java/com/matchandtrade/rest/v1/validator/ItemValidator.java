@@ -11,7 +11,7 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ItemService;
@@ -42,7 +42,7 @@ public class ItemValidator {
 	}
 	
 	private void checkIfItemExists(Integer articleId) {
-		ItemEntity item = itemService.get(articleId);
+		ArticleEntity item = itemService.get(articleId);
 		if (item == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "There is no Item for the given Item.articleId");
 		}
@@ -168,7 +168,7 @@ public class ItemValidator {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName(), Restriction.EQUALS_IGNORE_CASE);
-		SearchResult<ItemEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
+		SearchResult<ArticleEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
 		}
@@ -204,7 +204,7 @@ public class ItemValidator {
 		checkIfNameExistsAndHasMoreThanThreeCharacters(json.getName());
 		checkDescriptionLength(json.getDescription());
 
-		ItemEntity itemEntity = itemService.get(articleId);
+		ArticleEntity itemEntity = itemService.get(articleId);
 		if (itemEntity == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Did not find resource for the given Item.articleId");
 		}
@@ -214,7 +214,7 @@ public class ItemValidator {
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.name, json.getName(), Restriction.LIKE_IGNORE_CASE);
 		// Required to check if is not the same articleId because to guarantee PUT idempotency
 		searchCriteria.addCriterion(ItemQueryBuilder.Field.articleId, json.getArticleId(), Restriction.NOT_EQUALS);
-		SearchResult<ItemEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
+		SearchResult<ArticleEntity> searchResult = searchService.search(searchCriteria, ItemQueryBuilder.class);
 		if(!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Item.name must be unique (case insensitive) within a TradeMembership.");
 		}

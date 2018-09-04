@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ItemJson;
@@ -69,7 +69,7 @@ public class ItemControllerGetIT {
 	@Test
 	public void shouldGetItemByTradeMemberhipId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
+		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
 		ItemJson response = fixture.get(existingTradeMembership.getTradeMembershipId(), existingItem.getArticleId());
 		assertNotNull(response);
 	}
@@ -78,7 +78,7 @@ public class ItemControllerGetIT {
  	public void shouldGetItemsWhenUserIsAssociatedWithTrade() {
 		// Create owner's items (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
 		// Create member's items (country names)
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(ownerTradeMemberhip.getTrade(), fixture.authenticationProvider.getAuthentication().getUser(), TradeMembershipEntity.Type.MEMBER);
 		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getArticleId());
@@ -87,7 +87,7 @@ public class ItemControllerGetIT {
 	@Test(expected = RestException.class)
  	public void shouldNotGetItemForInexistingTradeMembershipId() {
 		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
+		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMembership);
 		fixture.get(-1, existingItem.getArticleId());
 	}
 
@@ -95,7 +95,7 @@ public class ItemControllerGetIT {
 	public void shouldNotGetItemsWhenUserIsAssociatedWithTrade() {
 		// Create owner's items (Greek letters)
 		TradeMembershipEntity ownerTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		ItemEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
+		ArticleEntity alpha = itemRandom.nextPersistedEntity(ownerTradeMemberhip);
 		// Create member's items (country names)
 		TradeMembershipEntity memberTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		fixture.get(memberTradeMemberhip.getTradeMembershipId(), alpha.getArticleId());

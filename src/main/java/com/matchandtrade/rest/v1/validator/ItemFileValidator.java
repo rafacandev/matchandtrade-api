@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.entity.AttachmentEntity;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
-import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
+import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 
 @Component
@@ -17,7 +17,7 @@ public class ItemFileValidator {
 	@Autowired
 	private ItemValidator itemValidator;
 	@Autowired
-	private ItemRepositoryFacade itemRepositoryFacade;
+	private ArticleRepositoryFacade itemRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade fileRespositoryFacade;
 	
@@ -45,7 +45,7 @@ public class ItemFileValidator {
 	}
 
 	private void validateThatItemHasLessThanTwoFiles(Integer articleId) {
-		ItemEntity item = itemRepositoryFacade.get(articleId);
+		ArticleEntity item = itemRepositoryFacade.get(articleId);
 		if (item.getAttachments().size() > 2) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Items cannot have more than 3 files.");
 		}

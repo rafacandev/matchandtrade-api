@@ -13,10 +13,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
-import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
+import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
@@ -31,7 +31,7 @@ public class ItemAttachmentControllerPostIT {
 	@Autowired
 	private ItemRandom itemRandom;
 	@Autowired
-	private ItemRepositoryFacade itemRepositoryFacade;
+	private ArticleRepositoryFacade itemRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade fileRepositoryFacade;
 	private AttachmentEntity file;
@@ -54,7 +54,7 @@ public class ItemAttachmentControllerPostIT {
 	@Test
 	public void shouldAddFileToItem() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity item = itemRandom.nextPersistedEntity(membership);
+		ArticleEntity item = itemRandom.nextPersistedEntity(membership);
 		AttachmentJson response = fixture.post(membership.getTradeMembershipId(), item.getArticleId(), file.getAttachmentId());
 		assertNotNull(response);
 		assertEquals(file.getAttachmentId(), response.getAttachmentId());
@@ -66,7 +66,7 @@ public class ItemAttachmentControllerPostIT {
 	@Test(expected = RestException.class)
 	public void shouldFailToAddMoreThan3FilesToItem() {
 		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity item = itemRandom.nextPersistedEntity(membership);
+		ArticleEntity item = itemRandom.nextPersistedEntity(membership);
 		item.getAttachments().add(fileRandom.nextPersistedEntity());
 		item.getAttachments().add(fileRandom.nextPersistedEntity());
 		item.getAttachments().add(fileRandom.nextPersistedEntity());

@@ -73,7 +73,7 @@ public class OfferValidator {
 		
 		boolean itemsExist = itemService.exists(offer.getOfferedArticleId(), offer.getWantedArticleId());
 		if (!itemsExist) {	
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must belong to existing Items.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must belong to existing Articles.");
 		}
 		
 		TradeMembershipEntity tradeMembership = tradeMembershipService.get(tradeMembershipId);

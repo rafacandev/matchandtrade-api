@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.ItemService;
 import com.matchandtrade.rest.v1.json.ItemJson;
@@ -49,7 +49,7 @@ public class ItemController implements Controller {
 		// Validate the request
 		itemValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, requestJson);
 		// Transform the request
-		ItemEntity itemEntity = ItemTransformer.transform(requestJson);
+		ArticleEntity itemEntity = ItemTransformer.transform(requestJson);
 		// Delegate to service layer
 		itemService.create(tradeMembershipId, itemEntity);
 		// Transform the response
@@ -67,7 +67,7 @@ public class ItemController implements Controller {
 		requestJson.setArticleId(articleId); // Always get the id from the URL when working on PUT methods
 		itemValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, articleId, requestJson);
 		// Transform the request
-		ItemEntity itemEntity = ItemTransformer.transform(requestJson);
+		ArticleEntity itemEntity = ItemTransformer.transform(requestJson);
 		// Delegate to service layer
 		itemService.update(itemEntity);
 		// Transform the response
@@ -84,7 +84,7 @@ public class ItemController implements Controller {
 		// Validate the request
 		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId);
 		// Delegate to service layer
-		ItemEntity itemEntity = itemService.get(articleId);
+		ArticleEntity itemEntity = itemService.get(articleId);
 		// Transform the response
 		ItemJson response = ItemTransformer.transform(itemEntity);
 		// Assemble links
@@ -99,7 +99,7 @@ public class ItemController implements Controller {
 		// Validate the request
 		itemValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, _pageNumber, _pageSize);
 		// Delegate to service layer
-		SearchResult<ItemEntity> searchResult = itemService.searchByTradeMembershipId(tradeMembershipId, _pageNumber, _pageSize);
+		SearchResult<ArticleEntity> searchResult = itemService.searchByTradeMembershipId(tradeMembershipId, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<ItemJson> response = ItemTransformer.transform(searchResult);
 		// Assemble links

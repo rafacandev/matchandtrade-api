@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -54,15 +54,15 @@ public class SearchControllerPostIT {
 		TradeEntity trade = greekTradeMembership.getTrade();
 
 		// Create items for Greek letters
-		ItemEntity alpha = itemRandom.nextPersistedEntity(greekTradeMembership);
-		ItemEntity beta = itemRandom.nextPersistedEntity(greekTradeMembership);
+		ArticleEntity alpha = itemRandom.nextPersistedEntity(greekTradeMembership);
+		ArticleEntity beta = itemRandom.nextPersistedEntity(greekTradeMembership);
 
 		// Create items for country names
 		UserEntity countryUser = userRandom.nextPersistedEntity();
 		TradeMembershipEntity countryTradeMembership = tradeMembershipRandom.nextPersistedEntity(trade, countryUser, TradeMembershipEntity.Type.MEMBER);
-		ItemEntity australia = itemRandom.nextPersistedEntity(countryTradeMembership);
-		ItemEntity brazil = itemRandom.nextPersistedEntity(countryTradeMembership);
-		ItemEntity cuba = itemRandom.nextPersistedEntity(countryTradeMembership);
+		ArticleEntity australia = itemRandom.nextPersistedEntity(countryTradeMembership);
+		ArticleEntity brazil = itemRandom.nextPersistedEntity(countryTradeMembership);
+		ArticleEntity cuba = itemRandom.nextPersistedEntity(countryTradeMembership);
 		
 		SearchCriteriaJson request = new SearchCriteriaJson();
 		request.setRecipe(Recipe.ITEMS);
@@ -85,8 +85,8 @@ public class SearchControllerPostIT {
 		TradeEntity trade = greekTradeMembership.getTrade();
 		
 		// Create items for Greek letters
-		ItemEntity alpha = itemRandom.nextPersistedEntity(greekTradeMembership);
-		ItemEntity beta = itemRandom.nextPersistedEntity(greekTradeMembership);
+		ArticleEntity alpha = itemRandom.nextPersistedEntity(greekTradeMembership);
+		ArticleEntity beta = itemRandom.nextPersistedEntity(greekTradeMembership);
 		
 		// Create items for country names
 		UserEntity countryUser = userRandom.nextPersistedEntity();
@@ -106,7 +106,7 @@ public class SearchControllerPostIT {
 		assertTrue(containsItem(response, beta));
 	}
 
-	private boolean containsItem(SearchResult<Json> response, ItemEntity targetItem) {
+	private boolean containsItem(SearchResult<Json> response, ArticleEntity targetItem) {
 		return response.getResultList().stream().map(i -> {
 			ItemJson responseItem = (ItemJson) i;
 			return responseItem;

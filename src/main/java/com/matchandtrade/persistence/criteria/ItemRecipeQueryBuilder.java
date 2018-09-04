@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.dto.ItemAndTradeMembershipIdDto;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 
 @Component
 public class ItemRecipeQueryBuilder implements QueryBuilder {
@@ -60,7 +60,7 @@ public class ItemRecipeQueryBuilder implements QueryBuilder {
 		@Override
 		public Object transformTuple(Object[] tuple, String[] arg1) {
 			Integer tradeMembershipId = (Integer) tuple[0];
-			ItemEntity item = (ItemEntity) tuple[1];
+			ArticleEntity item = (ArticleEntity) tuple[1];
 			return new ItemAndTradeMembershipIdDto(item, tradeMembershipId);
 		}
 		

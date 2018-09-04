@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ItemJson;
@@ -43,7 +43,7 @@ public class ItemControllerPutIT {
 	@Test
 	public void shouldEditItem() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
+		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
 		ItemJson request = ItemTransformer.transform(existingItem);
 		
 		String itemName = "ItemName";
@@ -66,8 +66,8 @@ public class ItemControllerPutIT {
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenAnItemWithTheSameNameAlreadyExists() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
-		ItemEntity existingItem2 = itemRandom.nextPersistedEntity(existingTradeMemberhip);
+		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
+		ArticleEntity existingItem2 = itemRandom.nextPersistedEntity(existingTradeMemberhip);
 		ItemJson request = new ItemJson();
 		request.setName(existingItem.getName());
 		fixture.put(existingTradeMemberhip.getTradeMembershipId(), existingItem2.getArticleId(), request);
@@ -76,7 +76,7 @@ public class ItemControllerPutIT {
 	@Test(expected=RestException.class)
 	public void shouldErrorTryingToEditAnItemThatNotBelongsToTheCurrentUser() {
 		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		ItemEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
+		ArticleEntity existingItem = itemRandom.nextPersistedEntity(existingTradeMemberhip);
 		ItemJson request = ItemTransformer.transform(existingItem);
 		request.setName(request.getName() + "-Updated");
 		fixture.put(existingTradeMemberhip.getTradeMembershipId(), request.getArticleId(), request);

@@ -11,7 +11,7 @@ import com.matchandtrade.persistence.criteria.QueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.criteria.UserQueryBuilder;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -22,7 +22,7 @@ import com.matchandtrade.persistence.facade.QueryableRepository;
 public class SearchService {
 
 	@Autowired
-	private QueryableRepository<ItemEntity> queryableItem;
+	private QueryableRepository<ArticleEntity> queryableItem;
 	@Autowired
 	private QueryableRepository<OfferEntity> queryableOffer;
 	@Autowired

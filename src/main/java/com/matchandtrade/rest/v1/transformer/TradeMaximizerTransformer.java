@@ -9,10 +9,10 @@ import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
+import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.v1.json.TradeResultJson;
@@ -22,7 +22,7 @@ import com.matchandtrade.rest.v1.json.TradedItemJson;
 public class TradeMaximizerTransformer {
 	
 	@Autowired
-	private ItemRepositoryFacade itemRepositoryFacade;
+	private ArticleRepositoryFacade itemRepositoryFacade;
 	@Autowired
 	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
 	@Autowired
@@ -76,7 +76,7 @@ public class TradeMaximizerTransformer {
 			TradeMembershipEntity offeringMembership = tradeMembershipRepositoryFacade.get(linePojo.offeringTradeMembershipId);
 			csvRecord.add(offeringMembership.getUser().getUserId());
 			csvRecord.add(offeringMembership.getUser().getName());
-			ItemEntity offeringItem = itemRepositoryFacade.get(linePojo.offeringArticleId);
+			ArticleEntity offeringItem = itemRepositoryFacade.get(linePojo.offeringArticleId);
 			csvRecord.add(offeringItem.getArticleId());
 			csvRecord.add(offeringItem.getName());
 			if (linePojo.receivingArticleId != null) {
@@ -85,7 +85,7 @@ public class TradeMaximizerTransformer {
 				TradeMembershipEntity receivingMembership = tradeMembershipRepositoryFacade.get(linePojo.receivingTradeMembershipId);
 				csvRecord.add(receivingMembership.getUser().getUserId());
 				csvRecord.add(receivingMembership.getUser().getName());
-				ItemEntity receivingItem = itemRepositoryFacade.get(linePojo.receivingArticleId);
+				ArticleEntity receivingItem = itemRepositoryFacade.get(linePojo.receivingArticleId);
 				csvRecord.add(receivingItem.getArticleId());
 				csvRecord.add(receivingItem.getName());
 				csvRecord.add(":SENDS:");
@@ -218,7 +218,7 @@ public class TradeMaximizerTransformer {
 			tradedItem.setUserId(offeringMembership.getUser().getUserId());
 			tradedItem.setUserName(offeringMembership.getUser().getName());
 			
-			ItemEntity offeringItem = itemRepositoryFacade.get(linePojo.offeringArticleId);
+			ArticleEntity offeringItem = itemRepositoryFacade.get(linePojo.offeringArticleId);
 			tradedItem.setArticleId(offeringItem.getArticleId());
 			tradedItem.setItemName(offeringItem.getName());
 			
@@ -226,7 +226,7 @@ public class TradeMaximizerTransformer {
 			tradedItem.setReceivingUserId(receivingMembership.getUser().getUserId());
 			tradedItem.setReceivingUserName(receivingMembership.getUser().getName());
 			
-			ItemEntity receivingItem = itemRepositoryFacade.get(linePojo.receivingArticleId);
+			ArticleEntity receivingItem = itemRepositoryFacade.get(linePojo.receivingArticleId);
 			tradedItem.setReceivingArticleId(receivingItem.getArticleId());
 			tradedItem.setReceivingItemName(receivingItem.getName());
 			

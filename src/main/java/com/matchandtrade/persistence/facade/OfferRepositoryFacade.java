@@ -40,6 +40,7 @@ public class OfferRepositoryFacade {
 		return offerRepository.findOne(offerId);
 	}
 
+	// TODO: Can we rename this to getByOfferedArticle????
 	public List<OfferEntity> getByOfferedArticleId(Integer offeredArticleId) {
 		return offerRepository.findByOfferedArticleArticleId(offeredArticleId);
 	}

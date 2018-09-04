@@ -14,9 +14,9 @@ public interface TradeRepository extends CrudRepository<TradeEntity, Integer>{
 
 	@Query("SELECT trade FROM TradeMembershipEntity AS tradeMembership"
 			+ " INNER JOIN tradeMembership.trade AS trade"
-			+ " INNER JOIN tradeMembership.articles AS item"
+			+ " INNER JOIN tradeMembership.articles AS article"
 			+ " WHERE"
-			+ " item.articleId IN (:articleIds)"
+			+ " article.articleId IN (:articleIds)"
 			+ " GROUP BY trade")
 	Page<TradeEntity> findInArticleIdsGroupByTrade(@Param("articleIds") Integer[] articleIds, Pageable pageable);
 	

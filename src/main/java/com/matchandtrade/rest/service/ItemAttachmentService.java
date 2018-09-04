@@ -6,22 +6,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
-import com.matchandtrade.persistence.facade.ItemRepositoryFacade;
+import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 
 @Service
 public class ItemAttachmentService {
 	
 	@Autowired
-	private ItemRepositoryFacade itemRepositoryFacade;
+	private ArticleRepositoryFacade itemRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade attachmentRepositoryFacade;
 
 	@Transactional
 	public void addAttachmentToItem(Integer articleId, Integer attachmentId) {
 		AttachmentEntity attachment = attachmentRepositoryFacade.get(attachmentId);
-		ItemEntity item = itemRepositoryFacade.get(articleId);
+		ArticleEntity item = itemRepositoryFacade.get(articleId);
 		item.getAttachments().add(attachment);
 		itemRepositoryFacade.save(item);
 	}
@@ -33,7 +33,7 @@ public class ItemAttachmentService {
 	@Transactional
 	public void deleteAttachmentFromItem(Integer articleId, Integer attachmentId) {
 		AttachmentEntity attachment = attachmentRepositoryFacade.get(attachmentId);
-		ItemEntity item = itemRepositoryFacade.get(articleId);
+		ArticleEntity item = itemRepositoryFacade.get(articleId);
 		if (item.getAttachments().remove(attachment)) {
 			itemRepositoryFacade.save(item);
 			attachmentRepositoryFacade.delete(attachmentId);

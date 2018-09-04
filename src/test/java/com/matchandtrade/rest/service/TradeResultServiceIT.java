@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
@@ -68,15 +68,15 @@ public class TradeResultServiceIT {
 		
 		// Create owner's items (Greek letters)
 		TradeMembershipEntity greekMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("GREEK"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity beta = itemRandom.nextPersistedEntity(greekMembership);
+		ArticleEntity beta = itemRandom.nextPersistedEntity(greekMembership);
 		
 		// Create member's items (country names)
 		TradeMembershipEntity countryMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("COUNTRY"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity brazil = itemRandom.nextPersistedEntity(countryMemberhip);
+		ArticleEntity brazil = itemRandom.nextPersistedEntity(countryMemberhip);
 
 		// Create member's items (ordinal numbers)
 		TradeMembershipEntity ordinalMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity first = itemRandom.nextPersistedEntity(ordinalMemberhip);
+		ArticleEntity first = itemRandom.nextPersistedEntity(ordinalMemberhip);
 
 		offerRandom.nextPersistedEntity(greekMembership.getTradeMembershipId(), beta.getArticleId(), brazil.getArticleId());
 		offerRandom.nextPersistedEntity(countryMemberhip.getTradeMembershipId(), brazil.getArticleId(), first.getArticleId());
@@ -127,17 +127,17 @@ public class TradeResultServiceIT {
 
 		// Alice is also the trade owner
 		TradeMembershipEntity aliceMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("alice"));
-		ItemEntity one = itemRandom.nextPersistedEntity(aliceMembership);
+		ArticleEntity one = itemRandom.nextPersistedEntity(aliceMembership);
 		TradeMembershipEntity bettyMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("betty"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity two = itemRandom.nextPersistedEntity(bettyMembership);
+		ArticleEntity two = itemRandom.nextPersistedEntity(bettyMembership);
 		TradeMembershipEntity craigMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("craig"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity three = itemRandom.nextPersistedEntity(craigMembership);
+		ArticleEntity three = itemRandom.nextPersistedEntity(craigMembership);
 		TradeMembershipEntity davidMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("david"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity four = itemRandom.nextPersistedEntity(davidMembership);
+		ArticleEntity four = itemRandom.nextPersistedEntity(davidMembership);
 		TradeMembershipEntity ethanMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ethan"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity five = itemRandom.nextPersistedEntity(ethanMembership);
+		ArticleEntity five = itemRandom.nextPersistedEntity(ethanMembership);
 		TradeMembershipEntity fionaMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("fiona"), TradeMembershipEntity.Type.MEMBER);
-		ItemEntity six = itemRandom.nextPersistedEntity(fionaMembership);
+		ArticleEntity six = itemRandom.nextPersistedEntity(fionaMembership);
 
 		//(Alice) 1 : 3 2 6
 		offerRandom.nextPersistedEntity(aliceMembership.getTradeMembershipId(), one.getArticleId(), three.getArticleId());

@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.OfferEntity;
-import com.matchandtrade.persistence.repository.ItemRepository;
+import com.matchandtrade.persistence.repository.ArticleRepository;
 import com.matchandtrade.rest.v1.json.OfferJson;
 
 @Component
 public class OfferTransformer {
 	
 	@Autowired
-	private ItemRepository itemRepository;
+	private ArticleRepository itemRepository;
 	
 	// Utility classes should not have public constructors
 	private OfferTransformer() {}

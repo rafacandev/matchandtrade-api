@@ -21,7 +21,7 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ItemQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
-import com.matchandtrade.persistence.entity.ItemEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.TradeMembershipEntity;
@@ -49,7 +49,7 @@ public class TradeResultService {
 	private TradeMaximizerTransformer tradeMaximizerTransformer;
 
 
-	private StringBuilder buildOfferLine(TradeMembershipEntity membership, ItemEntity item) {
+	private StringBuilder buildOfferLine(TradeMembershipEntity membership, ArticleEntity item) {
 		StringBuilder line = new StringBuilder("(" + membership.getTradeMembershipId() + ") " + item.getArticleId() + " :");
 		List<OfferEntity> offers = offerService.searchByOfferedArticleId(item.getArticleId());
 		offers.forEach(offer -> {
@@ -69,7 +69,7 @@ public class TradeResultService {
 		
 		int pageNumber = 1;
 		int pageSize = 50;
-		SearchResult<ItemEntity> itemsResult = null;
+		SearchResult<ArticleEntity> itemsResult = null;
 		do {
 			itemsResult = searchItems(tradeId, new Pagination(pageNumber++, pageSize));
 			itemsResult.getResultList().forEach(item -> {
@@ -168,20 +168,20 @@ public class TradeResultService {
 		return tradeResultJson;
 	}
 
-	private SearchResult<ItemEntity> searchItems(Integer tradeId, Pagination pagination) {
+	private SearchResult<ArticleEntity> searchItems(Integer tradeId, Pagination pagination) {
 		SearchCriteria itemsCriteria = new SearchCriteria(pagination);
 		itemsCriteria.addCriterion(ItemQueryBuilder.Field.tradeId, tradeId);
-		SearchResult<ItemEntity> itemsResult = searchService.search(itemsCriteria, ItemQueryBuilder.class);
+		SearchResult<ArticleEntity> itemsResult = searchService.search(itemsCriteria, ItemQueryBuilder.class);
 		LOGGER.debug("Found items with {} ", pagination);
 		return itemsResult;
 	}
 	
-	private TradeMembershipEntity searchMembership(ItemEntity item) {
+	private TradeMembershipEntity searchMembership(ArticleEntity item) {
 		SearchCriteria membershipCriteria = new SearchCriteria(new Pagination(1,1));
 		membershipCriteria.addCriterion(TradeMembershipQueryBuilder.Field.articleId, item.getArticleId());
 		SearchResult<TradeMembershipEntity> membershipResult = searchService.search(membershipCriteria, TradeMembershipQueryBuilder.class);
 		if (membershipResult.getPagination().getTotal() > 1) {
-			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is more than one TradeMembership for the Item.articleId " + item.getArticleId() + ". I am shocked! This should never ever happen :(");
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is more than one TradeMembership for the Item.itemId " + item.getArticleId() + ". I am shocked! This should never ever happen :(");
 		} else if (membershipResult.getPagination().getTotal() < 1) {
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Generating result for an orphan Item.articleId " + item.getArticleId() + ". We are extremelly sad that this happened.");
 		}
