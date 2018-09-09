@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.matchandtrade</groupId>
-	<artifactId>matchandtrade-web-api</artifactId>
+	<artifactId>matchandtrade-api</artifactId>
 	<version>1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Match And Trade RESTful Web API</name>
-	<description>Match and Trade REST Web Service</description>
+	<name>Match And Trade RESTful API</name>
+	<description>Match and Trade REST API</description>
 
 	<scm>
 		<connection>scm:git:git://github.com/rafasantos/matchandtrade.git</connection>

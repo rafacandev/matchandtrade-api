@@ -21,7 +21,7 @@ public class ConfigurationInfoLogger implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 		VersionUtil versionUtil = new VersionUtil();
 		logger.info("|===========================================================");
-		logger.info("| WELCOME TO MATCH AND TRADE WEB API");
+		logger.info("| WELCOME TO MATCH AND TRADE API");
 		logger.info("|");
 		logger.info("| Project Name: {}", versionUtil.projectName());
 		logger.info("| Project Version: {}", versionUtil.projectVersion());
