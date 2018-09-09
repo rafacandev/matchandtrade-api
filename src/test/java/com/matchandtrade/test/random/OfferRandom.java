@@ -24,7 +24,7 @@ public class OfferRandom {
 		return result;
 	}
 
-	public OfferEntity nextPersistedEntity(Integer tradeMembershipId, Integer offeredArticleId, Integer wantedArticleId) {
+	public OfferEntity nextPersistedEntity(Integer membershipId, Integer offeredArticleId, Integer wantedArticleId) {
 		ArticleEntity offeredArticle = articleService.get(offeredArticleId);
 		ArticleEntity wantedArticle = articleService.get(wantedArticleId);
 		
@@ -32,7 +32,7 @@ public class OfferRandom {
 		offer.setOfferedArticle(offeredArticle);
 		offer.setWantedArticle(wantedArticle);
 		
-		offerService.create(tradeMembershipId, offer);
+		offerService.create(membershipId, offer);
 		return offer;
 	}
 

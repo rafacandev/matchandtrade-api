@@ -13,14 +13,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.AttachmentRandom;
 import com.matchandtrade.test.random.ArticleRandom;
-import com.matchandtrade.test.random.TradeMembershipRandom;
+import com.matchandtrade.test.random.MembershipRandom;
 import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
@@ -40,7 +40,7 @@ public class ArticleAttachmentControllerDeleteIT {
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
-	private TradeMembershipRandom tradeMembershipRandom;
+	private MembershipRandom membershipRandom;
 	@Autowired
 	private UserRandom userRandom;
 	
@@ -54,11 +54,11 @@ public class ArticleAttachmentControllerDeleteIT {
 	
 	@Test
 	public void shouldDeleteFileFromArticle() {
-		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
 		article.getAttachments().add(file);
 		articleRepositoryFacade.save(article);
-		fixture.delete(membership.getTradeMembershipId(), article.getArticleId(), file.getAttachmentId());
+		fixture.delete(membership.getMembershipId(), article.getArticleId(), file.getAttachmentId());
 		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByArticleId(article.getArticleId(), 1, 10);
 		assertEquals(0, files.getResultList().size());
 		assertEquals(0, files.getPagination().getTotal());
@@ -66,18 +66,18 @@ public class ArticleAttachmentControllerDeleteIT {
 
 	@Test(expected = RestException.class)
 	public void shouldErrorIfArticleDoesNotBelongToUser() {
-		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		MembershipEntity membership = membershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
 		article.getAttachments().add(file);
 		articleRepositoryFacade.save(article);
-		fixture.delete(membership.getTradeMembershipId(), article.getArticleId(), file.getAttachmentId());
+		fixture.delete(membership.getMembershipId(), article.getArticleId(), file.getAttachmentId());
 	}
 
 	@Test(expected = RestException.class)
 	public void shouldErrorIfFileDoesNotExist() {
-		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
-		fixture.delete(membership.getTradeMembershipId(), article.getArticleId(), -1);
+		fixture.delete(membership.getMembershipId(), article.getArticleId(), -1);
 	}
 
 }

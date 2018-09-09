@@ -15,13 +15,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.repository.ArticleRepository;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.AttachmentRandom;
 import com.matchandtrade.test.random.ArticleRandom;
-import com.matchandtrade.test.random.TradeMembershipRandom;
+import com.matchandtrade.test.random.MembershipRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
@@ -36,9 +36,9 @@ public class ArticleAttachmentControllerGetIT {
 	@Autowired
 	private AttachmentRandom fileRandom;
 	private ArticleAttachmentController fixture;
-	private TradeMembershipEntity membership;
+	private MembershipEntity membership;
 	@Autowired
-	private TradeMembershipRandom tradeMembershipRandom;
+	private MembershipRandom membershipRandom;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	
@@ -48,7 +48,7 @@ public class ArticleAttachmentControllerGetIT {
 			fixture = mockControllerFactory.getArticleFileController(false);
 		}
 		file = fileRandom.nextPersistedEntity();
-		membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		article = articleRandom.nextPersistedEntity(membership);
 		article.getAttachments().add(file);
 		articleRepository.save(article);
@@ -56,7 +56,7 @@ public class ArticleAttachmentControllerGetIT {
 	
 	@Test
 	public void shouldGetArticleFiles() {
-		SearchResult<AttachmentJson> response = fixture.get(membership.getTradeMembershipId(), article.getArticleId(), 1, 1);
+		SearchResult<AttachmentJson> response = fixture.get(membership.getMembershipId(), article.getArticleId(), 1, 1);
 		assertNotNull(response);
 		assertEquals(1, response.getPagination().getNumber());
 		assertEquals(1, response.getPagination().getTotal());

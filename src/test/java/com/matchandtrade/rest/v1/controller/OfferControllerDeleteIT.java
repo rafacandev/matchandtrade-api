@@ -12,13 +12,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ArticleRandom;
 import com.matchandtrade.test.random.OfferRandom;
-import com.matchandtrade.test.random.TradeMembershipRandom;
+import com.matchandtrade.test.random.MembershipRandom;
 import com.matchandtrade.test.random.TradeRandom;
 import com.matchandtrade.test.random.UserRandom;
 
@@ -38,7 +38,7 @@ public class OfferControllerDeleteIT {
 	@Autowired
 	private TradeRandom tradeRandom;
 	@Autowired
-	private TradeMembershipRandom tradeMembershipRandom;
+	private MembershipRandom membershipRandom;
 	@Autowired
 	private UserRandom userRandom;
 
@@ -55,40 +55,40 @@ public class OfferControllerDeleteIT {
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
 		// Create owner's articles (Greek letters)
-		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity ownerMembership = membershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerMembership);
 		
 		// Create member's articles (country names)
-		TradeMembershipEntity memberMemberhip = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), TradeMembershipEntity.Type.MEMBER);
+		MembershipEntity memberMemberhip = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.nextPersistedEntity(memberMemberhip);
 
 		// Owner offers Alpha for Australia
-		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
+		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
-		fixture.delete(ownerMembership.getTradeMembershipId(), alphaForAustralia.getOfferId());
+		fixture.delete(ownerMembership.getMembershipId(), alphaForAustralia.getOfferId());
 		assertNull(offerRepositoryFacade.get(alphaForAustralia.getOfferId()));
 	}
 
 	@Test(expected=RestException.class)
-	public void shouldNotDeleteWhenTradeMembershipDoesNotBelongToAuthenticatedUser() {
+	public void shouldNotDeleteWhenMembershipDoesNotBelongToAuthenticatedUser() {
 		// Create a trade for a random user
 		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
 		// Create owner's articles (Greek letters)
-		TradeMembershipEntity ownerMembership = tradeMembershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity ownerMembership = membershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerMembership);
 		
 		// Create member's articles (country names)
-		TradeMembershipEntity memberMembership = tradeMembershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), TradeMembershipEntity.Type.MEMBER);
+		MembershipEntity memberMembership = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.nextPersistedEntity(memberMembership);
 
 		// Owner offers Alpha for Australia
-		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getTradeMembershipId(), alpha.getArticleId(), australia.getArticleId());
+		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
 		try {
-			fixture.delete(memberMembership.getTradeMembershipId(), alphaForAustralia.getOfferId());
+			fixture.delete(memberMembership.getMembershipId(), alphaForAustralia.getOfferId());
 		} catch (RestException e) {
-			assertTrue(e.getMessage().contains("TradeMembership.tradeMembershipId must belong to the authenticated User"));
+			assertTrue(e.getMessage().contains("Membership.membershipId must belong to the authenticated User"));
 			throw e;
 		}
 	}

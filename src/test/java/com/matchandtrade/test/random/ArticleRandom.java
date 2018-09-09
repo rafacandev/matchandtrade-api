@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
-import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.repository.UserRepository;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
@@ -20,9 +20,9 @@ public class ArticleRandom {
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepository;
+	private MembershipRepositoryFacade membershipRepository;
 	@Autowired
-	private TradeMembershipRandom tradeMembershipRandom;
+	private MembershipRandom membershipRandom;
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -38,29 +38,29 @@ public class ArticleRandom {
 	}
 	
 	@Transactional
-	public ArticleEntity nextPersistedEntity(TradeMembershipEntity tradeMembership) {
-		TradeMembershipEntity tme = tradeMembershipRepository.get(tradeMembership.getTradeMembershipId());
+	public ArticleEntity nextPersistedEntity(MembershipEntity membership) {
+		MembershipEntity tme = membershipRepository.get(membership.getMembershipId());
 		ArticleEntity result = nextEntity();
 		articleRepositoryFacade.save(result);
 		tme.getArticles().add(result);
-		tradeMembershipRepository.save(tme);
+		membershipRepository.save(tme);
 		return result;
 	}
 
 	@Transactional
-	public ArticleEntity nextPersistedEntity(TradeMembershipEntity tradeMembership, String name) {
-		TradeMembershipEntity tme = tradeMembershipRepository.get(tradeMembership.getTradeMembershipId());
+	public ArticleEntity nextPersistedEntity(MembershipEntity membership, String name) {
+		MembershipEntity tme = membershipRepository.get(membership.getMembershipId());
 		ArticleEntity result = new ArticleEntity();
 		result.setName(name);
 		articleRepositoryFacade.save(result);
 		tme.getArticles().add(result);
-		tradeMembershipRepository.save(tme);
+		membershipRepository.save(tme);
 		return result;
 	}
 	
 	@Transactional
 	public ArticleEntity nextPersistedEntity(UserEntity tradeOwner) {
-		TradeMembershipEntity existingTradeMemberhip = tradeMembershipRandom.nextPersistedEntity(tradeOwner);
+		MembershipEntity existingTradeMemberhip = membershipRandom.nextPersistedEntity(tradeOwner);
 		return nextPersistedEntity(existingTradeMemberhip);
 	}
 

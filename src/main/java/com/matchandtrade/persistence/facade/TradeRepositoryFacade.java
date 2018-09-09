@@ -7,22 +7,22 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
-import com.matchandtrade.persistence.repository.TradeMembershipRepository;
+import com.matchandtrade.persistence.entity.MembershipEntity;
+import com.matchandtrade.persistence.repository.MembershipRepository;
 import com.matchandtrade.persistence.repository.TradeRepository;
 
 @Repository
 public class TradeRepositoryFacade {
 
 	@Autowired
-	private TradeMembershipRepository tradeMembershipRepository;
+	private MembershipRepository membershipRepository;
 	@Autowired
 	private TradeRepository tradeRepository;
 
 	@Transactional
 	public void delete(Integer tradeId) {
-		List<TradeMembershipEntity> tradeMemberships = tradeMembershipRepository.findByTrade_TradeId(tradeId);
-		tradeMembershipRepository.delete(tradeMemberships);
+		List<MembershipEntity> memberships = membershipRepository.findByTrade_TradeId(tradeId);
+		membershipRepository.delete(memberships);
 		tradeRepository.delete(tradeId);
 	}
 

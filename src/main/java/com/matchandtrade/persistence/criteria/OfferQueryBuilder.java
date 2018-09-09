@@ -13,7 +13,7 @@ public class OfferQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
 		offeredArticleId("offeredArticle.articleId"),
-		tradeMembershipId("membership.tradeMembershipId"),
+		membershipId("membership.membershipId"),
 		wantedArticleId("wantedArticle.articleId");
 		
 		private String alias;
@@ -32,7 +32,7 @@ public class OfferQueryBuilder implements QueryBuilder {
 	private EntityManager entityManager;
 	
     private static final String BASIC_HQL = 
-    	  " FROM TradeMembershipEntity AS membership"
+    	  " FROM MembershipEntity AS membership"
     	+ " INNER JOIN membership.offers AS offer"
     	+ " INNER JOIN membership.user AS user"
     	+ " INNER JOIN offer.offeredArticle AS offeredArticle"

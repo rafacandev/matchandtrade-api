@@ -11,9 +11,9 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.common.Sort;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 
 @Component
@@ -24,7 +24,7 @@ public class TradeService {
 	@Autowired
 	private TradeRepositoryFacade tradeRepository;
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepository;
+	private MembershipRepositoryFacade membershipRepository;
 	@Autowired
 	private TradeResultService tradeResultService;
 	
@@ -33,11 +33,11 @@ public class TradeService {
 		tradeEntity.setState(TradeEntity.State.SUBMITTING_ARTICLES);
 		tradeRepository.save(tradeEntity);
 		// Make authenticated user the owner of the trade
-		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();
-		tradeMembershipEntity.setTrade(tradeEntity);
-		tradeMembershipEntity.setUser(tradeOwner);
-		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
-		tradeMembershipRepository.save(tradeMembershipEntity);
+		MembershipEntity membershipEntity = new MembershipEntity();
+		membershipEntity.setTrade(tradeEntity);
+		membershipEntity.setUser(tradeOwner);
+		membershipEntity.setType(MembershipEntity.Type.OWNER);
+		membershipRepository.save(membershipEntity);
 	}
 
 	public void delete(Integer tradeId) {
@@ -58,11 +58,11 @@ public class TradeService {
 	public void update(TradeEntity tradeEntity) {
 		tradeRepository.save(tradeEntity);
 		// Make authenticated user the owner of the trade
-		// TODO: Review this, can we remove tradeMembership save from here?
-		TradeMembershipEntity tradeMembershipEntity = new TradeMembershipEntity();
-		tradeMembershipEntity.setTrade(tradeEntity);
-		tradeMembershipEntity.setType(TradeMembershipEntity.Type.OWNER);
-		tradeMembershipRepository.save(tradeMembershipEntity);
+		// TODO: Review this, can we remove membership save from here?
+		MembershipEntity membershipEntity = new MembershipEntity();
+		membershipEntity.setTrade(tradeEntity);
+		membershipEntity.setType(MembershipEntity.Type.OWNER);
+		membershipRepository.save(membershipEntity);
 		
 		if (TradeEntity.State.GENERATE_RESULTS == tradeEntity.getState()) {
 			tradeResultService.generateResults(tradeEntity.getTradeId());

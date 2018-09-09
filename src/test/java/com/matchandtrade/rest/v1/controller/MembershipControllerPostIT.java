@@ -12,16 +12,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.repository.TradeRepository;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.v1.json.TradeMembershipJson;
+import com.matchandtrade.rest.v1.json.MembershipJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeRandom;
 import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class TradeMembershipControllerPostIT {
+public class MembershipControllerPostIT {
 	
-	private TradeMembershipController fixture;
+	private MembershipController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
@@ -34,23 +34,23 @@ public class TradeMembershipControllerPostIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeMembershipController(false);
+			fixture = mockControllerFactory.getMembershipController(false);
 		}
 	}
 	
 	@Test
 	public void post() {
 		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		TradeMembershipJson request = new TradeMembershipJson();
+		MembershipJson request = new MembershipJson();
 		request.setTradeId(existingTrade.getTradeId());
 		request.setUserId(fixture.authenticationProvider.getAuthentication().getUser().getUserId());
-		TradeMembershipJson response = fixture.post(request);
-		assertNotNull(response.getTradeMembershipId());
+		MembershipJson response = fixture.post(request);
+		assertNotNull(response.getMembershipId());
 	}
 	
 	@Test(expected=RestException.class)
 	public void postInvalidTrade() {
-		TradeMembershipJson requestJson = new TradeMembershipJson();
+		MembershipJson requestJson = new MembershipJson();
 		requestJson.setUserId(fixture.authenticationProvider.getAuthentication().getUser().getUserId());
 		requestJson.setTradeId(-1);
 		fixture.post(requestJson);
@@ -58,7 +58,7 @@ public class TradeMembershipControllerPostIT {
 	
 	@Test(expected=RestException.class)
 	public void postInvalidUser() {
-		TradeMembershipJson request = new TradeMembershipJson();
+		MembershipJson request = new MembershipJson();
 		request.setUserId(-1);
 		fixture.post(request);
 	}
@@ -66,7 +66,7 @@ public class TradeMembershipControllerPostIT {
 	@Test(expected=RestException.class)
 	public void postUniqueTradeIdAndUserId() {
 		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		TradeMembershipJson request = new TradeMembershipJson();
+		MembershipJson request = new MembershipJson();
 		request.setTradeId(existingTrade.getTradeId());
 		request.setUserId(fixture.authenticationProvider.getAuthentication().getUser().getUserId());
 		fixture.post(request);
@@ -75,21 +75,21 @@ public class TradeMembershipControllerPostIT {
 	
 	@Test
 	public void shouldOnlySubscribeToTradeWhenTradeStatusIsSubmitingArticles() {
-		TradeMembershipJson requestForCanceled = createTradeForRandomExistingUser(TradeEntity.State.CANCELED);
+		MembershipJson requestForCanceled = createTradeForRandomExistingUser(TradeEntity.State.CANCELED);
 		assertThatThrowsInvalidArgumentException(requestForCanceled);
-		TradeMembershipJson requestForGenerateResults = createTradeForRandomExistingUser(TradeEntity.State.GENERATE_RESULTS);
+		MembershipJson requestForGenerateResults = createTradeForRandomExistingUser(TradeEntity.State.GENERATE_RESULTS);
 		assertThatThrowsInvalidArgumentException(requestForGenerateResults);
-		TradeMembershipJson requestForGeneratingResults = createTradeForRandomExistingUser(TradeEntity.State.GENERATING_RESULTS);
+		MembershipJson requestForGeneratingResults = createTradeForRandomExistingUser(TradeEntity.State.GENERATING_RESULTS);
 		assertThatThrowsInvalidArgumentException(requestForGeneratingResults);
-		TradeMembershipJson requestForArticlesMatchedResults = createTradeForRandomExistingUser(TradeEntity.State.ARTICLES_MATCHED);
+		MembershipJson requestForArticlesMatchedResults = createTradeForRandomExistingUser(TradeEntity.State.ARTICLES_MATCHED);
 		assertThatThrowsInvalidArgumentException(requestForArticlesMatchedResults);
-		TradeMembershipJson requestForMatchingArticlesResults = createTradeForRandomExistingUser(TradeEntity.State.MATCHING_ARTICLES);
+		MembershipJson requestForMatchingArticlesResults = createTradeForRandomExistingUser(TradeEntity.State.MATCHING_ARTICLES);
 		assertThatThrowsInvalidArgumentException(requestForMatchingArticlesResults);
-		TradeMembershipJson requestForResultsGenerated = createTradeForRandomExistingUser(TradeEntity.State.RESULTS_GENERATED);
+		MembershipJson requestForResultsGenerated = createTradeForRandomExistingUser(TradeEntity.State.RESULTS_GENERATED);
 		assertThatThrowsInvalidArgumentException(requestForResultsGenerated);
 	}
 
-	private void assertThatThrowsInvalidArgumentException(TradeMembershipJson request) {
+	private void assertThatThrowsInvalidArgumentException(MembershipJson request) {
 		boolean invalidSubscription = false;
 		try {
 			fixture.post(request);
@@ -99,11 +99,11 @@ public class TradeMembershipControllerPostIT {
 		assertTrue(invalidSubscription);
 	}
 
-	private TradeMembershipJson createTradeForRandomExistingUser(TradeEntity.State state) {
+	private MembershipJson createTradeForRandomExistingUser(TradeEntity.State state) {
 		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
 		existingTrade.setState(state);
 		tradeRepository.save(existingTrade);
-		TradeMembershipJson request = new TradeMembershipJson();
+		MembershipJson request = new MembershipJson();
 		request.setTradeId(existingTrade.getTradeId());
 		request.setUserId(userRandom.nextPersistedEntity().getUserId());
 		return request;

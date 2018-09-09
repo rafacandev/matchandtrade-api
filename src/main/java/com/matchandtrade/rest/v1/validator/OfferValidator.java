@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.OfferService;
-import com.matchandtrade.rest.service.TradeMembershipService;
+import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.OfferJson;
 
@@ -19,21 +19,21 @@ public class OfferValidator {
 	@Autowired
 	private OfferService offerService;
 	@Autowired
-	private TradeMembershipService tradeMembershipService;
+	private MembershipService membershipService;
 	@Autowired
 	private ArticleService articleService;
 	@Autowired
 	private UserService userService;
 
-	private static void tradeMembershipMustBelongToAuthenticatedUser(TradeMembershipEntity tradeMembership, Integer authenticatedUserId) {
-		if (tradeMembership == null || !tradeMembership.getUser().getUserId().equals(authenticatedUserId)) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership.tradeMembershipId must belong to the authenticated User.");
+	private static void membershipMustBelongToAuthenticatedUser(MembershipEntity membership, Integer authenticatedUserId) {
+		if (membership == null || !membership.getUser().getUserId().equals(authenticatedUserId)) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Membership.membershipId must belong to the authenticated User.");
 		}
 	}
 
-	public void validateDelete(Integer tradeMembershipId, Integer offerId, Integer authenticatedUserId) {
-		TradeMembershipEntity membership = tradeMembershipService.get(tradeMembershipId);
-		tradeMembershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
+	public void validateDelete(Integer membershipId, Integer offerId, Integer authenticatedUserId) {
+		MembershipEntity membership = membershipService.get(membershipId);
+		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 		
 		
 		UserEntity offeredArticleUser = userService.searchByOfferId(offerId);
@@ -42,19 +42,19 @@ public class OfferValidator {
 		}
 	}
 
-	public void validateGetAll(Integer tradeMembershipId, Integer offeredArticleId, Integer wantedArticleId,
+	public void validateGetAll(Integer membershipId, Integer offeredArticleId, Integer wantedArticleId,
 			Integer pageNumber, Integer pageSize, Integer authenticatedUserId) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);	
-		TradeMembershipEntity tradeMembership = tradeMembershipService.get(tradeMembershipId);
-		tradeMembershipMustBelongToAuthenticatedUser(tradeMembership, authenticatedUserId);
+		MembershipEntity membership = membershipService.get(membershipId);
+		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 	}
 
-	public void validateGetById(Integer tradeMembershipId, Integer offerId, Integer authenticatedUserId) {
-		TradeMembershipEntity tradeMembership = tradeMembershipService.get(tradeMembershipId);
-		tradeMembershipMustBelongToAuthenticatedUser(tradeMembership, authenticatedUserId);
+	public void validateGetById(Integer membershipId, Integer offerId, Integer authenticatedUserId) {
+		MembershipEntity membership = membershipService.get(membershipId);
+		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 	}
 
-	public void validatePost(Integer tradeMembershipId, OfferJson offer, Integer offeringUserId) {
+	public void validatePost(Integer membershipId, OfferJson offer, Integer offeringUserId) {
 		if (offer == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer is mandatory.");
 		}
@@ -76,9 +76,9 @@ public class OfferValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must belong to existing Articles.");
 		}
 		
-		TradeMembershipEntity tradeMembership = tradeMembershipService.get(tradeMembershipId);
-		if (!offeringUserId.equals(tradeMembership.getUser().getUserId())) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "TradeMembership must belong to the current authenticated User.");
+		MembershipEntity membership = membershipService.get(membershipId);
+		if (!offeringUserId.equals(membership.getUser().getUserId())) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Membership must belong to the current authenticated User.");
 		}
 		
 		UserEntity offeredArticleUser = userService.searchByArticleId(offer.getOfferedArticleId());

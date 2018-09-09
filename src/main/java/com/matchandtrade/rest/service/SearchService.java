@@ -8,13 +8,13 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ArticleQueryBuilder;
 import com.matchandtrade.persistence.criteria.OfferQueryBuilder;
 import com.matchandtrade.persistence.criteria.QueryBuilder;
-import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
+import com.matchandtrade.persistence.criteria.MembershipQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.criteria.UserQueryBuilder;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.QueryableRepository;
 
@@ -28,7 +28,7 @@ public class SearchService {
 	@Autowired
 	private QueryableRepository<TradeEntity> queryableTrade;
 	@Autowired
-	private QueryableRepository<TradeMembershipEntity> queryableTradeMembership;
+	private QueryableRepository<MembershipEntity> queryableMembership;
 	@Autowired
 	private QueryableRepository<UserEntity> queryableUser;
 	@Autowired
@@ -38,7 +38,7 @@ public class SearchService {
 	@Autowired
 	private TradeQueryBuilder tradeQueryBuilder;
 	@Autowired
-	private TradeMembershipQueryBuilder tradeMembershipQueryBuilder;
+	private MembershipQueryBuilder membershipQueryBuilder;
 	@Autowired
 	private UserQueryBuilder userQueryBuilder;
 	
@@ -54,8 +54,8 @@ public class SearchService {
 		if (TradeQueryBuilder.class.equals(queryBuilderClass)) {
 			return (SearchResult<T>) queryableTrade.query(searchCriteria, tradeQueryBuilder);
 		}
-		if (TradeMembershipQueryBuilder.class.equals(queryBuilderClass)) {
-			return (SearchResult<T>) queryableTradeMembership.query(searchCriteria, tradeMembershipQueryBuilder);
+		if (MembershipQueryBuilder.class.equals(queryBuilderClass)) {
+			return (SearchResult<T>) queryableMembership.query(searchCriteria, membershipQueryBuilder);
 		}
 		if (UserQueryBuilder.class.equals(queryBuilderClass)) {
 			return (SearchResult<T>) queryableUser.query(searchCriteria, userQueryBuilder);

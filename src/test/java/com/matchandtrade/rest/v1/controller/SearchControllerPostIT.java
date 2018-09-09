@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.v1.json.ArticleJson;
@@ -22,7 +22,7 @@ import com.matchandtrade.rest.v1.json.search.Recipe;
 import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.ArticleRandom;
-import com.matchandtrade.test.random.TradeMembershipRandom;
+import com.matchandtrade.test.random.MembershipRandom;
 import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
@@ -35,7 +35,7 @@ public class SearchControllerPostIT {
 	@Autowired
 	private ArticleRandom articleRandom;
 	@Autowired
-	private TradeMembershipRandom tradeMembershipRandom;
+	private MembershipRandom membershipRandom;
 	@Autowired
 	private UserRandom userRandom;
 	
@@ -50,19 +50,19 @@ public class SearchControllerPostIT {
 	public void searchByTradeId() {
 		// Create a trade for a random user
 		UserEntity greekUser = userRandom.nextPersistedEntity();
-		TradeMembershipEntity greekTradeMembership = tradeMembershipRandom.nextPersistedEntity(greekUser);
-		TradeEntity trade = greekTradeMembership.getTrade();
+		MembershipEntity greekMembership = membershipRandom.nextPersistedEntity(greekUser);
+		TradeEntity trade = greekMembership.getTrade();
 
 		// Create articles for Greek letters
-		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekTradeMembership);
-		ArticleEntity beta = articleRandom.nextPersistedEntity(greekTradeMembership);
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership);
+		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership);
 
 		// Create articles for country names
 		UserEntity countryUser = userRandom.nextPersistedEntity();
-		TradeMembershipEntity countryTradeMembership = tradeMembershipRandom.nextPersistedEntity(trade, countryUser, TradeMembershipEntity.Type.MEMBER);
-		ArticleEntity australia = articleRandom.nextPersistedEntity(countryTradeMembership);
-		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryTradeMembership);
-		ArticleEntity cuba = articleRandom.nextPersistedEntity(countryTradeMembership);
+		MembershipEntity countryMembership = membershipRandom.nextPersistedEntity(trade, countryUser, MembershipEntity.Type.MEMBER);
+		ArticleEntity australia = articleRandom.nextPersistedEntity(countryMembership);
+		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryMembership);
+		ArticleEntity cuba = articleRandom.nextPersistedEntity(countryMembership);
 		
 		SearchCriteriaJson request = new SearchCriteriaJson();
 		request.setRecipe(Recipe.ARTICLES);
@@ -78,27 +78,27 @@ public class SearchControllerPostIT {
 	}
 
 	@Test
-	public void searchByTradeIdAndTradeMembershipIdNotEquals() {
+	public void searchByTradeIdAndMembershipIdNotEquals() {
 		// Create a trade for a random user
 		UserEntity greekUser = userRandom.nextPersistedEntity();
-		TradeMembershipEntity greekTradeMembership = tradeMembershipRandom.nextPersistedEntity(greekUser);
-		TradeEntity trade = greekTradeMembership.getTrade();
+		MembershipEntity greekMembership = membershipRandom.nextPersistedEntity(greekUser);
+		TradeEntity trade = greekMembership.getTrade();
 		
 		// Create articles for Greek letters
-		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekTradeMembership);
-		ArticleEntity beta = articleRandom.nextPersistedEntity(greekTradeMembership);
+		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership);
+		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership);
 		
 		// Create articles for country names
 		UserEntity countryUser = userRandom.nextPersistedEntity();
-		TradeMembershipEntity countryTradeMembership = tradeMembershipRandom.nextPersistedEntity(trade, countryUser, TradeMembershipEntity.Type.MEMBER);
-		articleRandom.nextPersistedEntity(countryTradeMembership);
-		articleRandom.nextPersistedEntity(countryTradeMembership);
-		articleRandom.nextPersistedEntity(countryTradeMembership);
+		MembershipEntity countryMembership = membershipRandom.nextPersistedEntity(trade, countryUser, MembershipEntity.Type.MEMBER);
+		articleRandom.nextPersistedEntity(countryMembership);
+		articleRandom.nextPersistedEntity(countryMembership);
+		articleRandom.nextPersistedEntity(countryMembership);
 		
 		SearchCriteriaJson request = new SearchCriteriaJson();
 		request.setRecipe(Recipe.ARTICLES);
 		request.addCriterion("Trade.tradeId", trade.getTradeId());
-		request.addCriterion("TradeMembership.tradeMembershipId", countryTradeMembership.getTradeMembershipId(), Operator.AND, Matcher.NOT_EQUALS); 
+		request.addCriterion("Membership.membershipId", countryMembership.getMembershipId(), Operator.AND, Matcher.NOT_EQUALS); 
 		
 		SearchResult<Json> response = fixture.post(request, 1, 10);
 		assertEquals(2, response.getResultList().size());

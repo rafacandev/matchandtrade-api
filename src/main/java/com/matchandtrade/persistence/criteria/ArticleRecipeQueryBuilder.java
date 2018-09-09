@@ -10,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
-import com.matchandtrade.persistence.dto.ArticleAndTradeMembershipIdDto;
+import com.matchandtrade.persistence.dto.ArticleAndMembershipIdDto;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 
 @Component
 public class ArticleRecipeQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		TRADE_ID("tradeMembership.trade.tradeId"), TRADE_MEMBERSHIP_ID("tradeMembership.tradeMembershipId");
+		TRADE_ID("membership.trade.tradeId"), TRADE_MEMBERSHIP_ID("membership.membershipId");
 
 		private String alias;
 		
@@ -31,8 +31,8 @@ public class ArticleRecipeQueryBuilder implements QueryBuilder {
 		}
 	}
 	
-    private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tradeMembership"
-    		+ " INNER JOIN tradeMembership.articles AS article";
+    private static final String BASIC_HQL = "FROM MembershipEntity AS membership"
+    		+ " INNER JOIN membership.articles AS article";
 
     @Autowired
     private EntityManager entityManager;
@@ -45,23 +45,23 @@ public class ArticleRecipeQueryBuilder implements QueryBuilder {
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
-		StringBuilder hql = new StringBuilder("SELECT tradeMembership.tradeMembershipId, article " + BASIC_HQL);
+		StringBuilder hql = new StringBuilder("SELECT membership.membershipId, article " + BASIC_HQL);
 		return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager);
 	}
 
 	public ResultTransformer makeResultTransformer() {
-		return new ArticleAndTradeMembershipId();
+		return new ArticleAndMembershipId();
 	}
 	
 	// TODO: Review this, is there a simpler way to solve this problem? 
-	public class ArticleAndTradeMembershipId implements ResultTransformer {
+	public class ArticleAndMembershipId implements ResultTransformer {
 		private static final long serialVersionUID = -912373493890582112L;
 
 		@Override
 		public Object transformTuple(Object[] tuple, String[] arg1) {
-			Integer tradeMembershipId = (Integer) tuple[0];
+			Integer membershipId = (Integer) tuple[0];
 			ArticleEntity article = (ArticleEntity) tuple[1];
-			return new ArticleAndTradeMembershipIdDto(article, tradeMembershipId);
+			return new ArticleAndMembershipIdDto(article, membershipId);
 		}
 		
 		@SuppressWarnings("rawtypes")

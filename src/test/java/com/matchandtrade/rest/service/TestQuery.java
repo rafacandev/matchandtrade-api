@@ -23,9 +23,9 @@ public class TestQuery {
 	@Autowired
 	private EntityManager entityManager;
 	
-	public List<OfferEntity> findOffersByTradeMembership(Integer tradeMembershipId) {
-		Query query = entityManager.createQuery("SELECT offer FROM TradeMembershipEntity membership JOIN membership.offers AS offer WHERE membership.tradeMembershipId=:tradeMembershipId");
-		query.setParameter("tradeMembershipId", tradeMembershipId);
+	public List<OfferEntity> findOffersByMembership(Integer membershipId) {
+		Query query = entityManager.createQuery("SELECT offer FROM MembershipEntity membership JOIN membership.offers AS offer WHERE membership.membershipId=:membershipId");
+		query.setParameter("membershipId", membershipId);
 		return query.getResultList();
 	}
 

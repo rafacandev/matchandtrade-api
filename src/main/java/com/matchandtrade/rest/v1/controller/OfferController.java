@@ -19,7 +19,7 @@ import com.matchandtrade.rest.v1.transformer.OfferTransformer;
 import com.matchandtrade.rest.v1.validator.OfferValidator;
 
 @RestController
-@RequestMapping(path = "/matchandtrade-web-api/v1/trade-memberships")
+@RequestMapping(path = "/matchandtrade-web-api/v1/memberships")
 public class OfferController implements Controller {
 
 	@Autowired
@@ -31,23 +31,23 @@ public class OfferController implements Controller {
 	@Autowired
 	OfferValidator offerValidator;
 
-	@RequestMapping(path="/{tradeMembershipId}/offers/{offerId}", method=RequestMethod.DELETE)
+	@RequestMapping(path="/{membershipId}/offers/{offerId}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable("tradeMembershipId")Integer tradeMembershipId, @PathVariable("offerId")Integer offerId) {
+	public void delete(@PathVariable("membershipId")Integer membershipId, @PathVariable("offerId")Integer offerId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validateDelete(tradeMembershipId, offerId, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validateDelete(membershipId, offerId, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Delegate to Service layer
 		offerService.delete(offerId);
 	}
 
-	@RequestMapping(path="/{tradeMembershipId}/offers/{offerId}", method=RequestMethod.GET)
-	public OfferJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("offerId") Integer offerId) {
+	@RequestMapping(path="/{membershipId}/offers/{offerId}", method=RequestMethod.GET)
+	public OfferJson get(@PathVariable("membershipId") Integer membershipId, @PathVariable("offerId") Integer offerId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validateGetById(tradeMembershipId, offerId, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validateGetById(membershipId, offerId, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Delegate to Service layer
 		OfferEntity entity = offerService.get(offerId);
 		// Transform the response
@@ -56,31 +56,31 @@ public class OfferController implements Controller {
 		return response;
 	}
 
-	@RequestMapping(path="/{tradeMembershipId}/offers", method=RequestMethod.GET)
-	public SearchResult<OfferJson> get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, Integer offeredArticleId, Integer wantedArticleId, Integer _pageNumber, Integer _pageSize) {
+	@RequestMapping(path="/{membershipId}/offers", method=RequestMethod.GET)
+	public SearchResult<OfferJson> get(@PathVariable("membershipId") Integer membershipId, Integer offeredArticleId, Integer wantedArticleId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validateGetAll(tradeMembershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validateGetAll(membershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Delegate to service layer
-		SearchResult<OfferEntity> searchResult = offerService.search(tradeMembershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize);
+		SearchResult<OfferEntity> searchResult = offerService.search(membershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<OfferJson> response = OfferTransformer.transform(searchResult);
 		// TODO: Assemble links
 		return response;
 	}
 	
-	@RequestMapping(path = "/{tradeMembershipId}/offers", method = RequestMethod.POST)
+	@RequestMapping(path = "/{membershipId}/offers", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public OfferJson post(@PathVariable Integer tradeMembershipId, @RequestBody OfferJson requestJson) {
+	public OfferJson post(@PathVariable Integer membershipId, @RequestBody OfferJson requestJson) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validatePost(tradeMembershipId, requestJson, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validatePost(membershipId, requestJson, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Transform the request
 		OfferEntity entity = offerTransformer.transform(requestJson); 
 		// Delegate to service layer
-		offerService.create(tradeMembershipId, entity);
+		offerService.create(membershipId, entity);
 		// Transform the response
 		OfferJson response = OfferTransformer.transform(entity);
 		// TODO: Assemble links

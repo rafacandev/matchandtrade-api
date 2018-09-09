@@ -11,9 +11,9 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.OfferQueryBuilder;
 import com.matchandtrade.persistence.entity.OfferEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
-import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 
 @Service
 public class OfferService {
@@ -23,7 +23,7 @@ public class OfferService {
 	@Autowired
 	private SearchService searchService;
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
+	private MembershipRepositoryFacade membershipRepositoryFacade;
 
 	@Transactional
 	public boolean areArticlesAssociatedToSameTrade(Integer ...articles) {
@@ -31,19 +31,19 @@ public class OfferService {
 	}
 
 	@Transactional
-	public void create(Integer tradeMembershipId, OfferEntity offer) {
-		TradeMembershipEntity tradeMembership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
+	public void create(Integer membershipId, OfferEntity offer) {
+		MembershipEntity membership = membershipRepositoryFacade.get(membershipId);
 		offerRepositoryFacade.save(offer);
-		tradeMembership.getOffers().add(offer);
-		tradeMembershipRepositoryFacade.save(tradeMembership);
+		membership.getOffers().add(offer);
+		membershipRepositoryFacade.save(membership);
 	}
 
 	@Transactional
 	public void delete(Integer offerId) {
-		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.getByOfferId(offerId);
+		MembershipEntity membership = membershipRepositoryFacade.getByOfferId(offerId);
 		OfferEntity offer = offerRepositoryFacade.get(offerId);
 		membership.getOffers().remove(offer);
-		tradeMembershipRepositoryFacade.save(membership);
+		membershipRepositoryFacade.save(membership);
 		offerRepositoryFacade.delete(offerId);
 	}
 
@@ -60,7 +60,7 @@ public class OfferService {
 	/**
 	 * Delete all offers where either {@code Offer.wantedArticle.articleId} or {@code Offer.offeredArticle.articleId}
 	 * is equals to {@code articleId}
-	 * @param tradeMembershipId
+	 * @param membershipId
 	 * @param articleId
 	 */
 	@Transactional
@@ -73,11 +73,11 @@ public class OfferService {
 		return offerRepositoryFacade.get(offerId);
 	}
 
-	public SearchResult<OfferEntity> search(Integer tradeMembershipId, Integer offeredArticleId, Integer wantedArticleId,
+	public SearchResult<OfferEntity> search(Integer membershipId, Integer offeredArticleId, Integer wantedArticleId,
 			Integer pageNumber, Integer pageSize) {
 		SearchCriteria criteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
-		if (tradeMembershipId != null) {
-			criteria.addCriterion(OfferQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
+		if (membershipId != null) {
+			criteria.addCriterion(OfferQueryBuilder.Field.membershipId, membershipId);
 		}
 		if (offeredArticleId != null) {
 			criteria.addCriterion(OfferQueryBuilder.Field.offeredArticleId, offeredArticleId);

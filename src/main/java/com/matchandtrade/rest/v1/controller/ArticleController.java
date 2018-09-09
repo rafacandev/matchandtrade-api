@@ -20,7 +20,7 @@ import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.rest.v1.validator.ArticleValidator;
 
 @RestController
-@RequestMapping(path = "/matchandtrade-web-api/v1/trade-memberships")
+@RequestMapping(path = "/matchandtrade-web-api/v1/memberships")
 public class ArticleController implements Controller {
 
 	@Autowired
@@ -30,42 +30,42 @@ public class ArticleController implements Controller {
 	@Autowired
 	private ArticleValidator articleValidator;
 
-	@RequestMapping(path="/{tradeMembershipId}/articles/{articleId}", method=RequestMethod.DELETE)
+	@RequestMapping(path="/{membershipId}/articles/{articleId}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("articleId") Integer articleId) {
+	public void delete(@PathVariable("membershipId") Integer membershipId, @PathVariable("articleId") Integer articleId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleValidator.validateDelete(tradeMembershipId, authenticationProvider.getAuthentication().getUser().getUserId(), articleId);
+		articleValidator.validateDelete(membershipId, authenticationProvider.getAuthentication().getUser().getUserId(), articleId);
 		// Delegate to service layer
-		articleService.delete(tradeMembershipId, articleId);
+		articleService.delete(membershipId, articleId);
 	}
 
-	@RequestMapping(path = "/{tradeMembershipId}/articles", method = RequestMethod.POST)
+	@RequestMapping(path = "/{membershipId}/articles", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public ArticleJson post(@PathVariable Integer tradeMembershipId, @RequestBody ArticleJson requestJson) {
+	public ArticleJson post(@PathVariable Integer membershipId, @RequestBody ArticleJson requestJson) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, requestJson);
+		articleValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, requestJson);
 		// Transform the request
 		ArticleEntity articleEntity = ArticleTransformer.transform(requestJson);
 		// Delegate to service layer
-		articleService.create(tradeMembershipId, articleEntity);
+		articleService.create(membershipId, articleEntity);
 		// Transform the response
 		ArticleJson response = ArticleTransformer.transform(articleEntity);
 		// Assemble links
-		ArticleLinkAssember.assemble(response, tradeMembershipId);
+		ArticleLinkAssember.assemble(response, membershipId);
 		return response;
 	}
 
-	@RequestMapping(path = "/{tradeMembershipId}/articles/{articleId}", method = RequestMethod.PUT)
-	public ArticleJson put(@PathVariable Integer tradeMembershipId, @PathVariable Integer articleId, @RequestBody ArticleJson requestJson) {
+	@RequestMapping(path = "/{membershipId}/articles/{articleId}", method = RequestMethod.PUT)
+	public ArticleJson put(@PathVariable Integer membershipId, @PathVariable Integer articleId, @RequestBody ArticleJson requestJson) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		requestJson.setArticleId(articleId); // Always get the id from the URL when working on PUT methods
-		articleValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, articleId, requestJson);
+		articleValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, articleId, requestJson);
 		// Transform the request
 		ArticleEntity articleEntity = ArticleTransformer.transform(requestJson);
 		// Delegate to service layer
@@ -73,37 +73,37 @@ public class ArticleController implements Controller {
 		// Transform the response
 		ArticleJson response = ArticleTransformer.transform(articleEntity);
 		// Assemble links
-		ArticleLinkAssember.assemble(response, tradeMembershipId);
+		ArticleLinkAssember.assemble(response, membershipId);
 		return response;
 	}
 
-	@RequestMapping(path="/{tradeMembershipId}/articles/{articleId}", method=RequestMethod.GET)
-	public ArticleJson get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, @PathVariable("articleId") Integer articleId) {
+	@RequestMapping(path="/{membershipId}/articles/{articleId}", method=RequestMethod.GET)
+	public ArticleJson get(@PathVariable("membershipId") Integer membershipId, @PathVariable("articleId") Integer articleId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId);
+		articleValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId);
 		// Delegate to service layer
 		ArticleEntity articleEntity = articleService.get(articleId);
 		// Transform the response
 		ArticleJson response = ArticleTransformer.transform(articleEntity);
 		// Assemble links
-		ArticleLinkAssember.assemble(response, tradeMembershipId);
+		ArticleLinkAssember.assemble(response, membershipId);
 		return response;
 	}
 
-	@RequestMapping(path={"/{tradeMembershipId}/articles/", "/{tradeMembershipId}/articles"}, method=RequestMethod.GET)
-	public SearchResult<ArticleJson> get(@PathVariable("tradeMembershipId") Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
+	@RequestMapping(path={"/{membershipId}/articles/", "/{membershipId}/articles"}, method=RequestMethod.GET)
+	public SearchResult<ArticleJson> get(@PathVariable("membershipId") Integer membershipId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), tradeMembershipId, _pageNumber, _pageSize);
+		articleValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, _pageNumber, _pageSize);
 		// Delegate to service layer
-		SearchResult<ArticleEntity> searchResult = articleService.searchByTradeMembershipId(tradeMembershipId, _pageNumber, _pageSize);
+		SearchResult<ArticleEntity> searchResult = articleService.searchByMembershipId(membershipId, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<ArticleJson> response = ArticleTransformer.transform(searchResult);
 		// Assemble links
-		ArticleLinkAssember.assemble(response, tradeMembershipId);
+		ArticleLinkAssember.assemble(response, membershipId);
 		return response;
 	}
 	

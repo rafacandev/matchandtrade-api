@@ -11,7 +11,7 @@ import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ArticleRecipeQueryBuilder;
-import com.matchandtrade.persistence.dto.ArticleAndTradeMembershipIdDto;
+import com.matchandtrade.persistence.dto.ArticleAndMembershipIdDto;
 import com.matchandtrade.persistence.entity.Entity;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.v1.json.search.Matcher;
@@ -25,8 +25,8 @@ public class SearchTransformer {
 		List<Json> resultList = searchResult.getResultList().stream()
 			.map(entity -> {
 				if (Recipe.ARTICLES == recipe) {
-					ArticleAndTradeMembershipIdDto tradeMembershipAndArticleDto = (ArticleAndTradeMembershipIdDto) entity;
-					return ArticleTransformer.transform(tradeMembershipAndArticleDto.getArticle());
+					ArticleAndMembershipIdDto membershipAndArticleDto = (ArticleAndMembershipIdDto) entity;
+					return ArticleTransformer.transform(membershipAndArticleDto.getArticle());
 				} else {
 					throw new InvalidParameterException("Unsupported recipe: " + recipe);
 				}
@@ -76,7 +76,7 @@ public class SearchTransformer {
 			if ("Trade.tradeId".equals(entry.getKey())) {
 				result.getCriteria().add(transformCriterion(ArticleRecipeQueryBuilder.Field.TRADE_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
 			}
-			if ("TradeMembership.tradeMembershipId".equals(entry.getKey())) {
+			if ("Membership.membershipId".equals(entry.getKey())) {
 				result.getCriteria().add(transformCriterion(ArticleRecipeQueryBuilder.Field.TRADE_MEMBERSHIP_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
 			}
 		});

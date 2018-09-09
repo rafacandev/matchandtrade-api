@@ -10,7 +10,7 @@ import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.dto.ArticleAndTradeMembershipIdDto;
+import com.matchandtrade.persistence.dto.ArticleAndMembershipIdDto;
 import com.matchandtrade.persistence.entity.Entity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.Json;
@@ -61,11 +61,11 @@ public class SearchController implements Controller {
 		if (Recipe.ARTICLES == recipe) {
 			// Sub-optimum performance but nice separation of concerns. If performance becomes issue then we need to assemble links along with with json transformation.
 			searchResult.getResultList().forEach(v -> {
-				ArticleAndTradeMembershipIdDto articleAndTrademembershipIdDto = (ArticleAndTradeMembershipIdDto) v;
+				ArticleAndMembershipIdDto articleAndMembershipIdDto = (ArticleAndMembershipIdDto) v;
 				response.getResultList().forEach(json -> {
 					ArticleJson articleJson = (ArticleJson) json;
-					if (articleJson.getArticleId() == articleAndTrademembershipIdDto.getArticle().getArticleId()) {
-						ArticleLinkAssember.assemble(articleJson, articleAndTrademembershipIdDto.getTradeMembershipId());
+					if (articleJson.getArticleId() == articleAndMembershipIdDto.getArticle().getArticleId()) {
+						ArticleLinkAssember.assemble(articleJson, articleAndMembershipIdDto.getMembershipId());
 					}
 				});
 			});

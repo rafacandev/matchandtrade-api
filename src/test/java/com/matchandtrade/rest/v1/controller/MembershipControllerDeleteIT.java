@@ -8,33 +8,33 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.TradeMembershipRandom;
+import com.matchandtrade.test.random.MembershipRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class TradeMembershipControllerDeleteIT {
+public class MembershipControllerDeleteIT {
 	
-	private TradeMembershipController fixture;
+	private MembershipController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
-	private TradeMembershipRandom tradeMembershipRandom;
+	private MembershipRandom membershipRandom;
 	
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeMembershipController(true);
+			fixture = mockControllerFactory.getMembershipController(true);
 		}
 	}
 	
 	@Test
 	public void delete() {
-		TradeMembershipEntity existingTradeMembership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		fixture.delete(existingTradeMembership.getTradeMembershipId());
-		assertNull(fixture.get(existingTradeMembership.getTradeMembershipId()));
+		MembershipEntity existingMembership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		fixture.delete(existingMembership.getMembershipId());
+		assertNull(fixture.get(existingMembership.getMembershipId()));
 	}
 	
 	@Test(expected=RestException.class)

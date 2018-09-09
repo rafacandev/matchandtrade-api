@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
-import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.v1.json.TradeResultJson;
 import com.matchandtrade.rest.v1.json.TradedArticleJson;
@@ -24,7 +24,7 @@ public class TradeMaximizerTransformer {
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
+	private MembershipRepositoryFacade membershipRepositoryFacade;
 	@Autowired
 	private TradeRepositoryFacade tradeRepositoryFacade;
 
@@ -32,11 +32,11 @@ public class TradeMaximizerTransformer {
 	 * Helper class to temporarily hold parsed values from a trade line 
 	 */
 	private class TradeLinePojo {
-		public Integer offeringTradeMembershipId;
+		public Integer offeringMembershipId;
 		public Integer offeringArticleId;
-		public Integer receivingTradeMembershipId;
+		public Integer receivingMembershipId;
 		public Integer receivingArticleId;
-		public Integer sendingTradeMembershipId;
+		public Integer sendingMembershipId;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class TradeMaximizerTransformer {
 		List<String> lines = transformTradeMaximizerToList(tradeMaximizerOutput);
 
 		// Sort trade lines for better CSV presentation 
-		sortTradeLinesByOfferingTradeMembershipAndOfferingArticleId(lines);
+		sortTradeLinesByOfferingMembershipAndOfferingArticleId(lines);
 		
 		CSVFormat formatter = CSVFormat.DEFAULT
 				.withRecordSeparator("\n")
@@ -67,13 +67,13 @@ public class TradeMaximizerTransformer {
 		
 		for (String line : lines) {
 			TradeLinePojo linePojo = transformLine(line);
-			// Articles not traded "receivingTradeMembershipId == null" are omitted
-			if (linePojo.receivingTradeMembershipId == null) {
+			// Articles not traded "receivingMembershipId == null" are omitted
+			if (linePojo.receivingMembershipId == null) {
 				continue;
 			}
 			
 			List<Object> csvRecord = new ArrayList<>();
-			TradeMembershipEntity offeringMembership = tradeMembershipRepositoryFacade.get(linePojo.offeringTradeMembershipId);
+			MembershipEntity offeringMembership = membershipRepositoryFacade.get(linePojo.offeringMembershipId);
 			csvRecord.add(offeringMembership.getUser().getUserId());
 			csvRecord.add(offeringMembership.getUser().getName());
 			ArticleEntity offeringArticle = articleRepositoryFacade.get(linePojo.offeringArticleId);
@@ -82,14 +82,14 @@ public class TradeMaximizerTransformer {
 			if (linePojo.receivingArticleId != null) {
 				tradedArticlesCount++;
 				csvRecord.add(":RECEIVES:");
-				TradeMembershipEntity receivingMembership = tradeMembershipRepositoryFacade.get(linePojo.receivingTradeMembershipId);
+				MembershipEntity receivingMembership = membershipRepositoryFacade.get(linePojo.receivingMembershipId);
 				csvRecord.add(receivingMembership.getUser().getUserId());
 				csvRecord.add(receivingMembership.getUser().getName());
 				ArticleEntity receivingArticle = articleRepositoryFacade.get(linePojo.receivingArticleId);
 				csvRecord.add(receivingArticle.getArticleId());
 				csvRecord.add(receivingArticle.getName());
 				csvRecord.add(":SENDS:");
-				TradeMembershipEntity sendingMembership = tradeMembershipRepositoryFacade.get(linePojo.sendingTradeMembershipId);
+				MembershipEntity sendingMembership = membershipRepositoryFacade.get(linePojo.sendingMembershipId);
 				csvRecord.add(sendingMembership.getUser().getUserId());
 				csvRecord.add(sendingMembership.getUser().getName());
 			}
@@ -119,16 +119,16 @@ public class TradeMaximizerTransformer {
 	}
 
 	/**
-	 * Sort trade lines by offeringTradeMembership and articleId 
+	 * Sort trade lines by offeringMembership and articleId 
 	 * @param tradeLines
 	 */
-	private void sortTradeLinesByOfferingTradeMembershipAndOfferingArticleId(List<String> tradeLines) {
+	private void sortTradeLinesByOfferingMembershipAndOfferingArticleId(List<String> tradeLines) {
 		tradeLines.sort((i, j) -> {
 			TradeLinePojo iPojo = transformLine(i);
 			TradeLinePojo jPojo = transformLine(j);
-			if (iPojo.offeringTradeMembershipId > jPojo.offeringTradeMembershipId) {
+			if (iPojo.offeringMembershipId > jPojo.offeringMembershipId) {
 				return 1;
-			} else if (iPojo.offeringTradeMembershipId < jPojo.offeringTradeMembershipId) {
+			} else if (iPojo.offeringMembershipId < jPojo.offeringMembershipId) {
 				return -1;
 			} else {
 				return iPojo.offeringArticleId.compareTo(jPojo.offeringArticleId);
@@ -165,15 +165,15 @@ public class TradeMaximizerTransformer {
 	private TradeLinePojo transformLine(String line) {
 		TradeLinePojo result = new TradeLinePojo();
 		// Handle the offering portion
-		// offeringTradeMembershipId is the first number in parenthesis
-		result.offeringTradeMembershipId = Integer.parseInt(line.substring(1, line.indexOf(')')));
+		// offeringMembershipId is the first number in parenthesis
+		result.offeringMembershipId = Integer.parseInt(line.substring(1, line.indexOf(')')));
 		// offeringArticleId is the number after the first ')'
 		result.offeringArticleId = Integer.parseInt(line.substring(line.indexOf(')')+2, ordinalIndexOf(line, " ", 2)));
 		
 		// Handle the receiving portion
 		if (line.contains("receives")) {
-			// receivingTradeMembershipId is the second number in parenthesis
-			result.receivingTradeMembershipId = Integer.parseInt(line.substring(ordinalIndexOf(line, "(", 2) + 1, ordinalIndexOf(line, ")", 2)));
+			// receivingMembershipId is the second number in parenthesis
+			result.receivingMembershipId = Integer.parseInt(line.substring(ordinalIndexOf(line, "(", 2) + 1, ordinalIndexOf(line, ")", 2)));
 			// receivingArticleId is the number after the second ')'
 			int receivingArticleIdIndex = ordinalIndexOf(line, ")", 2) + 2;
 			result.receivingArticleId = Integer.parseInt(line.substring(receivingArticleIdIndex, line.indexOf(' ', receivingArticleIdIndex)));
@@ -181,8 +181,8 @@ public class TradeMaximizerTransformer {
 		
 		// Handle the sending portion
 		if (line.contains("sends")) {
-			// sendingTradeMembershipId is the third number in parenthesis
-			result.sendingTradeMembershipId = Integer.parseInt(line.substring(ordinalIndexOf(line, "(", 3) + 1, ordinalIndexOf(line, ")", 3)));
+			// sendingMembershipId is the third number in parenthesis
+			result.sendingMembershipId = Integer.parseInt(line.substring(ordinalIndexOf(line, "(", 3) + 1, ordinalIndexOf(line, ")", 3)));
 		}
 		return result;
 	}
@@ -207,13 +207,13 @@ public class TradeMaximizerTransformer {
 		TradeResultJson result = new TradeResultJson();
 		for(String line : lines) {
 			TradeLinePojo linePojo = transformLine(line);
-			//Skip articles not traded (aka "receivingTradeMembershipId == null")
-			if (linePojo.receivingTradeMembershipId == null) {
+			//Skip articles not traded (aka "receivingMembershipId == null")
+			if (linePojo.receivingMembershipId == null) {
 				continue;
 			}
 			totalOfTradedArticles++;
 			
-			TradeMembershipEntity offeringMembership = tradeMembershipRepositoryFacade.get(linePojo.offeringTradeMembershipId);
+			MembershipEntity offeringMembership = membershipRepositoryFacade.get(linePojo.offeringMembershipId);
 			TradedArticleJson tradedArticle = new TradedArticleJson();
 			tradedArticle.setUserId(offeringMembership.getUser().getUserId());
 			tradedArticle.setUserName(offeringMembership.getUser().getName());
@@ -222,7 +222,7 @@ public class TradeMaximizerTransformer {
 			tradedArticle.setArticleId(offeringArticle.getArticleId());
 			tradedArticle.setArticleName(offeringArticle.getName());
 			
-			TradeMembershipEntity receivingMembership = tradeMembershipRepositoryFacade.get(linePojo.receivingTradeMembershipId);
+			MembershipEntity receivingMembership = membershipRepositoryFacade.get(linePojo.receivingMembershipId);
 			tradedArticle.setReceivingUserId(receivingMembership.getUser().getUserId());
 			tradedArticle.setReceivingUserName(receivingMembership.getUser().getName());
 			
@@ -230,7 +230,7 @@ public class TradeMaximizerTransformer {
 			tradedArticle.setReceivingArticleId(receivingArticle.getArticleId());
 			tradedArticle.setReceivingArticleName(receivingArticle.getName());
 			
-			TradeMembershipEntity sendingMemberhip = tradeMembershipRepositoryFacade.get(linePojo.sendingTradeMembershipId);
+			MembershipEntity sendingMemberhip = membershipRepositoryFacade.get(linePojo.sendingMembershipId);
 			tradedArticle.setSendingUserId(sendingMemberhip.getUser().getUserId());
 			tradedArticle.setSendingUserName(sendingMemberhip.getUser().getName());
 

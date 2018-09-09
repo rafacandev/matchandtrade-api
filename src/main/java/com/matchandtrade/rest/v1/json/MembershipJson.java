@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.matchandtrade.rest.JsonLinkSupport;
 
-public class TradeMembershipJson extends JsonLinkSupport {
+public class MembershipJson extends JsonLinkSupport {
 
 	public enum Type {
 		OWNER, MEMBER
 	}
 	
-	private Integer tradeMembershipId;
+	private Integer membershipId;
 	private Integer userId;
 	private Integer tradeId;
 	private Type type;
@@ -20,8 +20,8 @@ public class TradeMembershipJson extends JsonLinkSupport {
 	}
 
 	@JsonInclude(value=Include.NON_NULL)
-	public Integer getTradeMembershipId() {
-		return tradeMembershipId;
+	public Integer getMembershipId() {
+		return membershipId;
 	}
 
 	@JsonInclude(value=Include.NON_NULL)
@@ -37,8 +37,8 @@ public class TradeMembershipJson extends JsonLinkSupport {
 		this.tradeId = tradeId;
 	}
 
-	public void setTradeMembershipId(Integer tradeMembershipId) {
-		this.tradeMembershipId = tradeMembershipId;
+	public void setMembershipId(Integer membershipId) {
+		this.membershipId = membershipId;
 	}
 
 	public void setType(Type type) {

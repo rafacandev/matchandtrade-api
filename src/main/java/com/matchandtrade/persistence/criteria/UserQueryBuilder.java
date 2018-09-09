@@ -29,7 +29,7 @@ public class UserQueryBuilder implements QueryBuilder {
 	@Autowired
 	private EntityManager entityManager;
 	
-	private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tm"
+	private static final String BASIC_HQL = "FROM MembershipEntity AS tm"
     		+ " INNER JOIN tm.user AS user"
     		+ " INNER JOIN tm.trade AS trade"
     		+ " INNER JOIN tm.articles AS article";

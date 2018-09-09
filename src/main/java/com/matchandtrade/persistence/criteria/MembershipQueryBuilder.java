@@ -10,13 +10,13 @@ import com.matchandtrade.persistence.common.Criterion;
 import com.matchandtrade.persistence.common.SearchCriteria;
 
 @Component
-public class TradeMembershipQueryBuilder implements QueryBuilder {
+public class MembershipQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
 		articleId("article.articleId"),
 		tradeId("trade.tradeId"), 
-		tradeMembershipId("tradeMembership.tradeMembershipId"), 
-		type("tradeMembership.type"),
+		membershipId("membership.membershipId"), 
+		type("membership.type"),
 		userId("user.userId"); 
 
 		private String alias;
@@ -34,7 +34,7 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 	
     @Autowired
     private EntityManager entityManager;
-    private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tradeMembership";
+    private static final String BASIC_HQL = "FROM MembershipEntity AS membership";
     
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
@@ -45,7 +45,7 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
-		StringBuilder hql = new StringBuilder("SELECT tradeMembership " + BASIC_HQL);
+		StringBuilder hql = new StringBuilder("SELECT membership " + BASIC_HQL);
 		parameterizeHql(searchCriteria, hql);
 		return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager);
 	}
@@ -67,13 +67,13 @@ public class TradeMembershipQueryBuilder implements QueryBuilder {
 		}
 		
 		if (isArticlesJoinRequired) {
-			hql.append(" INNER JOIN tradeMembership.articles AS article");
+			hql.append(" INNER JOIN membership.articles AS article");
 		}
 		if (isUserJoinRequired) {
-			hql.append(" INNER JOIN tradeMembership.user AS user");
+			hql.append(" INNER JOIN membership.user AS user");
 		}
 		if (isTradeJoinRequired) {
-			hql.append(" INNER JOIN tradeMembership.trade AS trade");
+			hql.append(" INNER JOIN membership.trade AS trade");
 		}
 	}
 	

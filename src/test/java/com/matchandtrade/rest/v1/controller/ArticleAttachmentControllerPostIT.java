@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
@@ -22,7 +22,7 @@ import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.AttachmentRandom;
 import com.matchandtrade.test.random.ArticleRandom;
-import com.matchandtrade.test.random.TradeMembershipRandom;
+import com.matchandtrade.test.random.MembershipRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
@@ -41,7 +41,7 @@ public class ArticleAttachmentControllerPostIT {
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
-	private TradeMembershipRandom tradeMembershipRandom;
+	private MembershipRandom membershipRandom;
 	
 	@Before
 	public void before() throws IOException {
@@ -53,9 +53,9 @@ public class ArticleAttachmentControllerPostIT {
 	
 	@Test
 	public void shouldAddFileToArticle() {
-		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
-		AttachmentJson response = fixture.post(membership.getTradeMembershipId(), article.getArticleId(), file.getAttachmentId());
+		AttachmentJson response = fixture.post(membership.getMembershipId(), article.getArticleId(), file.getAttachmentId());
 		assertNotNull(response);
 		assertEquals(file.getAttachmentId(), response.getAttachmentId());
 		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByArticleId(article.getArticleId(), 1, 10);
@@ -65,13 +65,13 @@ public class ArticleAttachmentControllerPostIT {
 
 	@Test(expected = RestException.class)
 	public void shouldFailToAddMoreThan3FilesToArticle() {
-		TradeMembershipEntity membership = tradeMembershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
 		article.getAttachments().add(fileRandom.nextPersistedEntity());
 		article.getAttachments().add(fileRandom.nextPersistedEntity());
 		article.getAttachments().add(fileRandom.nextPersistedEntity());
 		articleRepositoryFacade.save(article);
-		fixture.post(membership.getTradeMembershipId(), article.getArticleId(), file.getAttachmentId());
+		fixture.post(membership.getMembershipId(), article.getArticleId(), file.getAttachmentId());
 	}
 
 }

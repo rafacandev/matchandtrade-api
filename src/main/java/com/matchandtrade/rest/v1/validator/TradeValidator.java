@@ -10,10 +10,10 @@ import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.TradeMembershipQueryBuilder;
+import com.matchandtrade.persistence.criteria.MembershipQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.SearchService;
@@ -83,10 +83,10 @@ public class TradeValidator {
 		
 		// Validates if authenticated user is the owner of the trade
 		SearchCriteria searchCriteriaTradeOwner = new SearchCriteria(new Pagination(1,1));
-		searchCriteriaTradeOwner.addCriterion(TradeMembershipQueryBuilder.Field.tradeId, json.getTradeId());
-		searchCriteriaTradeOwner.addCriterion(TradeMembershipQueryBuilder.Field.userId, user.getUserId());
-		searchCriteriaTradeOwner.addCriterion(TradeMembershipQueryBuilder.Field.type, TradeMembershipEntity.Type.OWNER);
-		SearchResult<TradeMembershipEntity> searchResultTradeOwner = searchService.search(searchCriteriaTradeOwner, TradeMembershipQueryBuilder.class);
+		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.tradeId, json.getTradeId());
+		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.userId, user.getUserId());
+		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.type, MembershipEntity.Type.OWNER);
+		SearchResult<MembershipEntity> searchResultTradeOwner = searchService.search(searchCriteriaTradeOwner, MembershipQueryBuilder.class);
 		if (searchResultTradeOwner.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not the owner of Trade.tradeId: " + json.getTradeId());
 		}

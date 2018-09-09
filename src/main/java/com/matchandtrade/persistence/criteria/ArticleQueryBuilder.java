@@ -15,7 +15,7 @@ public class ArticleQueryBuilder implements QueryBuilder {
 		articleId("article.articleId"),
 		name("article.name"),
 		tradeId("trade.tradeId"),
-		tradeMembershipId("tm.tradeMembershipId");
+		membershipId("tm.membershipId");
 		
 		private String alias;
 
@@ -32,7 +32,7 @@ public class ArticleQueryBuilder implements QueryBuilder {
 	@Autowired
 	private EntityManager entityManager;
 	
-    private static final String BASIC_HQL = "FROM TradeMembershipEntity AS tm"
+    private static final String BASIC_HQL = "FROM MembershipEntity AS tm"
     		+ " INNER JOIN tm.trade AS trade"
     		+ " INNER JOIN tm.articles AS article";
 

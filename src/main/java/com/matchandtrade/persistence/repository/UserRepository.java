@@ -13,7 +13,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 	UserEntity findByEmail(String email);
 
 	@Query("SELECT u "
-			+ " FROM TradeMembershipEntity tm"
+			+ " FROM MembershipEntity tm"
 			+ " INNER JOIN tm.user AS u"
 			+ " INNER JOIN tm.trade AS t"
 			+ " INNER JOIN tm.articles AS i"
@@ -23,7 +23,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 
 	
 	@Query("SELECT u "
-			+ " FROM TradeMembershipEntity tm"
+			+ " FROM MembershipEntity tm"
 			+ " INNER JOIN tm.user AS u"
 			+ " INNER JOIN tm.offers AS o"
 			+ " WHERE"

@@ -19,8 +19,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "trade_membership")
-public class TradeMembershipEntity implements com.matchandtrade.persistence.entity.Entity {
+@Table(name = "membership")
+public class MembershipEntity implements com.matchandtrade.persistence.entity.Entity {
 	
 	public enum Type {
 		OWNER, MEMBER
@@ -29,33 +29,33 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	private Set<ArticleEntity> articles = new HashSet<>();
 	private Set<OfferEntity> offers = new HashSet<>();
 	private TradeEntity trade;
-	private Integer tradeMembershipId;
+	private Integer membershipId;
 	private Type type;
 	private UserEntity user;
 
 	@OneToMany
-	@JoinTable(name="trade_membership_to_article", joinColumns=@JoinColumn(name="trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_article_trade_membership_id_fk")), inverseJoinColumns = @JoinColumn(name="article_id", foreignKey=@ForeignKey(name="trade_membership_to_article_article_id_fk")))
+	@JoinTable(name="membership_to_article", joinColumns=@JoinColumn(name="membership_id", foreignKey=@ForeignKey(name="membership_to_article_membership_id_fk")), inverseJoinColumns = @JoinColumn(name="article_id", foreignKey=@ForeignKey(name="membership_to_article_article_id_fk")))
 	public Set<ArticleEntity> getArticles() {
 		return articles;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name="trade_membership_to_offer", joinColumns=@JoinColumn(name="trade_membership_id", foreignKey=@ForeignKey(name="trade_membership_to_offer_trade_membership_id_fk")), inverseJoinColumns=@JoinColumn(name="offer_id", foreignKey=@ForeignKey(name="trade_membership_to_offer_offer_id_fk")))
+	@JoinTable(name="membership_to_offer", joinColumns=@JoinColumn(name="membership_id", foreignKey=@ForeignKey(name="membership_to_offer_membership_id_fk")), inverseJoinColumns=@JoinColumn(name="offer_id", foreignKey=@ForeignKey(name="membership_to_offer_offer_id_fk")))
 	public Set<OfferEntity> getOffers() {
 		return offers;
 	}
 
 	@OneToOne
-	@JoinColumn(name="trade_id", foreignKey=@ForeignKey(name="trade_membership_trade_id_fk"))
+	@JoinColumn(name="trade_id", foreignKey=@ForeignKey(name="membership_trade_id_fk"))
 	public TradeEntity getTrade() {
 		return trade;
 	}
 
 	@Id
-	@Column(name="trade_membership_id")
+	@Column(name="membership_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	public Integer getTradeMembershipId() {
-		return tradeMembershipId;
+	public Integer getMembershipId() {
+		return membershipId;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -65,7 +65,7 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 	}
 
 	@OneToOne
-	@JoinColumn(name="user_id", foreignKey=@ForeignKey(name="trade_membership_user_id_fk"))
+	@JoinColumn(name="user_id", foreignKey=@ForeignKey(name="membership_user_id_fk"))
 	public UserEntity getUser() {
 		return user;
 	}
@@ -82,8 +82,8 @@ public class TradeMembershipEntity implements com.matchandtrade.persistence.enti
 		this.trade = trade;
 	}
 
-	public void setTradeMembershipId(Integer tradeMembershipId) {
-		this.tradeMembershipId = tradeMembershipId;
+	public void setMembershipId(Integer membershipId) {
+		this.membershipId = membershipId;
 	}
 
 	public void setType(Type type) {

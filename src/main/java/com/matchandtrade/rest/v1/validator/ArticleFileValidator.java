@@ -21,8 +21,8 @@ public class ArticleFileValidator {
 	@Autowired
 	private AttachmentRepositoryFacade fileRespositoryFacade;
 	
-	public void validateDelete(Integer userId, Integer tradeMembershipId, Integer articleId, Integer fileId) {
-		articleValidator.validateOwnership(userId, tradeMembershipId);
+	public void validateDelete(Integer userId, Integer membershipId, Integer articleId, Integer fileId) {
+		articleValidator.validateOwnership(userId, membershipId);
 		AttachmentEntity file = fileRespositoryFacade.get(fileId);
 		if (file == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "There is no File for the given File.fileId.");
@@ -35,12 +35,12 @@ public class ArticleFileValidator {
 	 * Also validates if the target {@code Article} for the given {@code articleId} has less than two files.
 	 * 
 	 * @param userId
-	 * @param tradeMembershipId
+	 * @param membershipId
 	 * @param articleId
 	 */
 	@Transactional
-	public void validatePost(Integer userId, Integer tradeMembershipId, Integer articleId) {
-		articleValidator.validateOwnership(userId, tradeMembershipId);
+	public void validatePost(Integer userId, Integer membershipId, Integer articleId) {
+		articleValidator.validateOwnership(userId, membershipId);
 		validateThatArticleHasLessThanTwoFiles(articleId);
 	}
 
@@ -51,7 +51,7 @@ public class ArticleFileValidator {
 		}
 	}
 
-	public void validateGet(Integer userId, Integer tradeMembershipId, Integer pageNumber, Integer pageSize) {
+	public void validateGet(Integer userId, Integer membershipId, Integer pageNumber, Integer pageSize) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
 	}
 

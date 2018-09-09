@@ -10,15 +10,15 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.common.Sort;
 import com.matchandtrade.persistence.criteria.ArticleQueryBuilder;
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.TradeMembershipEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
-import com.matchandtrade.persistence.facade.TradeMembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 
 @Service
 public class ArticleService {
 
 	@Autowired
-	private TradeMembershipRepositoryFacade tradeMembershipRepositoryFacade;
+	private MembershipRepositoryFacade membershipRepositoryFacade;
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
@@ -27,20 +27,20 @@ public class ArticleService {
 	private OfferService offerService;
 
 	@Transactional
-	public void create(Integer tradeMembershipId, ArticleEntity articleEntity) {
-		TradeMembershipEntity tradeMembershipEntity = tradeMembershipRepositoryFacade.get(tradeMembershipId);
+	public void create(Integer membershipId, ArticleEntity articleEntity) {
+		MembershipEntity membershipEntity = membershipRepositoryFacade.get(membershipId);
 		articleRepositoryFacade.save(articleEntity);
-		tradeMembershipEntity.getArticles().add(articleEntity);
-		tradeMembershipRepositoryFacade.save(tradeMembershipEntity);
+		membershipEntity.getArticles().add(articleEntity);
+		membershipRepositoryFacade.save(membershipEntity);
 	}
 
 	@Transactional
-	public void delete(Integer tradeMembershipId, Integer articleId) {
+	public void delete(Integer membershipId, Integer articleId) {
 		offerService.deleteOffersForArticle(articleId);
-		TradeMembershipEntity membership = tradeMembershipRepositoryFacade.get(tradeMembershipId);
+		MembershipEntity membership = membershipRepositoryFacade.get(membershipId);
 		ArticleEntity article = articleRepositoryFacade.get(articleId);
 		membership.getArticles().remove(article);
-		tradeMembershipRepositoryFacade.save(membership);
+		membershipRepositoryFacade.save(membership);
 		articleRepositoryFacade.delete(articleId);
 	}
 
@@ -53,9 +53,9 @@ public class ArticleService {
 	}
 
 	@Transactional
-	public SearchResult<ArticleEntity> searchByTradeMembershipId(Integer tradeMembershipId, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<ArticleEntity> searchByMembershipId(Integer membershipId, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
-		searchCriteria.addCriterion(ArticleQueryBuilder.Field.tradeMembershipId, tradeMembershipId);
+		searchCriteria.addCriterion(ArticleQueryBuilder.Field.membershipId, membershipId);
 		searchCriteria.addSort(ArticleQueryBuilder.Field.name, Sort.Type.ASC);
 		return searchService.search(searchCriteria, ArticleQueryBuilder.class);
 	}
