@@ -29,40 +29,40 @@ public class TradeControllerPostIT {
 	
 	@Test
 	public void shouldCreateTrade() {
-		TradeJson requestJson = TradeRandom.nextJson();
-		TradeJson responseJson = fixture.post(requestJson);
-		assertNotNull(responseJson.getTradeId());
-		assertEquals(requestJson.getName(), responseJson.getName());
-		assertEquals(requestJson.getDescription(), responseJson.getDescription());
+		TradeJson request = TradeRandom.nextJson();
+		TradeJson response = fixture.post(request);
+		assertNotNull(response.getTradeId());
+		assertEquals(request.getName(), response.getName());
+		assertEquals(request.getDescription(), response.getDescription());
 	}
 	
 	@Test(expected=RestException.class)
 	public void shouldErrorNameAlreadyExists() {
-		TradeJson requestJson = TradeRandom.nextJson();
-		fixture.post(requestJson);
-		fixture.post(requestJson);
+		TradeJson request = TradeRandom.nextJson();
+		fixture.post(request);
+		fixture.post(request);
 	}
 
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenNameIsTooShort() {
-		TradeJson requestJson = TradeRandom.nextJson();
-		requestJson.setName("ab");
-		fixture.post(requestJson);
+		TradeJson request = TradeRandom.nextJson();
+		request.setName("ab");
+		fixture.post(request);
 	}	
 
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenNameIsTooLong() {
-		TradeJson requestJson = TradeRandom.nextJson();
+		TradeJson request = TradeRandom.nextJson();
 		String name = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
 				+ "01234567890123456789012345678901234567890123456789"
 				+ "0";
-		requestJson.setName(name);
-		fixture.post(requestJson);
+		request.setName(name);
+		fixture.post(request);
 	}
 	
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenDescriptionIsTooLong() {
-		TradeJson requestJson = TradeRandom.nextJson();
+		TradeJson request = TradeRandom.nextJson();
 		String description = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
 				+ "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
 				+ "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
@@ -74,15 +74,15 @@ public class TradeControllerPostIT {
 				+ "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
 				+ "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
 				+ "0";
-		requestJson.setDescription(description);
-		fixture.post(requestJson);
+		request.setDescription(description);
+		fixture.post(request);
 	}	
 	
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenNameIsMissing() {
-		TradeJson requestJson = TradeRandom.nextJson();
-		requestJson.setName(null);
-		fixture.post(requestJson);
+		TradeJson request = TradeRandom.nextJson();
+		request.setName(null);
+		fixture.post(request);
 	}
 
 }
