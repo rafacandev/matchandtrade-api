@@ -14,7 +14,7 @@ services:
      - ./log:/matchandtrade/log
      - ./essence-storage:/matchandtrade/essence-storage
   mocked-oauth-server:
-    image: mocked-oauth-server:0.0-SNAPSHOT
+    image: rafaelsantosbra/mocked-oauth-server:0.0-SNAPSHOT
     container_name: mocked-oauth-server
     ports:
       - 8081:8081
