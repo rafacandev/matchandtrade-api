@@ -22,7 +22,7 @@ import com.matchandtrade.rest.v1.transformer.AttachmentTransformer;
 import com.matchandtrade.rest.v1.validator.ArticleFileValidator;
 
 @RestController
-@RequestMapping(path = "/matchandtrade-web-api/v1/memberships")
+@RequestMapping(path = "/matchandtrade-api/v1/memberships")
 public class ArticleAttachmentController implements Controller {
 
 	@Autowired

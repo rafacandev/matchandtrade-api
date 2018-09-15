@@ -19,7 +19,7 @@ import com.matchandtrade.rest.v1.transformer.OfferTransformer;
 import com.matchandtrade.rest.v1.validator.OfferValidator;
 
 @RestController
-@RequestMapping(path = "/matchandtrade-web-api/v1/memberships")
+@RequestMapping(path = "/matchandtrade-api/v1/memberships")
 public class OfferController implements Controller {
 
 	@Autowired

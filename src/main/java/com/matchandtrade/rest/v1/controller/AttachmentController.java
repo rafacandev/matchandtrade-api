@@ -20,7 +20,7 @@ import com.matchandtrade.rest.v1.validator.AttachmentValidator;
 import com.matchandtrade.rest.v1.validator.FileValidator;
 
 @RestController
-@RequestMapping(path="/matchandtrade-web-api/v1/attachments")
+@RequestMapping(path="/matchandtrade-api/v1/attachments")
 public class AttachmentController implements Controller {
 
 	@Autowired

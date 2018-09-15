@@ -12,7 +12,7 @@ import com.matchandtrade.rest.v1.json.TradeResultJson;
 import com.matchandtrade.rest.v1.validator.TradeResultValidator;
 
 @RestController
-@RequestMapping(path="/matchandtrade-web-api/v1/trades")
+@RequestMapping(path="/matchandtrade-api/v1/trades")
 public class TradeResultController implements Controller {
 
 	@Autowired

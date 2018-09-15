@@ -19,7 +19,7 @@ import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
 import com.matchandtrade.rest.v1.validator.MembershipValidator;
 
 @RestController
-@RequestMapping(path="/matchandtrade-web-api/v1/memberships")
+@RequestMapping(path="/matchandtrade-api/v1/memberships")
 public class MembershipController implements Controller {
 
 	@Autowired

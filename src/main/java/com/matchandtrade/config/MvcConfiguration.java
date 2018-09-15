@@ -20,7 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(MvcConfiguration.class);
-	public static final String ESSENCES_URL_PATTERN = "/matchandtrade-web-api/essences/**";
+	public static final String ESSENCES_URL_PATTERN = "/matchandtrade-api/essences/**";
 	
 	@Autowired
 	private Environment environment;
