@@ -61,4 +61,12 @@ public class StringRandom {
 		return random.nextInt(99999) + "-" + random.nextInt(99999) + "-" + random.nextInt(99999);		
 	}
 
+	public static String sequencialNumericString(int length) {
+		StringBuilder result = new StringBuilder();
+		for (int i=0; i<length; i++) {
+			result.append(i % 10);
+		}
+		return result.toString();
+	}
+
 }

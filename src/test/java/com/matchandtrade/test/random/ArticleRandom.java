@@ -25,6 +25,8 @@ public class ArticleRandom {
 	private MembershipRandom membershipRandom;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserRandom userRandom;
 	
 
 	public static ArticleEntity nextEntity() {
@@ -44,6 +46,8 @@ public class ArticleRandom {
 		articleRepositoryFacade.save(result);
 		tme.getArticles().add(result);
 		membershipRepository.save(tme);
+		tme.getUser().getArticles().add(result);
+		userRepository.save(tme.getUser());
 		return result;
 	}
 
@@ -76,4 +80,13 @@ public class ArticleRandom {
 		return result;
 	}
 
+	@Transactional
+	public ArticleEntity nextPersistedEntity() {
+		ArticleEntity result = nextEntity();
+		articleRepositoryFacade.save(result);
+		UserEntity user = userRandom.nextPersistedEntity();
+		user.getArticles().add(result);
+		userRepository.save(user);
+		return result;
+	}
 }

@@ -36,7 +36,7 @@ public class MembershipArticleControllerGetIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getArticleController(true);
+			fixture = mockControllerFactory.getMembershipArticleController(true);
 		}
 	}
 

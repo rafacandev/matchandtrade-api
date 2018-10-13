@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
-import com.matchandtrade.rest.service.ArticleService;
+import com.matchandtrade.rest.service.MembershipArticleService;
 import com.matchandtrade.rest.service.OfferService;
 import com.matchandtrade.rest.v1.json.OfferJson;
 
@@ -13,7 +13,7 @@ import com.matchandtrade.rest.v1.json.OfferJson;
 public class OfferRandom {
 
 	@Autowired
-	private ArticleService articleService;
+	private MembershipArticleService membershipArticleService;
 	@Autowired
 	private OfferService offerService;
 
@@ -25,8 +25,8 @@ public class OfferRandom {
 	}
 
 	public OfferEntity nextPersistedEntity(Integer membershipId, Integer offeredArticleId, Integer wantedArticleId) {
-		ArticleEntity offeredArticle = articleService.get(offeredArticleId);
-		ArticleEntity wantedArticle = articleService.get(wantedArticleId);
+		ArticleEntity offeredArticle = membershipArticleService.get(offeredArticleId);
+		ArticleEntity wantedArticle = membershipArticleService.get(wantedArticleId);
 		
 		OfferEntity offer = new OfferEntity();
 		offer.setOfferedArticle(offeredArticle);

@@ -32,8 +32,4 @@ public class UserRepositoryFacade {
 		return userRepository.findByOfferId(offerId);
 	}
 
-	public UserEntity findUserByArticleId(Integer articleId) {
-		return userRepository.findByArticles_ArticleId(articleId);
-	}
-
 }

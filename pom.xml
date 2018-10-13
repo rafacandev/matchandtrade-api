@@ -397,7 +397,7 @@
 					</includes>
 					<!-- -Xverify:none may reduce startup time. No need to verify bytecode on the test phase -->
 					<!-- ${surefireArgLine} jacoco instrumentation -->
-					<argLine>-Xverify:none @{surefireArgLine}</argLine>
+					<argLine>-Xverify:none ${surefireArgLine}</argLine>
 				</configuration>
 			</plugin>
 
@@ -434,7 +434,7 @@
 					</includes>
 					<!-- -Xverify:none may reduce startup time. No need to verify bitecode on the test phase -->
 					<!-- ${surefireArgLine} jacoco instrumentation -->
-					<argLine>-Xverify:none @{failsafeArgLine}</argLine>
+					<argLine>-Xverify:none ${failsafeArgLine}</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -471,6 +471,18 @@
 						<item>scmVersion</item>
 					</items>
 				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.3</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.7</version>
 			</plugin>
 
 		</plugins>

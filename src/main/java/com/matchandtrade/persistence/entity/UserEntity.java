@@ -3,18 +3,8 @@ package com.matchandtrade.persistence.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "user_tb") // 'user' is a reserved word in most databases, hence we are sufixing it with '_tb' 

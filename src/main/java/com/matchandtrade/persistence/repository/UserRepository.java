@@ -12,16 +12,11 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 	
 	UserEntity findByEmail(String email);
 
-	@Query("SELECT u "
-			+ " FROM MembershipEntity tm"
-			+ " INNER JOIN tm.user AS u"
-			+ " INNER JOIN tm.trade AS t"
-			+ " INNER JOIN tm.articles AS i"
-			+ " WHERE"
-			+ " i.articleId = :articleId")
+	@Query("FROM UserEntity AS user" +
+		" INNER JOIN user.articles AS article" +
+		" WHERE article.articleId = :articleId")
 	UserEntity findByArticleId(@Param("articleId") Integer articleId);
 
-	
 	@Query("SELECT u "
 			+ " FROM MembershipEntity tm"
 			+ " INNER JOIN tm.user AS u"
@@ -29,7 +24,5 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 			+ " WHERE"
 			+ " o.offerId = :offerId")
 	UserEntity findByOfferId(@Param("offerId")Integer offerId);
-
-	UserEntity findByArticles_ArticleId(Integer articleId);
 
 }

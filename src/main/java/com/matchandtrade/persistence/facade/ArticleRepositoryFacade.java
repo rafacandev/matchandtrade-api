@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import com.matchandtrade.rest.v1.json.ArticleJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +18,6 @@ public class ArticleRepositoryFacade {
 	
 	@Autowired
 	private ArticleRepository articleRepository;
-	
 	@Autowired
 	private EntityManager entityManger;
 
@@ -45,5 +45,8 @@ public class ArticleRepositoryFacade {
 	public void delete(Integer articleId) {
 		articleRepository.delete(articleId);
 	}
-	
+
+	public ArticleEntity getByUserIdAndArticleId(Integer userId, Integer articleId) {
+		return articleRepository.findArticleByUserIdAndArticleId(userId, articleId);
+	}
 }

@@ -1,5 +1,6 @@
 package com.matchandtrade.rest.v1.controller;
 
+import com.matchandtrade.rest.service.MembershipArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +14,10 @@ import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
-import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.link.ArticleLinkAssember;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
-import com.matchandtrade.rest.v1.validator.ArticleValidator;
+import com.matchandtrade.rest.v1.validator.MembershipArticleValidator;
 
 @RestController
 @RequestMapping(path = "/matchandtrade-api/v1/memberships")
@@ -26,9 +26,9 @@ public class MembershipArticleController implements Controller {
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
-	private ArticleService articleService;
+	private MembershipArticleService membershipArticleService;
 	@Autowired
-	private ArticleValidator articleValidator;
+	private MembershipArticleValidator membershipArticleValidator;
 
 	@RequestMapping(path="/{membershipId}/articles/{articleId}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -36,9 +36,9 @@ public class MembershipArticleController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleValidator.validateDelete(membershipId, authenticationProvider.getAuthentication().getUser().getUserId(), articleId);
+		membershipArticleValidator.validateDelete(membershipId, authenticationProvider.getAuthentication().getUser().getUserId(), articleId);
 		// Delegate to service layer
-		articleService.delete(membershipId, articleId);
+		membershipArticleService.delete(membershipId, articleId);
 	}
 
 	@RequestMapping(path = "/{membershipId}/articles", method = RequestMethod.POST)
@@ -47,11 +47,11 @@ public class MembershipArticleController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, requestJson);
+		membershipArticleValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, requestJson);
 		// Transform the request
 		ArticleEntity articleEntity = ArticleTransformer.transform(requestJson);
 		// Delegate to service layer
-		articleService.create(membershipId, articleEntity);
+		membershipArticleService.create(membershipId, articleEntity);
 		// Transform the response
 		ArticleJson response = ArticleTransformer.transform(articleEntity);
 		// Assemble links
@@ -65,11 +65,11 @@ public class MembershipArticleController implements Controller {
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		requestJson.setArticleId(articleId); // Always get the id from the URL when working on PUT methods
-		articleValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, articleId, requestJson);
+		membershipArticleValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, articleId, requestJson);
 		// Transform the request
 		ArticleEntity articleEntity = ArticleTransformer.transform(requestJson);
 		// Delegate to service layer
-		articleService.update(articleEntity);
+		membershipArticleService.update(articleEntity);
 		// Transform the response
 		ArticleJson response = ArticleTransformer.transform(articleEntity);
 		// Assemble links
@@ -82,9 +82,9 @@ public class MembershipArticleController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId);
+		membershipArticleValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId);
 		// Delegate to service layer
-		ArticleEntity articleEntity = articleService.get(articleId);
+		ArticleEntity articleEntity = membershipArticleService.get(articleId);
 		// Transform the response
 		ArticleJson response = ArticleTransformer.transform(articleEntity);
 		// Assemble links
@@ -97,9 +97,9 @@ public class MembershipArticleController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, _pageNumber, _pageSize);
+		membershipArticleValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, _pageNumber, _pageSize);
 		// Delegate to service layer
-		SearchResult<ArticleEntity> searchResult = articleService.searchByMembershipId(membershipId, _pageNumber, _pageSize);
+		SearchResult<ArticleEntity> searchResult = membershipArticleService.searchByMembershipId(membershipId, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<ArticleJson> response = ArticleTransformer.transform(searchResult);
 		// Assemble links

@@ -29,7 +29,7 @@ public class MembershipArticleControllerPostIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getArticleController(true);
+			fixture = mockControllerFactory.getMembershipArticleController(true);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class MembershipArticleControllerPostIT {
 	public void postUserNotAssociatedWithMembership() {
 		MembershipEntity existingTradeMemberhip = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleJson article = ArticleRandom.nextJson();
-		fixture = mockControllerFactory.getArticleController(false);
+		fixture = mockControllerFactory.getMembershipArticleController(false);
 		fixture.post(existingTradeMemberhip.getMembershipId(), article);
 	}
 	

@@ -15,14 +15,14 @@ import com.matchandtrade.rest.RestException;
 public class ArticleFileValidator {
 	
 	@Autowired
-	private ArticleValidator articleValidator;
+	private MembershipArticleValidator membershipArticleValidator;
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade fileRespositoryFacade;
 	
 	public void validateDelete(Integer userId, Integer membershipId, Integer articleId, Integer fileId) {
-		articleValidator.validateOwnership(userId, membershipId);
+		membershipArticleValidator.validateOwnership(userId, membershipId);
 		AttachmentEntity file = fileRespositoryFacade.get(fileId);
 		if (file == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "There is no File for the given File.fileId.");
@@ -31,7 +31,7 @@ public class ArticleFileValidator {
 	}
 	
 	/**
-	 * Same as in {@link com.matchandtrade.rest.v1.validator.ArticleValidator.validateOwnership()}.
+	 * Same as in {@link MembershipArticleValidator.validateOwnership()}.
 	 * Also validates if the target {@code Article} for the given {@code articleId} has less than two files.
 	 * 
 	 * @param userId
@@ -40,7 +40,7 @@ public class ArticleFileValidator {
 	 */
 	@Transactional
 	public void validatePost(Integer userId, Integer membershipId, Integer articleId) {
-		articleValidator.validateOwnership(userId, membershipId);
+		membershipArticleValidator.validateOwnership(userId, membershipId);
 		validateThatArticleHasLessThanTwoFiles(articleId);
 	}
 
