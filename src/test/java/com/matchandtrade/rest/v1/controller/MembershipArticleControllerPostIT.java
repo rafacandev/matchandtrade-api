@@ -18,9 +18,9 @@ import com.matchandtrade.test.random.MembershipRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class ArticleControllerPostIT {
+public class MembershipArticleControllerPostIT {
 
-	private ArticleController fixture;
+	private MembershipArticleController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
@@ -37,8 +37,8 @@ public class ArticleControllerPostIT {
 	public void shouldCreateArticle() {
 		MembershipEntity existingTradeMemberhip = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleJson request = ArticleRandom.nextJson();
-		request.setName("ArticleControllerPostIT.shouldCreateName.name");
-		request.setDescription("ArticleControllerPostIT.shouldCreateName.description");
+		request.setName("MembershipArticleControllerPostIT.shouldCreateName.name");
+		request.setDescription("MembershipArticleControllerPostIT.shouldCreateName.description");
 		ArticleJson response = fixture.post(existingTradeMemberhip.getMembershipId(), request);
 		
 		assertNotNull(response.getArticleId());

@@ -21,9 +21,9 @@ import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class ArticleControllerGetIT {
+public class MembershipArticleControllerGetIT {
 
-	private ArticleController fixture;
+	private MembershipArticleController fixture;
 	@Autowired
 	private ArticleRandom articleRandom;
 	@Autowired

@@ -21,7 +21,7 @@ import com.matchandtrade.rest.v1.validator.ArticleValidator;
 
 @RestController
 @RequestMapping(path = "/matchandtrade-api/v1/memberships")
-public class ArticleController implements Controller {
+public class MembershipArticleController implements Controller {
 
 	@Autowired
 	AuthenticationProvider authenticationProvider;

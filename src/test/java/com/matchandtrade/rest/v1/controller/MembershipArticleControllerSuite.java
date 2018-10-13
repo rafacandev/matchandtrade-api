@@ -6,10 +6,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	ArticleControllerPostIT.class,
-	ArticleControllerGetIT.class,
-	ArticleControllerPutIT.class,
+	MembershipArticleControllerPostIT.class,
+	MembershipArticleControllerGetIT.class,
+	MembershipArticleControllerPutIT.class,
 })
-public class ArticleControllerSuite {
+public class MembershipArticleControllerSuite {
 
 }

@@ -20,9 +20,9 @@ import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class ArticleControllerPutIT {
+public class MembershipArticleControllerPutIT {
 
-	private ArticleController fixture;
+	private MembershipArticleController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
