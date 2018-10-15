@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.v1.validator;
 
-import com.matchandtrade.rest.service.MembershipArticleService;
+import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
+import com.matchandtrade.rest.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -8,20 +9,17 @@ import org.springframework.stereotype.Component;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.service.OfferService;
-import com.matchandtrade.rest.service.MembershipService;
-import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.OfferJson;
 
 @Component
 public class OfferValidator {
-	
+
+	@Autowired
+	private ArticleService articleService;
 	@Autowired
 	private OfferService offerService;
 	@Autowired
 	private MembershipService membershipService;
-	@Autowired
-	private MembershipArticleService membershipArticleService;
 	@Autowired
 	private UserService userService;
 
@@ -71,7 +69,7 @@ public class OfferValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must differ.");
 		}
 		
-		boolean articlesExist = membershipArticleService.exists(offer.getOfferedArticleId(), offer.getWantedArticleId());
+		boolean articlesExist = articleService.exists(offer.getOfferedArticleId(), offer.getWantedArticleId());
 		if (!articlesExist) {	
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must belong to existing Articles.");
 		}

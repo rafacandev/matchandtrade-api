@@ -19,7 +19,7 @@ import com.matchandtrade.rest.service.ArticleAttachmentService;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.rest.v1.link.AttachmentLinkAssember;
 import com.matchandtrade.rest.v1.transformer.AttachmentTransformer;
-import com.matchandtrade.rest.v1.validator.ArticleFileValidator;
+import com.matchandtrade.rest.v1.validator.ArticleAttachmentValidator;
 
 @RestController
 @RequestMapping(path = "/matchandtrade-api/v1/memberships")
@@ -28,7 +28,7 @@ public class ArticleAttachmentController implements Controller {
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
-	private ArticleFileValidator articleAttachmentValidator;
+	private ArticleAttachmentValidator articleAttachmentValidator;
 	@Autowired
 	private ArticleAttachmentService articleAttachmentService;
 	@Autowired

@@ -36,4 +36,13 @@ public class ArticleService {
 		userRepositoryFacade.save(user);
 		articleRepositoryFacade.delete(articleId);
 	}
+
+	/**
+	 * Returns true there are Articles for all {@articleIds}
+	 * @param articleIds
+	 * @return
+	 */
+	public boolean exists(Integer ...articleIds) {
+		return articleRepositoryFacade.exists(articleIds);
+	}
 }

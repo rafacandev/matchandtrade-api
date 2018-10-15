@@ -68,15 +68,22 @@ public class ArticleValidator {
 	/**
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code User.userId} does not have the given {@code Article.articleId}
 	 *
+	 * @param userId
 	 * @param articleId
 	 */
-	private void verifyThatUserHasArticle(Integer userId, Integer articleId) {
+	void verifyThatUserHasArticle(Integer userId, Integer articleId) {
 		ArticleEntity article = articleRepositoryFacade.getByUserIdAndArticleId(userId, articleId);
 		if (article == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does have Article.articleId: %d.", userId, articleId));
 		}
 	}
 
+	/**
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code User.userId} does not have the given {@code Article.articleId}
+	 *
+	 * @param userId
+	 * @param articleId
+	 */
 	public void validateDelete(Integer userId, Integer articleId) {
 		verifyThatUserHasArticle(userId, articleId);
 	}

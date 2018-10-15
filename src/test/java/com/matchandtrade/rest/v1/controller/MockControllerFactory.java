@@ -33,8 +33,6 @@ public class MockControllerFactory {
 	@Autowired
 	private AuthenticationController authenticationController;
 	@Autowired
-	private MembershipArticleController membershipArticleController;
-	@Autowired
 	private ArticleController articleController;
 	private MockAuthenticationProvider lastMockAuthenticationProvider;
 	@Autowired
@@ -85,11 +83,6 @@ public class MockControllerFactory {
 		return authenticationController;
 	}
 	
-	public MembershipArticleController getMembershipArticleController(boolean reusePreviousAuthentication) {
-		membershipArticleController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
-		return membershipArticleController;
-	}
-
 	public ArticleController getArticleController(boolean reusePreviousAuthentication) {
 		articleController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return articleController;

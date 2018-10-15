@@ -1,5 +1,6 @@
 package com.matchandtrade.rest.v1.validator;
 
+import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -12,27 +13,26 @@ import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 
 @Component
-public class ArticleFileValidator {
+public class ArticleAttachmentValidator {
 	
-	@Autowired
-	private MembershipArticleValidator membershipArticleValidator;
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade fileRespositoryFacade;
+	@Autowired
+	private ArticleValidator articleValidator;
 	
 	public void validateDelete(Integer userId, Integer membershipId, Integer articleId, Integer fileId) {
-		membershipArticleValidator.validateOwnership(userId, membershipId);
+		articleValidator.verifyThatUserHasArticle(userId, articleId);
 		AttachmentEntity file = fileRespositoryFacade.get(fileId);
 		if (file == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "There is no File for the given File.fileId.");
 		}
-		
 	}
 	
 	/**
-	 * Same as in {@link MembershipArticleValidator.validateOwnership()}.
-	 * Also validates if the target {@code Article} for the given {@code articleId} has less than two files.
+	 * Same as in {@link ArticleValidator.verifyThatUserHasArticle(userId, articleId)}.
+	 * Additionally, validates if the target {@code Article} for the given {@code articleId} has less than two files.
 	 * 
 	 * @param userId
 	 * @param membershipId
@@ -40,7 +40,7 @@ public class ArticleFileValidator {
 	 */
 	@Transactional
 	public void validatePost(Integer userId, Integer membershipId, Integer articleId) {
-		membershipArticleValidator.validateOwnership(userId, membershipId);
+		articleValidator.verifyThatUserHasArticle(userId, articleId);
 		validateThatArticleHasLessThanTwoFiles(articleId);
 	}
 

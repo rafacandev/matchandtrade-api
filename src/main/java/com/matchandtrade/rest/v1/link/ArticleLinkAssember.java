@@ -9,7 +9,6 @@ import java.util.Set;
 import org.springframework.hateoas.Link;
 
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.rest.v1.controller.MembershipArticleController;
 import com.matchandtrade.rest.v1.controller.ArticleAttachmentController;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 
@@ -20,7 +19,6 @@ public class ArticleLinkAssember {
 
 	private static Set<Link> buildLink(Integer membershipId, Integer articleId) {
 		Set<Link> result = new HashSet<>();
-		result.add(linkTo(methodOn(MembershipArticleController.class).get(membershipId, articleId)).withSelfRel());
 		result.add(linkTo(methodOn(ArticleAttachmentController.class).get(membershipId, articleId, null, null)).withRel("attachments"));
 		return result;
 	}
