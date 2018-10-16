@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
@@ -52,10 +53,10 @@ public class ArticleAttachmentControllerPostIT {
 	}
 	
 	@Test
-	public void shouldAddFileToArticle() {
+	public void post_When_AddingAttachmentForExistingArticle_Expects_Success() {
 		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
-		AttachmentJson response = fixture.post(membership.getMembershipId(), article.getArticleId(), file.getAttachmentId());
+		AttachmentJson response = fixture.post(article.getArticleId(), file.getAttachmentId());
 		assertNotNull(response);
 		assertEquals(file.getAttachmentId(), response.getAttachmentId());
 		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByArticleId(article.getArticleId(), 1, 10);
@@ -64,14 +65,19 @@ public class ArticleAttachmentControllerPostIT {
 	}
 
 	@Test(expected = RestException.class)
-	public void shouldFailToAddMoreThan3FilesToArticle() {
+	public void post_When_AddingMoreThan3FilesToArticle_Expects_BadRequest() {
 		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
 		article.getAttachments().add(fileRandom.nextPersistedEntity());
 		article.getAttachments().add(fileRandom.nextPersistedEntity());
 		article.getAttachments().add(fileRandom.nextPersistedEntity());
 		articleRepositoryFacade.save(article);
-		fixture.post(membership.getMembershipId(), article.getArticleId(), file.getAttachmentId());
+		try {
+			fixture.post(article.getArticleId(), file.getAttachmentId());
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			throw e;
+		}
 	}
 
 }

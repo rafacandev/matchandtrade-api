@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
@@ -26,7 +27,7 @@ import com.matchandtrade.test.random.UserRandom;
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
 public class ArticleAttachmentControllerDeleteIT {
-	
+
 	@Autowired
 	private ArticleRandom articleRandom;
 	@Autowired
@@ -51,33 +52,40 @@ public class ArticleAttachmentControllerDeleteIT {
 		}
 		file = fileRandom.nextPersistedEntity();
 	}
-	
+
 	@Test
-	public void shouldDeleteFileFromArticle() {
-		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
+	public void delete_When_DelitingAttachmentFromArticle_Expects_Sucess() {
+		ArticleEntity article = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		article.getAttachments().add(file);
 		articleRepositoryFacade.save(article);
-		fixture.delete(membership.getMembershipId(), article.getArticleId(), file.getAttachmentId());
+		fixture.delete(article.getArticleId(), file.getAttachmentId());
 		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByArticleId(article.getArticleId(), 1, 10);
 		assertEquals(0, files.getResultList().size());
 		assertEquals(0, files.getPagination().getTotal());
 	}
 
 	@Test(expected = RestException.class)
-	public void shouldErrorIfArticleDoesNotBelongToUser() {
-		MembershipEntity membership = membershipRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
-		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
+	public void delete_When_DeletingAttachmentThatBelongsToDifferentUser_Expects_BadRequest() {
+		ArticleEntity article = articleRandom.nextPersistedEntity();
 		article.getAttachments().add(file);
 		articleRepositoryFacade.save(article);
-		fixture.delete(membership.getMembershipId(), article.getArticleId(), file.getAttachmentId());
+		try {
+			fixture.delete(article.getArticleId(), file.getAttachmentId());
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			throw e;
+		}
 	}
 
 	@Test(expected = RestException.class)
-	public void shouldErrorIfFileDoesNotExist() {
-		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
-		fixture.delete(membership.getMembershipId(), article.getArticleId(), -1);
+	public void delete_When_NonExistingAttachment_Expects_BadRequest() {
+		ArticleEntity article = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		try{
+			fixture.delete(article.getArticleId(), -1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			throw e;
+		}
 	}
 
 }

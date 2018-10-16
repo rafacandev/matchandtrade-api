@@ -22,7 +22,7 @@ public class ArticleAttachmentValidator {
 	@Autowired
 	private ArticleValidator articleValidator;
 	
-	public void validateDelete(Integer userId, Integer membershipId, Integer articleId, Integer fileId) {
+	public void validateDelete(Integer userId, Integer articleId, Integer fileId) {
 		articleValidator.verifyThatUserHasArticle(userId, articleId);
 		AttachmentEntity file = fileRespositoryFacade.get(fileId);
 		if (file == null) {
@@ -32,6 +32,7 @@ public class ArticleAttachmentValidator {
 	
 	/**
 	 * Same as in {@link ArticleValidator.verifyThatUserHasArticle(userId, articleId)}.
+	 *
 	 * Additionally, validates if the target {@code Article} for the given {@code articleId} has less than two files.
 	 * 
 	 * @param userId
@@ -39,7 +40,7 @@ public class ArticleAttachmentValidator {
 	 * @param articleId
 	 */
 	@Transactional
-	public void validatePost(Integer userId, Integer membershipId, Integer articleId) {
+	public void validatePost(Integer userId, Integer articleId) {
 		articleValidator.verifyThatUserHasArticle(userId, articleId);
 		validateThatArticleHasLessThanTwoFiles(articleId);
 	}

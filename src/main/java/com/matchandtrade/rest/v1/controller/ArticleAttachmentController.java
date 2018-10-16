@@ -36,13 +36,13 @@ public class ArticleAttachmentController implements Controller {
 	@Autowired
 	private AttachmentLinkAssember attachmentLinkAssembler;
 
-	@PostMapping("/{membershipId}/articles/{articleId}/attachments/{attachmentId}")
+	@PostMapping("/articles/{articleId}/attachments/{attachmentId}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public AttachmentJson post(@PathVariable Integer membershipId, @PathVariable Integer articleId, @PathVariable Integer attachmentId) {
+	public AttachmentJson post(@PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleAttachmentValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, articleId);
+		articleAttachmentValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), articleId);
 		// Transform the request
 		AttachmentEntity attachmentEntity = attachmentService.get(attachmentId);
 		// Delegate to service layer
@@ -54,13 +54,13 @@ public class ArticleAttachmentController implements Controller {
 		return response;
 	}
 	
-	@DeleteMapping("/{membershipId}/articles/{articleId}/attachments/{attachmentId}")
+	@DeleteMapping("/articles/{articleId}/attachments/{attachmentId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Integer membershipId, @PathVariable Integer articleId, @PathVariable Integer attachmentId) {
+	public void delete(@PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		articleAttachmentValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, articleId, attachmentId);
+		articleAttachmentValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), articleId, attachmentId);
 		// Delegate to service layer
 		articleAttachmentService.deleteAttachmentFromArticle(articleId, attachmentId);
 	}
