@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
+// TODO create AttachmentControllerDeleteIT
 @SuiteClasses({
 	AttachmentControllerPostIT.class,
 	AttachmentControllerGetIT.class,

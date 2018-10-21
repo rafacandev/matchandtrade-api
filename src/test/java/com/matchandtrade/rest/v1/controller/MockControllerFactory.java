@@ -54,6 +54,10 @@ public class MockControllerFactory {
 	@Autowired
 	private AttachmentController fileController;
 
+	@Autowired
+	private MembershipArticleController membershipArticleController;
+
+
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
 		public MockAuthenticationProvider() {
@@ -99,6 +103,11 @@ public class MockControllerFactory {
 	public TradeResultController getTradeResultController(boolean reusePreviousAuthentication) {
 		tradeResultController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return tradeResultController;
+	}
+
+	public MembershipArticleController getMembershipArticleController(boolean reusePreviousAuthentication) {
+		membershipArticleController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		return membershipArticleController;
 	}
 
 	public MembershipController getMembershipController(boolean reusePreviousAuthentication) {

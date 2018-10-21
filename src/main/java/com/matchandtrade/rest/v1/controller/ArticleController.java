@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/matchandtrade-api/v1/memberships")
+@RequestMapping(path = "/matchandtrade-api/v1")
 public class ArticleController implements Controller {
 
 	@Autowired
