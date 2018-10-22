@@ -21,9 +21,21 @@ public class MembershipArticleValidator {
 	@Autowired
 	SearchService searchService;
 
+	public void validateDelete(Integer userId, Integer membershipId, Integer articleId) {
+		verifyThatMembershipBelongsToUser(userId, membershipId);
+		verifyThatArticleBelongsToUser(userId, articleId);
+	}
+
 	public void validatePost(Integer userId, Integer membershipId, Integer articleId) {
 		verifyThatMembershipBelongsToUser(userId, membershipId);
 		verifyThatArticleBelongsToUser(userId, articleId);
+	}
+
+	private void verifyThatArticleBelongsToUser(Integer userId, Integer articleId) {
+		ArticleEntity article = articleRepositoryFacade.getByUserIdAndArticleId(userId, articleId);
+		if (article == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Article.articleId: %d does not belong to User.userId: %d", articleId, userId));
+		}
 	}
 
 	private void verifyThatMembershipBelongsToUser(Integer userId, Integer membershipId) {
@@ -36,10 +48,4 @@ public class MembershipArticleValidator {
 		}
 	}
 
-	private void verifyThatArticleBelongsToUser(Integer userId, Integer articleId) {
-		ArticleEntity article = articleRepositoryFacade.getByUserIdAndArticleId(userId, articleId);
-		if (article == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Article.articleId: %d does not belong to User.userId: %d", articleId, userId));
-		}
-	}
 }

@@ -32,4 +32,16 @@ public class MembershipArticleController {
 		membershipArticleService.create(membershipId, articleId);
 		// TODO add heteroas
 	}
+
+	@RequestMapping(path="/{membershipId}/articles/{articleId}", method= RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.CREATED)
+	public void delete(Integer membershipId, Integer articleId) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		membershipArticleValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, articleId);
+		// Delegate to service layer
+		membershipArticleService.delete(membershipId, articleId);
+		// TODO add heteroas
+	}
 }

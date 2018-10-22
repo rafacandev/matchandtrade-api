@@ -24,4 +24,11 @@ public class MembershipArticleService {
 		membershipRepositoryFacade.save(membership);
 	}
 
+	@Transactional
+	public void delete(Integer membershipId, Integer articleId) {
+		MembershipEntity membership = membershipRepositoryFacade.get(membershipId);
+		ArticleEntity article = articleRepositoryFacade.get(articleId);
+		membership.getArticles().remove(article);
+	}
+
 }

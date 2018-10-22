@@ -10,7 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	ArticleControllerGetIT.class,
 	ArticleControllerPutIT.class,
 	ArticleControllerDeleteIT.class,
-	MembershipArticleControllerPostIT.class
+	MembershipArticleControllerPostIT.class,
+	MembershipArticleControllerDeleteIT.class
 })
 public class ArticleSuite {
 

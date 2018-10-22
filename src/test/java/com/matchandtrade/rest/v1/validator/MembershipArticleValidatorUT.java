@@ -45,6 +45,12 @@ public class MembershipArticleValidatorUT {
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 	}
 
+	private void mockSearchServiceToReturnNoSearchResults() {
+		SearchResult<Object> searchResult = new SearchResult<>(new ArrayList<>(), new Pagination());
+		when(searchServiceMock.search(any(), any())).thenReturn(searchResult);
+		fixture.searchService = searchServiceMock;
+	}
+
 	@Test
 	public void validatePost_When_MembershipAndArticleBelongToAuthenticatedUser_Then_Succeeds() {
 		fixture.validatePost(1, 1, 1);
@@ -62,10 +68,7 @@ public class MembershipArticleValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_MembershipDoesNotBelongToAuthenticatedUser_Then_ThrowBadRequest() {
-		SearchResult<Object> searchResult = new SearchResult<>(new ArrayList<>(), new Pagination());
-		when(searchServiceMock.search(any(), any())).thenReturn(searchResult);
-		fixture.searchService = searchServiceMock;
-
+		mockSearchServiceToReturnNoSearchResults();
 		try {
 			fixture.validatePost(1,0, 1);
 		} catch (RestException e) {
@@ -74,5 +77,25 @@ public class MembershipArticleValidatorUT {
 		}
 	}
 
+	@Test(expected = RestException.class)
+	public void validateDelete_When_ArticleDoesNotBelongToAuthenticatedUser_Then_ThrowBadRequest() {
+		try {
+			fixture.validateDelete(1,1, 0);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validateDelete_When_MembershipDoesNotBelongToAuthenticatedUser_Then_ThrowBadRequest() {
+		mockSearchServiceToReturnNoSearchResults();
+		try {
+			fixture.validateDelete(1, 0, 1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			throw e;
+		}
+	}
 
 }
