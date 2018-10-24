@@ -24,11 +24,11 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @TestingDefaultAnnotations
-public class MembershipArticleValidatorUT {
+public class ListingValidatorUT {
 
 	@Mock
 	private ArticleRepositoryFacade articleRepositoryFacadeMock;
-	private MembershipArticleValidator fixture = new MembershipArticleValidator();
+	private ListingValidator fixture = new ListingValidator();
 	@Mock
 	private SearchService searchServiceMock;
 

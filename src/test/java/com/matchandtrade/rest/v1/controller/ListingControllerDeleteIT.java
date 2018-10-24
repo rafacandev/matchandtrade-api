@@ -3,7 +3,6 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
-import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.helper.MembershipHelper;
 import com.matchandtrade.test.random.ArticleRandom;
@@ -19,14 +18,14 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class MembershipArticleControllerDeleteIT {
+public class ListingControllerDeleteIT {
 
 	@Autowired
 	private ArticleRandom articleRandom;
 	private ArticleEntity existingArticle;
 	@Autowired
 	private MembershipRandom membershipRandom;
-	private MembershipArticleController fixture;
+	private ListingController fixture;
 	private MembershipEntity existingMembership;
 	@Autowired
 	private MembershipRepositoryFacade membershipRepositoryFacade;
@@ -38,7 +37,7 @@ public class MembershipArticleControllerDeleteIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getMembershipArticleController(false);
+			fixture = mockControllerFactory.getListingController(false);
 		}
 		existingArticle = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), false);
 		existingMembership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());

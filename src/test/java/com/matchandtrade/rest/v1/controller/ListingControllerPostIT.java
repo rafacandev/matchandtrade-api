@@ -17,11 +17,11 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
-public class MembershipArticleControllerPostIT {
+public class ListingControllerPostIT {
 
 	@Autowired
 	private ArticleRandom articleRandom;
-	private MembershipArticleController fixture;
+	private ListingController fixture;
 	@Autowired
 	private MembershipHelper membershipHelper;
 	@Autowired
@@ -34,7 +34,7 @@ public class MembershipArticleControllerPostIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getMembershipArticleController(false);
+			fixture = mockControllerFactory.getListingController(false);
 		}
 	}
 

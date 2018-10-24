@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class MembershipArticleService {
+public class ListingService {
 
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
