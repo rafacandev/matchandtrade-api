@@ -3,6 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
+import com.matchandtrade.rest.v1.json.ListingJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.helper.MembershipHelper;
 import com.matchandtrade.test.random.ArticleRandom;
@@ -47,7 +48,8 @@ public class ListingControllerDeleteIT {
 
 	@Test
 	public void delete_When_ArticleAndMembershipBelongToAuthenticatedUser_Then_Succeeds() {
-		fixture.delete(existingMembership.getMembershipId(), existingArticle.getArticleId());
+		ListingJson request = new ListingJson(existingMembership.getMembershipId(), existingArticle.getArticleId());
+		fixture.delete(request);
 		assertFalse(membershipHelper.membershipContainsArticle(existingMembership.getMembershipId(), existingArticle.getArticleId()));
 	}
 

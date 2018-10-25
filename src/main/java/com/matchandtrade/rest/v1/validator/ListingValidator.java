@@ -9,9 +9,12 @@ import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.SearchService;
+import com.matchandtrade.rest.v1.json.ListingJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ListingValidator {
@@ -21,14 +24,14 @@ public class ListingValidator {
 	@Autowired
 	SearchService searchService;
 
-	public void validateDelete(Integer userId, Integer membershipId, Integer articleId) {
-		verifyThatMembershipBelongsToUser(userId, membershipId);
-		verifyThatArticleBelongsToUser(userId, articleId);
+	public void validateDelete(Integer userId, ListingJson listing) {
+		verifyThatMembershipBelongsToUser(userId, listing.getMebershipId());
+		verifyThatArticleBelongsToUser(userId, listing.getArticleId());
 	}
 
-	public void validatePost(Integer userId, Integer membershipId, Integer articleId) {
-		verifyThatMembershipBelongsToUser(userId, membershipId);
-		verifyThatArticleBelongsToUser(userId, articleId);
+	public void validatePost(Integer userId, ListingJson listing) {
+		verifyThatMembershipBelongsToUser(userId, listing.getMebershipId());
+		verifyThatArticleBelongsToUser(userId, listing.getArticleId());
 	}
 
 	private void verifyThatArticleBelongsToUser(Integer userId, Integer articleId) {

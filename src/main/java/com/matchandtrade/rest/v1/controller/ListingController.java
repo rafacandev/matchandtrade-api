@@ -3,6 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.ListingService;
+import com.matchandtrade.rest.v1.json.ListingJson;
 import com.matchandtrade.rest.v1.validator.ListingValidator;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,27 +23,27 @@ public class ListingController {
 	@Autowired
 	private ListingService listingService;
 
-	@RequestMapping(path="/{membershipId}/{articleId}", method=RequestMethod.POST)
+	@RequestMapping(path="/", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void post(@PathVariable Integer membershipId, @PathVariable Integer articleId) {
+	public void post(ListingJson request) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		listingValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, articleId);
+		listingValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), request);
 		// Delegate to service layer
-		listingService.create(membershipId, articleId);
+		listingService.create(request.getMebershipId(), request.getArticleId());
 		// TODO add heteroas
 	}
 
 	@RequestMapping(path="/{membershipId}/{articleId}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(Integer membershipId, Integer articleId) {
+	public void delete(ListingJson request) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		listingValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, articleId);
+		listingValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), request);
 		// Delegate to service layer
-		listingService.delete(membershipId, articleId);
+		listingService.delete(request.getMebershipId(), request.getArticleId());
 		// TODO add heteroas
 	}
 

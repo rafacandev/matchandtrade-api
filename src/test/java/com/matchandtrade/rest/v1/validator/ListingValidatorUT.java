@@ -7,6 +7,7 @@ import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.SearchService;
+import com.matchandtrade.rest.v1.json.ListingJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,13 +54,15 @@ public class ListingValidatorUT {
 
 	@Test
 	public void validatePost_When_MembershipAndArticleBelongToAuthenticatedUser_Then_Succeeds() {
-		fixture.validatePost(1, 1, 1);
+		ListingJson listing = new ListingJson(1,1);
+		fixture.validatePost(1, listing);
 	}
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_ArticleDoesNotBelongToAuthenticatedUser_Then_ThrowBadRequest() {
 		try {
-			fixture.validatePost(1,1, 0);
+			ListingJson listing = new ListingJson(1,0);
+			fixture.validatePost(1,listing);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
@@ -70,7 +73,8 @@ public class ListingValidatorUT {
 	public void validatePost_When_MembershipDoesNotBelongToAuthenticatedUser_Then_ThrowBadRequest() {
 		mockSearchServiceToReturnNoSearchResults();
 		try {
-			fixture.validatePost(1,0, 1);
+			ListingJson listing = new ListingJson(0,1);
+			fixture.validatePost(1,listing);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
@@ -80,7 +84,8 @@ public class ListingValidatorUT {
 	@Test(expected = RestException.class)
 	public void validateDelete_When_ArticleDoesNotBelongToAuthenticatedUser_Then_ThrowBadRequest() {
 		try {
-			fixture.validateDelete(1,1, 0);
+			ListingJson listing = new ListingJson(1,0);
+			fixture.validateDelete(1,listing);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
@@ -91,7 +96,8 @@ public class ListingValidatorUT {
 	public void validateDelete_When_MembershipDoesNotBelongToAuthenticatedUser_Then_ThrowBadRequest() {
 		mockSearchServiceToReturnNoSearchResults();
 		try {
-			fixture.validateDelete(1, 0, 1);
+			ListingJson listing = new ListingJson(0, 1);
+			fixture.validateDelete(1, listing);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;

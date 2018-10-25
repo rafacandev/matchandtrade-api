@@ -2,6 +2,7 @@ package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
+import com.matchandtrade.rest.v1.json.ListingJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.helper.MembershipHelper;
 import com.matchandtrade.test.random.ArticleRandom;
@@ -42,7 +43,8 @@ public class ListingControllerPostIT {
 	public void post_When_ArticleAndMembershipBelongToAuthenticatedUser_Then_Succeeds() {
 		ArticleEntity article = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), false);
 		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		fixture.post(membership.getMembershipId(), article.getArticleId());
+		ListingJson request = new ListingJson(membership.getMembershipId(), article.getArticleId());
+		fixture.post(request);
 		assertTrue(membershipHelper.membershipContainsArticle(membership.getMembershipId(), article.getArticleId()));
 	}
 
