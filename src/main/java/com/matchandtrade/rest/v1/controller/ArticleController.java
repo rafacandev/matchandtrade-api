@@ -43,7 +43,7 @@ public class ArticleController implements Controller {
 		// Transform the request
 		ArticleEntity articleEntity = ArticleTransformer.transform(requestJson);
 		// Delegate to service layer
-		articleService.create(articleEntity);
+		articleService.create(authenticationProvider.getAuthentication().getUser(), articleEntity);
 		// Transform the response
 		ArticleJson response = ArticleTransformer.transform(articleEntity);
 		// Assemble links

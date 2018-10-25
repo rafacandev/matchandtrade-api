@@ -16,8 +16,11 @@ public class ArticleService {
 	@Autowired
 	private UserRepositoryFacade userRepositoryFacade;
 
-	public void create(ArticleEntity article) {
+	@Transactional
+	public void create(UserEntity user, ArticleEntity article) {
 		articleRepositoryFacade.save(article);
+		user.getArticles().add(article);
+		userRepositoryFacade.save(user);
 	}
 
 	public ArticleEntity get(Integer articleId) {

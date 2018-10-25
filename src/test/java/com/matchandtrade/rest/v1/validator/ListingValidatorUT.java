@@ -36,7 +36,7 @@ public class ListingValidatorUT {
 	public void before() {
 		List<Object> memberships = new ArrayList<>();
 		memberships.add(new MembershipEntity());
-		SearchResult<Object> searchResult = new SearchResult<>(memberships, new Pagination());
+		SearchResult<Object> searchResult = new SearchResult<>(memberships, new Pagination(1,1, 1L));
 		when(searchServiceMock.search(any(), any())).thenReturn(searchResult);
 		fixture.searchService = searchServiceMock;
 

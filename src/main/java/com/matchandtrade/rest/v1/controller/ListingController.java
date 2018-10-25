@@ -4,6 +4,7 @@ import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.ListingService;
 import com.matchandtrade.rest.v1.validator.ListingValidator;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +22,9 @@ public class ListingController {
 	@Autowired
 	private ListingService listingService;
 
-	@RequestMapping(path="/{membershipId}/articles/{articleId}", method= RequestMethod.POST)
+	@RequestMapping(path="/{membershipId}/{articleId}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void post(Integer membershipId, Integer articleId) {
+	public void post(@PathVariable Integer membershipId, @PathVariable Integer articleId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
@@ -33,8 +34,8 @@ public class ListingController {
 		// TODO add heteroas
 	}
 
-	@RequestMapping(path="/{membershipId}/articles/{articleId}", method= RequestMethod.DELETE)
-	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(path="/{membershipId}/{articleId}", method=RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(Integer membershipId, Integer articleId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
@@ -44,4 +45,5 @@ public class ListingController {
 		listingService.delete(membershipId, articleId);
 		// TODO add heteroas
 	}
+
 }

@@ -67,13 +67,13 @@ public class MembershipQueryBuilder implements QueryBuilder {
 		}
 		
 		if (isArticlesJoinRequired) {
-			hql.append(" INNER JOIN membership.articles AS article");
+			hql.append(" LEFT JOIN membership.articles AS article");
 		}
 		if (isUserJoinRequired) {
-			hql.append(" INNER JOIN membership.user AS user");
+			hql.append(" LEFT JOIN membership.user AS user");
 		}
 		if (isTradeJoinRequired) {
-			hql.append(" INNER JOIN membership.trade AS trade");
+			hql.append(" LEFT JOIN membership.trade AS trade");
 		}
 	}
 	

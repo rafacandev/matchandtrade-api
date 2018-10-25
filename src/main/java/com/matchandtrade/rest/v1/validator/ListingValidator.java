@@ -43,7 +43,7 @@ public class ListingValidator {
 		criteria.addCriterion(MembershipQueryBuilder.Field.userId, userId);
 		criteria.addCriterion(MembershipQueryBuilder.Field.membershipId, membershipId);
 		SearchResult<MembershipEntity> searchResult = searchService.search(criteria, MembershipQueryBuilder.class);
-		if (searchResult.getResultList().isEmpty()) {
+		if (searchResult.getPagination().getTotal() < 1) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Membership.membershipId: %d does not belong to User.userId: %d", membershipId, userId));
 		}
 	}
