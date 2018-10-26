@@ -4,20 +4,25 @@ import com.matchandtrade.rest.JsonLinkSupport;
 
 public class ListingJson extends JsonLinkSupport {
 
-	private Integer mebershipId;
+	private Integer membershipId;
 	private Integer articleId;
 
+	/**
+	 * Default empty contructor required for JSON serialization
+	 */
+	public ListingJson() { }
+
 	public ListingJson(Integer membershipId, Integer articleId) {
-		this.mebershipId = membershipId;
+		this.membershipId = membershipId;
 		this.articleId = articleId;
 	}
 
-	public Integer getMebershipId() {
-		return mebershipId;
+	public Integer getMembershipId() {
+		return membershipId;
 	}
 
-	public void setMebershipId(Integer mebershipId) {
-		this.mebershipId = mebershipId;
+	public void setMembershipId(Integer membershipId) {
+		this.membershipId = membershipId;
 	}
 
 	public Integer getArticleId() {

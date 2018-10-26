@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class ListingValidator {
 
@@ -25,13 +23,27 @@ public class ListingValidator {
 	SearchService searchService;
 
 	public void validateDelete(Integer userId, ListingJson listing) {
-		verifyThatMembershipBelongsToUser(userId, listing.getMebershipId());
+		verifyThatMembershipBelongsToUser(userId, listing.getMembershipId());
 		verifyThatArticleBelongsToUser(userId, listing.getArticleId());
 	}
 
 	public void validatePost(Integer userId, ListingJson listing) {
-		verifyThatMembershipBelongsToUser(userId, listing.getMebershipId());
+		verifyThatMembershipIdIsNotNull(listing.getMembershipId());
+		verifyThatArticleIdIsNotNull(listing.getArticleId());
+		verifyThatMembershipBelongsToUser(userId, listing.getMembershipId());
 		verifyThatArticleBelongsToUser(userId, listing.getArticleId());
+	}
+
+	private void verifyThatMembershipIdIsNotNull(Integer membershipId) {
+		if (membershipId == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Listing.membershipId cannot be null");
+		}
+	}
+
+	private void verifyThatArticleIdIsNotNull(Integer articleId) {
+		if (articleId == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Listing.articleId cannot be null");
+		}
 	}
 
 	private void verifyThatArticleBelongsToUser(Integer userId, Integer articleId) {

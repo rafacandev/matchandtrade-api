@@ -59,6 +59,30 @@ public class ListingValidatorUT {
 	}
 
 	@Test(expected = RestException.class)
+	public void validatePost_When_MembershipIdIsNull_Then_ThrowBadRequest() {
+		try {
+			ListingJson listing = new ListingJson(null,1);
+			fixture.validatePost(1,listing);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("HTTP Status 400 Bad Request: Listing.membershipId cannot be null", e.getMessage());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_ArticleIdIsNull_Then_ThrowBadRequest() {
+		try {
+			ListingJson listing = new ListingJson(1,null);
+			fixture.validatePost(1,listing);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("HTTP Status 400 Bad Request: Listing.articleId cannot be null", e.getMessage());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
 	public void validatePost_When_ArticleDoesNotBelongToAuthenticatedUser_Then_ThrowBadRequest() {
 		try {
 			ListingJson listing = new ListingJson(1,0);
