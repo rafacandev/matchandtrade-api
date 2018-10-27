@@ -24,13 +24,13 @@ public class AuthenticationCallback {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationCallback.class);
 	
 	@Autowired
-	private AuthenticationProperties authenticationProperties;
+	protected AuthenticationProperties authenticationProperties;
 	@Autowired
-	private AuthenticationOAuth authenticationOAuth;
+	protected AuthenticationOAuth authenticationOAuth;
 	@Autowired
-	private UserRepositoryFacade userRepository;
+	protected UserRepositoryFacade userRepository;
 	@Autowired
-	private AuthenticationRespositoryFacade authenticationRepository;
+	protected AuthenticationRespositoryFacade authenticationRepository;
 
 	@Transactional
 	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -82,16 +82,8 @@ public class AuthenticationCallback {
 	 */
 	private void redirectResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String callbackUrl = authenticationProperties.getCallbackUrl();
-		LOGGER.debug("Redirecting request with {} value: {}", MatchAndTradePropertyKeys.AUTHENTICATION_CLIENT_CALLBACK_URL, callbackUrl);
+		LOGGER.debug("Redirecting request to callback url property {} with value: {}", MatchAndTradePropertyKeys.AUTHENTICATION_CLIENT_CALLBACK_URL, callbackUrl);
 		response.sendRedirect(callbackUrl);
-	}
-
-	/**
-	 * Sets the AuthenticationOAuth
-	 * @param authenticationOAuth
-	 */
-	public void setAuthenticationOAuth(AuthenticationOAuth authenticationOAuth) {
-		this.authenticationOAuth = authenticationOAuth;
 	}
 
 	/*

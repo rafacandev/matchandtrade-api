@@ -39,6 +39,9 @@ public class AppCli {
 
 		try {
 			cli = new DefaultParser().parse(options, arguments);
+			if (cli.hasOption("h")) {
+				buildHelpOutput(options);
+			}
 			if (cli.hasOption("cf")) {
 				File configFile = new File(cli.getOptionValue("cf"));
 				if (!configFile.exists()) {
@@ -50,28 +53,31 @@ public class AppCli {
 				if (!configFile.canRead()) {
 					throw new IllegalArgumentException("Configuration file [" + cli.getOptionValue("cf") + "] cannot be read.");
 				}
-			}
-			if (cli.hasOption("h")) {
-				StringWriter stringWritter = new StringWriter();
-				PrintWriter printWritter = new PrintWriter(stringWritter);
-				isInterrupted = true;
-				HelpFormatter formatter = new HelpFormatter();
-				formatter.setWidth(150);
-				formatter.printHelp(printWritter, 
-						150, // Width
-						"java -jar THIS_JAR.jar", // Usage
-						"Match and Trade command line help\n", // Header 
-						options, // Options
-						3, // Left pad
-						3, // Description pad
-						"\n https://github.com/rafasantos/matchandtrade \n" // Footer
-						);
-				commandLineOutputMessage = stringWritter.toString();
+			} else {
+				buildHelpOutput(options);
 			}
 		} catch (ParseException e) {
 			isInterrupted = true;
 			throw new IllegalArgumentException(e.getMessage());
 		}
+	}
+
+	private void buildHelpOutput(Options options) {
+		StringWriter stringWritter = new StringWriter();
+		PrintWriter printWritter = new PrintWriter(stringWritter);
+		isInterrupted = true;
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.setWidth(150);
+		formatter.printHelp(printWritter,
+			150, // Width
+			"java -jar THIS_JAR.jar", // Usage
+			"Match and Trade command line help\n", // Header
+			options, // Options
+			3, // Left pad
+			3, // Description pad
+			"\n https://github.com/rafasantos/matchandtrade \n" // Footer
+		);
+		commandLineOutputMessage = stringWritter.toString();
 	}
 
 	public String configurationFilePath() {

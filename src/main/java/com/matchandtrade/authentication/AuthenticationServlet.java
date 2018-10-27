@@ -29,13 +29,13 @@ public class AuthenticationServlet extends HttpServlet {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationServlet.class);
 	
 	@Autowired
-	private AuthenticationProperties authenticationProperties;
+	AuthenticationProperties authenticationProperties;
 	@Autowired
-	private AuthenticationOAuth authenticationOAuth;
+	AuthenticationOAuth authenticationOAuth;
 	@Autowired
-	private AuthenticationCallback authenticationCallbak;
+	AuthenticationCallback authenticationCallbak;
 	@Autowired
-	private AuthenticationRespositoryFacade authenticationRepository;
+	AuthenticationRespositoryFacade authenticationRepository;
 
 	
 	/**
@@ -112,10 +112,6 @@ public class AuthenticationServlet extends HttpServlet {
 		// oAuth Step 2. Send an authentication request to the Authorization Authority
 		authenticationOAuth.redirectToAuthorizationAuthority(response, state, authenticationProperties.getClientId(), authenticationProperties.getRedirectURI());
 		LOGGER.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", authenticationProperties.getRedirectURI());
-	}
-	
-	public void setAuthenticationOAuth(AuthenticationOAuth authenticationOAuth) {
-		this.authenticationOAuth = authenticationOAuth;
 	}
 	
 	private void signOut(HttpServletRequest request, HttpServletResponse response) throws IOException {

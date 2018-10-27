@@ -8,7 +8,6 @@ import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.rest.v1.json.ListingJson;
-import com.matchandtrade.test.TestingDefaultAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +23,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-@TestingDefaultAnnotations
 public class ListingValidatorUT {
 
 	@Mock
