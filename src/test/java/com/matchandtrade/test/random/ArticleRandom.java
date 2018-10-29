@@ -1,6 +1,5 @@
 package com.matchandtrade.test.random;
 
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +12,7 @@ import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.repository.UserRepository;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class ArticleRandom {
@@ -73,6 +73,7 @@ public class ArticleRandom {
 		if (shouldCreateTrade == true) {
 			return nextPersistedEntity(user);
 		}
+		user = userRepository.findOne(user.getUserId());
 		ArticleEntity result = nextEntity();
 		articleRepositoryFacade.save(result);
 		user.getArticles().add(result);

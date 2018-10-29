@@ -1,16 +1,11 @@
 package com.matchandtrade.rest.service;
 
+import com.matchandtrade.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ArticleQueryBuilder;
-import com.matchandtrade.persistence.criteria.OfferQueryBuilder;
-import com.matchandtrade.persistence.criteria.QueryBuilder;
-import com.matchandtrade.persistence.criteria.MembershipQueryBuilder;
-import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
-import com.matchandtrade.persistence.criteria.UserQueryBuilder;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
@@ -36,17 +31,22 @@ public class SearchService {
 	@Autowired
 	private ArticleQueryBuilder articleQueryBuilder;
 	@Autowired
+	private ArticleNewQueryBuilder articleQueryNewBuilder;
+	@Autowired
 	private TradeQueryBuilder tradeQueryBuilder;
 	@Autowired
 	private MembershipQueryBuilder membershipQueryBuilder;
 	@Autowired
 	private UserQueryBuilder userQueryBuilder;
-	
+
 	
 	@SuppressWarnings("unchecked")
 	public <T> SearchResult<T> search(SearchCriteria searchCriteria, Class<? extends QueryBuilder> queryBuilderClass) {
 		if (ArticleQueryBuilder.class.equals(queryBuilderClass)) {
 			return (SearchResult<T>) queryableArticle.query(searchCriteria, articleQueryBuilder);
+		}
+		if (ArticleNewQueryBuilder.class.equals(queryBuilderClass)) {
+			return (SearchResult<T>) queryableArticle.query(searchCriteria, articleQueryNewBuilder);
 		}
 		if (OfferQueryBuilder.class.equals(queryBuilderClass)) {
 			return (SearchResult<T>) queryableOffer.query(searchCriteria, offerQueryBuilder);

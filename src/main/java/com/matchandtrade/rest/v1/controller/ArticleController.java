@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.ArticleService;
@@ -22,6 +23,33 @@ public class ArticleController implements Controller {
 	@Autowired
 	private ArticleValidator articleValidator;
 
+	@RequestMapping(path="/articles/{articleId}", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public ArticleJson get(@PathVariable("articleId") Integer articleId) {
+		// Validate the request
+		articleValidator.validateGet(articleId);
+		// Delegate to service layer
+		ArticleEntity articleEntity = articleService.get(articleId);
+		// Transform the response
+		ArticleJson response = ArticleTransformer.transform(articleEntity);
+		// Assemble links
+//		ArticleLinkAssember.assemble(response, membershipId);
+		return response;
+	}
+
+	@RequestMapping(path="/articles", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public SearchResult<ArticleJson> get(Integer _pageNumber, Integer _pageSize) {
+		// Validate the request - Nothing to validate
+		// Delegate to service layer
+		SearchResult<ArticleEntity> searchResult = articleService.search(_pageNumber, _pageSize);
+		// Transform the response
+		SearchResult<ArticleJson> response = ArticleTransformer.transform(searchResult);
+		// Assemble links
+//		ArticleLinkAssember.assemble(response, membershipId);
+		return response;
+	}
+
 	@RequestMapping(path="/articles/{articleId}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable("articleId") Integer articleId) {
@@ -33,7 +61,7 @@ public class ArticleController implements Controller {
 		articleService.delete(articleId);
 	}
 
-	@RequestMapping(path = "/articles", method = RequestMethod.POST)
+	@RequestMapping(path = "/articles/", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public ArticleJson post(@RequestBody ArticleJson requestJson) {
 		// Validate request identity
@@ -70,18 +98,5 @@ public class ArticleController implements Controller {
 		return response;
 	}
 
-	@RequestMapping(path="/articles/{articleId}", method=RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public ArticleJson get(@PathVariable("articleId") Integer articleId) {
-		// Validate the request
-		articleValidator.validateGet(articleId);
-		// Delegate to service layer
-		ArticleEntity articleEntity = articleService.get(articleId);
-		// Transform the response
-		ArticleJson response = ArticleTransformer.transform(articleEntity);
-		// Assemble links
-//		ArticleLinkAssember.assemble(response, membershipId);
-		return response;
-	}
 
 }
