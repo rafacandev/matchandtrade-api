@@ -56,7 +56,7 @@ public class ArticleService {
 		return articleRepositoryFacade.exists(articleIds);
 	}
 
-	public SearchResult<ArticleEntity> search(int pageNumber, int pageSize) {
+	public SearchResult<ArticleEntity> search(Integer pageNumber, Integer pageSize) {
 		SearchCriteria criteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
 		return searchService.search(criteria, ArticleNewQueryBuilder.class);
 	}
