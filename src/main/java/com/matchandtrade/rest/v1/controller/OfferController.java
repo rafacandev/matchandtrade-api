@@ -70,7 +70,7 @@ public class OfferController implements Controller {
 		return response;
 	}
 	
-	@RequestMapping(path = "/{membershipId}/offers", method = RequestMethod.POST)
+	@RequestMapping(path = "/{membershipId}/offers/", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public OfferJson post(@PathVariable Integer membershipId, @RequestBody OfferJson requestJson) {
 		// Validate request identity
