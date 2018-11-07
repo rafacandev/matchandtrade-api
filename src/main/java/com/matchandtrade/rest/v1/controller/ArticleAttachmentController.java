@@ -36,7 +36,7 @@ public class ArticleAttachmentController implements Controller {
 	@Autowired
 	private AttachmentLinkAssember attachmentLinkAssembler;
 
-	@PostMapping("/articles/{articleId}/attachments/{attachmentId}")
+	@PostMapping("/articles/{articleId}/attachments/{attachmentId}/")
 	@ResponseStatus(HttpStatus.CREATED)
 	public AttachmentJson post(@PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
@@ -54,7 +54,7 @@ public class ArticleAttachmentController implements Controller {
 		return response;
 	}
 	
-	@DeleteMapping("/articles/{articleId}/attachments/{attachmentId}")
+	@DeleteMapping("/articles/{articleId}/attachments/{attachmentId}/")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
@@ -63,22 +63,6 @@ public class ArticleAttachmentController implements Controller {
 		articleAttachmentValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), articleId, attachmentId);
 		// Delegate to service layer
 		articleAttachmentService.deleteAttachmentFromArticle(articleId, attachmentId);
-	}
-
-
-	@RequestMapping(path={"/{membershipId}/articles/{articleId}/attachments", "/{membershipId}/articles/{articleId}/attachments/"}, method=RequestMethod.GET)
-	public SearchResult<AttachmentJson> get(@PathVariable Integer membershipId, @PathVariable Integer articleId, Integer _pageNumber, Integer _pageSize) {
-		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Validate the request
-		articleAttachmentValidator.validateGet(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, _pageNumber, _pageSize);
-		// Delegate to service layer
-		SearchResult<AttachmentEntity> searchResult = articleAttachmentService.search(articleId, _pageNumber, _pageSize);
-		// Transform the response
-		SearchResult<AttachmentJson> response = AttachmentTransformer.transform(searchResult);
-		// Assemble links
-		attachmentLinkAssembler.assemble(response);
-		return response;
 	}
 
 }

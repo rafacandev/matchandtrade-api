@@ -52,7 +52,7 @@ public class ArticleAttachmentValidator {
 		}
 	}
 
-	public void validateGet(Integer userId, Integer membershipId, Integer pageNumber, Integer pageSize) {
+	public void validateGet(Integer pageNumber, Integer pageSize) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
 	}
 

@@ -19,7 +19,7 @@ public class ArticleLinkAssember {
 
 	private static Set<Link> buildLink(Integer membershipId, Integer articleId) {
 		Set<Link> result = new HashSet<>();
-		result.add(linkTo(methodOn(ArticleAttachmentController.class).get(membershipId, articleId, null, null)).withRel("attachments"));
+		// TODO
 		return result;
 	}
 	

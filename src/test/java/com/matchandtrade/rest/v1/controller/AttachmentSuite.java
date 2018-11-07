@@ -10,7 +10,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	AttachmentControllerPostIT.class,
 	AttachmentControllerGetIT.class,
 	ArticleAttachmentControllerPostIT.class,
-	ArticleAttachmentControllerGetIT.class,
 	ArticleAttachmentControllerDeleteIT.class
 })
 public class AttachmentSuite {
