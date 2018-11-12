@@ -4,7 +4,7 @@ import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.rest.v1.json.ListingJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.helper.MembershipHelper;
+import com.matchandtrade.test.helper.SearchHelper;
 import com.matchandtrade.test.random.ArticleRandom;
 import com.matchandtrade.test.random.MembershipRandom;
 import com.matchandtrade.test.random.UserRandom;
@@ -24,7 +24,7 @@ public class ListingControllerPostIT {
 	private ArticleRandom articleRandom;
 	private ListingController fixture;
 	@Autowired
-	private MembershipHelper membershipHelper;
+	private SearchHelper searchHelper;
 	@Autowired
 	private MembershipRandom membershipRandom;
 	@Autowired
@@ -42,10 +42,10 @@ public class ListingControllerPostIT {
 	@Test
 	public void post_When_ArticleAndMembershipBelongToAuthenticatedUser_Then_Succeeds() {
 		ArticleEntity article = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), false);
-		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity membership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ListingJson request = new ListingJson(membership.getMembershipId(), article.getArticleId());
 		fixture.post(request);
-		assertTrue(membershipHelper.membershipContainsArticle(membership.getMembershipId(), article.getArticleId()));
+		assertTrue(searchHelper.membershipContainsArticle(membership.getMembershipId(), article.getArticleId()));
 	}
 
 }

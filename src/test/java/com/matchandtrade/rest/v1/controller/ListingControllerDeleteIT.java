@@ -2,11 +2,11 @@ package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
-import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.rest.v1.json.ListingJson;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.helper.MembershipHelper;
+import com.matchandtrade.test.helper.SearchHelper;
 import com.matchandtrade.test.random.ArticleRandom;
+import com.matchandtrade.test.random.ListingRandom;
 import com.matchandtrade.test.random.MembershipRandom;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,16 +24,16 @@ public class ListingControllerDeleteIT {
 	@Autowired
 	private ArticleRandom articleRandom;
 	private ArticleEntity existingArticle;
+	private MembershipEntity existingMembership;
+	private ListingController fixture;
+	@Autowired
+	private ListingRandom listingRandom;
 	@Autowired
 	private MembershipRandom membershipRandom;
-	private ListingController fixture;
-	private MembershipEntity existingMembership;
-	@Autowired
-	private MembershipRepositoryFacade membershipRepositoryFacade;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 	@Autowired
-	private MembershipHelper membershipHelper;
+	private SearchHelper searchHelper;
 
 	@Before
 	public void before() {
@@ -41,16 +41,15 @@ public class ListingControllerDeleteIT {
 			fixture = mockControllerFactory.getListingController(false);
 		}
 		existingArticle = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), false);
-		existingMembership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		existingMembership.getArticles().add(existingArticle);
-		membershipRepositoryFacade.save(existingMembership);
+		existingMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		listingRandom.createPersisted(existingArticle.getArticleId(), existingMembership.getMembershipId());
 	}
 
 	@Test
 	public void delete_When_ArticleAndMembershipBelongToAuthenticatedUser_Then_Succeeds() {
 		ListingJson request = new ListingJson(existingMembership.getMembershipId(), existingArticle.getArticleId());
 		fixture.delete(request);
-		assertFalse(membershipHelper.membershipContainsArticle(existingMembership.getMembershipId(), existingArticle.getArticleId()));
+		assertFalse(searchHelper.membershipContainsArticle(existingMembership.getMembershipId(), existingArticle.getArticleId()));
 	}
 
 }

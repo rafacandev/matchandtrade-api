@@ -17,7 +17,7 @@ public class AttachmentRandom {
 	@Autowired
 	private AttachmentService attachmentService;
 	
-	public AttachmentEntity nextPersistedEntity() {
+	public AttachmentEntity createPersistedEntity() {
 		MultipartFile file = newSampleMockMultiPartFile();
 		return attachmentService.create(file);
 	}

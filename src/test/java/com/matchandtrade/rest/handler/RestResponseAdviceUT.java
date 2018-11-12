@@ -61,13 +61,13 @@ public class RestResponseAdviceUT {
 		ServerHttpRequest requestMock = mock(ServerHttpRequest.class);
 		when(requestMock.getURI()).thenReturn(uri);
 		List<UserJson> resultList = new ArrayList<>();
-		UserJson user1 = UserRandom.nextJson();
+		UserJson user1 = UserRandom.createJson();
 		user1.setUserId(1);
 		resultList.add(user1);
-		UserJson user2 = UserRandom.nextJson();
+		UserJson user2 = UserRandom.createJson();
 		user2.setUserId(2);
 		resultList.add(user2);
-		UserJson user3 = UserRandom.nextJson();
+		UserJson user3 = UserRandom.createJson();
 		user3.setUserId(3);
 		resultList.add(user3);
 		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination(pageNumber, pageSize, total));

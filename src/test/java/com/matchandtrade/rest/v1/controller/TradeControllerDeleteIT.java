@@ -32,7 +32,7 @@ public class TradeControllerDeleteIT {
 
 	@Test
 	public void deletePositive() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity existingTrade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		fixture.delete(existingTrade.getTradeId());
 		assertNull(fixture.get(existingTrade.getTradeId()));
 	}

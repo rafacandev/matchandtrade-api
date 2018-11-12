@@ -47,7 +47,7 @@ public class AttachmentControllerGetIT {
 	
 	@Test
 	public void shouldGetAttachment() {
-		AttachmentEntity entity = attachmentRandom.nextPersistedEntity();
+		AttachmentEntity entity = attachmentRandom.createPersistedEntity();
 		AttachmentJson response = fixture.get(entity.getAttachmentId());
 		assertNotNull(response);
 		assertEquals(entity.getAttachmentId(), response.getAttachmentId());

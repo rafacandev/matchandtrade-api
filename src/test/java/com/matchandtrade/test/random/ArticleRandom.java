@@ -64,7 +64,7 @@ public class ArticleRandom {
 	
 	@Transactional
 	public ArticleEntity nextPersistedEntity(UserEntity tradeOwner) {
-		MembershipEntity existingTradeMemberhip = membershipRandom.nextPersistedEntity(tradeOwner);
+		MembershipEntity existingTradeMemberhip = membershipRandom.createPersistedEntity(tradeOwner);
 		return nextPersistedEntity(existingTradeMemberhip);
 	}
 
@@ -85,7 +85,7 @@ public class ArticleRandom {
 	public ArticleEntity nextPersistedEntity() {
 		ArticleEntity result = nextEntity();
 		articleRepositoryFacade.save(result);
-		UserEntity user = userRandom.nextPersistedEntity();
+		UserEntity user = userRandom.createPersistedEntity();
 		user.getArticles().add(result);
 		userRepository.save(user);
 		return result;

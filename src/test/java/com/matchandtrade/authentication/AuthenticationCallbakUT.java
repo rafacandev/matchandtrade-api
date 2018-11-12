@@ -8,31 +8,21 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-
-import com.matchandtrade.persistence.repository.UserRepository;
-import org.h2.engine.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
-import com.matchandtrade.rest.v1.transformer.UserTransformer;
-import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.StringRandom;
-import com.matchandtrade.test.random.UserRandom;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthenticationCallbakUT {

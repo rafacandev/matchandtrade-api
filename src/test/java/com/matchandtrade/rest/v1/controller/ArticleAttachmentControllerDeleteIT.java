@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
@@ -50,7 +49,7 @@ public class ArticleAttachmentControllerDeleteIT {
 		if (fixture == null) {
 			fixture = mockControllerFactory.getArticleFileController(false);
 		}
-		file = fileRandom.nextPersistedEntity();
+		file = fileRandom.createPersistedEntity();
 	}
 
 	@Test

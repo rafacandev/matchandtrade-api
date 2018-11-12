@@ -57,7 +57,7 @@ public class TradeResultControllerGetIT {
 	@Test(expected = RestException.class)
 	public void shouldNotGenerateResultsWhenStatusIsSubmittingArticles() {
 		UserEntity tradeOwner = fixture.authenticationProvider.getAuthentication().getUser();
-		TradeEntity trade = tradeRandom.nextPersistedEntity(tradeOwner);
+		TradeEntity trade = tradeRandom.createPersistedEntity(tradeOwner);
 		try {
 			fixture.getJson(trade.getTradeId());
 		} catch (RestException e) {
@@ -69,7 +69,7 @@ public class TradeResultControllerGetIT {
 	@Test
 	public void shouldGenerateResultsWhenStatusResultsGenerated() {
 		UserEntity tradeOwner = fixture.authenticationProvider.getAuthentication().getUser();
-		TradeEntity trade = tradeRandom.nextPersistedEntity(tradeOwner);
+		TradeEntity trade = tradeRandom.createPersistedEntity(tradeOwner);
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
 		tradeService.update(trade);
 		TradeResultJson response = fixture.getJson(trade.getTradeId());
@@ -79,29 +79,29 @@ public class TradeResultControllerGetIT {
 	@Test
 	public void shouldGenerateCsvResults() {
 		// Create a trade for a random user
-		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity trade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		
 		// Create owner's articles (Greek letters)
-		MembershipEntity greekMembership = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("GREEK"), MembershipEntity.Type.MEMBER);
+		MembershipEntity greekMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("GREEK"), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership, "alpha");
 		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership, "beta");
 		
 		// Create member's articles (country names)
-		MembershipEntity countryMemberhip = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("COUNTRY"), MembershipEntity.Type.MEMBER);
+		MembershipEntity countryMemberhip = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("COUNTRY"), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity argentina = articleRandom.nextPersistedEntity(countryMemberhip, "argentina");
 		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryMemberhip, "brazil");
 		ArticleEntity canada = articleRandom.nextPersistedEntity(countryMemberhip, "canada");
 
 		// Create member's articles (ordinal numbers)
-		MembershipEntity ordinalMemberhip = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), MembershipEntity.Type.MEMBER);
+		MembershipEntity ordinalMemberhip = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("ORDINAL"), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity first = articleRandom.nextPersistedEntity(ordinalMemberhip, "first");
 
-		offerRandom.nextPersistedEntity(greekMembership.getMembershipId(), alpha.getArticleId(), canada.getArticleId());
-		offerRandom.nextPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), argentina.getArticleId());
-		offerRandom.nextPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), brazil.getArticleId());
-		offerRandom.nextPersistedEntity(countryMemberhip.getMembershipId(), brazil.getArticleId(), first.getArticleId());
-		offerRandom.nextPersistedEntity(countryMemberhip.getMembershipId(), canada.getArticleId(), alpha.getArticleId());
-		offerRandom.nextPersistedEntity(ordinalMemberhip.getMembershipId(), first.getArticleId(), beta.getArticleId());
+		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), alpha.getArticleId(), canada.getArticleId());
+		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), argentina.getArticleId());
+		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), brazil.getArticleId());
+		offerRandom.createPersistedEntity(countryMemberhip.getMembershipId(), brazil.getArticleId(), first.getArticleId());
+		offerRandom.createPersistedEntity(countryMemberhip.getMembershipId(), canada.getArticleId(), alpha.getArticleId());
+		offerRandom.createPersistedEntity(ordinalMemberhip.getMembershipId(), first.getArticleId(), beta.getArticleId());
 		
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
@@ -124,29 +124,29 @@ public class TradeResultControllerGetIT {
 	@Test
 	public void shouldGenerateJsonResult() {
 		// Create a trade for a random user
-		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity trade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		
 		// Create owner's articles (Greek letters)
-		MembershipEntity greekMembership = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("GREEK"), MembershipEntity.Type.MEMBER);
+		MembershipEntity greekMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("GREEK"), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership, "alpha");
 		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership, "beta");
 		
 		// Create member's articles (country names)
-		MembershipEntity countryMembership = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("COUNTRY"), MembershipEntity.Type.MEMBER);
+		MembershipEntity countryMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("COUNTRY"), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity argentina = articleRandom.nextPersistedEntity(countryMembership, "argentina");
 		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryMembership, "brazil");
 		ArticleEntity canada = articleRandom.nextPersistedEntity(countryMembership, "canada");
 
 		// Create member's articles (ordinal numbers)
-		MembershipEntity ordinalMembership = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity("ORDINAL"), MembershipEntity.Type.MEMBER);
+		MembershipEntity ordinalMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("ORDINAL"), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity first = articleRandom.nextPersistedEntity(ordinalMembership, "first");
 
-		offerRandom.nextPersistedEntity(greekMembership.getMembershipId(), alpha.getArticleId(), canada.getArticleId());
-		offerRandom.nextPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), argentina.getArticleId());
-		offerRandom.nextPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), brazil.getArticleId());
-		offerRandom.nextPersistedEntity(countryMembership.getMembershipId(), brazil.getArticleId(), first.getArticleId());
-		offerRandom.nextPersistedEntity(countryMembership.getMembershipId(), canada.getArticleId(), alpha.getArticleId());
-		offerRandom.nextPersistedEntity(ordinalMembership.getMembershipId(), first.getArticleId(), beta.getArticleId());
+		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), alpha.getArticleId(), canada.getArticleId());
+		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), argentina.getArticleId());
+		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), brazil.getArticleId());
+		offerRandom.createPersistedEntity(countryMembership.getMembershipId(), brazil.getArticleId(), first.getArticleId());
+		offerRandom.createPersistedEntity(countryMembership.getMembershipId(), canada.getArticleId(), alpha.getArticleId());
+		offerRandom.createPersistedEntity(ordinalMembership.getMembershipId(), first.getArticleId(), beta.getArticleId());
 		
 		// Generate the trade results
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
@@ -227,7 +227,7 @@ public class TradeResultControllerGetIT {
 
 	@Test
 	public void shouldGetJsonResultsMultipleTimes() {
-		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity trade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		trade.setState(TradeEntity.State.GENERATE_RESULTS);
 		tradeService.update(trade);
 		TradeResultJson response1 = fixture.getJson(trade.getTradeId());
@@ -242,7 +242,7 @@ public class TradeResultControllerGetIT {
 	public void shouldThrowErrorWhenResultsAreNotGenerated() {
 		// Very rare case where the State.RESULTS_GENERATED but for some reason the results
 		// were not generated (prossibly due to error when generating the results)
-		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity trade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		trade.setState(TradeEntity.State.RESULTS_GENERATED);
 		tradeService.update(trade);
 		fixture.getJson(trade.getTradeId());
@@ -250,7 +250,7 @@ public class TradeResultControllerGetIT {
 
 	@Test(expected=RestException.class)
 	public void shouldThrowErrorWhenGettingResultsForTradeStateSubmittingArticles() {
-		TradeEntity trade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity trade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		trade.setState(TradeEntity.State.SUBMITTING_ARTICLES);
 		tradeService.update(trade);
 		fixture.getJson(trade.getTradeId());

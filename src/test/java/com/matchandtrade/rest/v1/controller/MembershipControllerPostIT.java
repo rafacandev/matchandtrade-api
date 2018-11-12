@@ -40,7 +40,7 @@ public class MembershipControllerPostIT {
 	
 	@Test
 	public void post() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity existingTrade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		MembershipJson request = new MembershipJson();
 		request.setTradeId(existingTrade.getTradeId());
 		request.setUserId(fixture.authenticationProvider.getAuthentication().getUser().getUserId());
@@ -65,7 +65,7 @@ public class MembershipControllerPostIT {
 
 	@Test(expected=RestException.class)
 	public void postUniqueTradeIdAndUserId() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity existingTrade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		MembershipJson request = new MembershipJson();
 		request.setTradeId(existingTrade.getTradeId());
 		request.setUserId(fixture.authenticationProvider.getAuthentication().getUser().getUserId());
@@ -100,12 +100,12 @@ public class MembershipControllerPostIT {
 	}
 
 	private MembershipJson createTradeForRandomExistingUser(TradeEntity.State state) {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity existingTrade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		existingTrade.setState(state);
 		tradeRepository.save(existingTrade);
 		MembershipJson request = new MembershipJson();
 		request.setTradeId(existingTrade.getTradeId());
-		request.setUserId(userRandom.nextPersistedEntity().getUserId());
+		request.setUserId(userRandom.createPersistedEntity().getUserId());
 		return request;
 	}
 

@@ -52,18 +52,18 @@ public class OfferControllerDeleteIT {
 	@Test
 	public void shouldDeleteByOfferId() {
 		// Create a trade for a random user
-		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity trade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
 		// Create owner's articles (Greek letters)
-		MembershipEntity ownerMembership = membershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity ownerMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), trade);
 		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerMembership);
 		
 		// Create member's articles (country names)
-		MembershipEntity memberMemberhip = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), MembershipEntity.Type.MEMBER);
+		MembershipEntity memberMemberhip = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity(), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.nextPersistedEntity(memberMemberhip);
 
 		// Owner offers Alpha for Australia
-		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getMembershipId(), alpha.getArticleId(), australia.getArticleId());
+		OfferEntity alphaForAustralia = offerRandom.createPersistedEntity(ownerMembership.getMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
 		fixture.delete(ownerMembership.getMembershipId(), alphaForAustralia.getOfferId());
 		assertNull(offerRepositoryFacade.get(alphaForAustralia.getOfferId()));
@@ -72,18 +72,18 @@ public class OfferControllerDeleteIT {
 	@Test(expected=RestException.class)
 	public void shouldNotDeleteWhenMembershipDoesNotBelongToAuthenticatedUser() {
 		// Create a trade for a random user
-		TradeEntity trade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity trade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		
 		// Create owner's articles (Greek letters)
-		MembershipEntity ownerMembership = membershipRandom.nextPersistedEntity(trade, fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity ownerMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), trade);
 		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerMembership);
 		
 		// Create member's articles (country names)
-		MembershipEntity memberMembership = membershipRandom.nextPersistedEntity(trade, userRandom.nextPersistedEntity(), MembershipEntity.Type.MEMBER);
+		MembershipEntity memberMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity(), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.nextPersistedEntity(memberMembership);
 
 		// Owner offers Alpha for Australia
-		OfferEntity alphaForAustralia = offerRandom.nextPersistedEntity(ownerMembership.getMembershipId(), alpha.getArticleId(), australia.getArticleId());
+		OfferEntity alphaForAustralia = offerRandom.createPersistedEntity(ownerMembership.getMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
 		try {
 			fixture.delete(memberMembership.getMembershipId(), alphaForAustralia.getOfferId());

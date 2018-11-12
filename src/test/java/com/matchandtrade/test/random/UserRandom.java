@@ -13,13 +13,13 @@ import com.matchandtrade.rest.v1.transformer.UserTransformer;
 public class UserRandom {
 	
 	@Autowired
-	private UserRepositoryFacade userRepository;
+	private UserRepositoryFacade userRepositoryFacade;
 	
-	public static UserEntity nextEntity() {
-		return UserTransformer.transform(nextJson());
+	public static UserEntity createEntity() {
+		return UserTransformer.transform(createJson());
 	}
 
-	public static UserJson nextJson() {
+	public static UserJson createJson() {
 		UserJson result = new UserJson();
 		result.setName(StringRandom.nextName());
 		result.setEmail(StringRandom.nextEmail());
@@ -27,17 +27,18 @@ public class UserRandom {
 	}
 	
 	@Transactional
-	public UserEntity nextPersistedEntity() {
-		UserEntity result = nextEntity();
-		userRepository.save(result);
+	public UserEntity createPersistedEntity() {
+		UserEntity result = createEntity();
+		userRepositoryFacade.save(result);
 		return result;
 	}
 
 	@Transactional
-	public UserEntity nextPersistedEntity(String name) {
-		UserEntity result = nextEntity();
+	public UserEntity createPersistedEntity(String name) {
+		UserEntity result = createEntity();
 		result.setName(name);
-		userRepository.save(result);
+		userRepositoryFacade.save(result);
 		return result;
 	}
+
 }

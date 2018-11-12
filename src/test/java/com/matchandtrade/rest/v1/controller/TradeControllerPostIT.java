@@ -29,7 +29,7 @@ public class TradeControllerPostIT {
 	
 	@Test
 	public void shouldCreateTrade() {
-		TradeJson request = TradeRandom.nextJson();
+		TradeJson request = TradeRandom.createJson();
 		TradeJson response = fixture.post(request);
 		assertNotNull(response.getTradeId());
 		assertEquals(request.getName(), response.getName());
@@ -38,21 +38,21 @@ public class TradeControllerPostIT {
 	
 	@Test(expected=RestException.class)
 	public void shouldErrorNameAlreadyExists() {
-		TradeJson request = TradeRandom.nextJson();
+		TradeJson request = TradeRandom.createJson();
 		fixture.post(request);
 		fixture.post(request);
 	}
 
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenNameIsTooShort() {
-		TradeJson request = TradeRandom.nextJson();
+		TradeJson request = TradeRandom.createJson();
 		request.setName("ab");
 		fixture.post(request);
 	}	
 
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenNameIsTooLong() {
-		TradeJson request = TradeRandom.nextJson();
+		TradeJson request = TradeRandom.createJson();
 		String name = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
 				+ "01234567890123456789012345678901234567890123456789"
 				+ "0";
@@ -62,7 +62,7 @@ public class TradeControllerPostIT {
 	
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenDescriptionIsTooLong() {
-		TradeJson request = TradeRandom.nextJson();
+		TradeJson request = TradeRandom.createJson();
 		String description = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
 				+ "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
 				+ "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"
@@ -80,7 +80,7 @@ public class TradeControllerPostIT {
 	
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenNameIsMissing() {
-		TradeJson request = TradeRandom.nextJson();
+		TradeJson request = TradeRandom.createJson();
 		request.setName(null);
 		fixture.post(request);
 	}

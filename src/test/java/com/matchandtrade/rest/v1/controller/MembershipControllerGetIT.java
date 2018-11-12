@@ -37,7 +37,7 @@ public class MembershipControllerGetIT {
 	
 	@Test
 	public void get() {
-		MembershipEntity existingMembership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity existingMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		MembershipJson response = fixture.get(existingMembership.getMembershipId());
 		assertEquals(existingMembership.getMembershipId(), response.getMembershipId());
 		assertEquals(existingMembership.getTrade().getTradeId(), response.getTradeId());
@@ -47,7 +47,7 @@ public class MembershipControllerGetIT {
 	
 	@Test
 	public void getAll() {
-		membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<MembershipJson> getResponse = fixture.get(null, null, null, null, null);
 		assertTrue(getResponse.getResultList().size() > 0);
 	}
@@ -55,14 +55,14 @@ public class MembershipControllerGetIT {
 	@Test
 	public void getByTradeId() {
 		fixture = mockControllerFactory.getMembershipController(false);
-		MembershipEntity existingMembership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity existingMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<MembershipJson> getResponse = fixture.get(existingMembership.getTrade().getTradeId(), null, null, null, null);
 		assertEquals(existingMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
 	}
 
 	@Test
 	public void getByTradeIdAndUserId() {
-		MembershipEntity existingMembership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity existingMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<MembershipJson> getResponse = fixture.get(existingMembership.getTrade().getTradeId(), existingMembership.getUser().getUserId(), null, null, null);
 		assertEquals(existingMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
 		assertEquals(existingMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
@@ -71,7 +71,7 @@ public class MembershipControllerGetIT {
 	@Test
 	public void getByUserId() {
 		fixture = mockControllerFactory.getMembershipController(false);
-		MembershipEntity existingMembership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity existingMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<MembershipJson> getResponse = fixture.get(null, existingMembership.getUser().getUserId(), null, null, null);
 		assertEquals(existingMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
 	}
@@ -80,7 +80,7 @@ public class MembershipControllerGetIT {
 	public void shouldGetByTypeAndTradeId() {
 		fixture = mockControllerFactory.getMembershipController(false);
 		UserEntity user = fixture.authenticationProvider.getAuthentication().getUser();
-		MembershipEntity existingMembership = membershipRandom.nextPersistedEntity(user);
+		MembershipEntity existingMembership = membershipRandom.createPersistedEntity(user);
 		SearchResult<MembershipJson> response = fixture.get(existingMembership.getTrade().getTradeId(), null, MembershipEntity.Type.OWNER, null, null);
 		assertEquals(1, response.getResultList().size());
 		assertEquals(existingMembership.getMembershipId(), response.getResultList().get(0).getMembershipId());
@@ -88,7 +88,7 @@ public class MembershipControllerGetIT {
 		
 	@Test(expected=RestException.class)
 	public void getInvalidPageSize() {
-		membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<MembershipJson> getResponse = fixture.get(null, null, null, null, 51);
 		assertTrue(getResponse.getResultList().size() > 0);
 	}

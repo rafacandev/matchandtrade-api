@@ -34,16 +34,16 @@ public class TradeControllerGetIT {
 	
 	@Test
 	public void shouldGetAllTrades() {
-		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<TradeJson> response = fixture.get(1, 2);
 		assertTrue(response.getPagination().getTotal() > 2);
 	}
 
 	@Test
 	public void shouldGetTradeById() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity existingTrade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		TradeJson response = fixture.get(existingTrade.getTradeId());
 		assertNotNull(response.getTradeId());
 		assertEquals(existingTrade.getName(), response.getName());

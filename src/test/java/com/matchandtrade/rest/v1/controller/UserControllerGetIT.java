@@ -40,7 +40,7 @@ public class UserControllerGetIT {
 	
 	@Test
 	public void shouldReturnOnlyTheUserNameFromOtherUsers() {
-		UserEntity targetUser = userRandom.nextPersistedEntity("NameTest");
+		UserEntity targetUser = userRandom.createPersistedEntity("NameTest");
 		assertNotNull(targetUser.getEmail());
 		UserJson response = fixture.get(targetUser.getUserId());
 		assertEquals("NameTest", response.getName());

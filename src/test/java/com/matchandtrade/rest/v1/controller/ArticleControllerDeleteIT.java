@@ -53,7 +53,7 @@ public class ArticleControllerDeleteIT {
 
 	@Test(expected = RestException.class)
 	public void delete_When_ArticleIdBelongsToDifferentUser_Expects_BadRequest() {
-		UserEntity user = userRandom.nextPersistedEntity();
+		UserEntity user = userRandom.createPersistedEntity();
 		ArticleEntity actual = new ArticleEntity();
 		actual.setName("actual");
 		articleRepositoryFacade.save(actual);

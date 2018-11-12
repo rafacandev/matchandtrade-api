@@ -32,7 +32,7 @@ public class MembershipControllerDeleteIT {
 	
 	@Test
 	public void delete() {
-		MembershipEntity existingMembership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity existingMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		fixture.delete(existingMembership.getMembershipId());
 		assertNull(fixture.get(existingMembership.getMembershipId()));
 	}

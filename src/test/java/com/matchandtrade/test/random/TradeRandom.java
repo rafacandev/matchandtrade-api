@@ -15,21 +15,21 @@ public class TradeRandom {
 	@Autowired
 	private TradeService tradeService;
 
-	public static TradeEntity nextEntity() {
-		return TradeTransformer.transform(nextJson());
+	public static TradeEntity createEntity() {
+		return TradeTransformer.transform(createJson());
 	}
-	
-	public static TradeJson nextJson() {
+
+	public TradeEntity createPersistedEntity(UserEntity owner) {
+		TradeEntity result = createEntity();
+		tradeService.create(result, owner);
+		return result;
+	}
+
+	public static TradeJson createJson() {
 		TradeJson result = new TradeJson();
 		result.setName(StringRandom.nextName());
 		result.setDescription(StringRandom.nextDescription());
 		result.setState(TradeJson.State.SUBMITTING_ARTICLES);
-		return result;
-	}
-
-	public TradeEntity nextPersistedEntity(UserEntity tradeOwner) {
-		TradeEntity result = nextEntity();
-		tradeService.create(result, tradeOwner);
 		return result;
 	}
 

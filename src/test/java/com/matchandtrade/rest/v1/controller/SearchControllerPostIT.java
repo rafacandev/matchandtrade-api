@@ -49,8 +49,8 @@ public class SearchControllerPostIT {
 	@Test
 	public void searchByTradeId() {
 		// Create a trade for a random user
-		UserEntity greekUser = userRandom.nextPersistedEntity();
-		MembershipEntity greekMembership = membershipRandom.nextPersistedEntity(greekUser);
+		UserEntity greekUser = userRandom.createPersistedEntity();
+		MembershipEntity greekMembership = membershipRandom.createPersistedEntity(greekUser);
 		TradeEntity trade = greekMembership.getTrade();
 
 		// Create articles for Greek letters
@@ -58,8 +58,8 @@ public class SearchControllerPostIT {
 		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership);
 
 		// Create articles for country names
-		UserEntity countryUser = userRandom.nextPersistedEntity();
-		MembershipEntity countryMembership = membershipRandom.nextPersistedEntity(trade, countryUser, MembershipEntity.Type.MEMBER);
+		UserEntity countryUser = userRandom.createPersistedEntity();
+		MembershipEntity countryMembership = membershipRandom.createPersistedEntity(countryUser, trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.nextPersistedEntity(countryMembership);
 		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryMembership);
 		ArticleEntity cuba = articleRandom.nextPersistedEntity(countryMembership);
@@ -80,8 +80,8 @@ public class SearchControllerPostIT {
 	@Test
 	public void searchByTradeIdAndMembershipIdNotEquals() {
 		// Create a trade for a random user
-		UserEntity greekUser = userRandom.nextPersistedEntity();
-		MembershipEntity greekMembership = membershipRandom.nextPersistedEntity(greekUser);
+		UserEntity greekUser = userRandom.createPersistedEntity();
+		MembershipEntity greekMembership = membershipRandom.createPersistedEntity(greekUser);
 		TradeEntity trade = greekMembership.getTrade();
 		
 		// Create articles for Greek letters
@@ -89,8 +89,8 @@ public class SearchControllerPostIT {
 		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership);
 		
 		// Create articles for country names
-		UserEntity countryUser = userRandom.nextPersistedEntity();
-		MembershipEntity countryMembership = membershipRandom.nextPersistedEntity(trade, countryUser, MembershipEntity.Type.MEMBER);
+		UserEntity countryUser = userRandom.createPersistedEntity();
+		MembershipEntity countryMembership = membershipRandom.createPersistedEntity(countryUser, trade, MembershipEntity.Type.MEMBER);
 		articleRandom.nextPersistedEntity(countryMembership);
 		articleRandom.nextPersistedEntity(countryMembership);
 		articleRandom.nextPersistedEntity(countryMembership);

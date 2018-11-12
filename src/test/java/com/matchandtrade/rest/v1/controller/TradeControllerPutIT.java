@@ -38,7 +38,7 @@ public class TradeControllerPutIT {
 	
 	@Test
 	public void shouldEditTrade() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity existingTrade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		existingTrade.setState(TradeEntity.State.MATCHING_ARTICLES);
 		TradeJson request = TradeTransformer.transform(existingTrade);
 		request.setName(request.getName() + " - Trade.name after PUT");
@@ -51,15 +51,15 @@ public class TradeControllerPutIT {
 
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenEditingTradeOfDifferentOwner() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(userRandom.nextPersistedEntity());
+		TradeEntity existingTrade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		TradeJson request = TradeTransformer.transform(existingTrade);
 		fixture.put(request.getTradeId(), request);
 	}
 	
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenEditingTradeWithAnExistingName() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		TradeEntity anotherExistingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity existingTrade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity anotherExistingTrade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		TradeJson request = new TradeJson();
 		request.setName(existingTrade.getName());
 		request.setState(TradeJson.State.SUBMITTING_ARTICLES);
@@ -68,13 +68,13 @@ public class TradeControllerPutIT {
 
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenTryingToEditInexistingTrade() {
-		TradeJson request = TradeRandom.nextJson();
+		TradeJson request = TradeRandom.createJson();
 		fixture.put(-1, request);
 	}
 
 	@Test
 	public void shouldSaveTradeAndTriggerResultsGenerationWhenStateIsGenerateResults() {
-		TradeEntity existingTrade = tradeRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		TradeEntity existingTrade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		TradeJson request = TradeTransformer.transform(existingTrade);
 		request.setState(TradeJson.State.GENERATE_RESULTS);
 		TradeJson response = fixture.put(existingTrade.getTradeId(), request);		

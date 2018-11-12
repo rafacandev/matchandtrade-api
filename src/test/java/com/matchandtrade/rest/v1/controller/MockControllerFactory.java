@@ -61,7 +61,7 @@ public class MockControllerFactory {
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
 		public MockAuthenticationProvider() {
-			UserEntity authenticatedUserEntity = UserRandom.nextEntity();
+			UserEntity authenticatedUserEntity = UserRandom.createEntity();
 			userRepository.save(authenticatedUserEntity);
 			AuthenticationEntity authenticationEntity = new AuthenticationEntity();
 			authenticationEntity.setToken("MockControllerFactory#userId: " + authenticatedUserEntity.getUserId());

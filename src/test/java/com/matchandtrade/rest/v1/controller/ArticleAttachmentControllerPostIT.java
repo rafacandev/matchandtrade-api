@@ -49,12 +49,12 @@ public class ArticleAttachmentControllerPostIT {
 		if (fixture == null) {
 			fixture = mockControllerFactory.getArticleFileController(false);
 		}
-		file = fileRandom.nextPersistedEntity();
+		file = fileRandom.createPersistedEntity();
 	}
 	
 	@Test
 	public void post_When_AddingAttachmentForExistingArticle_Expects_Success() {
-		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity membership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
 		AttachmentJson response = fixture.post(article.getArticleId(), file.getAttachmentId());
 		assertNotNull(response);
@@ -66,11 +66,11 @@ public class ArticleAttachmentControllerPostIT {
 
 	@Test(expected = RestException.class)
 	public void post_When_AddingMoreThan3FilesToArticle_Expects_BadRequest() {
-		MembershipEntity membership = membershipRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		MembershipEntity membership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
-		article.getAttachments().add(fileRandom.nextPersistedEntity());
-		article.getAttachments().add(fileRandom.nextPersistedEntity());
-		article.getAttachments().add(fileRandom.nextPersistedEntity());
+		article.getAttachments().add(fileRandom.createPersistedEntity());
+		article.getAttachments().add(fileRandom.createPersistedEntity());
+		article.getAttachments().add(fileRandom.createPersistedEntity());
 		articleRepositoryFacade.save(article);
 		try {
 			fixture.post(article.getArticleId(), file.getAttachmentId());
