@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.matchandtrade.persistence.entity.ArticleEntity;
+import com.matchandtrade.test.random.ArticleRandom;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,9 @@ public class AttachmentControllerPostIT {
 	@Autowired
 	private AttachmentRandom fileRandom;
 
+	@Autowired
+	private ArticleRandom articleRandom;
+
 	@Before
 	public void before() throws IOException {
 		if (fixture == null) {
@@ -62,5 +67,5 @@ public class AttachmentControllerPostIT {
 		Path thumbnailFilePath = fileStorageRootPath.resolve(thumbnailLink.replace(MvcConfiguration.ESSENCES_URL_PATTERN.replace("*", ""), ""));
 		assertTrue(thumbnailFilePath.toFile().exists());
 	}
-	
+
 }

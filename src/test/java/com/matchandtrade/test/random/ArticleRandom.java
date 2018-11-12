@@ -1,6 +1,8 @@
 package com.matchandtrade.test.random;
 
 
+import com.matchandtrade.persistence.entity.AttachmentEntity;
+import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,8 @@ public class ArticleRandom {
 	
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
+	@Autowired
+	private AttachmentRepositoryFacade attachmentRepositoryFacade;
 	@Autowired
 	private MembershipRepositoryFacade membershipRepository;
 	@Autowired
@@ -90,4 +94,16 @@ public class ArticleRandom {
 		userRepository.save(user);
 		return result;
 	}
+
+	@Transactional
+	public ArticleEntity createAttachmentToArticle(ArticleEntity article, String attachmentName) {
+		ArticleEntity persistedArticle = articleRepositoryFacade.get(article.getArticleId());
+		AttachmentEntity attachment = new AttachmentEntity();
+		attachment.setName(attachmentName);
+		attachmentRepositoryFacade.save(attachment);
+		persistedArticle.getAttachments().add(attachment);
+		articleRepositoryFacade.save(persistedArticle);
+		return persistedArticle;
+	}
+
 }

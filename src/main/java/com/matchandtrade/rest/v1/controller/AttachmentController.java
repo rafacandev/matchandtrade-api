@@ -1,12 +1,13 @@
 package com.matchandtrade.rest.v1.controller;
+import com.matchandtrade.persistence.entity.ArticleEntity;
+import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
+import com.matchandtrade.rest.service.ArticleAttachmentService;
+import com.matchandtrade.rest.service.ArticleService;
+import com.matchandtrade.rest.v1.validator.AttachmentVerificator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
@@ -61,5 +62,5 @@ public class AttachmentController implements Controller {
 		AttachmentLinkAssember.assemble(response, entity);
 		return response;
 	}
-	
+
 }

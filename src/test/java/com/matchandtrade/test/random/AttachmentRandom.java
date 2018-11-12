@@ -22,7 +22,7 @@ public class AttachmentRandom {
 		return attachmentService.create(file);
 	}
 
-	public MockMultipartFile newSampleMockMultiPartFile() {
+	public static MockMultipartFile newSampleMockMultiPartFile() {
 		String imageResource = "image-landscape.png";
 		MockMultipartFile multipartFile;
 		try {

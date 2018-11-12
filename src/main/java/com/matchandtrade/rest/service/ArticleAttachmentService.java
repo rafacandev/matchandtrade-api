@@ -9,6 +9,7 @@ import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ArticleAttachmentService {
@@ -38,6 +39,18 @@ public class ArticleAttachmentService {
 			articleRepositoryFacade.save(article);
 			attachmentRepositoryFacade.delete(attachmentId);
 		}
+	}
+
+	@Autowired
+	private AttachmentService attachmentService;
+
+	@Transactional
+	public AttachmentEntity create(Integer articleId, MultipartFile multipartFile) {
+		AttachmentEntity attachment = attachmentService.create(multipartFile);
+		ArticleEntity article = articleRepositoryFacade.get(articleId);
+		article.getAttachments().add(attachment);
+		articleRepositoryFacade.save(article);
+		return attachment;
 	}
 
 }
