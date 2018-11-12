@@ -54,7 +54,7 @@ public class ArticleAttachmentControllerDeleteIT {
 
 	@Test
 	public void delete_When_DelitingAttachmentFromArticle_Expects_Sucess() {
-		ArticleEntity article = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ArticleEntity article = articleRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		article.getAttachments().add(file);
 		articleRepositoryFacade.save(article);
 		fixture.delete(article.getArticleId(), file.getAttachmentId());
@@ -65,7 +65,7 @@ public class ArticleAttachmentControllerDeleteIT {
 
 	@Test(expected = RestException.class)
 	public void delete_When_DeletingAttachmentThatBelongsToDifferentUser_Expects_BadRequest() {
-		ArticleEntity article = articleRandom.nextPersistedEntity();
+		ArticleEntity article = articleRandom.createPersistedEntity();
 		article.getAttachments().add(file);
 		articleRepositoryFacade.save(article);
 		try {
@@ -78,7 +78,7 @@ public class ArticleAttachmentControllerDeleteIT {
 
 	@Test(expected = RestException.class)
 	public void delete_When_NonExistingAttachment_Expects_BadRequest() {
-		ArticleEntity article = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ArticleEntity article = articleRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		try{
 			fixture.delete(article.getArticleId(), -1);
 		} catch (RestException e) {

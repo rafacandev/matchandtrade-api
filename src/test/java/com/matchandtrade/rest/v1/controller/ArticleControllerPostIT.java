@@ -29,7 +29,7 @@ public class ArticleControllerPostIT {
 
 	@Test
 	public void shouldCreateArticle() {
-		ArticleJson expected = ArticleRandom.nextJson();
+		ArticleJson expected = ArticleRandom.createJson();
 		ArticleJson actual = fixture.post(expected);
 		assertNotNull(actual);
 		assertNotNull(actual.getArticleId());

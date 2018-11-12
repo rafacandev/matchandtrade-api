@@ -1,7 +1,6 @@
 package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ArticleJson;
@@ -43,7 +42,7 @@ public class ArticleControllerPutIT {
 	@Test
 	@Transactional
 	public void put_When_ArticleIdExists_Expects_Success() {
-		ArticleEntity articleEntity = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		ArticleEntity articleEntity = articleRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ArticleJson expected = ArticleTransformer.transform(articleEntity);
 		ArticleJson actual = fixture.put(expected.getArticleId(), expected);
 		assertNotNull(actual);
@@ -52,7 +51,7 @@ public class ArticleControllerPutIT {
 
 	@Test(expected = RestException.class)
 	public void put_When_ArticleBelongsToDifferentUser_Expects_BadRequest() {
-		ArticleEntity articleEntity = articleRandom.nextPersistedEntity();
+		ArticleEntity articleEntity = articleRandom.createPersistedEntity();
 		ArticleJson expected = ArticleTransformer.transform(articleEntity);
 		try {
 			fixture.put(expected.getArticleId(), expected);

@@ -56,11 +56,11 @@ public class OfferControllerDeleteIT {
 		
 		// Create owner's articles (Greek letters)
 		MembershipEntity ownerMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), trade);
-		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerMembership);
+		ArticleEntity alpha = articleRandom.createPersistedEntity(ownerMembership);
 		
 		// Create member's articles (country names)
 		MembershipEntity memberMemberhip = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity(), trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity australia = articleRandom.nextPersistedEntity(memberMemberhip);
+		ArticleEntity australia = articleRandom.createPersistedEntity(memberMemberhip);
 
 		// Owner offers Alpha for Australia
 		OfferEntity alphaForAustralia = offerRandom.createPersistedEntity(ownerMembership.getMembershipId(), alpha.getArticleId(), australia.getArticleId());
@@ -76,11 +76,11 @@ public class OfferControllerDeleteIT {
 		
 		// Create owner's articles (Greek letters)
 		MembershipEntity ownerMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), trade);
-		ArticleEntity alpha = articleRandom.nextPersistedEntity(ownerMembership);
+		ArticleEntity alpha = articleRandom.createPersistedEntity(ownerMembership);
 		
 		// Create member's articles (country names)
 		MembershipEntity memberMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity(), trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity australia = articleRandom.nextPersistedEntity(memberMembership);
+		ArticleEntity australia = articleRandom.createPersistedEntity(memberMembership);
 
 		// Owner offers Alpha for Australia
 		OfferEntity alphaForAustralia = offerRandom.createPersistedEntity(ownerMembership.getMembershipId(), alpha.getArticleId(), australia.getArticleId());

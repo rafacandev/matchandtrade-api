@@ -35,7 +35,7 @@ public class ArticleControllerGetIT {
 
 	@Test
 	public void get_When_ArticleIdExists_Then_ReturnExistingArticle() {
-		ArticleEntity article = articleRandom.nextPersistedEntity();
+		ArticleEntity article = articleRandom.createPersistedEntity();
 		ArticleJson expected = ArticleTransformer.transform(article);
 		ArticleJson actual = fixture.get(expected.getArticleId());
 		assertNotNull(actual);
@@ -45,7 +45,7 @@ public class ArticleControllerGetIT {
 	@Test
 	public void get_When_ArticlesExists_Then_ReturnExistingArticles() {
 		int startingTotal = (int) fixture.get(1, 1).getPagination().getTotal();
-		ArticleEntity article = articleRandom.nextPersistedEntity();
+		ArticleEntity article = articleRandom.createPersistedEntity();
 		SearchResult<ArticleJson> actual = fixture.get(1, 1);
 		assertTrue(actual.getPagination().getTotal() > startingTotal);
 	}

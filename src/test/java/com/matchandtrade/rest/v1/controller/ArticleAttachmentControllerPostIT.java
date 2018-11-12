@@ -55,7 +55,7 @@ public class ArticleAttachmentControllerPostIT {
 	@Test
 	public void post_When_AddingAttachmentForExistingArticle_Expects_Success() {
 		MembershipEntity membership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
+		ArticleEntity article = articleRandom.createPersistedEntity(membership);
 		AttachmentJson response = fixture.post(article.getArticleId(), file.getAttachmentId());
 		assertNotNull(response);
 		assertEquals(file.getAttachmentId(), response.getAttachmentId());
@@ -67,7 +67,7 @@ public class ArticleAttachmentControllerPostIT {
 	@Test(expected = RestException.class)
 	public void post_When_AddingMoreThan3FilesToArticle_Expects_BadRequest() {
 		MembershipEntity membership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleEntity article = articleRandom.nextPersistedEntity(membership);
+		ArticleEntity article = articleRandom.createPersistedEntity(membership);
 		article.getAttachments().add(fileRandom.createPersistedEntity());
 		article.getAttachments().add(fileRandom.createPersistedEntity());
 		article.getAttachments().add(fileRandom.createPersistedEntity());

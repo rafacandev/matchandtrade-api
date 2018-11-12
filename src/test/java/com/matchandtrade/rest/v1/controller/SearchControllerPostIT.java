@@ -54,15 +54,15 @@ public class SearchControllerPostIT {
 		TradeEntity trade = greekMembership.getTrade();
 
 		// Create articles for Greek letters
-		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership);
-		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership);
+		ArticleEntity alpha = articleRandom.createPersistedEntity(greekMembership);
+		ArticleEntity beta = articleRandom.createPersistedEntity(greekMembership);
 
 		// Create articles for country names
 		UserEntity countryUser = userRandom.createPersistedEntity();
 		MembershipEntity countryMembership = membershipRandom.createPersistedEntity(countryUser, trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity australia = articleRandom.nextPersistedEntity(countryMembership);
-		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryMembership);
-		ArticleEntity cuba = articleRandom.nextPersistedEntity(countryMembership);
+		ArticleEntity australia = articleRandom.createPersistedEntity(countryMembership);
+		ArticleEntity brazil = articleRandom.createPersistedEntity(countryMembership);
+		ArticleEntity cuba = articleRandom.createPersistedEntity(countryMembership);
 		
 		SearchCriteriaJson request = new SearchCriteriaJson();
 		request.setRecipe(Recipe.ARTICLES);
@@ -85,15 +85,15 @@ public class SearchControllerPostIT {
 		TradeEntity trade = greekMembership.getTrade();
 		
 		// Create articles for Greek letters
-		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership);
-		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership);
+		ArticleEntity alpha = articleRandom.createPersistedEntity(greekMembership);
+		ArticleEntity beta = articleRandom.createPersistedEntity(greekMembership);
 		
 		// Create articles for country names
 		UserEntity countryUser = userRandom.createPersistedEntity();
 		MembershipEntity countryMembership = membershipRandom.createPersistedEntity(countryUser, trade, MembershipEntity.Type.MEMBER);
-		articleRandom.nextPersistedEntity(countryMembership);
-		articleRandom.nextPersistedEntity(countryMembership);
-		articleRandom.nextPersistedEntity(countryMembership);
+		articleRandom.createPersistedEntity(countryMembership);
+		articleRandom.createPersistedEntity(countryMembership);
+		articleRandom.createPersistedEntity(countryMembership);
 		
 		SearchCriteriaJson request = new SearchCriteriaJson();
 		request.setRecipe(Recipe.ARTICLES);

@@ -83,18 +83,18 @@ public class TradeResultControllerGetIT {
 		
 		// Create owner's articles (Greek letters)
 		MembershipEntity greekMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("GREEK"), trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership, "alpha");
-		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership, "beta");
+		ArticleEntity alpha = articleRandom.createPersistedEntity(greekMembership, "alpha");
+		ArticleEntity beta = articleRandom.createPersistedEntity(greekMembership, "beta");
 		
 		// Create member's articles (country names)
 		MembershipEntity countryMemberhip = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("COUNTRY"), trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity argentina = articleRandom.nextPersistedEntity(countryMemberhip, "argentina");
-		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryMemberhip, "brazil");
-		ArticleEntity canada = articleRandom.nextPersistedEntity(countryMemberhip, "canada");
+		ArticleEntity argentina = articleRandom.createPersistedEntity(countryMemberhip, "argentina");
+		ArticleEntity brazil = articleRandom.createPersistedEntity(countryMemberhip, "brazil");
+		ArticleEntity canada = articleRandom.createPersistedEntity(countryMemberhip, "canada");
 
 		// Create member's articles (ordinal numbers)
 		MembershipEntity ordinalMemberhip = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("ORDINAL"), trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity first = articleRandom.nextPersistedEntity(ordinalMemberhip, "first");
+		ArticleEntity first = articleRandom.createPersistedEntity(ordinalMemberhip, "first");
 
 		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), alpha.getArticleId(), canada.getArticleId());
 		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), argentina.getArticleId());
@@ -128,18 +128,18 @@ public class TradeResultControllerGetIT {
 		
 		// Create owner's articles (Greek letters)
 		MembershipEntity greekMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("GREEK"), trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity alpha = articleRandom.nextPersistedEntity(greekMembership, "alpha");
-		ArticleEntity beta = articleRandom.nextPersistedEntity(greekMembership, "beta");
+		ArticleEntity alpha = articleRandom.createPersistedEntity(greekMembership, "alpha");
+		ArticleEntity beta = articleRandom.createPersistedEntity(greekMembership, "beta");
 		
 		// Create member's articles (country names)
 		MembershipEntity countryMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("COUNTRY"), trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity argentina = articleRandom.nextPersistedEntity(countryMembership, "argentina");
-		ArticleEntity brazil = articleRandom.nextPersistedEntity(countryMembership, "brazil");
-		ArticleEntity canada = articleRandom.nextPersistedEntity(countryMembership, "canada");
+		ArticleEntity argentina = articleRandom.createPersistedEntity(countryMembership, "argentina");
+		ArticleEntity brazil = articleRandom.createPersistedEntity(countryMembership, "brazil");
+		ArticleEntity canada = articleRandom.createPersistedEntity(countryMembership, "canada");
 
 		// Create member's articles (ordinal numbers)
 		MembershipEntity ordinalMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("ORDINAL"), trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity first = articleRandom.nextPersistedEntity(ordinalMembership, "first");
+		ArticleEntity first = articleRandom.createPersistedEntity(ordinalMembership, "first");
 
 		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), alpha.getArticleId(), canada.getArticleId());
 		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), argentina.getArticleId());

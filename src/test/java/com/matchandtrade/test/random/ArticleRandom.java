@@ -30,17 +30,17 @@ public class ArticleRandom {
 	
 
 	public static ArticleEntity nextEntity() {
-		return ArticleTransformer.transform(nextJson());
+		return ArticleTransformer.transform(createJson());
 	}
 	
-	public static ArticleJson nextJson() {
+	public static ArticleJson createJson() {
 		ArticleJson result = new ArticleJson();
 		result.setName(StringRandom.nextName());
 		return result;
 	}
 	
 	@Transactional
-	public ArticleEntity nextPersistedEntity(MembershipEntity membership) {
+	public ArticleEntity createPersistedEntity(MembershipEntity membership) {
 		MembershipEntity tme = membershipRepository.get(membership.getMembershipId());
 		ArticleEntity result = nextEntity();
 		articleRepositoryFacade.save(result);
@@ -52,7 +52,7 @@ public class ArticleRandom {
 	}
 
 	@Transactional
-	public ArticleEntity nextPersistedEntity(MembershipEntity membership, String name) {
+	public ArticleEntity createPersistedEntity(MembershipEntity membership, String name) {
 		MembershipEntity tme = membershipRepository.get(membership.getMembershipId());
 		ArticleEntity result = new ArticleEntity();
 		result.setName(name);
@@ -63,15 +63,15 @@ public class ArticleRandom {
 	}
 	
 	@Transactional
-	public ArticleEntity nextPersistedEntity(UserEntity tradeOwner) {
+	public ArticleEntity createPersistedEntity(UserEntity tradeOwner) {
 		MembershipEntity existingTradeMemberhip = membershipRandom.createPersistedEntity(tradeOwner);
-		return nextPersistedEntity(existingTradeMemberhip);
+		return createPersistedEntity(existingTradeMemberhip);
 	}
 
 	@Transactional
-	public ArticleEntity nextPersistedEntity(UserEntity user, boolean shouldCreateTrade) {
+	public ArticleEntity createPersistedEntity(UserEntity user, boolean shouldCreateTrade) {
 		if (shouldCreateTrade == true) {
-			return nextPersistedEntity(user);
+			return createPersistedEntity(user);
 		}
 		user = userRepository.findOne(user.getUserId());
 		ArticleEntity result = nextEntity();
@@ -82,7 +82,7 @@ public class ArticleRandom {
 	}
 
 	@Transactional
-	public ArticleEntity nextPersistedEntity() {
+	public ArticleEntity createPersistedEntity() {
 		ArticleEntity result = nextEntity();
 		articleRepositoryFacade.save(result);
 		UserEntity user = userRandom.createPersistedEntity();

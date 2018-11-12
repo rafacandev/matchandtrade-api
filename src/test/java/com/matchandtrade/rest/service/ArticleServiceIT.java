@@ -32,7 +32,7 @@ public class ArticleServiceIT {
 		// Setting a long page size to
 		int pageSize = 50;
 		int startingTotal = (int) fixture.search(1, pageSize).getPagination().getTotal();
-		ArticleEntity article = articleRandom.nextPersistedEntity();
+		ArticleEntity article = articleRandom.createPersistedEntity();
 		SearchResult<ArticleEntity> actual = fixture.search((startingTotal/pageSize)+1, pageSize);
 		assertTrue(actual.getPagination().getTotal() > startingTotal); // This assertion should e enough for most cases
 		assertTrue(actual.getResultList().contains(article));

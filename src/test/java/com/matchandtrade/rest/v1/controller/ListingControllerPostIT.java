@@ -41,7 +41,7 @@ public class ListingControllerPostIT {
 
 	@Test
 	public void post_When_ArticleAndMembershipBelongToAuthenticatedUser_Then_Succeeds() {
-		ArticleEntity article = articleRandom.nextPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), false);
+		ArticleEntity article = articleRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), false);
 		MembershipEntity membership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		ListingJson request = new ListingJson(membership.getMembershipId(), article.getArticleId());
 		fixture.post(request);
