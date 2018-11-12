@@ -1,26 +1,20 @@
 package com.matchandtrade.rest.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-
-import javax.annotation.PostConstruct;
-
+import com.matchandtrade.config.MatchAndTradePropertyKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileSystemUtils;
 
-import com.matchandtrade.config.MatchAndTradePropertyKeys;
+import javax.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Service
 public class EssenceStorageService {
@@ -68,25 +62,6 @@ public class EssenceStorageService {
 
 	public Path load(String filename) {
 		return rootFolder.resolve(filename);
-	}
-
-	public Resource loadAsResource(String filename) {
-		try {
-			Path filePath = load(filename);
-			Resource resource = new UrlResource(filePath.toUri());
-			if (resource.exists() || resource.isReadable()) {
-				return resource;
-			} else {
-				throw new RuntimeException("Could not read essence file: " + filename);
-
-			}
-		} catch (MalformedURLException e) {
-			throw new IllegalArgumentException("Could not read essence file: " + filename + ". " + e.getMessage());
-		}
-	}
-
-	public void deleteAll() {
-		FileSystemUtils.deleteRecursively(rootFolder.toFile());
 	}
 
 }

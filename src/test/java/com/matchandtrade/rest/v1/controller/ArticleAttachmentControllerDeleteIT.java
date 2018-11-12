@@ -33,9 +33,9 @@ public class ArticleAttachmentControllerDeleteIT {
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade fileRepositoryFacade;
-	private AttachmentEntity file;
+	private AttachmentEntity existingAttachment;
 	@Autowired
-	private AttachmentRandom fileRandom;
+	private AttachmentRandom attachmentRandom;
 	private ArticleAttachmentController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
@@ -49,15 +49,14 @@ public class ArticleAttachmentControllerDeleteIT {
 		if (fixture == null) {
 			fixture = mockControllerFactory.getArticleFileController(false);
 		}
-		file = fileRandom.createPersistedEntity();
+		existingAttachment = attachmentRandom.createPersistedEntity();
 	}
 
 	@Test
-	public void delete_When_DelitingAttachmentFromArticle_Expects_Sucess() {
+	public void delete_When_DeletingAttachmentFromArticle_Expects_Sucess() {
 		ArticleEntity article = articleRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		article.getAttachments().add(file);
-		articleRepositoryFacade.save(article);
-		fixture.delete(article.getArticleId(), file.getAttachmentId());
+		article = articleRandom.createAttachmentToArticle(article, "delete-test.png");
+		fixture.delete(article.getArticleId(), article.getAttachments().iterator().next().getAttachmentId());
 		SearchResult<AttachmentEntity> files = fileRepositoryFacade.findAttachmentsByArticleId(article.getArticleId(), 1, 10);
 		assertEquals(0, files.getResultList().size());
 		assertEquals(0, files.getPagination().getTotal());
@@ -66,10 +65,10 @@ public class ArticleAttachmentControllerDeleteIT {
 	@Test(expected = RestException.class)
 	public void delete_When_DeletingAttachmentThatBelongsToDifferentUser_Expects_BadRequest() {
 		ArticleEntity article = articleRandom.createPersistedEntity();
-		article.getAttachments().add(file);
+		article.getAttachments().add(existingAttachment);
 		articleRepositoryFacade.save(article);
 		try {
-			fixture.delete(article.getArticleId(), file.getAttachmentId());
+			fixture.delete(article.getArticleId(), existingAttachment.getAttachmentId());
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
@@ -85,6 +84,14 @@ public class ArticleAttachmentControllerDeleteIT {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
 		}
+	}
+
+
+	@Test
+	public void delete_When_UserOwnsArticleAndAttachmentExists_Then_Succeeds() {
+		ArticleEntity article = articleRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
+		article = articleRandom.createAttachmentToArticle(article, "delete-test.png");
+		fixture.delete(article.getArticleId(), article.getAttachments().iterator().next().getAttachmentId());
 	}
 
 }

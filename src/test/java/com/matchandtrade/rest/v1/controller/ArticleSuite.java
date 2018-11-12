@@ -10,6 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	ArticleControllerGetIT.class,
 	ArticleControllerPutIT.class,
 	ArticleControllerDeleteIT.class,
+	ArticleAttachmentControllerPostIT.class,
+	ArticleAttachmentControllerDeleteIT.class,
 	ListingControllerPostIT.class,
 	ListingControllerDeleteIT.class
 })

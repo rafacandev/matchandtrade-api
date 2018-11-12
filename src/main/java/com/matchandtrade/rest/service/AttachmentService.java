@@ -33,13 +33,13 @@ public class AttachmentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentService.class);
 
 	@Autowired
-	private EssenceStorageService fileStorageService;
+	private EssenceStorageService essenceStorageService;
 	@Autowired
 	private AttachmentRepositoryFacade attachmentRepositoryFacade;
 	@Autowired
 	private EssenceRepositoryFacade essenceRepositoryFacade;
 	
-	private final int thumbnailSize = 128;
+	private final int THUMBNAIL_SIZE = 128;
 	
 	// TODO: Potentially move this to FileStorageService
 	private Path buildNewRelativePath(String filename) {
@@ -86,13 +86,13 @@ public class AttachmentService {
 	}
 
 	private Image createThumbnailImage(Path relativePath) throws IOException {
-		Path fullPath = fileStorageService.load(relativePath.toString());
+		Path fullPath = essenceStorageService.load(relativePath.toString());
 		Image image = ImageIO.read(fullPath.toFile());
 		if (image == null) {
 			throw new IllegalArgumentException("Could not read file as image.");
 		}
-		Image imageResized = ImageUtil.obtainShortEdgeResizedImage(image, thumbnailSize);
-		return ImageUtil.obtainCenterCrop(imageResized, thumbnailSize, thumbnailSize);
+		Image imageResized = ImageUtil.obtainShortEdgeResizedImage(image, THUMBNAIL_SIZE);
+		return ImageUtil.obtainCenterCrop(imageResized, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
 	}
 	
 	public AttachmentEntity get(Integer attachmentId) {
@@ -111,7 +111,7 @@ public class AttachmentService {
 	
 	private void storeFileOnFileSystem(MultipartFile multipartFile, Path relativePath) {
 		try {
-			fileStorageService.store(multipartFile.getBytes(), relativePath);
+			essenceStorageService.store(multipartFile.getBytes(), relativePath);
 		} catch (IOException e) {
 			LOGGER.error("Unable to ready file", e);
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to ready file. " + e.getMessage());
@@ -123,7 +123,7 @@ public class AttachmentService {
 		if (thumbnailImage != null) {
 			try (ByteArrayOutputStream thumbnailOuputStream = new ByteArrayOutputStream()) {
 				ImageIO.write(ImageUtil.buildBufferedImage(thumbnailImage), "JPG", thumbnailOuputStream);
-				fileStorageService.store(thumbnailOuputStream.toByteArray(), thumbnailRelativePath);
+				essenceStorageService.store(thumbnailOuputStream.toByteArray(), thumbnailRelativePath);
 			}
 		}
 	}

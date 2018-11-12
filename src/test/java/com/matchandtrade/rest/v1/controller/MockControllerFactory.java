@@ -1,14 +1,13 @@
 package com.matchandtrade.rest.v1.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.test.random.UserRandom;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * <b>Warning</b> do not use <code>@Autowired *Controller</code> in your tests.
@@ -51,8 +50,6 @@ public class MockControllerFactory {
 	private UserRepositoryFacade userRepository;
 	@Autowired
 	private ArticleAttachmentController articleFileController;
-	@Autowired
-	private AttachmentController fileController;
 
 	@Autowired
 	private ListingController listingController;
@@ -76,10 +73,7 @@ public class MockControllerFactory {
 	}
 	
 	private MockAuthenticationProvider buildAuthenticationProvider(boolean reusePreviousAuthentication) {
-		if (lastMockAuthenticationProvider == null || !reusePreviousAuthentication) {
-			lastMockAuthenticationProvider = new MockAuthenticationProvider();
-		}
-		return lastMockAuthenticationProvider;
+		return new MockAuthenticationProvider();
 	}
 
 	public AuthenticationController getAuthenticationController(boolean reusePreviousAuthentication) {
@@ -137,11 +131,6 @@ public class MockControllerFactory {
 	public ArticleAttachmentController getArticleFileController(boolean reusePreviousAuthentication) {
 		articleFileController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
 		return articleFileController;
-	}
-
-	public AttachmentController getFileController(boolean reusePreviousAuthentication) {
-		fileController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
-		return fileController;
 	}
 
 }
