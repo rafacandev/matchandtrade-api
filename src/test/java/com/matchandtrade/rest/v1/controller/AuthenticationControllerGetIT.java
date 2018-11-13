@@ -18,7 +18,7 @@ public class AuthenticationControllerGetIT {
 	
 	@Test
 	public void getPositive() {
-		AuthenticationController authenticatedFixture = mockControllerFactory.getAuthenticationController(true);
+		AuthenticationController authenticatedFixture = mockControllerFactory.getAuthenticationController();
 		AuthenticationJson response = authenticatedFixture.get();
 		Assert.assertEquals(authenticatedFixture.authenticationProvider.getAuthentication().getUser().getUserId(), response.getUserId());
 	}

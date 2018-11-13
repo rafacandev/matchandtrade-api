@@ -42,7 +42,7 @@ public class SearchControllerPostIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getSearchController(true);
+			fixture = mockControllerFactory.getSearchController();
 		}
 	}
 	

@@ -34,7 +34,7 @@ public class ArticleAttachmentControllerPostIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getArticleFileController(false);
+			fixture = mockControllerFactory.getArticleFileController();
 		}
 		existingAttachment = attachmentRandom.createPersistedEntity();
 		existingMultipartFile = AttachmentRandom.newSampleMockMultiPartFile();

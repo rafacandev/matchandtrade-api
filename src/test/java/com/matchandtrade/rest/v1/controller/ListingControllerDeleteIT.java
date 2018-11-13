@@ -38,7 +38,7 @@ public class ListingControllerDeleteIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getListingController(false);
+			fixture = mockControllerFactory.getListingController();
 		}
 		existingArticle = articleRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser(), false);
 		existingMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());

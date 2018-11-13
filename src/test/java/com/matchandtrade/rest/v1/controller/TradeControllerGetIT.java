@@ -29,7 +29,7 @@ public class TradeControllerGetIT {
 	
 	@Before
 	public void before() {
-		fixture = mockControllerFactory.getTradeController(true);
+		fixture = mockControllerFactory.getTradeController();
 	}
 	
 	@Test

@@ -45,7 +45,7 @@ public class OfferControllerDeleteIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getOfferController(true);
+			fixture = mockControllerFactory.getOfferController();
 		}
 	}
 	

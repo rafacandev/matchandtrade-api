@@ -25,7 +25,7 @@ public class UserControllerPutIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getUserController(false);
+			fixture = mockControllerFactory.getUserController();
 		}
 	}
 	

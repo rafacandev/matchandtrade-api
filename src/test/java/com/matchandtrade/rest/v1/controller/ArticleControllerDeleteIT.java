@@ -36,7 +36,7 @@ public class ArticleControllerDeleteIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getArticleController(true);
+			fixture = mockControllerFactory.getArticleController();
 		}
 	}
 

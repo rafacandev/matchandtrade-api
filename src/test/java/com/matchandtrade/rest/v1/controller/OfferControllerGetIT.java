@@ -39,7 +39,7 @@ public class OfferControllerGetIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getOfferController(true);
+			fixture = mockControllerFactory.getOfferController();
 		}
 	}
 	
@@ -53,7 +53,7 @@ public class OfferControllerGetIT {
 		ArticleEntity alpha = articleRandom.createPersistedEntity(ownerTradeMemberhip);
 		
 		// Create member's articles (country names)
-		OfferController memberController = mockControllerFactory.getOfferController(false);
+		OfferController memberController = mockControllerFactory.getOfferController();
 		MembershipEntity memberTradeMemberhip = membershipRandom.createPersistedEntity(memberController.authenticationProvider.getAuthentication().getUser(), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.createPersistedEntity(memberTradeMemberhip);
 
@@ -76,7 +76,7 @@ public class OfferControllerGetIT {
 		ArticleEntity alpha = articleRandom.createPersistedEntity(ownerTradeMemberhip);
 		
 		// Create member's articles (country names)
-		OfferController memberController = mockControllerFactory.getOfferController(false);
+		OfferController memberController = mockControllerFactory.getOfferController();
 		MembershipEntity memberTradeMemberhip = membershipRandom.createPersistedEntity(memberController.authenticationProvider.getAuthentication().getUser(), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.createPersistedEntity(memberTradeMemberhip);
 		ArticleEntity brazil = articleRandom.createPersistedEntity(memberTradeMemberhip);
@@ -103,7 +103,7 @@ public class OfferControllerGetIT {
 		ArticleEntity beta = articleRandom.createPersistedEntity(ownerTradeMemberhip);
 		
 		// Create member's articles (country names)
-		OfferController memberController = mockControllerFactory.getOfferController(false);
+		OfferController memberController = mockControllerFactory.getOfferController();
 		MembershipEntity memberTradeMemberhip = membershipRandom.createPersistedEntity(memberController.authenticationProvider.getAuthentication().getUser(), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.createPersistedEntity(memberTradeMemberhip);
 		ArticleEntity brazil = articleRandom.createPersistedEntity(memberTradeMemberhip);
@@ -129,7 +129,7 @@ public class OfferControllerGetIT {
 		ArticleEntity beta = articleRandom.createPersistedEntity(ownerTradeMemberhip);
 		
 		// Create member's articles (country names)
-		OfferController memberController = mockControllerFactory.getOfferController(false);
+		OfferController memberController = mockControllerFactory.getOfferController();
 		MembershipEntity memberTradeMemberhip = membershipRandom.createPersistedEntity(memberController.authenticationProvider.getAuthentication().getUser(), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.createPersistedEntity(memberTradeMemberhip);
 		ArticleEntity brazil = articleRandom.createPersistedEntity(memberTradeMemberhip);

@@ -49,7 +49,7 @@ public class OfferControllerPostIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getOfferController(true);
+			fixture = mockControllerFactory.getOfferController();
 		}
 	}
 
@@ -64,7 +64,7 @@ public class OfferControllerPostIT {
 		ArticleEntity beta = articleRandom.createPersistedEntity(ownerTradeMemberhip);
 		
 		// Create member's articles (country names)
-		OfferController memberController = mockControllerFactory.getOfferController(false);
+		OfferController memberController = mockControllerFactory.getOfferController();
 		MembershipEntity memberTradeMemberhip = membershipRandom.createPersistedEntity(memberController.authenticationProvider.getAuthentication().getUser(), trade, MembershipEntity.Type.MEMBER);
 		ArticleEntity australia = articleRandom.createPersistedEntity(memberTradeMemberhip);
 		ArticleEntity brazil = articleRandom.createPersistedEntity(memberTradeMemberhip);

@@ -33,7 +33,7 @@ public class TradeControllerPutIT {
 
 	@Before
 	public void before() {
-		fixture = mockControllerFactory.getTradeController(false);
+		fixture = mockControllerFactory.getTradeController();
 	}
 	
 	@Test

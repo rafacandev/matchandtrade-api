@@ -26,7 +26,7 @@ public class MembershipControllerDeleteIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getMembershipController(true);
+			fixture = mockControllerFactory.getMembershipController();
 		}
 	}
 	

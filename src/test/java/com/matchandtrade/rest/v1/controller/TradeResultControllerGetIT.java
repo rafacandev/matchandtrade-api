@@ -50,7 +50,7 @@ public class TradeResultControllerGetIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getTradeResultController(true);
+			fixture = mockControllerFactory.getTradeResultController();
 		}
 	}
 	

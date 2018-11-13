@@ -47,7 +47,7 @@ public class ArticleAttachmentControllerDeleteIT {
 	@Before
 	public void before() throws IOException {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getArticleFileController(false);
+			fixture = mockControllerFactory.getArticleFileController();
 		}
 		existingAttachment = attachmentRandom.createPersistedEntity();
 	}

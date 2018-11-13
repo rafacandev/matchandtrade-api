@@ -31,7 +31,7 @@ public class MembershipControllerGetIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getMembershipController(true);
+			fixture = mockControllerFactory.getMembershipController();
 		}
 	}
 	
@@ -54,7 +54,7 @@ public class MembershipControllerGetIT {
 	
 	@Test
 	public void getByTradeId() {
-		fixture = mockControllerFactory.getMembershipController(false);
+		fixture = mockControllerFactory.getMembershipController();
 		MembershipEntity existingMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<MembershipJson> getResponse = fixture.get(existingMembership.getTrade().getTradeId(), null, null, null, null);
 		assertEquals(existingMembership.getTrade().getTradeId(), getResponse.getResultList().get(0).getTradeId());
@@ -70,7 +70,7 @@ public class MembershipControllerGetIT {
 	
 	@Test
 	public void getByUserId() {
-		fixture = mockControllerFactory.getMembershipController(false);
+		fixture = mockControllerFactory.getMembershipController();
 		MembershipEntity existingMembership = membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<MembershipJson> getResponse = fixture.get(null, existingMembership.getUser().getUserId(), null, null, null);
 		assertEquals(existingMembership.getUser().getUserId(), getResponse.getResultList().get(0).getUserId());
@@ -78,7 +78,7 @@ public class MembershipControllerGetIT {
 
 	@Test
 	public void shouldGetByTypeAndTradeId() {
-		fixture = mockControllerFactory.getMembershipController(false);
+		fixture = mockControllerFactory.getMembershipController();
 		UserEntity user = fixture.authenticationProvider.getAuthentication().getUser();
 		MembershipEntity existingMembership = membershipRandom.createPersistedEntity(user);
 		SearchResult<MembershipJson> response = fixture.get(existingMembership.getTrade().getTradeId(), null, MembershipEntity.Type.OWNER, null, null);

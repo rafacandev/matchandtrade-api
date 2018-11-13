@@ -72,64 +72,60 @@ public class MockControllerFactory {
 		}
 	}
 	
-	private MockAuthenticationProvider buildAuthenticationProvider(boolean reusePreviousAuthentication) {
-		return new MockAuthenticationProvider();
-	}
-
-	public AuthenticationController getAuthenticationController(boolean reusePreviousAuthentication) {
-		authenticationController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+	public AuthenticationController getAuthenticationController() {
+		authenticationController.authenticationProvider = new MockAuthenticationProvider();
 		return authenticationController;
 	}
 	
-	public ArticleController getArticleController(boolean reusePreviousAuthentication) {
-		articleController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+	public ArticleController getArticleController() {
+		articleController.authenticationProvider = new MockAuthenticationProvider();
 		return articleController;
 	}
 
-	public TradeController getTradeController(boolean reusePreviousAuthentication) {
+	public TradeController getTradeController() {
 		TradeController result = new TradeController();
 		result.tradeService = tradeController.tradeService;
 		result.tradeValidador = tradeController.tradeValidador;
-		result.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		result.authenticationProvider = new MockAuthenticationProvider();
 		return result;
 	}
 
-	public TradeResultController getTradeResultController(boolean reusePreviousAuthentication) {
-		tradeResultController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+	public TradeResultController getTradeResultController() {
+		tradeResultController.authenticationProvider = new MockAuthenticationProvider();
 		return tradeResultController;
 	}
 
-	public ListingController getListingController(boolean reusePreviousAuthentication) {
-		listingController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+	public ListingController getListingController() {
+		listingController.authenticationProvider = new MockAuthenticationProvider();
 		return listingController;
 	}
 
-	public MembershipController getMembershipController(boolean reusePreviousAuthentication) {
-		membershipController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+	public MembershipController getMembershipController() {
+		membershipController.authenticationProvider = new MockAuthenticationProvider();
 		return membershipController;
 	}
 	
-	public UserController getUserController(boolean reusePreviousAuthentication) {
-		userController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+	public UserController getUserController() {
+		userController.authenticationProvider = new MockAuthenticationProvider();
 		return userController;
 	}
 
-	public SearchController getSearchController(boolean reusePreviousAuthentication) {
-		searchController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+	public SearchController getSearchController() {
+		searchController.authenticationProvider = new MockAuthenticationProvider();
 		return searchController;
 	}
 
-	public OfferController getOfferController(boolean reusePreviousAuthentication) {
+	public OfferController getOfferController() {
 		OfferController result = new OfferController();
-		result.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+		result.authenticationProvider = new MockAuthenticationProvider();
 		result.offerService = offerController.offerService;
 		result.offerTransformer = offerController.offerTransformer;
 		result.offerValidator = offerController.offerValidator;
 		return result;
 	}
 
-	public ArticleAttachmentController getArticleFileController(boolean reusePreviousAuthentication) {
-		articleFileController.authenticationProvider = buildAuthenticationProvider(reusePreviousAuthentication);
+	public ArticleAttachmentController getArticleFileController() {
+		articleFileController.authenticationProvider = new MockAuthenticationProvider();
 		return articleFileController;
 	}
 

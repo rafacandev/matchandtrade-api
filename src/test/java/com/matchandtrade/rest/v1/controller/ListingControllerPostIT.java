@@ -35,7 +35,7 @@ public class ListingControllerPostIT {
 	@Before
 	public void before() {
 		if (fixture == null) {
-			fixture = mockControllerFactory.getListingController(false);
+			fixture = mockControllerFactory.getListingController();
 		}
 	}
 
