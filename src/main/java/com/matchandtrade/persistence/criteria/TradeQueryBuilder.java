@@ -12,18 +12,17 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class TradeQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		name("trade.name"), tradeId("trade.tradeId");
+		NAME("trade.name"),
+		TRADE_ID("trade.tradeId");
 
 		private String alias;
-		
+
 		Field(String alias) {
 			this.alias = alias;
 		}
-		
+
 		@Override
-		public String alias() {
-			return alias;
-		}
+		public String alias() { return alias; }
 	}
 	
 	private static final String BASIC_HQL = "FROM TradeEntity trade";

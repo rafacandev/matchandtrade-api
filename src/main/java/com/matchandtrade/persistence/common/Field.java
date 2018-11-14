@@ -7,7 +7,6 @@ package com.matchandtrade.persistence.common;
  * <pre>
  *     SELECT trade.name FROM TradeEntity AS trade WHERE trade.name=:tradeName;
  *     -- trade.name is the alias
- *     -- tradeName is the parameter
  * <pre>
  * @return
  */
@@ -18,12 +17,5 @@ public interface Field {
 	 * @return
 	 */
 	String alias();
-	
-	// TODO: Review this name(), can we rename this to parameter? What's the purpose of it?
-	/**
-	 * The parameter for this field
-	 * @return
-	 */
-	String name();
 	
 }

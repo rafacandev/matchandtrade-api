@@ -6,8 +6,8 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 
 public interface QueryBuilder {
 
-	public Query buildSearchQuery(SearchCriteria searchCriteria);
+	Query buildSearchQuery(SearchCriteria searchCriteria);
 
-	public Query buildCountQuery(SearchCriteria searchCriteria);
+	Query buildCountQuery(SearchCriteria searchCriteria);
 
 }

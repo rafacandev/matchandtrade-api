@@ -1,9 +1,6 @@
 package com.matchandtrade.rest.service;
 
-import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ArticleNewQueryBuilder;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
@@ -57,8 +54,7 @@ public class ArticleService {
 	}
 
 	public SearchResult<ArticleEntity> search(Integer pageNumber, Integer pageSize) {
-		SearchCriteria criteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
-		return searchService.search(criteria, ArticleNewQueryBuilder.class);
+		return articleRepositoryFacade.findAll(pageNumber, pageSize);
 	}
 
 }

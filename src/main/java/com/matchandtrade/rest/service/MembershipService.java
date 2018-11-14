@@ -36,13 +36,13 @@ public class MembershipService {
 	public SearchResult<MembershipEntity> searchByTradeIdUserIdType(Integer tradeId, Integer userId, MembershipEntity.Type type, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (userId != null) {
-			searchCriteria.addCriterion(MembershipQueryBuilder.Field.userId, userId);
+			searchCriteria.addCriterion(MembershipQueryBuilder.Field.USER_ID, userId);
 		}
 		if (tradeId != null) {
-			searchCriteria.addCriterion(MembershipQueryBuilder.Field.tradeId, tradeId);
+			searchCriteria.addCriterion(MembershipQueryBuilder.Field.TRADE_ID, tradeId);
 		}
 		if (type != null) {
-			searchCriteria.addCriterion(MembershipQueryBuilder.Field.type, type);
+			searchCriteria.addCriterion(MembershipQueryBuilder.Field.TYPE, type);
 		}
 		// Delegate to Repository layer
 		return searchService.search(searchCriteria, MembershipQueryBuilder.class);

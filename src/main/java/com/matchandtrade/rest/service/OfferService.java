@@ -65,8 +65,8 @@ public class OfferService {
 	 */
 	@Transactional
 	public void deleteOffersForArticle(Integer articleId) {
-		delete(OfferQueryBuilder.Field.wantedArticleId, articleId);
-		delete(OfferQueryBuilder.Field.offeredArticleId, articleId);
+		delete(OfferQueryBuilder.Field.WANTED_ARTICLE_ID, articleId);
+		delete(OfferQueryBuilder.Field.OFFERED_ARTICLE_ID, articleId);
 	}
 	
 	public OfferEntity get(Integer offerId) {
@@ -77,13 +77,13 @@ public class OfferService {
 			Integer pageNumber, Integer pageSize) {
 		SearchCriteria criteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
 		if (membershipId != null) {
-			criteria.addCriterion(OfferQueryBuilder.Field.membershipId, membershipId);
+			criteria.addCriterion(OfferQueryBuilder.Field.MEMBERSHIP_ID, membershipId);
 		}
 		if (offeredArticleId != null) {
-			criteria.addCriterion(OfferQueryBuilder.Field.offeredArticleId, offeredArticleId);
+			criteria.addCriterion(OfferQueryBuilder.Field.OFFERED_ARTICLE_ID, offeredArticleId);
 		}
 		if (wantedArticleId != null) {
-			criteria.addCriterion(OfferQueryBuilder.Field.wantedArticleId, wantedArticleId);
+			criteria.addCriterion(OfferQueryBuilder.Field.WANTED_ARTICLE_ID, wantedArticleId);
 		}
 		return searchService.search(criteria, OfferQueryBuilder.class);
 	}

@@ -13,15 +13,15 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class MembershipQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		articleId("article.articleId"),
-		tradeId("trade.tradeId"), 
-		membershipId("membership.membershipId"), 
-		type("membership.type"),
-		userId("user.userId"); 
+		ARTICLE_ID("article.articleId"),
+		TRADE_ID("trade.tradeId"),
+		MEMBERSHIP_ID("membership.membershipId"),
+		TYPE("membership.type"),
+		USER_ID("user.userId");
 
 		private String alias;
 
-		private Field(String alias) {
+		Field(String alias) {
 			this.alias = alias;
 		}
 		
@@ -55,13 +55,13 @@ public class MembershipQueryBuilder implements QueryBuilder {
 		boolean isUserJoinRequired = false;
 		boolean isArticlesJoinRequired = false;
 		for(Criterion c : searchCriteria.getCriteria()) {
-			if (c.getField().equals(Field.articleId)) {
+			if (c.getField().equals(Field.ARTICLE_ID)) {
 				isArticlesJoinRequired = true;
 			}
-			if (c.getField().equals(Field.tradeId)) {
+			if (c.getField().equals(Field.TRADE_ID)) {
 				isTradeJoinRequired = true;
 			}
-			if (c.getField().equals(Field.userId)) {
+			if (c.getField().equals(Field.USER_ID)) {
 				isUserJoinRequired = true;
 			}
 		}

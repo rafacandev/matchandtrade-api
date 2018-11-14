@@ -29,7 +29,7 @@ public class ArticleServiceIT {
 	 */
 	@Test
 	public void get_When_ThereIsOneArticleForTheUser_Then_ReturnsOneArticle() {
-		// Setting a long page size to
+		// Setting a long page size
 		int pageSize = 50;
 		int startingTotal = (int) fixture.search(1, pageSize).getPagination().getTotal();
 		ArticleEntity article = articleRandom.createPersistedEntity();

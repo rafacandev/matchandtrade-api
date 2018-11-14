@@ -12,13 +12,13 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class OfferQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		offeredArticleId("offeredArticle.articleId"),
-		membershipId("membership.membershipId"),
-		wantedArticleId("wantedArticle.articleId");
+		OFFERED_ARTICLE_ID("offeredArticle.articleId"),
+		MEMBERSHIP_ID("membership.membershipId"),
+		WANTED_ARTICLE_ID("wantedArticle.articleId");
 		
 		private String alias;
 
-		private Field(String alias) {
+		Field(String alias) {
 			this.alias = alias;
 		}
 		

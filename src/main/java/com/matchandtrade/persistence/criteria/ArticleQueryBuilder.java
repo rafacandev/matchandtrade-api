@@ -12,29 +12,27 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 public class ArticleQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		articleId("article.articleId"),
-		name("article.name"),
-		tradeId("trade.tradeId"),
-		membershipId("tm.membershipId");
-		
+		ARTICLE_ID("article.articleId"),
+		NAME("article.name"),
+		TRADE_ID("trade.tradeId"),
+		MEMBERSHIP_ID("membership.membershipId");
+
 		private String alias;
 
-		private Field(String alias) {
+		Field(String alias) {
 			this.alias = alias;
 		}
-		
+
 		@Override
-		public String alias() {
-			return alias;
-		}
+		public String alias() { return alias; }
 	}
 	
 	@Autowired
 	private EntityManager entityManager;
 	
-    private static final String BASIC_HQL = "FROM MembershipEntity AS tm"
-    		+ " INNER JOIN tm.trade AS trade"
-    		+ " INNER JOIN tm.articles AS article";
+    private static final String BASIC_HQL = "FROM MembershipEntity AS membership"
+    		+ " INNER JOIN membership.trade AS trade"
+    		+ " INNER JOIN membership.articles AS article";
 
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {

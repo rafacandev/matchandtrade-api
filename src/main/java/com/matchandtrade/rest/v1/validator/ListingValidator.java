@@ -55,8 +55,8 @@ public class ListingValidator {
 
 	private void verifyThatMembershipBelongsToUser(Integer userId, Integer membershipId) {
 		SearchCriteria criteria = new SearchCriteria(new Pagination());
-		criteria.addCriterion(MembershipQueryBuilder.Field.userId, userId);
-		criteria.addCriterion(MembershipQueryBuilder.Field.membershipId, membershipId);
+		criteria.addCriterion(MembershipQueryBuilder.Field.USER_ID, userId);
+		criteria.addCriterion(MembershipQueryBuilder.Field.MEMBERSHIP_ID, membershipId);
 		SearchResult<MembershipEntity> searchResult = searchService.search(criteria, MembershipQueryBuilder.class);
 		if (searchResult.getPagination().getTotal() < 1) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Membership.membershipId: %d does not belong to User.userId: %d", membershipId, userId));

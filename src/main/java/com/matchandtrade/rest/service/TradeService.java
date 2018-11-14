@@ -50,7 +50,7 @@ public class TradeService {
 
 	public SearchResult<TradeEntity> search(Integer pageNumber, Integer pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
-		searchCriteria.addSort(new Sort(TradeQueryBuilder.Field.tradeId, Sort.Type.DESC));
+		searchCriteria.addSort(new Sort(TradeQueryBuilder.Field.TRADE_ID, Sort.Type.DESC));
 		return searchService.search(searchCriteria, TradeQueryBuilder.class);
 	}
 

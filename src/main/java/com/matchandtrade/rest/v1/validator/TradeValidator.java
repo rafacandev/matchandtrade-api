@@ -55,7 +55,7 @@ public class TradeValidator {
 		checkNameLength(json.getName());
 		checkDescriptionLength(json.getDescription());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(TradeQueryBuilder.Field.name, json.getName(), Restriction.EQUALS_IGNORE_CASE);
+		searchCriteria.addCriterion(TradeQueryBuilder.Field.NAME, json.getName(), Restriction.EQUALS_IGNORE_CASE);
 		SearchResult<TradeEntity> searchResult = searchService.search(searchCriteria, TradeQueryBuilder.class);
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
@@ -83,9 +83,9 @@ public class TradeValidator {
 		
 		// Validates if authenticated user is the owner of the trade
 		SearchCriteria searchCriteriaTradeOwner = new SearchCriteria(new Pagination(1,1));
-		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.tradeId, json.getTradeId());
-		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.userId, user.getUserId());
-		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.type, MembershipEntity.Type.OWNER);
+		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.TRADE_ID, json.getTradeId());
+		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.USER_ID, user.getUserId());
+		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.TYPE, MembershipEntity.Type.OWNER);
 		SearchResult<MembershipEntity> searchResultTradeOwner = searchService.search(searchCriteriaTradeOwner, MembershipQueryBuilder.class);
 		if (searchResultTradeOwner.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not the owner of Trade.tradeId: " + json.getTradeId());
@@ -93,8 +93,8 @@ public class TradeValidator {
 
 		// Validates if name is unique but not the same which is being updated
 		SearchCriteria searchCriteriaUniqueName = new SearchCriteria(new Pagination(1,1));
-		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.name, json.getName());
-		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.tradeId, json.getTradeId(), Restriction.NOT_EQUALS);
+		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.NAME, json.getName());
+		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.TRADE_ID, json.getTradeId(), Restriction.NOT_EQUALS);
 		SearchResult<TradeEntity> searchResultUniqueName = searchService.search(searchCriteriaUniqueName, TradeQueryBuilder.class);
 		if (!searchResultUniqueName.getResultList().isEmpty()) {
 				throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");

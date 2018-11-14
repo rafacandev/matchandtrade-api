@@ -29,9 +29,9 @@ public class QueryBuilderUtil {
 			// Check if result already starts with WHERE
 			if (result.lastIndexOf(" WHERE") < 0) {
 				result.append(" WHERE");
-				result.append(buildClause(criterion.getField().alias(), criterion.getField().name(), criterion, false));
+				result.append(buildClause(criterion.getField().alias(), criterion.getField().toString(), criterion, false));
 			} else {
-				result.append(buildClause(criterion.getField().alias(), criterion.getField().name(), criterion, true));
+				result.append(buildClause(criterion.getField().alias(), criterion.getField().toString(), criterion, true));
 			}
 		});
 		return result.toString();
@@ -101,13 +101,14 @@ public class QueryBuilderUtil {
 		return result.toString();
 	}
 
+	// TODO: inject entityManager instead of passing a spring managed bean as parameter.
 	public static Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql, EntityManager entityManager, boolean skipSorting) {
 		hql.append(buildClauses(searchCriteria.getCriteria()));
 		if (!skipSorting) {
 			hql.append(buildSort(searchCriteria.getSortList()));
 		}
 		Query result = entityManager.createQuery(hql.toString());
-		searchCriteria.getCriteria().forEach(c -> result.setParameter(c.getField().name(), c.getValue()));
+		searchCriteria.getCriteria().forEach(c -> result.setParameter(c.getField().toString(), c.getValue()));
 		return result;
 	}
 }

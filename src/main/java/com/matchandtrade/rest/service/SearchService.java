@@ -31,22 +31,14 @@ public class SearchService {
 	@Autowired
 	private ArticleQueryBuilder articleQueryBuilder;
 	@Autowired
-	private ArticleNewQueryBuilder articleQueryNewBuilder;
-	@Autowired
 	private TradeQueryBuilder tradeQueryBuilder;
 	@Autowired
 	private MembershipQueryBuilder membershipQueryBuilder;
-	@Autowired
-	private UserQueryBuilder userQueryBuilder;
 
-	
 	@SuppressWarnings("unchecked")
 	public <T> SearchResult<T> search(SearchCriteria searchCriteria, Class<? extends QueryBuilder> queryBuilderClass) {
 		if (ArticleQueryBuilder.class.equals(queryBuilderClass)) {
 			return (SearchResult<T>) queryableArticle.query(searchCriteria, articleQueryBuilder);
-		}
-		if (ArticleNewQueryBuilder.class.equals(queryBuilderClass)) {
-			return (SearchResult<T>) queryableArticle.query(searchCriteria, articleQueryNewBuilder);
 		}
 		if (OfferQueryBuilder.class.equals(queryBuilderClass)) {
 			return (SearchResult<T>) queryableOffer.query(searchCriteria, offerQueryBuilder);
@@ -56,9 +48,6 @@ public class SearchService {
 		}
 		if (MembershipQueryBuilder.class.equals(queryBuilderClass)) {
 			return (SearchResult<T>) queryableMembership.query(searchCriteria, membershipQueryBuilder);
-		}
-		if (UserQueryBuilder.class.equals(queryBuilderClass)) {
-			return (SearchResult<T>) queryableUser.query(searchCriteria, userQueryBuilder);
 		}
 		return null;
 	}

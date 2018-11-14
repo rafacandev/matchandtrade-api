@@ -1,5 +1,8 @@
 package com.matchandtrade.persistence.repository;
 
+import com.matchandtrade.persistence.entity.TradeEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -13,5 +16,7 @@ public interface ArticleRepository extends CrudRepository<ArticleEntity, Integer
 		" INNER JOIN user.articles AS article" +
 		" WHERE user.userId = :userId AND article.articleId = :articleId")
 	ArticleEntity findArticleByUserIdAndArticleId(@Param("userId")Integer userId, @Param("articleId") Integer articleId);
+
+	Page<ArticleEntity> findAll(Pageable pageable);
 
 }
