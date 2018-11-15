@@ -1,17 +1,15 @@
 package com.matchandtrade.persistence.facade;
 
-import java.util.List;
-
-import javax.persistence.Query;
-
-import org.hibernate.transform.ResultTransformer;
-import org.springframework.stereotype.Repository;
-
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.QueryBuilder;
 import com.matchandtrade.persistence.entity.Entity;
+import org.hibernate.transform.ResultTransformer;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.Query;
+import java.util.List;
 
 /**
  * Generic repository class with ability to query entities.

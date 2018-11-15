@@ -1,52 +1,45 @@
 package com.matchandtrade.persistence.criteria;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
+import com.matchandtrade.persistence.common.SearchCriteria;
+import com.matchandtrade.persistence.dto.ArticleAndMembershipIdDto;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import org.hibernate.transform.ResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.common.SearchCriteria;
-import com.matchandtrade.persistence.dto.ArticleAndMembershipIdDto;
-import com.matchandtrade.persistence.entity.ArticleEntity;
+import javax.persistence.Query;
+import java.util.List;
 
 @Component
 public class ArticleRecipeQueryBuilder implements QueryBuilder {
+
+	@Autowired
+	private QueryBuilderHelper queryBuilderHelper;
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
 		TRADE_ID("membership.trade.tradeId"), TRADE_MEMBERSHIP_ID("membership.membershipId");
 
 		private String alias;
 		
-		Field(String alias) {
-			this.alias = alias;
-		}
+		Field(String alias) { this.alias = alias; }
 		
 		@Override
-		public String alias() {
-			return alias;
-		}
+		public String alias() { return alias; }
 	}
 	
     private static final String BASIC_HQL = "FROM MembershipEntity AS membership"
     		+ " INNER JOIN membership.articles AS article";
 
-    @Autowired
-    private EntityManager entityManager;
-
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
-    	return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager, true);
+    	return queryBuilderHelper.buildQuery(searchCriteria, hql, true);
     }
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
 		StringBuilder hql = new StringBuilder("SELECT membership.membershipId, article " + BASIC_HQL);
-		return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager);
+		return queryBuilderHelper.buildQuery(searchCriteria, hql);
 	}
 
 	public ResultTransformer makeResultTransformer() {

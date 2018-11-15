@@ -1,15 +1,7 @@
 package com.matchandtrade.rest.v1.transformer;
 
-import java.security.InvalidParameterException;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.matchandtrade.persistence.common.Criterion;
+import com.matchandtrade.persistence.common.*;
 import com.matchandtrade.persistence.common.Criterion.LogicalOperator;
-import com.matchandtrade.persistence.common.Field;
-import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchCriteria;
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ArticleRecipeQueryBuilder;
 import com.matchandtrade.persistence.dto.ArticleAndMembershipIdDto;
 import com.matchandtrade.persistence.entity.Entity;
@@ -18,6 +10,10 @@ import com.matchandtrade.rest.v1.json.search.Matcher;
 import com.matchandtrade.rest.v1.json.search.Operator;
 import com.matchandtrade.rest.v1.json.search.Recipe;
 import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
+
+import java.security.InvalidParameterException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchTransformer {
 

@@ -1,16 +1,17 @@
 package com.matchandtrade.persistence.criteria;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
+import com.matchandtrade.persistence.common.Criterion;
+import com.matchandtrade.persistence.common.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.common.Criterion;
-import com.matchandtrade.persistence.common.SearchCriteria;
+import javax.persistence.Query;
 
 @Component
 public class MembershipQueryBuilder implements QueryBuilder {
+
+	@Autowired
+	private QueryBuilderHelper queryBuilderHelper;
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
 		ARTICLE_ID("article.articleId"),
@@ -21,33 +22,27 @@ public class MembershipQueryBuilder implements QueryBuilder {
 
 		private String alias;
 
-		Field(String alias) {
-			this.alias = alias;
-		}
+		Field(String alias) { this.alias = alias; }
 		
 		@Override
-		public String alias() {
-			return alias;
-		}
+		public String alias() { return alias; }
 		
 	}
 	
-    @Autowired
-    private EntityManager entityManager;
     private static final String BASIC_HQL = "FROM MembershipEntity AS membership";
     
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
     	parameterizeHql(searchCriteria, hql);
-    	return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager, true);
+    	return queryBuilderHelper.buildQuery(searchCriteria, hql, true);
     }
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
 		StringBuilder hql = new StringBuilder("SELECT membership " + BASIC_HQL);
 		parameterizeHql(searchCriteria, hql);
-		return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager);
+		return queryBuilderHelper.buildQuery(searchCriteria, hql);
 	}
 	
 	private void parameterizeHql(SearchCriteria searchCriteria, StringBuilder hql) {

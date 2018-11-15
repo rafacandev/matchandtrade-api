@@ -1,15 +1,16 @@
 package com.matchandtrade.persistence.criteria;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
+import com.matchandtrade.persistence.common.SearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.common.SearchCriteria;
+import javax.persistence.Query;
 
 @Component
 public class OfferQueryBuilder implements QueryBuilder {
+
+	@Autowired
+	private QueryBuilderHelper queryBuilderHelper;
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
 		OFFERED_ARTICLE_ID("offeredArticle.articleId"),
@@ -18,20 +19,13 @@ public class OfferQueryBuilder implements QueryBuilder {
 		
 		private String alias;
 
-		Field(String alias) {
-			this.alias = alias;
-		}
+		Field(String alias) { this.alias = alias; }
 		
 		@Override
-		public String alias() {
-			return alias;
-		}
+		public String alias() { return alias; }
 	}
 	
-	@Autowired
-	private EntityManager entityManager;
-	
-    private static final String BASIC_HQL = 
+    private static final String BASIC_HQL =
     	  " FROM MembershipEntity AS membership"
     	+ " INNER JOIN membership.offers AS offer"
     	+ " INNER JOIN membership.user AS user"
@@ -41,13 +35,13 @@ public class OfferQueryBuilder implements QueryBuilder {
     @Override
     public Query buildCountQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
-    	return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager, true);
+    	return queryBuilderHelper.buildQuery(searchCriteria, hql, true);
     }
 
     @Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
     	StringBuilder hql = new StringBuilder("SELECT offer " + BASIC_HQL);
-		return QueryBuilderUtil.buildQuery(searchCriteria, hql, entityManager);
+		return queryBuilderHelper.buildQuery(searchCriteria, hql);
 	}
 
 }

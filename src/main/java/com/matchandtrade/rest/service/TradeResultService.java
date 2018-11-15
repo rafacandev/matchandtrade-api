@@ -1,38 +1,27 @@
 package com.matchandtrade.rest.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-
-import javax.transaction.Transactional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ArticleQueryBuilder;
 import com.matchandtrade.persistence.criteria.MembershipQueryBuilder;
-import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.OfferEntity;
-import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.MembershipEntity;
-import com.matchandtrade.persistence.entity.TradeResultEntity;
+import com.matchandtrade.persistence.entity.*;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.TradeResultJson;
 import com.matchandtrade.rest.v1.transformer.TradeMaximizerTransformer;
 import com.matchandtrade.util.JsonUtil;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import tm.TradeMaximizer;
+
+import javax.transaction.Transactional;
+import java.io.*;
+import java.util.List;
 
 @Component
 public class TradeResultService {
@@ -173,7 +162,7 @@ public class TradeResultService {
 	private SearchResult<ArticleEntity> searchArticles(Integer tradeId, Pagination pagination) {
 		SearchCriteria articlesCriteria = new SearchCriteria(pagination);
 		articlesCriteria.addCriterion(ArticleQueryBuilder.Field.TRADE_ID, tradeId);
-		SearchResult<ArticleEntity> result = searchServiceArticle.search(articlesCriteria, ArticleQueryBuilder.class);
+		SearchResult<ArticleEntity> result = searchServiceArticle.searchCake(articlesCriteria, ArticleQueryBuilder.class);
 		LOGGER.debug("Found articles with {} ", pagination);
 		return result;
 	}
@@ -181,7 +170,7 @@ public class TradeResultService {
 	private MembershipEntity searchMembership(ArticleEntity article) {
 		SearchCriteria membershipCriteria = new SearchCriteria(new Pagination(1,1));
 		membershipCriteria.addCriterion(MembershipQueryBuilder.Field.ARTICLE_ID, article.getArticleId());
-		SearchResult<MembershipEntity> membershipResult = searchServiceMembership.search(membershipCriteria, MembershipQueryBuilder.class);
+		SearchResult<MembershipEntity> membershipResult = searchServiceMembership.searchCake(membershipCriteria, MembershipQueryBuilder.class);
 		if (membershipResult.getPagination().getTotal() > 1) {
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is more than one Membership for the Article.articleId " + article.getArticleId() + ". I am shocked! This should never ever happen :(");
 		} else if (membershipResult.getPagination().getTotal() < 1) {

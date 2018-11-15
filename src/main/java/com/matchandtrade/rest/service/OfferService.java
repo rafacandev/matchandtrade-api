@@ -1,19 +1,18 @@
 package com.matchandtrade.rest.service;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.OfferQueryBuilder;
-import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
-import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
+import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class OfferService {
@@ -52,7 +51,7 @@ public class OfferService {
 		SearchCriteria criteria = new SearchCriteria(pagination);
 		criteria.addCriterion(wantedOrOfferedField, articleId);
 		do {
-			SearchResult<OfferEntity> searchResult = searchService.search(criteria, OfferQueryBuilder.class);
+			SearchResult<OfferEntity> searchResult = searchService.searchCake(criteria, OfferQueryBuilder.class);
 			searchResult.getResultList().forEach(offer -> delete(offer.getOfferId()));
 		} while (pagination.hasNextPage());
 	}
@@ -63,6 +62,7 @@ public class OfferService {
 	 * @param membershipId
 	 * @param articleId
 	 */
+	// TODO review this
 	@Transactional
 	public void deleteOffersForArticle(Integer articleId) {
 		delete(OfferQueryBuilder.Field.WANTED_ARTICLE_ID, articleId);
@@ -85,7 +85,7 @@ public class OfferService {
 		if (wantedArticleId != null) {
 			criteria.addCriterion(OfferQueryBuilder.Field.WANTED_ARTICLE_ID, wantedArticleId);
 		}
-		return searchService.search(criteria, OfferQueryBuilder.class);
+		return searchService.searchCake(criteria, OfferQueryBuilder.class);
 	}
 
 	public List<OfferEntity> searchByOfferedArticleId(Integer offeredArticleId) {

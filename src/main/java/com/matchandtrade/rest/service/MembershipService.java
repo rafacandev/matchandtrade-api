@@ -1,14 +1,13 @@
 package com.matchandtrade.rest.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.MembershipQueryBuilder;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class MembershipService {
@@ -45,7 +44,7 @@ public class MembershipService {
 			searchCriteria.addCriterion(MembershipQueryBuilder.Field.TYPE, type);
 		}
 		// Delegate to Repository layer
-		return searchService.search(searchCriteria, MembershipQueryBuilder.class);
+		return searchService.searchCake(searchCriteria, MembershipQueryBuilder.class);
 	}
 
 }

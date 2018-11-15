@@ -36,7 +36,7 @@ public class ListingValidatorUT {
 		List<Object> memberships = new ArrayList<>();
 		memberships.add(new MembershipEntity());
 		SearchResult<Object> searchResult = new SearchResult<>(memberships, new Pagination(1,1, 1L));
-		when(searchServiceMock.search(any(), any())).thenReturn(searchResult);
+		when(searchServiceMock.searchCake(any(), any())).thenReturn(searchResult);
 		fixture.searchService = searchServiceMock;
 
 		when(articleRepositoryFacadeMock.get(1)).thenReturn(new ArticleEntity());
@@ -46,7 +46,7 @@ public class ListingValidatorUT {
 
 	private void mockSearchServiceToReturnNoSearchResults() {
 		SearchResult<Object> searchResult = new SearchResult<>(new ArrayList<>(), new Pagination());
-		when(searchServiceMock.search(any(), any())).thenReturn(searchResult);
+		when(searchServiceMock.searchCake(any(), any())).thenReturn(searchResult);
 		fixture.searchService = searchServiceMock;
 	}
 

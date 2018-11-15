@@ -1,20 +1,25 @@
 package com.matchandtrade.persistence.criteria;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import com.matchandtrade.persistence.common.Criterion;
 import com.matchandtrade.persistence.common.Criterion.LogicalOperator;
 import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.Sort;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class QueryBuilderUtil {
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.List;
+
+@Component
+public class QueryBuilderHelper {
+
+	@Autowired
+	private EntityManager entityManager;
 
 	// Utility classes should not have public constructors
-	private QueryBuilderUtil() { }
+	private QueryBuilderHelper() { }
 	
 	/**
 	 * Builds a string representing a JPA Query WHERE clause.
@@ -59,35 +64,8 @@ public class QueryBuilderUtil {
 		return result.toString();
 	}
 	
-	/**
-	 * Build clauses for the given hql {@code buildClauses(hql)}.
-	 * Creates a Query which is then parameterized with the given criteria. 
-	 * 
-	 * @param criteria
-	 * @param hql to be used to buildClauses() and the create the Query
-	 * @param entityManager to create the Query
-	 * @return parameterized query for the given criteria
-	 */
-//	public static Query parameterizeQuery(List<Criterion> criteria, StringBuilder hql, EntityManager entityManager) {
-//		hql.append(QueryBuilderUtil.buildClauses(criteria));
-//		Query result = entityManager.createQuery(hql.toString());
-//		criteria.forEach(c -> result.setParameter(c.getField().name(), c.getValue()));
-//		return result;
-//	}
-	
-	public static <T extends Sort> String parameterizeSort(List<T> list) {
-		if (list.isEmpty()) {
-			return "";
-		}
-		StringBuilder result = new StringBuilder(" ORDER BY ");
-		list.forEach(sort -> {
-			result.append(" " + sort.field().alias() + " " + sort.type());
-		});
-		return result.toString();
-	}
-
-	public static Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql, EntityManager entityManager) {
-		return buildQuery(searchCriteria, hql, entityManager, false);
+	public Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql) {
+		return buildQuery(searchCriteria, hql, false);
 	}
 
 	private static String buildSort(List<Sort> sortList) {
@@ -102,7 +80,7 @@ public class QueryBuilderUtil {
 	}
 
 	// TODO: inject entityManager instead of passing a spring managed bean as parameter.
-	public static Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql, EntityManager entityManager, boolean skipSorting) {
+	public Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql, boolean skipSorting) {
 		hql.append(buildClauses(searchCriteria.getCriteria()));
 		if (!skipSorting) {
 			hql.append(buildSort(searchCriteria.getSortList()));
@@ -111,4 +89,5 @@ public class QueryBuilderUtil {
 		searchCriteria.getCriteria().forEach(c -> result.setParameter(c.getField().toString(), c.getValue()));
 		return result;
 	}
+
 }
