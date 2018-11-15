@@ -40,7 +40,9 @@ public class TradeResultService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TradeResultService.class);
 	
 	@Autowired
-	private SearchService searchService;
+	private SearchService<ArticleEntity> searchServiceArticle;
+	@Autowired
+	private SearchService<MembershipEntity> searchServiceMembership;
 	@Autowired
 	private TradeRepositoryFacade tradeRepositoryFacade;
 	@Autowired
@@ -171,7 +173,7 @@ public class TradeResultService {
 	private SearchResult<ArticleEntity> searchArticles(Integer tradeId, Pagination pagination) {
 		SearchCriteria articlesCriteria = new SearchCriteria(pagination);
 		articlesCriteria.addCriterion(ArticleQueryBuilder.Field.TRADE_ID, tradeId);
-		SearchResult<ArticleEntity> result = searchService.search(articlesCriteria, ArticleQueryBuilder.class);
+		SearchResult<ArticleEntity> result = searchServiceArticle.search(articlesCriteria, ArticleQueryBuilder.class);
 		LOGGER.debug("Found articles with {} ", pagination);
 		return result;
 	}
@@ -179,7 +181,7 @@ public class TradeResultService {
 	private MembershipEntity searchMembership(ArticleEntity article) {
 		SearchCriteria membershipCriteria = new SearchCriteria(new Pagination(1,1));
 		membershipCriteria.addCriterion(MembershipQueryBuilder.Field.ARTICLE_ID, article.getArticleId());
-		SearchResult<MembershipEntity> membershipResult = searchService.search(membershipCriteria, MembershipQueryBuilder.class);
+		SearchResult<MembershipEntity> membershipResult = searchServiceMembership.search(membershipCriteria, MembershipQueryBuilder.class);
 		if (membershipResult.getPagination().getTotal() > 1) {
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is more than one Membership for the Article.articleId " + article.getArticleId() + ". I am shocked! This should never ever happen :(");
 		} else if (membershipResult.getPagination().getTotal() < 1) {

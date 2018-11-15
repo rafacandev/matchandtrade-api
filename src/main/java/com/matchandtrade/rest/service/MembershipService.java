@@ -14,7 +14,7 @@ import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 public class MembershipService {
 
 	@Autowired
-	private SearchService searchService;
+	private SearchService<MembershipEntity> searchService;
 	@Autowired
 	private MembershipRepositoryFacade membershipRepositoryFacade;
 	

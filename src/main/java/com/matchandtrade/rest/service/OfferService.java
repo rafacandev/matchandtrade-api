@@ -21,7 +21,7 @@ public class OfferService {
 	@Autowired
 	private OfferRepositoryFacade offerRepositoryFacade;
 	@Autowired
-	private SearchService searchService;
+	private SearchService<OfferEntity> searchService;
 	@Autowired
 	private MembershipRepositoryFacade membershipRepositoryFacade;
 

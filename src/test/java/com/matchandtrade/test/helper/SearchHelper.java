@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 public class SearchHelper {
 
 	@Autowired
-	private SearchService searchService;
+	private SearchService<ArticleEntity> searchServiceArticle;
 
 	public boolean membershipContainsArticle(Integer membershipId, Integer articleId) {
 		SearchCriteria criteria = new SearchCriteria(new Pagination());
 		criteria.addCriterion(ArticleQueryBuilder.Field.MEMBERSHIP_ID, membershipId);
 		criteria.addCriterion(ArticleQueryBuilder.Field.ARTICLE_ID, articleId);
-		SearchResult<ArticleEntity> searchResult = searchService.search(criteria, ArticleQueryBuilder.class);
+		SearchResult<ArticleEntity> searchResult = searchServiceArticle.search(criteria, ArticleQueryBuilder.class);
 		return searchResult.getResultList().size() > 0;
 	}
 

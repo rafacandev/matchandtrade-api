@@ -20,7 +20,7 @@ public class ListingValidator {
 	@Autowired
 	ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
-	SearchService searchService;
+	SearchService<MembershipEntity> searchService;
 
 	public void validateDelete(Integer userId, ListingJson listing) {
 		verifyThatMembershipBelongsToUser(userId, listing.getMembershipId());

@@ -15,8 +15,6 @@ public class ArticleService {
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
-	private SearchService searchService;
-	@Autowired
 	private UserRepositoryFacade userRepositoryFacade;
 
 	@Transactional

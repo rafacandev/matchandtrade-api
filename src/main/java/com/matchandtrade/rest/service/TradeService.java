@@ -20,7 +20,7 @@ import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 public class TradeService {
 
 	@Autowired
-	private SearchService searchService;
+	private SearchService<TradeEntity> searchService;
 	@Autowired
 	private TradeRepositoryFacade tradeRepository;
 	@Autowired

@@ -1,30 +1,31 @@
 package com.matchandtrade.rest.v1.validator;
 
-import javax.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-
 import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.MembershipQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
-import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
+import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+
+import javax.transaction.Transactional;
 
 @Component
 public class TradeValidator {
 
 	@Autowired
-	private SearchService searchService;
+	private SearchService<TradeEntity> searchServiceTrade;
+	@Autowired
+	private SearchService<MembershipEntity> searchServiceMembership;
 	@Autowired
 	private TradeService tradeService;
 
@@ -56,7 +57,7 @@ public class TradeValidator {
 		checkDescriptionLength(json.getDescription());
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(TradeQueryBuilder.Field.NAME, json.getName(), Restriction.EQUALS_IGNORE_CASE);
-		SearchResult<TradeEntity> searchResult = searchService.search(searchCriteria, TradeQueryBuilder.class);
+		SearchResult<TradeEntity> searchResult = searchServiceTrade.search(searchCriteria, TradeQueryBuilder.class);
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
 		}
@@ -86,7 +87,7 @@ public class TradeValidator {
 		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.TRADE_ID, json.getTradeId());
 		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.USER_ID, user.getUserId());
 		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.TYPE, MembershipEntity.Type.OWNER);
-		SearchResult<MembershipEntity> searchResultTradeOwner = searchService.search(searchCriteriaTradeOwner, MembershipQueryBuilder.class);
+		SearchResult<MembershipEntity> searchResultTradeOwner = searchServiceMembership.search(searchCriteriaTradeOwner, MembershipQueryBuilder.class);
 		if (searchResultTradeOwner.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not the owner of Trade.tradeId: " + json.getTradeId());
 		}
@@ -95,7 +96,7 @@ public class TradeValidator {
 		SearchCriteria searchCriteriaUniqueName = new SearchCriteria(new Pagination(1,1));
 		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.NAME, json.getName());
 		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.TRADE_ID, json.getTradeId(), Restriction.NOT_EQUALS);
-		SearchResult<TradeEntity> searchResultUniqueName = searchService.search(searchCriteriaUniqueName, TradeQueryBuilder.class);
+		SearchResult<TradeEntity> searchResultUniqueName = searchServiceTrade.search(searchCriteriaUniqueName, TradeQueryBuilder.class);
 		if (!searchResultUniqueName.getResultList().isEmpty()) {
 				throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
 		}
