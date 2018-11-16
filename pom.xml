@@ -33,7 +33,7 @@
 		<io.springfox.version>2.6.0</io.springfox.version>
 		<cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
 		<apache-commons-cli>1.3.1</apache-commons-cli>
-		<org.jacoco.version>0.7.9</org.jacoco.version>
+		<org.jacoco.version>0.8.1</org.jacoco.version>
 		<org.springframework.boot.version>1.5.3.RELEASE</org.springframework.boot.version>
 		<org.apache.commons.commons-csv>1.4</org.apache.commons.commons-csv>
 		<chrisokasaki.tm.trade-maximizer.version>1.3c-beta</chrisokasaki.tm.trade-maximizer.version>
@@ -204,22 +204,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>site</id>
-			<dependencies>
-				<dependency>
-				    <groupId>javax.interceptor</groupId>
-				    <artifactId>javax.interceptor-api</artifactId>
-				    <version>1.2</version>
-				</dependency>
-			</dependencies>
-			<properties>
-				<!-- failsafeArgLine and surefireArgLine are created by jacoco on the 'site' profile -->
-				<!-- Setting as empty or it will break failsafe and surefire plugins -->
-				<failsafeArgLine> </failsafeArgLine>
-				<surefireArgLine> </surefireArgLine>
-			</properties>
-		</profile>
-		<profile>
 			<id>jacoco</id>
 			<build>
 				<plugins>
@@ -374,9 +358,6 @@
 						<argument>-cf</argument>
 						<argument>${basedir}/config/matchandtrade.properties</argument>
 					</arguments>
-					<configuration>
-						<classifier>exec</classifier>
-					</configuration>
 					<mainClass>com.matchandtrade.WebserviceApplication</mainClass>
 					<jvmArguments>-Dlogging.file="target/log/matchandtrade.log"</jvmArguments>
 				</configuration>
@@ -439,6 +420,7 @@
 					<argLine>-Xverify:none ${failsafeArgLine}</argLine>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -475,12 +457,12 @@
 				</configuration>
 			</plugin>
 
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.3</version>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>

@@ -79,7 +79,6 @@ public class QueryBuilderHelper {
 		return result.toString();
 	}
 
-	// TODO: inject entityManager instead of passing a spring managed bean as parameter.
 	public Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql, boolean skipSorting) {
 		hql.append(buildClauses(searchCriteria.getCriteria()));
 		if (!skipSorting) {
