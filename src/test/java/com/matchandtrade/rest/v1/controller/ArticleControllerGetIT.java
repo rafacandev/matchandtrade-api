@@ -23,6 +23,7 @@ public class ArticleControllerGetIT {
 	private ArticleController fixture;
 	@Autowired
 	private ArticleRandom articleRandom;
+	private ArticleTransformer articleTransformer = new ArticleTransformer();
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
 
@@ -36,7 +37,7 @@ public class ArticleControllerGetIT {
 	@Test
 	public void get_When_ArticleIdExists_Then_ReturnExistingArticle() {
 		ArticleEntity article = articleRandom.createPersistedEntity();
-		ArticleJson expected = ArticleTransformer.transform(article);
+		ArticleJson expected = articleTransformer.transform(article);
 		ArticleJson actual = fixture.get(expected.getArticleId());
 		assertNotNull(actual);
 		assertEquals(expected, actual);

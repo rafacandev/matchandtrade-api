@@ -52,12 +52,19 @@ public class MembershipValidator {
 	public void validateDelete(Integer membershipId) {
 		MembershipEntity tm = membershipService.get(membershipId);
 		if (tm == null) {
-			throw new RestException(HttpStatus.NOT_FOUND);
+			throw new RestException(HttpStatus.NOT_FOUND, "Membership.membershipId was not found");
 		}
 	}
 
 	public void validateGet(Integer pageNumber, Integer pageSize) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
+	}
+
+	public void validateGet(Integer membershipId) {
+		MembershipEntity membership = membershipService.get(membershipId);
+		if (membership == null) {
+			throw new RestException(HttpStatus.NOT_FOUND, "Membership.membershipId was not found");
+		}
 	}
 
 }

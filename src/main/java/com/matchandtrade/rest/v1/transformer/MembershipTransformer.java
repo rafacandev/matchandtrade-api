@@ -1,42 +1,25 @@
 package com.matchandtrade.rest.v1.transformer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.v1.json.MembershipJson;
-import com.matchandtrade.rest.v1.json.MembershipJson.Type;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
-public class MembershipTransformer {
+public class MembershipTransformer extends Transformer<MembershipEntity, MembershipJson> {
 
 	@Autowired
-	private UserRepositoryFacade userRepository;
+	private UserRepositoryFacade userRepositoryFacade;
 	@Autowired
-	private TradeRepositoryFacade tradeRepository;
+	private TradeRepositoryFacade tradeRepositoryFacade;
 
-	public MembershipEntity transform(MembershipJson json) {
-		MembershipEntity result;
-		result = new MembershipEntity();
-		result.setMembershipId(json.getMembershipId());
-		result.setTrade(tradeRepository.get(json.getTradeId()));
-		result.setUser(userRepository.get(json.getUserId()));
-		return result;
-	}
-
-	public static MembershipJson transform(MembershipEntity entity) {
-		if (entity == null) {
-			return null;
-		}
+	@Override
+	public MembershipJson transform(MembershipEntity entity) {
 		MembershipJson result = new MembershipJson();
 		result.setMembershipId(entity.getMembershipId());
-		result.setType(buildType(entity.getType()));
+		result.setType(transform(entity.getType()));
 		if (entity.getTrade() == null) {
 			result.setTradeId(null);
 		} else {
@@ -49,24 +32,22 @@ public class MembershipTransformer {
 		}
 		return result;
 	}
-	
-	private static Type buildType(MembershipEntity.Type type) {
-		switch (type) {
-		case MEMBER:
-			return Type.MEMBER;
-		case OWNER:
-			return Type.OWNER;
-		default:
-			break;
-		}
-		return null;
+
+	@Override
+	public MembershipEntity transform(MembershipJson json) {
+		MembershipEntity result;
+		result = new MembershipEntity();
+		result.setMembershipId(json.getMembershipId());
+		result.setTrade(tradeRepositoryFacade.get(json.getTradeId()));
+		result.setUser(userRepositoryFacade.get(json.getUserId()));
+		return result;
 	}
 
-	public static SearchResult<MembershipJson> transform(SearchResult<MembershipEntity> searchResult) {
-		List<MembershipJson> resultList = new ArrayList<>();
-		for(MembershipEntity e : searchResult.getResultList()) {
-			resultList.add(transform(e));
+	private MembershipJson.Type transform(MembershipEntity.Type type) {
+		if (type == null) {
+			return null;
 		}
-		return new SearchResult<>(resultList, searchResult.getPagination());
+		return MembershipJson.Type.valueOf(type.name());
 	}
+
 }

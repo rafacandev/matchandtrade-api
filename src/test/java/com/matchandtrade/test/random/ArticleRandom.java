@@ -23,6 +23,7 @@ public class ArticleRandom {
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private AttachmentRepositoryFacade attachmentRepositoryFacade;
+	private static ArticleTransformer articleTransformer = new ArticleTransformer();
 	@Autowired
 	private MembershipRepositoryFacade membershipRepository;
 	@Autowired
@@ -31,10 +32,9 @@ public class ArticleRandom {
 	private UserRepository userRepository;
 	@Autowired
 	private UserRandom userRandom;
-	
 
 	public static ArticleEntity nextEntity() {
-		return ArticleTransformer.transform(createJson());
+		return articleTransformer.transform(createJson());
 	}
 	
 	public static ArticleJson createJson() {

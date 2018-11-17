@@ -47,6 +47,8 @@ public class MockControllerFactory {
 	@Autowired
 	private UserController userController;
 	@Autowired
+	private UserRandom userRandom;
+	@Autowired
 	private UserRepositoryFacade userRepository;
 	@Autowired
 	private ArticleAttachmentController articleFileController;
@@ -58,7 +60,7 @@ public class MockControllerFactory {
 	private class MockAuthenticationProvider extends AuthenticationProvider {
 		public AuthenticationEntity authenticationEntity;
 		public MockAuthenticationProvider() {
-			UserEntity authenticatedUserEntity = UserRandom.createEntity();
+			UserEntity authenticatedUserEntity = userRandom.createEntity();
 			userRepository.save(authenticatedUserEntity);
 			AuthenticationEntity authenticationEntity = new AuthenticationEntity();
 			authenticationEntity.setToken("MockControllerFactory#userId: " + authenticatedUserEntity.getUserId());

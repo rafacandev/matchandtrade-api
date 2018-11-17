@@ -43,7 +43,7 @@ public class MembershipController implements Controller {
 		// Delegate to service layer
 		membershipService.create(membershipEntity);
 		// Transform the response
-		MembershipJson response = MembershipTransformer.transform(membershipEntity);
+		MembershipJson response = membershipTransformer.transform(membershipEntity);
 		// Assemble links
 		MembershipLinkAssember.assemble(response);
 		return response;
@@ -54,10 +54,11 @@ public class MembershipController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request - Nothing to validate
+		membershipValidador.validateGet(membershipId);
 		// Delegate to service layer
 		MembershipEntity searchResult = membershipService.get(membershipId);
 		// Transform the response
-		MembershipJson response = MembershipTransformer.transform(searchResult);
+		MembershipJson response = membershipTransformer.transform(searchResult);
 		// Assemble links
 		MembershipLinkAssember.assemble(response);		
 		return response;
@@ -72,7 +73,7 @@ public class MembershipController implements Controller {
 		// Delegate to Service layer
 		SearchResult<MembershipEntity> searchResult = membershipService.searchByTradeIdUserIdType(tradeId, userId, type, _pageNumber, _pageSize);
 		// Transform the response
-		SearchResult<MembershipJson> response = MembershipTransformer.transform(searchResult);
+		SearchResult<MembershipJson> response = membershipTransformer.transform(searchResult);
 		// Assemble links
 		MembershipLinkAssember.assemble(response);		
 		return response;

@@ -19,12 +19,14 @@ public class SearchTransformer {
 
 	private SearchTransformer() {}
 
+	private static ArticleTransformer articleTransformer = new ArticleTransformer();
+
 	public static SearchResult<Json> transform(SearchResult<Entity> searchResult, Recipe recipe) {
 		List<Json> resultList = searchResult.getResultList().stream()
 			.map(entity -> {
 				if (Recipe.ARTICLES == recipe) {
 					ArticleAndMembershipIdDto membershipAndArticleDto = (ArticleAndMembershipIdDto) entity;
-					return ArticleTransformer.transform(membershipAndArticleDto.getArticle());
+					return articleTransformer.transform(membershipAndArticleDto.getArticle());
 				} else {
 					throw new InvalidParameterException("Unsupported recipe: " + recipe);
 				}

@@ -29,6 +29,7 @@ public class RestResponseAdviceUT {
 
 	private ServerHttpResponse serverHttpResponse;
 	private ServerHttpRequest serverHttpResquest;
+	private UserRandom userRandom = new UserRandom();
 
 	@Before
 	public void before() {
@@ -61,13 +62,13 @@ public class RestResponseAdviceUT {
 		ServerHttpRequest requestMock = mock(ServerHttpRequest.class);
 		when(requestMock.getURI()).thenReturn(uri);
 		List<UserJson> resultList = new ArrayList<>();
-		UserJson user1 = UserRandom.createJson();
+		UserJson user1 = userRandom.createJson();
 		user1.setUserId(1);
 		resultList.add(user1);
-		UserJson user2 = UserRandom.createJson();
+		UserJson user2 = userRandom.createJson();
 		user2.setUserId(2);
 		resultList.add(user2);
-		UserJson user3 = UserRandom.createJson();
+		UserJson user3 = userRandom.createJson();
 		user3.setUserId(3);
 		resultList.add(user3);
 		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination(pageNumber, pageSize, total));

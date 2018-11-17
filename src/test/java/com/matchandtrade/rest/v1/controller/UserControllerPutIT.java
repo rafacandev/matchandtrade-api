@@ -21,6 +21,7 @@ public class UserControllerPutIT {
 	private UserController fixture;
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
+	private UserTransformer userTransformer = new UserTransformer();
 	
 	@Before
 	public void before() {
@@ -32,7 +33,7 @@ public class UserControllerPutIT {
 	@Test
 	public void put() {
 		UserEntity authenticatedUser = fixture.authenticationProvider.getAuthentication().getUser();
-		UserJson requestJson = UserTransformer.transform(authenticatedUser);
+		UserJson requestJson = userTransformer.transform(authenticatedUser);
 		requestJson.setName(requestJson.getName() + " - User.name after PUT");
 		UserJson responseJson = fixture.put(authenticatedUser.getUserId(), requestJson);
 		assertEquals(requestJson.getName(), responseJson.getName());

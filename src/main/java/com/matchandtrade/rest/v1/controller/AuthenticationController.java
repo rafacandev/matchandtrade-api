@@ -12,20 +12,21 @@ import com.matchandtrade.rest.v1.link.AuthenticationLinkAssember;
 import com.matchandtrade.rest.v1.transformer.AuthenticationTransformer;
 
 @RestController
-@RequestMapping(path = "/matchandtrade-api/v1/authentications/")
+@RequestMapping(path = "/matchandtrade-api/v1/authentications")
 public class AuthenticationController implements Controller {
 
 	@Autowired
 	AuthenticationProvider authenticationProvider;
+	private AuthenticationTransformer authenticationTransformer = new AuthenticationTransformer();
 	
-	@RequestMapping(path = "", method = RequestMethod.GET)
+	@RequestMapping(path = "/", method = RequestMethod.GET)
 	public AuthenticationJson get() {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request - Nothing to validate
 		// Delegate to service layer - Nothing to delegate
 		// Transform the response
-		AuthenticationJson response = AuthenticationTransformer.transform(authenticationProvider.getAuthentication());
+		AuthenticationJson response = authenticationTransformer.transform(authenticationProvider.getAuthentication());
 		// Assemble links
 		AuthenticationLinkAssember.assemble(response);
 		return response;

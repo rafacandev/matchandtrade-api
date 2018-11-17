@@ -22,9 +22,10 @@ public class UserController implements Controller {
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 	@Autowired
-	UserValidator userValidador;
-	@Autowired
 	UserService userService;
+	private UserTransformer userTransformer = new UserTransformer();
+	@Autowired
+	UserValidator userValidador;
 
 	@RequestMapping(path="{userId}", method=RequestMethod.GET)
 	public UserJson get(@PathVariable("userId") Integer userId) {
@@ -35,7 +36,7 @@ public class UserController implements Controller {
 		UserEntity userEntity = userService.get(userId);
 		UserEntity sanitizedUser = userService.sanitize(userEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
-		UserJson response = UserTransformer.transform(sanitizedUser);
+		UserJson response = userTransformer.transform(sanitizedUser);
 		// Assemble links
 		UserLinkAssember.assemble(response);
 		return response;
@@ -49,11 +50,11 @@ public class UserController implements Controller {
 		requestJson.setUserId(userId); // Always get the id from the URL when working on PUT methods
 		userValidador.validatePut(requestJson);
 		// Transform the request
-		UserEntity userEntity = UserTransformer.transform(requestJson);
+		UserEntity userEntity = userTransformer.transform(requestJson);
 		// Delegate to Service layer
 		userService.update(userEntity);
 		// Transform the response
-		UserJson response = UserTransformer.transform(userEntity);
+		UserJson response = userTransformer.transform(userEntity);
 		// Assemble links
 		UserLinkAssember.assemble(response);
 		return response;

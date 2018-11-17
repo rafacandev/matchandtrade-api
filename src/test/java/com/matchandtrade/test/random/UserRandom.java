@@ -14,12 +14,13 @@ public class UserRandom {
 	
 	@Autowired
 	private UserRepositoryFacade userRepositoryFacade;
+	private UserTransformer userTransformer = new UserTransformer();
 	
-	public static UserEntity createEntity() {
-		return UserTransformer.transform(createJson());
+	public UserEntity createEntity() {
+		return userTransformer.transform(createJson());
 	}
 
-	public static UserJson createJson() {
+	public UserJson createJson() {
 		UserJson result = new UserJson();
 		result.setName(StringRandom.nextName());
 		result.setEmail(StringRandom.nextEmail());

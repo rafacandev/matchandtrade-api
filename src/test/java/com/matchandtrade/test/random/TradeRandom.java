@@ -14,9 +14,10 @@ public class TradeRandom {
 
 	@Autowired
 	private TradeService tradeService;
+	private TradeTransformer tradeTransformer = new TradeTransformer();
 
-	public static TradeEntity createEntity() {
-		return TradeTransformer.transform(createJson());
+	public TradeEntity createEntity() {
+		return tradeTransformer.transform(createJson());
 	}
 
 	public TradeEntity createPersistedEntity(UserEntity owner) {

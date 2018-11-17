@@ -1,13 +1,5 @@
 package com.matchandtrade.rest.v1.controller;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.repository.TradeRepository;
 import com.matchandtrade.rest.RestException;
@@ -16,6 +8,13 @@ import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.test.random.TradeRandom;
 import com.matchandtrade.test.random.UserRandom;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @TestingDefaultAnnotations
@@ -30,6 +29,7 @@ public class TradeControllerPutIT {
 	private TradeRandom tradeRandom;
 	@Autowired
 	private TradeRepository tradeRepository;
+	private TradeTransformer tradeTransformer = new TradeTransformer();
 
 	@Before
 	public void before() {
@@ -40,7 +40,7 @@ public class TradeControllerPutIT {
 	public void shouldEditTrade() {
 		TradeEntity existingTrade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		existingTrade.setState(TradeEntity.State.MATCHING_ARTICLES);
-		TradeJson request = TradeTransformer.transform(existingTrade);
+		TradeJson request = tradeTransformer.transform(existingTrade);
 		request.setName(request.getName() + " - Trade.name after PUT");
 		request.setDescription(request.getName() + "- Trade.description after PUT");
 		TradeJson response = fixture.put(request.getTradeId(), request);
@@ -52,7 +52,7 @@ public class TradeControllerPutIT {
 	@Test(expected=RestException.class)
 	public void shouldErrorWhenEditingTradeOfDifferentOwner() {
 		TradeEntity existingTrade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
-		TradeJson request = TradeTransformer.transform(existingTrade);
+		TradeJson request = tradeTransformer.transform(existingTrade);
 		fixture.put(request.getTradeId(), request);
 	}
 	
@@ -75,7 +75,7 @@ public class TradeControllerPutIT {
 	@Test
 	public void shouldSaveTradeAndTriggerResultsGenerationWhenStateIsGenerateResults() {
 		TradeEntity existingTrade = tradeRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		TradeJson request = TradeTransformer.transform(existingTrade);
+		TradeJson request = tradeTransformer.transform(existingTrade);
 		request.setState(TradeJson.State.GENERATE_RESULTS);
 		TradeJson response = fixture.put(existingTrade.getTradeId(), request);		
 		assertEquals(TradeJson.State.GENERATE_RESULTS, response.getState());

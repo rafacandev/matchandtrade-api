@@ -5,10 +5,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.matchandtrade.rest.RestException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
@@ -49,10 +51,14 @@ public class TradeControllerGetIT {
 		assertEquals(existingTrade.getName(), response.getName());
 	}
 
-	@Test
-	public void shouldReturnNullWhenGettingTradeByNonExistingId() {
-		TradeJson response = fixture.get(-1);
-		assertNull(response);
+	@Test(expected = RestException.class)
+	public void get_When_TradeDoesNotExist_Then_NotFound() {
+		try {
+			fixture.get(-1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+			throw e;
+		}
 	}
 
 }

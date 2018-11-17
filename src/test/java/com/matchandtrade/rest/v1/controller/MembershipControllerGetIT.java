@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.common.SearchResult;
@@ -86,16 +87,20 @@ public class MembershipControllerGetIT {
 		assertEquals(existingMembership.getMembershipId(), response.getResultList().get(0).getMembershipId());
 	}
 		
-	@Test(expected=RestException.class)
+	@Test(expected = RestException.class)
 	public void getInvalidPageSize() {
 		membershipRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
 		SearchResult<MembershipJson> getResponse = fixture.get(null, null, null, null, 51);
 		assertTrue(getResponse.getResultList().size() > 0);
 	}
 	
-	@Test
+	@Test(expected = RestException.class)
 	public void getInvalidMembershipId() {
-		MembershipJson response = fixture.get(-1);
-		assertNull(response);
+		try {
+			fixture.get(-1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+			throw e;
+		}
 	}
 }

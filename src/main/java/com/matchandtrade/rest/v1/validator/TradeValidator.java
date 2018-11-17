@@ -114,4 +114,11 @@ public class TradeValidator {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
 	}
 
+	public void validateGet(Integer tradeId) {
+		TradeEntity entity = tradeService.get(tradeId);
+		if (entity == null) {
+			throw new RestException(HttpStatus.NOT_FOUND, "Trade.tradeId was not found");
+		}
+	}
+
 }

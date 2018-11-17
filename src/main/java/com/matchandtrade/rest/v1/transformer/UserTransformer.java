@@ -3,12 +3,10 @@ package com.matchandtrade.rest.v1.transformer;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.UserJson;
 
-public class UserTransformer {
+public class UserTransformer extends Transformer<UserEntity, UserJson> {
 
-	// Utility classes should not have public constructors 
-	private UserTransformer() {}
-	
-	public static UserEntity transform(UserJson json) {
+	@Override
+	public UserEntity transform(UserJson json) {
 		UserEntity result;
 		result = new UserEntity();
 		result.setEmail(json.getEmail());
@@ -16,11 +14,9 @@ public class UserTransformer {
 		result.setUserId(json.getUserId());
 		return result;
 	}
-	
-	public static UserJson transform(UserEntity entity) {
-		if (entity == null) {
-			return null;
-		}
+
+	@Override
+	public UserJson transform(UserEntity entity) {
 		UserJson result = new UserJson();
 		result.setEmail(entity.getEmail());
 		result.setName(entity.getName());

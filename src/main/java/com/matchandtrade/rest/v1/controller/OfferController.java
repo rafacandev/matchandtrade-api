@@ -51,7 +51,7 @@ public class OfferController implements Controller {
 		// Delegate to Service layer
 		OfferEntity entity = offerService.get(offerId);
 		// Transform the response
-		OfferJson response = OfferTransformer.transform(entity);
+		OfferJson response = offerTransformer.transform(entity);
 //		// TODO: Assemble links
 		return response;
 	}
@@ -65,7 +65,7 @@ public class OfferController implements Controller {
 		// Delegate to service layer
 		SearchResult<OfferEntity> searchResult = offerService.search(membershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize);
 		// Transform the response
-		SearchResult<OfferJson> response = OfferTransformer.transform(searchResult);
+		SearchResult<OfferJson> response = offerTransformer.transform(searchResult);
 		// TODO: Assemble links
 		return response;
 	}
@@ -82,7 +82,7 @@ public class OfferController implements Controller {
 		// Delegate to service layer
 		offerService.create(membershipId, entity);
 		// Transform the response
-		OfferJson response = OfferTransformer.transform(entity);
+		OfferJson response = offerTransformer.transform(entity);
 		// TODO: Assemble links
 		return response;
 	}

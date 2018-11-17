@@ -28,6 +28,7 @@ public class TradeController implements Controller {
 	TradeValidator tradeValidador;
 	@Autowired
 	TradeService tradeService;
+	private TradeTransformer tradeTransformer = new TradeTransformer();
 
 	@RequestMapping(path="/", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -37,11 +38,11 @@ public class TradeController implements Controller {
 		// Validate the request
 		tradeValidador.validatePost(requestJson);
 		// Transform the request
-		TradeEntity tradeEntity = TradeTransformer.transform(requestJson);
+		TradeEntity tradeEntity = tradeTransformer.transform(requestJson);
 		// Delegate to service layer
 		tradeService.create(tradeEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
-		TradeJson response = TradeTransformer.transform(tradeEntity);
+		TradeJson response = tradeTransformer.transform(tradeEntity);
 		// Assemble links
 		TradeLinkAssember.assemble(response);
 		return response;
@@ -55,11 +56,11 @@ public class TradeController implements Controller {
 		requestJson.setTradeId(tradeId); // Always get the id from the URL when working on PUT methods
 		tradeValidador.validatePut(requestJson, authenticationProvider.getAuthentication().getUser());
 		// Transform the request
-		TradeEntity tradeEntity = TradeTransformer.transform(requestJson);
+		TradeEntity tradeEntity = tradeTransformer.transform(requestJson);
 		// Delegate to service layer
 		tradeService.update(tradeEntity);
 		// Transform the response
-		TradeJson response = TradeTransformer.transform(tradeEntity);
+		TradeJson response = tradeTransformer.transform(tradeEntity);
 		// Assemble links
 		TradeLinkAssember.assemble(response);
 		return response;
@@ -84,7 +85,7 @@ public class TradeController implements Controller {
 		// Delegate to Service layer
 		SearchResult<TradeEntity> searchResult = tradeService.search(_pageNumber, _pageSize);
 		// Transform the response
-		SearchResult<TradeJson> response = TradeTransformer.transform(searchResult);
+		SearchResult<TradeJson> response = tradeTransformer.transform(searchResult);
 		// Assemble links
 		TradeLinkAssember.assemble(response);
 		return response;
@@ -94,11 +95,12 @@ public class TradeController implements Controller {
 	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Validate the request - Nothing to validate
+		// Validate the request
+		tradeValidador.validateGet(tradeId);
 		// Delegate to Service layer
 		TradeEntity tradeEntity = tradeService.get(tradeId);
 		// Transform the response
-		TradeJson response = TradeTransformer.transform(tradeEntity);
+		TradeJson response = tradeTransformer.transform(tradeEntity);
 		// Assemble links
 		TradeLinkAssember.assemble(response);
 		return response;

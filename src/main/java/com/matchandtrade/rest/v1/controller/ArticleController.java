@@ -20,8 +20,10 @@ public class ArticleController implements Controller {
 	AuthenticationProvider authenticationProvider;
 	@Autowired
 	private ArticleService articleService;
+	private ArticleTransformer articleTransformer = new ArticleTransformer();
 	@Autowired
 	private ArticleValidator articleValidator;
+	
 
 	@RequestMapping(path="/articles/{articleId}", method=RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
@@ -31,7 +33,7 @@ public class ArticleController implements Controller {
 		// Delegate to service layer
 		ArticleEntity articleEntity = articleService.get(articleId);
 		// Transform the response
-		ArticleJson response = ArticleTransformer.transform(articleEntity);
+		ArticleJson response = articleTransformer.transform(articleEntity);
 		// Assemble links
 //		ArticleLinkAssember.assemble(response, membershipId);
 		return response;
@@ -44,7 +46,7 @@ public class ArticleController implements Controller {
 		// Delegate to service layer
 		SearchResult<ArticleEntity> searchResult = articleService.search(_pageNumber, _pageSize);
 		// Transform the response
-		SearchResult<ArticleJson> response = ArticleTransformer.transform(searchResult);
+		SearchResult<ArticleJson> response = articleTransformer.transform(searchResult);
 		// Assemble links
 //		ArticleLinkAssember.assemble(response, membershipId);
 		return response;
@@ -69,11 +71,11 @@ public class ArticleController implements Controller {
 		// Validate the request
 		articleValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), requestJson);
 		// Transform the request
-		ArticleEntity articleEntity = ArticleTransformer.transform(requestJson);
+		ArticleEntity articleEntity = articleTransformer.transform(requestJson);
 		// Delegate to service layer
 		articleService.create(authenticationProvider.getAuthentication().getUser(), articleEntity);
 		// Transform the response
-		ArticleJson response = ArticleTransformer.transform(articleEntity);
+		ArticleJson response = articleTransformer.transform(articleEntity);
 		// Assemble links
 //		ArticleLinkAssember.assemble(response, membershipId);
 		return response;
@@ -88,11 +90,11 @@ public class ArticleController implements Controller {
 		requestJson.setArticleId(articleId); // Always get the id from the URL when working on PUT methods
 		articleValidator.validatePut(authenticationProvider.getAuthentication().getUser().getUserId(), requestJson);
 		// Transform the request
-		ArticleEntity articleEntity = ArticleTransformer.transform(requestJson);
+		ArticleEntity articleEntity = articleTransformer.transform(requestJson);
 		// Delegate to service layer
 		articleService.update(articleEntity);
 		// Transform the response
-		ArticleJson response = ArticleTransformer.transform(articleEntity);
+		ArticleJson response = articleTransformer.transform(articleEntity);
 		// Assemble links
 //		ArticleLinkAssember.assemble(response, membershipId);
 		return response;

@@ -20,6 +20,7 @@ public class ArticleAttachmentController implements Controller {
 	private ArticleAttachmentValidator articleAttachmentValidator;
 	@Autowired
 	private ArticleAttachmentService articleAttachmentService;
+	private AttachmentTransformer attachmentTransformer = new AttachmentTransformer();
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 
@@ -47,7 +48,7 @@ public class ArticleAttachmentController implements Controller {
 		// Delegate to service layer
 		AttachmentEntity attachment = articleAttachmentService.create(articleId, multipartFile);
 		// TODO Assemble links
-		return AttachmentTransformer.transform(attachment);
+		return attachmentTransformer.transform(attachment);
 	}
 
 }

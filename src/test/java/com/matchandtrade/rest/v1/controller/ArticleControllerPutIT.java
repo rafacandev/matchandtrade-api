@@ -25,10 +25,9 @@ public class ArticleControllerPutIT {
 	private ArticleController fixture;
 	@Autowired
 	private ArticleRandom articleRandom;
+	private ArticleTransformer articleTransformer = new ArticleTransformer();
 	@Autowired
 	private MockControllerFactory mockControllerFactory;
-
-
 	@Autowired
 	private UserRepositoryFacade userRepositoryFacade;
 
@@ -43,7 +42,7 @@ public class ArticleControllerPutIT {
 	@Transactional
 	public void put_When_ArticleIdExists_Expects_Success() {
 		ArticleEntity articleEntity = articleRandom.createPersistedEntity(fixture.authenticationProvider.getAuthentication().getUser());
-		ArticleJson expected = ArticleTransformer.transform(articleEntity);
+		ArticleJson expected = articleTransformer.transform(articleEntity);
 		ArticleJson actual = fixture.put(expected.getArticleId(), expected);
 		assertNotNull(actual);
 		assertEquals(expected, actual);
@@ -52,7 +51,7 @@ public class ArticleControllerPutIT {
 	@Test(expected = RestException.class)
 	public void put_When_ArticleBelongsToDifferentUser_Expects_BadRequest() {
 		ArticleEntity articleEntity = articleRandom.createPersistedEntity();
-		ArticleJson expected = ArticleTransformer.transform(articleEntity);
+		ArticleJson expected = articleTransformer.transform(articleEntity);
 		try {
 			fixture.put(expected.getArticleId(), expected);
 		} catch (RestException e) {
