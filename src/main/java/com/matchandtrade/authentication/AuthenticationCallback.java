@@ -6,13 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
+import com.matchandtrade.config.AppConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.config.AuthenticationProperties;
-import com.matchandtrade.config.MatchAndTradePropertyKeys;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
@@ -22,9 +21,12 @@ import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 public class AuthenticationCallback {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationCallback.class);
-	
+	private static final String CODE_PARAMETER = "code";
+	private static final String STATE_PARAMETER = "state";
+
 	@Autowired
-	protected AuthenticationProperties authenticationProperties;
+	AppConfigurationProperties configProperties;
+
 	@Autowired
 	protected AuthenticationOAuth authenticationOAuth;
 	@Autowired
@@ -35,7 +37,7 @@ public class AuthenticationCallback {
 	@Transactional
 	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// oAuth Step 3. Confirm anti-forgery state token
-		String stateParameter = request.getParameter(AuthenticationProperties.OAuth.STATE_PARAMETER.toString());
+		String stateParameter = request.getParameter(STATE_PARAMETER);
 		LOGGER.debug("Received request with state parameter: [{}]", stateParameter);
 
 		AuthenticationEntity authenticationEntity = authenticationRepository.findByAtiForgeryState(stateParameter);
@@ -49,10 +51,10 @@ public class AuthenticationCallback {
 		
 		// oAuth Step 4. Exchange code for access token and ID token
 		String accessToken = authenticationOAuth.obtainAccessToken(
-				request.getParameter(AuthenticationProperties.OAuth.CODE_PARAMETER.toString()),
-				authenticationProperties.getClientId(),
-				authenticationProperties.getClientSecret(),
-				authenticationProperties.getRedirectURI());
+			request.getParameter(CODE_PARAMETER),
+			configProperties.authentication.getClientId(),
+			configProperties.authentication.getClientSecret(),
+			configProperties.authentication.getRedirectUrl());
 		
 		// oAuth Step 5. Obtain user information from the ID token
 		LOGGER.debug("Obtaining user information by access token.");
@@ -65,10 +67,10 @@ public class AuthenticationCallback {
 		updateAuthenticationInfo(authenticationEntity, persistedUserInfo.getUserId(), accessToken);
 		
 		// Using accessToken as AuthorizationToken since authorization is managed locally instead of the Authentication Authority
-		response.addHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
+		response.addHeader(AuthenticationOAuth.AUTHORIZATION_HEADER, accessToken);
 		LOGGER.debug("Setting authentication in session for userId: {}", persistedUserInfo.getUserId());
-		request.getSession().setMaxInactiveInterval(authenticationProperties.getSessionTimeout());
-		request.getSession().setAttribute(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString(), accessToken);
+		request.getSession().setMaxInactiveInterval(configProperties.authentication.getSessionTimeout());
+		request.getSession().setAttribute(AuthenticationOAuth.AUTHORIZATION_HEADER, accessToken);
 		
 		// Redirect the response
 		redirectResponse(request, response);
@@ -81,8 +83,8 @@ public class AuthenticationCallback {
 	 * @throws IOException
 	 */
 	private void redirectResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String callbackUrl = authenticationProperties.getCallbackUrl();
-		LOGGER.debug("Redirecting request to callback url property {} with value: {}", MatchAndTradePropertyKeys.AUTHENTICATION_CLIENT_CALLBACK_URL, callbackUrl);
+		String callbackUrl = configProperties.authentication.getCallbackUrl();
+		LOGGER.debug("Redirecting request to callback url property {} with value: {}", "authentication.callback.url", callbackUrl);
 		response.sendRedirect(callbackUrl);
 	}
 

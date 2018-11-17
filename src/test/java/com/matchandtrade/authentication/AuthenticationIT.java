@@ -7,7 +7,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
 import com.matchandtrade.test.TestingDefaultAnnotations;
 
@@ -42,7 +41,7 @@ public class AuthenticationIT {
 		authenticationCallback.authenticate(requestCallback, responseCallback);
 
 		// Assert if authentication was stored correctly
-		String authenticationHeader = responseCallback.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
+		String authenticationHeader = responseCallback.getHeader(AuthenticationOAuth.AUTHORIZATION_HEADER);
 		authenticationRepository.findByToken(authenticationHeader);
 		
 		// Sign-off

@@ -93,7 +93,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 import com.matchandtrade.authentication.AuthenticationServlet;
 import com.matchandtrade.cli.AppCli;
-import com.matchandtrade.config.MatchAndTradePropertyKeys;
 
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
@@ -194,8 +193,8 @@ import com.matchandtrade.config.MatchAndTradePropertyKeys;
 public class WebserviceApplication {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebserviceApplication.class);
-	private static final String CONFIGURATION_FILE_PROPERTY_KEY = MatchAndTradePropertyKeys.CONFIG_FILE.toString();
-	
+	private static final String CONFIGURATION_FILE_PROPERTY_KEY = "--configFile or -cf or -Dspring.config.location";
+
 	public static void main(String[] arguments) throws Throwable {
 		// Handles the command line options.
 		AppCli cli = null;
@@ -222,20 +221,19 @@ public class WebserviceApplication {
 	private static String loadConfigurationFileProperty(AppCli cli) {
 		String configurationFile = System.getProperty(CONFIGURATION_FILE_PROPERTY_KEY);
 		if (configurationFile == null) {
-			LOGGER.debug("Did not find property {}", CONFIGURATION_FILE_PROPERTY_KEY);
+			LOGGER.debug("Did not find {}", CONFIGURATION_FILE_PROPERTY_KEY);
 		} else {
-			LOGGER.debug("Found property {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
+			LOGGER.debug("Found {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
 		}
 		if (cli.configurationFilePath() != null) {
-			LOGGER.debug("Found argument {}={}", CONFIGURATION_FILE_PROPERTY_KEY, cli.configurationFilePath());
+			LOGGER.debug("Found {}={}", CONFIGURATION_FILE_PROPERTY_KEY, cli.configurationFilePath());
 			configurationFile = cli.configurationFilePath();
 		}
 		if (configurationFile == null) {
-			LOGGER.info("Unnable to start the application. A '{}' is required via argument or system property.", CONFIGURATION_FILE_PROPERTY_KEY);
+			LOGGER.info("Unable to start the application {} is required", CONFIGURATION_FILE_PROPERTY_KEY);
 			System.exit(2);
 		}
-		LOGGER.info("Setting environment property {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
-		System.setProperty(CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
+		System.setProperty("spring.config.location", configurationFile);
 		return configurationFile;
 	}
 

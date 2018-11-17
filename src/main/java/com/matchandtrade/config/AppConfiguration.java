@@ -18,33 +18,21 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class AppConfiguration {
 	
 	@Autowired
-	private Environment environment;
+	private AppConfigurationProperties configProperties;
 
 	@Bean
 	public ComboPooledDataSource dataSource() throws PropertyVetoException {
 		ComboPooledDataSource result = new ComboPooledDataSource();
-		result.setDriverClass(environment.getProperty(MatchAndTradePropertyKeys.DATA_SOURCE_DRIVER_CLASS.toString()));
-		result.setJdbcUrl(environment.getProperty(MatchAndTradePropertyKeys.DATA_SOURCE_JDBC_URL.toString()));
-		result.setPassword(environment.getProperty(MatchAndTradePropertyKeys.DATA_SOURCE_PASSWORD.toString()));
-		result.setUser(environment.getProperty(MatchAndTradePropertyKeys.DATA_SOURCE_USER.toString()));
+		result.setDriverClass(configProperties.datasource.getDriverClass());
+		result.setJdbcUrl(configProperties.datasource.getJdbcUrl());
+		result.setPassword(configProperties.datasource.getPassword());
+		result.setUser(configProperties.datasource.getUser());
 		return result;
 	}
 	
 	@Bean
-	public AuthenticationProperties authenticationProperties() {
-		AuthenticationProperties result = new AuthenticationProperties();
-		result.setClientId(environment.getProperty(MatchAndTradePropertyKeys.AUTHENTICATION_CLIENT_ID.toString()));
-		result.setClientSecret(environment.getProperty(MatchAndTradePropertyKeys.AUTHENTICATION_CLIENT_SECRET.toString()));
-		result.setRedirectURI(environment.getProperty(MatchAndTradePropertyKeys.AUTHENTICATION_CLIENT_REDIRECT_URL.toString()));
-		result.setCallbackUrl(environment.getProperty(MatchAndTradePropertyKeys.AUTHENTICATION_CLIENT_CALLBACK_URL.toString()));
-		Integer sessionTimeout = Integer.parseInt(environment.getProperty(MatchAndTradePropertyKeys.AUTHENTICATION_SESSION_TIMEOUT.toString()));
-		result.setSessionTimeout(sessionTimeout);
-		return result;
-	}
-
-	@Bean
 	public AuthenticationOAuth authenticationOAuth() throws ReflectiveOperationException {
-		Class<?> authenticationOAuthClass = Class.forName(environment.getProperty(MatchAndTradePropertyKeys.AUTHENTICATION_OAUTH_CLASS.toString()));
+		Class<?> authenticationOAuthClass = Class.forName(configProperties.authentication.getOauthClass());
 		return (AuthenticationOAuth) authenticationOAuthClass.newInstance();
 	}
 	

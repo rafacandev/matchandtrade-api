@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -23,11 +22,11 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 	public static final String ESSENCES_URL_PATTERN = "/matchandtrade-api/essences/**";
 	
 	@Autowired
-	private Environment environment;
+	private AppConfigurationProperties confiProperties;
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		String fileStorageRootFolderProperty = "file:" + environment.getProperty(MatchAndTradePropertyKeys.ESSENCE_STORAGE_ROOT_FOLDER.toString());
+		String fileStorageRootFolderProperty = "file:" + confiProperties.getConfigurationFile();
 		LOGGER.info("Exposing static files with the patter [{}] from [{}].", ESSENCES_URL_PATTERN, fileStorageRootFolderProperty);
 		registry.addResourceHandler(ESSENCES_URL_PATTERN).addResourceLocations(fileStorageRootFolderProperty);
 	}

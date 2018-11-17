@@ -1,10 +1,9 @@
 package com.matchandtrade.rest.service;
 
-import com.matchandtrade.config.MatchAndTradePropertyKeys;
+import com.matchandtrade.config.AppConfigurationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -22,12 +21,12 @@ public class EssenceStorageService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EssenceStorageService.class);
 	
 	@Autowired
-	private Environment environment;
+	private AppConfigurationProperties configProperties;
 	private Path rootFolder;
 
 	@PostConstruct
 	private void init() {
-		String rootFolderProperty = environment.getProperty(MatchAndTradePropertyKeys.ESSENCE_STORAGE_ROOT_FOLDER.toString()); 
+		String rootFolderProperty = configProperties.filestorage.getEssenceRootPath();
 		LOGGER.info("Initiating essence service with root folder: {}", rootFolderProperty);
 		Path targetRootPath = Paths.get(rootFolderProperty);
 		if (!targetRootPath.toFile().isDirectory()) {

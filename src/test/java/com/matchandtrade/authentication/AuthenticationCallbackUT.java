@@ -18,15 +18,14 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 
-import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AuthenticationCallbakUT {
-	
+public class AuthenticationCallbackUT {
+
 	private AuthenticationCallback fixture;
 	private MockHttpServletRequest requestMock;
 	private MockHttpServletResponse responseMock;
@@ -54,10 +53,7 @@ public class AuthenticationCallbakUT {
 		when(authenticationOAuthMock.obtainUserInformation(Mockito.any())).thenReturn(sessionUserAuthentication);
 		fixture.authenticationOAuth = authenticationOAuthMock;
 
-		AuthenticationProperties authenticationProperties = new AuthenticationProperties();
-		authenticationProperties.setCallbackUrl("http://test.com");
-		authenticationProperties.setSessionTimeout(1);
-		fixture.authenticationProperties = authenticationProperties;
+		fixture.configProperties = ConfigurationPropertiesMocker.buildConfigProperties();
 
 		requestMock = new MockHttpServletRequest();
 		requestMock.setParameter("state", defaultStateValue);
@@ -76,7 +72,7 @@ public class AuthenticationCallbakUT {
 	@Test
 	public void authenticate_When_HappyPath_Then_Succeeds() throws IOException {
 		fixture.authenticate(requestMock, responseMock);
-		String authenticationHeader = responseMock.getHeader(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
+		String authenticationHeader = responseMock.getHeader(AuthenticationOAuth.AUTHORIZATION_HEADER);
 		assertEquals(antiForgeryState, authenticationHeader);
 	}
 

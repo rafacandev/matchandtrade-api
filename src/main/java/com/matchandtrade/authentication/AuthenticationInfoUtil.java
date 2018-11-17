@@ -10,7 +10,6 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.util.JsonUtil;
 
 public class AuthenticationInfoUtil {
@@ -21,7 +20,7 @@ public class AuthenticationInfoUtil {
 	private AuthenticationInfoUtil() {}
 	
 	public static void writeResponseBody(HttpServletRequest request, HttpServletResponse response) {
-		Object authorizationHeader = request.getSession().getAttribute(AuthenticationProperties.OAuth.AUTHORIZATION_HEADER.toString());
+		Object authorizationHeader = request.getSession().getAttribute(AuthenticationOAuth.AUTHORIZATION_HEADER);
 		if (authorizationHeader == null) {
 			response.setStatus(401);
 			return;

@@ -1,17 +1,13 @@
 package com.matchandtrade.authentication;
 
-import com.matchandtrade.config.AuthenticationProperties;
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
-import com.matchandtrade.test.TestingDefaultAnnotations;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.servlet.ServletException;
 import javax.ws.rs.core.Response;
@@ -27,33 +23,24 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthenticationServletUT {
-	
-	private AuthenticationServlet fixture;
-	@Mock
-	private AuthenticationRespositoryFacade authenticationRespositoryFacadeMock;
-	private AuthenticationOAuth authenticationOAuthMock;
 
-	private URI redirectUri;
-	private MockHttpServletResponse responseMock;
-	private MockHttpServletRequest requestMock;
 	@Mock
 	private AuthenticationCallback authenticationCallbackMock;
+	@Mock
+	private AuthenticationRespositoryFacade authenticationRepositoryFacadeMock;
+	private AuthenticationServlet fixture;
+	private URI redirectUri;
+	private MockHttpServletRequest requestMock;
+	private MockHttpServletResponse responseMock;
 
 	@Before
 	public void before() throws URISyntaxException {
 		fixture = new AuthenticationServlet();
-		redirectUri = new URI("http://redirect.com");
-
-		fixture.authenticationRepository = authenticationRespositoryFacadeMock;
+		redirectUri = new URI(ConfigurationPropertiesMocker.AUTHENTICATION_REDIRECT_URL);
+		fixture.authenticationRepository = authenticationRepositoryFacadeMock;
 		fixture.authenticationCallbak = authenticationCallbackMock;
 		fixture.authenticationOAuth = new AuthenticationOAuthNewUserMock();
-
-		AuthenticationProperties authenticationProperties = new AuthenticationProperties();
-		authenticationProperties.setRedirectURI(redirectUri.toString());
-		authenticationProperties.setCallbackUrl("http://callback.com");
-		authenticationProperties.setClientId("clientIdValue");
-		fixture.authenticationProperties = authenticationProperties;
-
+		fixture.configProperties = ConfigurationPropertiesMocker.buildConfigProperties();
 		requestMock = new MockHttpServletRequest();
 		responseMock = new MockHttpServletResponse();
 	}
@@ -64,16 +51,16 @@ public class AuthenticationServletUT {
 		requestMock.setRequestURI("http://localhost:8080/authenticate");
 
 		AuthenticationServlet fixture = new AuthenticationServlet();
-		AuthenticationProperties.Action authenticationAction = fixture.obtainAuthenticationAction(requestMock);
-		assertEquals(AuthenticationProperties.Action.AUTHENTICATE, authenticationAction);
+		AuthenticationAction authenticationAction = fixture.obtainAuthenticationAction(requestMock);
+		assertEquals(AuthenticationAction.AUTHENTICATE, authenticationAction);
 		
 		requestMock.setRequestURI("http://localhost:8080/authenticate/");
 		authenticationAction = fixture.obtainAuthenticationAction(requestMock);
-		assertEquals(AuthenticationProperties.Action.AUTHENTICATE, authenticationAction);
+		assertEquals(AuthenticationAction.AUTHENTICATE, authenticationAction);
 
-		requestMock.setRequestURI("http://localhost:8080/sign-out");
+		requestMock.setRequestURI("http://localhost:8080/sign-off");
 		authenticationAction = fixture.obtainAuthenticationAction(requestMock);
-		assertEquals(AuthenticationProperties.Action.SIGNOUT, authenticationAction);
+		assertEquals(AuthenticationAction.SIGN_OFF, authenticationAction);
 	}
 	
 	@Test
@@ -83,10 +70,10 @@ public class AuthenticationServletUT {
 		URI actualUri = new URI(responseMock.getRedirectedUrl());
 		assertEquals(redirectUri.getHost(), actualUri.getHost());
 		assertEquals(redirectUri.getScheme(), actualUri.getScheme());
-		assertTrue(actualUri.getQuery().contains("client_id=clientIdValue"));
+		assertTrue(actualUri.getQuery().contains("client_id=" + ConfigurationPropertiesMocker.AUTHENTICATION_CLIENT_ID));
 		assertTrue(actualUri.getQuery().contains("response_type=code"));
 		assertTrue(actualUri.getQuery().contains("scope=openid+email+profile"));
-		assertTrue(actualUri.getQuery().contains("redirect_uri=http://redirect.com&state"));
+		assertTrue(actualUri.getQuery().contains("redirect_uri="+ConfigurationPropertiesMocker.AUTHENTICATION_REDIRECT_URL+"&state"));
 	}
 	
 	@Test

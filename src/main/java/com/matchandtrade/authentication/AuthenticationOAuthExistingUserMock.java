@@ -8,11 +8,11 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.matchandtrade.config.AppConfigurationProperties;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 
 /**
  * OAuth2 authentication for testing and development.
@@ -28,10 +28,10 @@ import org.springframework.core.env.Environment;
  * @author rafael.santos.bra@gmail.com
  */
 public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth {
-	
+
 	@Autowired
-	private Environment environment;
-	
+	private AppConfigurationProperties configProperties;
+
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
 
 	private String buidRandomAccessToken() {
@@ -41,7 +41,7 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 	
 	@Override
 	public void redirectToAuthorizationAuthority(HttpServletResponse response, String state, String clientId, String redirectURI) throws AuthenticationException {
-		String url = environment.getProperty("authentication.oauth.mock.url");
+		String url = configProperties.authentication.getMockUrl();
 		if (url == null || url.length() < 1) {
 			url = "http://localhost:8081/oauth/sign-in";
 		}

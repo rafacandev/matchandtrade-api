@@ -31,14 +31,6 @@ public class VersionUtil {
 		return versionProperties.getProperty("build.date");
 	}
 
-	public String projectArtefactId() {
-		return versionProperties.getProperty("project.artefactId");
-	}
-
-	public String projectGroupId() {
-		return versionProperties.getProperty("project.groupId");
-	}
-	
 	public String projectName() {
 		return versionProperties.getProperty("project.name");
 	}
