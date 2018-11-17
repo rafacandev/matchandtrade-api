@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 
 public class SearchTransformer {
 
+	private SearchTransformer() {}
+
 	public static SearchResult<Json> transform(SearchResult<Entity> searchResult, Recipe recipe) {
 		List<Json> resultList = searchResult.getResultList().stream()
 			.map(entity -> {
@@ -37,6 +39,19 @@ public class SearchTransformer {
 		} else {
 			throw new InvalidParameterException("Unable to transform SearchCriteria with recipe: " + request.getRecipe());
 		}
+	}
+
+	private static SearchCriteria transformArticlesRecipe(SearchCriteriaJson request, Pagination pagination) {
+		SearchCriteria result = new SearchCriteria(pagination);
+		request.getCriteria().forEach(entry -> {
+			if ("Trade.tradeId".equals(entry.getKey())) {
+				result.getCriteria().add(transformCriterion(ArticleRecipeQueryBuilder.Field.TRADE_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
+			}
+			if ("Membership.membershipId".equals(entry.getKey())) {
+				result.getCriteria().add(transformCriterion(ArticleRecipeQueryBuilder.Field.TRADE_MEMBERSHIP_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
+			}
+		});
+		return result;
 	}
 	
 	private static Criterion transformCriterion(Field field, Object value, Operator operator, Matcher matcher) {
@@ -65,20 +80,5 @@ public class SearchTransformer {
 		
 		return new Criterion(field, value, persistenceOperator, persistanceRestriction);
 	}
-	
-	private static SearchCriteria transformArticlesRecipe(SearchCriteriaJson request, Pagination pagination) {
-		SearchCriteria result = new SearchCriteria(pagination);
-		request.getCriteria().forEach(entry -> {
-			if ("Trade.tradeId".equals(entry.getKey())) {
-				result.getCriteria().add(transformCriterion(ArticleRecipeQueryBuilder.Field.TRADE_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
-			}
-			if ("Membership.membershipId".equals(entry.getKey())) {
-				result.getCriteria().add(transformCriterion(ArticleRecipeQueryBuilder.Field.TRADE_MEMBERSHIP_ID, entry.getValue(), entry.getOperator(), entry.getMatcher()));
-			}
-		});
-		return result;
-	}
 
-	private SearchTransformer() {}
-	
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Holds all necessary information necessary to retrieve information from the persistence layer. 
+ * POJO for search criteria.
  * 
  * @author rafael.santos.bra@gmail.com
  *
@@ -19,10 +19,6 @@ public class SearchCriteria {
 		this.pagination = pagination;
 	}
 	
-	public void addCriterion(Criterion criterion) {
-		this.criteria.add(criterion);
-	}
-
 	public void addCriterion(Field field, Object value) {
 		Criterion c = new Criterion(field, value);
 		this.criteria.add(c);
@@ -33,19 +29,10 @@ public class SearchCriteria {
 		this.criteria.add(c);
 	}
 
-	public void addCriterion(Field field, Object value, Criterion.LogicalOperator logicalOperator, Criterion.Restriction restriction) {
-		Criterion c = new Criterion(field, value, logicalOperator, restriction);
-		this.criteria.add(c);
-	}
-
 	public void addSort(Sort sort) {
 		this.sortList.add(sort);
 	}
 
-	public void addSort(Field field, Sort.Type sortType) {
-		addSort(new Sort(field, sortType));
-	}
-	
 	public List<Criterion> getCriteria() {
 		return criteria;
 	}

@@ -17,7 +17,7 @@ public class SearchWithRecipeService {
 	@Autowired
 	private ArticleRecipeQueryBuilder articleRecipeQueryBuilder;
 
-	// TODO: Can se just use the SearchService here as everybody else?
+	// TODO: Can this just use the SearchService here as everything else?
 	public SearchResult<Entity> articleRecipe(SearchCriteria searchCriteria) {
 		return queryableEntity.query(searchCriteria, articleRecipeQueryBuilder, articleRecipeQueryBuilder.makeResultTransformer());
 	}

@@ -17,7 +17,7 @@ public class SearchService<E extends Entity> {
 	@Autowired
 	private QueryableRepository<E> queryableRepository;
 
-	public SearchResult<E> searchCake(SearchCriteria searchCriteria, Class<? extends QueryBuilder> queryBuilderClass) {
+	public SearchResult<E> search(SearchCriteria searchCriteria, Class<? extends QueryBuilder> queryBuilderClass) {
 		QueryBuilder queryBuilder = applicationContext.getBean(queryBuilderClass);
 		return queryableRepository.query(searchCriteria, queryBuilder);
 	}

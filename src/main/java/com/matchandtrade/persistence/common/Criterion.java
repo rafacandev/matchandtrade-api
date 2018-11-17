@@ -30,13 +30,6 @@ public class Criterion {
 		this.restriction = restriction;
 	}
 
-	public Criterion(Field field, Object value, LogicalOperator logicalOperator) {
-		this.field = field;
-		this.value = value;
-		this.logicalOperator = logicalOperator;
-		this.restriction = Restriction.EQUALS;
-	}
-	
 	public Criterion(Field field, Object value, LogicalOperator logicalOperator, Restriction restriction) {
 		this.field = field;
 		this.value = value;

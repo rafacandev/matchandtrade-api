@@ -40,14 +40,13 @@ public class OfferValidator {
 		}
 	}
 
-	public void validateGetAll(Integer membershipId, Integer offeredArticleId, Integer wantedArticleId,
-			Integer pageNumber, Integer pageSize, Integer authenticatedUserId) {
+	public void validateGetAll(Integer membershipId, Integer pageNumber, Integer pageSize, Integer authenticatedUserId) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);	
 		MembershipEntity membership = membershipService.get(membershipId);
 		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 	}
 
-	public void validateGetById(Integer membershipId, Integer offerId, Integer authenticatedUserId) {
+	public void validateGetById(Integer membershipId, Integer authenticatedUserId) {
 		MembershipEntity membership = membershipService.get(membershipId);
 		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 	}

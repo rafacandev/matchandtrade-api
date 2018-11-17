@@ -22,7 +22,7 @@ public class PersistenceUtil {
 		if (pageSize != null) {
 			size = pageSize;
 		}
-		// Pageable pages start at zero
+		// Pageable pages start at zero while Pagination.number starts at one
 		return new PageRequest(page-1, size);
 	}
 

@@ -14,7 +14,6 @@ public class ArticleQueryBuilder implements QueryBuilder {
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
 		ARTICLE_ID("article.articleId"),
-		NAME("article.name"),
 		TRADE_ID("trade.tradeId"),
 		MEMBERSHIP_ID("membership.membershipId");
 
@@ -25,7 +24,8 @@ public class ArticleQueryBuilder implements QueryBuilder {
 		@Override
 		public String alias() { return alias; }
 	}
-	
+
+	// TODO: Should we use LEFT joins? Should we use the "progressive join" approach?
     private static final String BASIC_HQL = "FROM MembershipEntity AS membership"
     		+ " INNER JOIN membership.trade AS trade"
     		+ " INNER JOIN membership.articles AS article";

@@ -71,7 +71,7 @@ public class ArticleValidator {
 	 * @param userId
 	 * @param articleId
 	 */
-	void verifyThatUserHasArticle(Integer userId, Integer articleId) {
+	private void verifyThatUserHasArticle(Integer userId, Integer articleId) {
 		ArticleEntity article = articleRepositoryFacade.getByUserIdAndArticleId(userId, articleId);
 		if (article == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does have Article.articleId: %d.", userId, articleId));

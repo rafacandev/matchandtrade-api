@@ -46,29 +46,6 @@ public class OfferService {
 		offerRepositoryFacade.delete(offerId);
 	}
 
-	private void delete(OfferQueryBuilder.Field wantedOrOfferedField, Integer articleId) {
-		Pagination pagination = new Pagination(1, 50);
-		SearchCriteria criteria = new SearchCriteria(pagination);
-		criteria.addCriterion(wantedOrOfferedField, articleId);
-		do {
-			SearchResult<OfferEntity> searchResult = searchService.searchCake(criteria, OfferQueryBuilder.class);
-			searchResult.getResultList().forEach(offer -> delete(offer.getOfferId()));
-		} while (pagination.hasNextPage());
-	}
-
-	/**
-	 * Delete all offers where either {@code Offer.wantedArticle.articleId} or {@code Offer.offeredArticle.articleId}
-	 * is equals to {@code articleId}
-	 * @param membershipId
-	 * @param articleId
-	 */
-	// TODO review this
-	@Transactional
-	public void deleteOffersForArticle(Integer articleId) {
-		delete(OfferQueryBuilder.Field.WANTED_ARTICLE_ID, articleId);
-		delete(OfferQueryBuilder.Field.OFFERED_ARTICLE_ID, articleId);
-	}
-	
 	public OfferEntity get(Integer offerId) {
 		return offerRepositoryFacade.get(offerId);
 	}
@@ -85,7 +62,7 @@ public class OfferService {
 		if (wantedArticleId != null) {
 			criteria.addCriterion(OfferQueryBuilder.Field.WANTED_ARTICLE_ID, wantedArticleId);
 		}
-		return searchService.searchCake(criteria, OfferQueryBuilder.class);
+		return searchService.search(criteria, OfferQueryBuilder.class);
 	}
 
 	public List<OfferEntity> searchByOfferedArticleId(Integer offeredArticleId) {

@@ -6,16 +6,21 @@ import com.matchandtrade.rest.RestException;
 
 /**
  * POJO to keep pagination values.
+ *
  * @author rafael.santos.bra@gmail.com
  */
 public class Pagination {
-	
+
+	private int size = 10;
+	private int number = 1;
+	private long total = 0;
+
 	public enum Parameter {
-		FIRST("_firstPage"), LAST("_lastPage"), NUMBER("_pageNumber"), SIZE("_pageSize"), TOTAL_COUNT("_totalCount");
+		NUMBER("_pageNumber"), SIZE("_pageSize"), TOTAL_COUNT("_totalCount");
 	    
 		private final String text;
 	    
-	    private Parameter(final String text) {
+	    Parameter(final String text) {
 	        this.text = text;
 	    }
 
@@ -24,10 +29,6 @@ public class Pagination {
 	        return text;
 	    }
 	}
-	
-	private int size = 10;
-	private int number = 1;
-	private long total = 0;
 
 	public Pagination() {
 		super();
@@ -35,14 +36,14 @@ public class Pagination {
 	
 	public Pagination(Integer number, Integer size) {
 		if (number != null) {
-			// TODO throw invalidArgumentException if number < 0, but need to handle it on RestResponseAdvice
+			if (number < 1) {
+				throw new IllegalArgumentException("Pagination number must be greater than 0. Actual value: " + number);
+			}
 			this.number = number;
 		}
 		if (size != null){
-			// TODO throw invalidArgumentException if number < 1, but need to handle it on RestResponseAdvice
-			if (size > 50) {
-				// TODO throw invalidArgumentException, but need to handle it on RestResponseAdvice
-				throw new RestException(HttpStatus.BAD_REQUEST, "_pageSize cannot be bigger than 50.");
+			if (size < 1 || size > 50) {
+				throw new IllegalArgumentException("Pagination size must be between 1 and 50. Actual value: " + size);
 			}
 			this.size = size;
 		}
@@ -71,7 +72,7 @@ public class Pagination {
 	}
 	
 	/**
-	 * Get the page number starting on zero.
+	 * Get the page number starting on one.
 	 */
 	public int getNumber() {
 		return number;
@@ -86,6 +87,7 @@ public class Pagination {
 	
 	/**
 	 * Set the total of records
+	 *
 	 * @param total
 	 */
 	public void setTotal(long total) {

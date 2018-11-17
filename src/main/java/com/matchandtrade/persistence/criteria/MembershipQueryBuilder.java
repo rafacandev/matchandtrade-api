@@ -26,7 +26,6 @@ public class MembershipQueryBuilder implements QueryBuilder {
 		
 		@Override
 		public String alias() { return alias; }
-		
 	}
 	
     private static final String BASIC_HQL = "FROM MembershipEntity AS membership";

@@ -3,10 +3,9 @@ package com.matchandtrade.persistence.common;
 import java.util.List;
 
 /**
- * Holds data resulting from a search.
+ * POJO for search results.
  * 
  * @author rafael.santos.bra@gmail.com
- *
  * @param <T>
  */
 public class SearchResult<T> {

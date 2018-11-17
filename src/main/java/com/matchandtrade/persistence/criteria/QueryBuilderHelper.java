@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 @Component
@@ -24,46 +26,38 @@ public class QueryBuilderHelper {
 	/**
 	 * Builds a string representing a JPA Query WHERE clause.
 	 * It takes in consideration the {@code Criterion.LogicalOperator} and {@code Criterion.Restriction} 
-	 * @param field
-	 * @param criterion
-	 * @return
 	 */
 	private static String buildClauses(List<Criterion> criteria) {
+		Deque<Criterion> queue = new ArrayDeque<>(criteria);
+		// The first criterion goes along with the WHERE clause and does not contain any operator
 		StringBuilder result = new StringBuilder();
-		criteria.forEach( criterion -> {
-			// Check if result already starts with WHERE
-			if (result.lastIndexOf(" WHERE") < 0) {
-				result.append(" WHERE");
-				result.append(buildClause(criterion.getField().alias(), criterion.getField().toString(), criterion, false));
-			} else {
-				result.append(buildClause(criterion.getField().alias(), criterion.getField().toString(), criterion, true));
-			}
-		});
+		if (!queue.isEmpty()) {
+			result.append(" WHERE");
+			Criterion criterion = queue.pop();
+			result.append(" ").append(buildClause(criterion.getField().alias(), criterion.getField().toString(), criterion));
+		}
+		// All subsequent clauses contains operator
+		for (Criterion criterion : queue) {
+			result.append(" ").append(criterion.getLogicalOperator().name());
+			result.append(" ").append(buildClause(criterion.getField().alias(), criterion.getField().toString(), criterion));
+		}
 		return result.toString();
 	}
 	
-	private static String buildClause(final String alias, final String param, Criterion criterion, boolean prependOperator) {
+	private static String buildClause(final String alias, final String param, Criterion criterion) {
 		StringBuilder result = new StringBuilder();
-		
-		if (prependOperator && criterion.getLogicalOperator().equals(LogicalOperator.AND)) {
-			result.append(" AND");
-		} else if (prependOperator && criterion.getLogicalOperator().equals(LogicalOperator.OR)) {
-			result.append(" OR");
-		}
-		
 		if (criterion.getRestriction().equals(Restriction.EQUALS)) {
-			result.append(" " + alias + " = :" + param);
+			result.append(alias).append(" = :").append(param);
 		} else if (criterion.getRestriction().equals(Restriction.NOT_EQUALS)) {
-			result.append(" " + alias + " != :" + param);
+			result.append(alias).append(" != :").append(param);
 		} else if (criterion.getRestriction().equals(Restriction.EQUALS_IGNORE_CASE)) {
-			result.append(" UPPER(" + alias + ") = UPPER(:" + param + ")");
+			result.append("UPPER(").append(alias).append(") = UPPER(:").append(param).append(")");
 		} else if (criterion.getRestriction().equals(Restriction.LIKE_IGNORE_CASE)) {
-			result.append(" UPPER(" + alias + ") LIKE UPPER(:" + param + ")");
+			result.append("UPPER(").append(alias).append(") LIKE UPPER(:").append(param).append(")");
 		}
-		
 		return result.toString();
 	}
-	
+
 	public Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql) {
 		return buildQuery(searchCriteria, hql, false);
 	}
@@ -73,9 +67,9 @@ public class QueryBuilderHelper {
 			return "";
 		}
 		StringBuilder result = new StringBuilder(" ORDER BY ");
-		sortList.forEach(sort -> {
-			result.append(" " + sort.field().alias() + " " + sort.type());
-		});
+		for(Sort sort : sortList) {
+			result.append(" ").append(sort.field().alias()).append(" ").append(sort.type());
+		}
 		return result.toString();
 	}
 
@@ -85,7 +79,9 @@ public class QueryBuilderHelper {
 			hql.append(buildSort(searchCriteria.getSortList()));
 		}
 		Query result = entityManager.createQuery(hql.toString());
-		searchCriteria.getCriteria().forEach(c -> result.setParameter(c.getField().toString(), c.getValue()));
+		for (Criterion c : searchCriteria.getCriteria()) {
+			result.setParameter(c.getField().toString(), c.getValue());
+		}
 		return result;
 	}
 

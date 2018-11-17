@@ -47,7 +47,7 @@ public class OfferController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validateGetById(membershipId, offerId, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validateGetById(membershipId, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Delegate to Service layer
 		OfferEntity entity = offerService.get(offerId);
 		// Transform the response
@@ -61,7 +61,7 @@ public class OfferController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validateGetAll(membershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validateGetAll(membershipId, _pageNumber, _pageSize, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Delegate to service layer
 		SearchResult<OfferEntity> searchResult = offerService.search(membershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize);
 		// Transform the response

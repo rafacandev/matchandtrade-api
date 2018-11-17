@@ -44,7 +44,7 @@ public class MembershipService {
 			searchCriteria.addCriterion(MembershipQueryBuilder.Field.TYPE, type);
 		}
 		// Delegate to Repository layer
-		return searchService.searchCake(searchCriteria, MembershipQueryBuilder.class);
+		return searchService.search(searchCriteria, MembershipQueryBuilder.class);
 	}
 
 }

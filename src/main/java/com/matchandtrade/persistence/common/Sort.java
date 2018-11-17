@@ -1,13 +1,12 @@
 package com.matchandtrade.persistence.common;
 
 /**
- * <p>
- * {@code Sort} is used in conjunction to {@code Criteria} and used to indicate how to sort the results.
- * </p>
- * 
- * {@code field} indicates which field alias to use which varies according to which {@code QueryableRepository} is begin used.
- * {@code type} indicates which sorting type to use (e.g.: ASC, DESC).  
- * 
+ * <ul>
+ *     <li>{@code Sort} is used in conjunction to {@code Criteria} and used to indicate how to sort the results.</li>
+ *     <li>{@code field} indicates which field alias to use which varies according to which {@code QueryableRepository} is begin used.</li>
+ *     <li>{@code type} indicates which sorting type to use (e.g.: ASC, DESC).</li>
+ * </ul>
+ *
  * Example: Imagine the following JPA Query
  * <pre>
  *     FROM TradEntity AS trade ORDER BY trade.name ASC;
