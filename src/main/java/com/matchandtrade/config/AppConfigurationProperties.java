@@ -95,7 +95,7 @@ public class AppConfigurationProperties {
 
 	@Component
 	public static class FileStorage {
-		@Value("${essence.storage.root.folder}")
+		@Value("${essence.root.folder}")
 		private String essenceRootPath;
 
 		public String getEssenceRootPath() {

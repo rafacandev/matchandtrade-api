@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
- * Add extra resource handler to expose {@code /essences/**} to the directory defined in the {@code essence.storage.root.folder} property.
+ * Add extra resource handler to expose {@code /essences/**} to the directory defined in the {@code essence.root.folder} property.
  * 
  * @author rafael.santos.bra@gmail.com
  * @see http://www.baeldung.com/spring-mvc-static-resources
