@@ -41,7 +41,7 @@ public class ArticleAttachmentValidator {
 	}
 
 	private void verifyThatAttachmentExists(Integer attachmentId) {
-		AttachmentEntity attachment = attachmentRespositoryFacade.get(attachmentId);
+		AttachmentEntity attachment = attachmentRespositoryFacade.find(attachmentId);
 		if (attachment == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Attachment.attachmentId: %s does not exist.", attachmentId));
 		}

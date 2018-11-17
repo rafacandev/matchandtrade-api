@@ -43,8 +43,8 @@ public class TradeService {
 		tradeRepository.delete(tradeId);
 	}
 
-	public TradeEntity get(Integer tradeId) {
-		return tradeRepository.get(tradeId);
+	public TradeEntity find(Integer tradeId) {
+		return tradeRepository.find(tradeId);
 	}
 
 	public SearchResult<TradeEntity> search(Integer pageNumber, Integer pageSize) {

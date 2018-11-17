@@ -36,12 +36,11 @@ public class OfferRepositoryFacade {
 		offerRepository.delete(offerId);
 	}
 
-	public OfferEntity get(Integer offerId) {
+	public OfferEntity find(Integer offerId) {
 		return offerRepository.findOne(offerId);
 	}
 
-	// TODO: Can we rename this to getByOfferedArticle????
-	public List<OfferEntity> getByOfferedArticleId(Integer offeredArticleId) {
+	public List<OfferEntity> findByOfferedArticleId(Integer offeredArticleId) {
 		return offerRepository.findByOfferedArticleArticleId(offeredArticleId);
 	}
 

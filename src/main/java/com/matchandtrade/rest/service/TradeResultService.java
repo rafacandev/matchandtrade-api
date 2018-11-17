@@ -62,9 +62,9 @@ public class TradeResultService {
 		int pageSize = 50;
 		SearchResult<ArticleEntity> articlesResult = null;
 		do {
-			articlesResult = searchArticles(tradeId, new Pagination(pageNumber++, pageSize));
+			articlesResult = findArticlesByTradeId(tradeId, new Pagination(pageNumber++, pageSize));
 			articlesResult.getResultList().forEach(article -> {
-				MembershipEntity membership = searchMembership(article);
+				MembershipEntity membership = findMembershipsByArticle(article);
 				StringBuilder line = buildOfferLine(membership, article);
 				tradeMaximizerEntries.append(line.toString() + "\n");
 			});
@@ -99,7 +99,7 @@ public class TradeResultService {
 
 	@Transactional
 	public void generateResults(Integer tradeId) {
-		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
+		TradeEntity trade = tradeRepositoryFacade.find(tradeId);
 		trade.setState(TradeEntity.State.GENERATING_RESULTS);
 		tradeRepositoryFacade.save(trade);
 		String tradeMaximizerOutput = buildTradeMaximizerOutput(tradeId);
@@ -111,8 +111,8 @@ public class TradeResultService {
 	}
 
 	@Transactional
-	public String getCsv(Integer tradeId) {
-		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
+	public String findCsv(Integer tradeId) {
+		TradeEntity trade = tradeRepositoryFacade.find(tradeId);
 		String csv;
 		// Return value from database if already exists; otherwhise generate it
 		if (trade.getResult().getCsv() != null) {
@@ -131,8 +131,8 @@ public class TradeResultService {
 
 	
 	@Transactional
-	public TradeResultJson getJson(Integer tradeId) {
-		TradeEntity trade = tradeRepositoryFacade.get(tradeId);
+	public TradeResultJson findJson(Integer tradeId) {
+		TradeEntity trade = tradeRepositoryFacade.find(tradeId);
 		
 		String tradeResultJsonAsString;
 		TradeResultJson tradeResultJson;
@@ -159,7 +159,7 @@ public class TradeResultService {
 		return tradeResultJson;
 	}
 
-	private SearchResult<ArticleEntity> searchArticles(Integer tradeId, Pagination pagination) {
+	private SearchResult<ArticleEntity> findArticlesByTradeId(Integer tradeId, Pagination pagination) {
 		SearchCriteria articlesCriteria = new SearchCriteria(pagination);
 		articlesCriteria.addCriterion(ArticleQueryBuilder.Field.TRADE_ID, tradeId);
 		SearchResult<ArticleEntity> result = searchServiceArticle.search(articlesCriteria, ArticleQueryBuilder.class);
@@ -167,7 +167,7 @@ public class TradeResultService {
 		return result;
 	}
 	
-	private MembershipEntity searchMembership(ArticleEntity article) {
+	private MembershipEntity findMembershipsByArticle(ArticleEntity article) {
 		SearchCriteria membershipCriteria = new SearchCriteria(new Pagination(1,1));
 		membershipCriteria.addCriterion(MembershipQueryBuilder.Field.ARTICLE_ID, article.getArticleId());
 		SearchResult<MembershipEntity> membershipResult = searchServiceMembership.search(membershipCriteria, MembershipQueryBuilder.class);

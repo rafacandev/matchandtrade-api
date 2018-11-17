@@ -98,7 +98,7 @@ public class TradeController implements Controller {
 		// Validate the request
 		tradeValidador.validateGet(tradeId);
 		// Delegate to Service layer
-		TradeEntity tradeEntity = tradeService.get(tradeId);
+		TradeEntity tradeEntity = tradeService.find(tradeId);
 		// Transform the response
 		TradeJson response = tradeTransformer.transform(tradeEntity);
 		// Assemble links

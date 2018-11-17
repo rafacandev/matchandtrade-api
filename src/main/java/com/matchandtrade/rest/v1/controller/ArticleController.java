@@ -31,7 +31,7 @@ public class ArticleController implements Controller {
 		// Validate the request
 		articleValidator.validateGet(articleId);
 		// Delegate to service layer
-		ArticleEntity articleEntity = articleService.get(articleId);
+		ArticleEntity articleEntity = articleService.find(articleId);
 		// Transform the response
 		ArticleJson response = articleTransformer.transform(articleEntity);
 		// Assemble links

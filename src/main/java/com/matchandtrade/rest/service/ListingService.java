@@ -18,7 +18,7 @@ public class ListingService {
 
 	@Transactional
 	public void create(Integer membershipId, Integer articleId) {
-		MembershipEntity membership = membershipRepositoryFacade.get(membershipId);
+		MembershipEntity membership = membershipRepositoryFacade.find(membershipId);
 		ArticleEntity article = articleRepositoryFacade.get(articleId);
 		membership.getArticles().add(article);
 		membershipRepositoryFacade.save(membership);
@@ -26,7 +26,7 @@ public class ListingService {
 
 	@Transactional
 	public void delete(Integer membershipId, Integer articleId) {
-		MembershipEntity membership = membershipRepositoryFacade.get(membershipId);
+		MembershipEntity membership = membershipRepositoryFacade.find(membershipId);
 		ArticleEntity article = articleRepositoryFacade.get(articleId);
 		membership.getArticles().remove(article);
 	}

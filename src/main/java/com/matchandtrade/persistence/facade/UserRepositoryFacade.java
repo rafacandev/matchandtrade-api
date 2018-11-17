@@ -12,7 +12,7 @@ public class UserRepositoryFacade {
 	@Autowired
 	private UserRepository userRepository;
 
-	public UserEntity get(Integer userId) {
+	public UserEntity find(Integer userId) {
 		return userRepository.findOne(userId);
 	}
 

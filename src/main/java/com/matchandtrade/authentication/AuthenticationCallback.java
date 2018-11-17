@@ -96,7 +96,7 @@ public class AuthenticationCallback {
 			Integer userId,
 			String accessToken) {
 		// Persists Authentication info
-		authenticationEntity.setUser(userRepository.get(userId));
+		authenticationEntity.setUser(userRepository.find(userId));
 		authenticationEntity.setAntiForgeryState(null);
 		authenticationEntity.setToken(accessToken);
 		authenticationRepository.save(authenticationEntity);

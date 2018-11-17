@@ -28,11 +28,11 @@ public class MembershipService {
 		membershipRepositoryFacade.delete(membershipId);
 	}
 
-	public MembershipEntity get(Integer membershipId) {
-		return membershipRepositoryFacade.get(membershipId);
+	public MembershipEntity find(Integer membershipId) {
+		return membershipRepositoryFacade.find(membershipId);
 	}
 
-	public SearchResult<MembershipEntity> searchByTradeIdUserIdType(Integer tradeId, Integer userId, MembershipEntity.Type type, Integer _pageNumber, Integer _pageSize) {
+	public SearchResult<MembershipEntity> findByTradeIdUserIdType(Integer tradeId, Integer userId, MembershipEntity.Type type, Integer _pageNumber, Integer _pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(_pageNumber, _pageSize));
 		if (userId != null) {
 			searchCriteria.addCriterion(MembershipQueryBuilder.Field.USER_ID, userId);

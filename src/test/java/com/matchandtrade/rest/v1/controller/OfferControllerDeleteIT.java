@@ -66,7 +66,7 @@ public class OfferControllerDeleteIT {
 		OfferEntity alphaForAustralia = offerRandom.createPersistedEntity(ownerMembership.getMembershipId(), alpha.getArticleId(), australia.getArticleId());
 
 		fixture.delete(ownerMembership.getMembershipId(), alphaForAustralia.getOfferId());
-		assertNull(offerRepositoryFacade.get(alphaForAustralia.getOfferId()));
+		assertNull(offerRepositoryFacade.find(alphaForAustralia.getOfferId()));
 	}
 
 	@Test(expected=RestException.class)

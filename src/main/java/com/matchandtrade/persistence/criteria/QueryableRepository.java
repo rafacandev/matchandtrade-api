@@ -1,4 +1,4 @@
-package com.matchandtrade.persistence.facade;
+package com.matchandtrade.persistence.criteria;
 
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;

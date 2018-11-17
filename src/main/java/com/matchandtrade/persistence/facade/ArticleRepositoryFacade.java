@@ -50,7 +50,7 @@ public class ArticleRepositoryFacade {
 		articleRepository.delete(articleId);
 	}
 
-	public ArticleEntity getByUserIdAndArticleId(Integer userId, Integer articleId) {
+	public ArticleEntity findByUserIdAndArticleId(Integer userId, Integer articleId) {
 		return articleRepository.findArticleByUserIdAndArticleId(userId, articleId);
 	}
 

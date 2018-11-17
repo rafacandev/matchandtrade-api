@@ -1,6 +1,5 @@
 package com.matchandtrade.rest.v1.validator;
 
-import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +29,7 @@ public class OfferValidator {
 	}
 
 	public void validateDelete(Integer membershipId, Integer offerId, Integer authenticatedUserId) {
-		MembershipEntity membership = membershipService.get(membershipId);
+		MembershipEntity membership = membershipService.find(membershipId);
 		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 		
 		
@@ -42,12 +41,12 @@ public class OfferValidator {
 
 	public void validateGetAll(Integer membershipId, Integer pageNumber, Integer pageSize, Integer authenticatedUserId) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);	
-		MembershipEntity membership = membershipService.get(membershipId);
+		MembershipEntity membership = membershipService.find(membershipId);
 		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 	}
 
 	public void validateGetById(Integer membershipId, Integer authenticatedUserId) {
-		MembershipEntity membership = membershipService.get(membershipId);
+		MembershipEntity membership = membershipService.find(membershipId);
 		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 	}
 
@@ -73,7 +72,7 @@ public class OfferValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must belong to existing Articles.");
 		}
 		
-		MembershipEntity membership = membershipService.get(membershipId);
+		MembershipEntity membership = membershipService.find(membershipId);
 		if (!offeringUserId.equals(membership.getUser().getUserId())) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Membership must belong to the current authenticated User.");
 		}

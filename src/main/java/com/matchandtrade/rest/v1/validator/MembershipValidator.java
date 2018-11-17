@@ -32,25 +32,25 @@ public class MembershipValidator {
 	 * @param json to be validated
 	 */
 	public void validatePost(MembershipJson json) {
-		if (userService.get(json.getUserId()) == null) {
+		if (userService.find(json.getUserId()) == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Membership.userId must refer to an existing User.");
 		}
 		
-		TradeEntity trade = tradeService.get(json.getTradeId());
+		TradeEntity trade = tradeService.find(json.getTradeId());
 		if (trade == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Membership.tradeId must refer to an existing Trade.");
 		} else if (trade.getState() != TradeEntity.State.SUBMITTING_ARTICLES) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.State must be SUBMITTING_ARTICLES when creating a new Membership.");
 		}
 		
-		SearchResult<MembershipEntity> searchResult = membershipService.searchByTradeIdUserIdType(json.getTradeId(), json.getUserId(), null, 1, 1);
+		SearchResult<MembershipEntity> searchResult = membershipService.findByTradeIdUserIdType(json.getTradeId(), json.getUserId(), null, 1, 1);
 		if (!searchResult.getResultList().isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "The combination of Membership.tradeId and Membership.userId must be unique.");
 		}
 	}
 
 	public void validateDelete(Integer membershipId) {
-		MembershipEntity tm = membershipService.get(membershipId);
+		MembershipEntity tm = membershipService.find(membershipId);
 		if (tm == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Membership.membershipId was not found");
 		}
@@ -61,7 +61,7 @@ public class MembershipValidator {
 	}
 
 	public void validateGet(Integer membershipId) {
-		MembershipEntity membership = membershipService.get(membershipId);
+		MembershipEntity membership = membershipService.find(membershipId);
 		if (membership == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Membership.membershipId was not found");
 		}

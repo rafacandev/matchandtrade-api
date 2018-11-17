@@ -16,7 +16,7 @@ public class AuthenticationRespositoryFacade {
 		authenticationRepository.save(entity);
 	}
 
-	public AuthenticationEntity get(Integer authenticationId) {
+	public AuthenticationEntity find(Integer authenticationId) {
 		return authenticationRepository.findOne(authenticationId);
 	}
 	

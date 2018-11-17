@@ -21,7 +21,7 @@ public class MembershipRandom {
 
 	public MembershipEntity createPersistedEntity(UserEntity user) {
 		TradeEntity trade = tradeRandom.createPersistedEntity(user);
-		SearchResult<MembershipEntity> searchResult = membershipService.searchByTradeIdUserIdType(
+		SearchResult<MembershipEntity> searchResult = membershipService.findByTradeIdUserIdType(
 			trade.getTradeId(),
 			user.getUserId(),
 			MembershipEntity.Type.OWNER,

@@ -30,11 +30,11 @@ public class ArticleValidatorUT {
 	@Before
 	public void before() {
 		fixture = new ArticleValidator();
-		when(userRepositoryFacadeMock.get(1)).thenReturn(new UserEntity());
+		when(userRepositoryFacadeMock.find(1)).thenReturn(new UserEntity());
 		fixture.userRepositoryFacade = userRepositoryFacadeMock;
 
 		when(articleRepositoryFacadeMock.get(1)).thenReturn(new ArticleEntity());
-		when(articleRepositoryFacadeMock.getByUserIdAndArticleId(1, 1)).thenReturn(new ArticleEntity());
+		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(1, 1)).thenReturn(new ArticleEntity());
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 
 		defaultArticle = new ArticleJson();
@@ -111,7 +111,7 @@ public class ArticleValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_UserDoesNotExist_Then_ThrowsBadRequest() {
-		when(userRepositoryFacadeMock.get(0)).thenReturn(null);
+		when(userRepositoryFacadeMock.find(0)).thenReturn(null);
 		try {
 			fixture.validatePost(0, defaultArticle);
 		} catch (RestException e) {

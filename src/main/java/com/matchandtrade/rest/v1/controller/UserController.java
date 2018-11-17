@@ -33,7 +33,7 @@ public class UserController implements Controller {
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request - nothing to validate
 		// Delegate to service
-		UserEntity userEntity = userService.get(userId);
+		UserEntity userEntity = userService.find(userId);
 		UserEntity sanitizedUser = userService.sanitize(userEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
 		UserJson response = userTransformer.transform(sanitizedUser);

@@ -38,8 +38,8 @@ public class MembershipTransformer extends Transformer<MembershipEntity, Members
 		MembershipEntity result;
 		result = new MembershipEntity();
 		result.setMembershipId(json.getMembershipId());
-		result.setTrade(tradeRepositoryFacade.get(json.getTradeId()));
-		result.setUser(userRepositoryFacade.get(json.getUserId()));
+		result.setTrade(tradeRepositoryFacade.find(json.getTradeId()));
+		result.setUser(userRepositoryFacade.find(json.getUserId()));
 		return result;
 	}
 

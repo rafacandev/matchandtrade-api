@@ -21,7 +21,7 @@ public class ArticleAttachmentService {
 	@Transactional
 	public AttachmentEntity create(Integer articleId, MultipartFile multipartFile) {
 		AttachmentEntity attachment = attachmentService.create(multipartFile);
-		ArticleEntity article = articleService.get(articleId);
+		ArticleEntity article = articleService.find(articleId);
 		article.getAttachments().add(attachment);
 		articleService.update(article);
 		return attachment;
@@ -29,8 +29,8 @@ public class ArticleAttachmentService {
 
 	@Transactional
 	public void delete(Integer articleId, Integer attachmentId) {
-		AttachmentEntity attachment = attachmentRepositoryFacade.get(attachmentId);
-		ArticleEntity article = articleService.get(articleId);
+		AttachmentEntity attachment = attachmentRepositoryFacade.find(attachmentId);
+		ArticleEntity article = articleService.find(articleId);
 		// TODO: More performative implementation, this could be slow if articles have several attachments
 		if (article.getAttachments().remove(attachment)) {
 			articleService.update(article);

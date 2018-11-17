@@ -16,7 +16,7 @@ public class AttachmentRepositoryFacade {
 	@Autowired
 	private AttachmentRepository attachmentRepository;
 	
-	public AttachmentEntity get(Integer attachmentId) {
+	public AttachmentEntity find(Integer attachmentId) {
 		return attachmentRepository.findOne(attachmentId);
 	}
 

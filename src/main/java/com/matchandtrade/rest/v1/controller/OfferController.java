@@ -49,7 +49,7 @@ public class OfferController implements Controller {
 		// Validate the request
 		offerValidator.validateGetById(membershipId, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Delegate to Service layer
-		OfferEntity entity = offerService.get(offerId);
+		OfferEntity entity = offerService.find(offerId);
 		// Transform the response
 		OfferJson response = offerTransformer.transform(entity);
 //		// TODO: Assemble links

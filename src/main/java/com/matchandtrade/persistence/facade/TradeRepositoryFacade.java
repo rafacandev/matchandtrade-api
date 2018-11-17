@@ -26,7 +26,7 @@ public class TradeRepositoryFacade {
 		tradeRepository.delete(tradeId);
 	}
 
-	public TradeEntity get(Integer tradeId) {
+	public TradeEntity find(Integer tradeId) {
 		return tradeRepository.findOne(tradeId);
 	}
 	

@@ -20,7 +20,7 @@ public class UserValidator {
 	 * @param json
 	 */
 	public void validatePut(UserJson json) {
-		UserEntity userEntity = userService.get(json.getUserId());
+		UserEntity userEntity = userService.find(json.getUserId());
 		if (json.getEmail() == null || userEntity == null || !json.getEmail().equalsIgnoreCase(userEntity.getEmail())) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Cannot change User.email on PUT operations.");
 		}

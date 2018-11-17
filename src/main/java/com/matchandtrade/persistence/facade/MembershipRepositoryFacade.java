@@ -16,11 +16,11 @@ public class MembershipRepositoryFacade {
 		membershipRepository.delete(membershipId);
 	}
 
-	public MembershipEntity get(Integer membershipId) {
+	public MembershipEntity find(Integer membershipId) {
 		return membershipRepository.findOne(membershipId);
 	}
 
-	public MembershipEntity getByOfferId(Integer offerId) {
+	public MembershipEntity findByOfferId(Integer offerId) {
 		return membershipRepository.findByOffers_OfferId(offerId);
 	}
 

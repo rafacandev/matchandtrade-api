@@ -24,7 +24,7 @@ public class ArticleService {
 		userRepositoryFacade.save(user);
 	}
 
-	public ArticleEntity get(Integer articleId) {
+	public ArticleEntity find(Integer articleId) {
 		return articleRepositoryFacade.get(articleId);
 	}
 

@@ -56,7 +56,7 @@ public class MembershipController implements Controller {
 		// Validate the request - Nothing to validate
 		membershipValidador.validateGet(membershipId);
 		// Delegate to service layer
-		MembershipEntity searchResult = membershipService.get(membershipId);
+		MembershipEntity searchResult = membershipService.find(membershipId);
 		// Transform the response
 		MembershipJson response = membershipTransformer.transform(searchResult);
 		// Assemble links
@@ -71,7 +71,7 @@ public class MembershipController implements Controller {
 		// Validate the request - Nothing to validate
 		membershipValidador.validateGet(_pageNumber, _pageSize);
 		// Delegate to Service layer
-		SearchResult<MembershipEntity> searchResult = membershipService.searchByTradeIdUserIdType(tradeId, userId, type, _pageNumber, _pageSize);
+		SearchResult<MembershipEntity> searchResult = membershipService.findByTradeIdUserIdType(tradeId, userId, type, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<MembershipJson> response = membershipTransformer.transform(searchResult);
 		// Assemble links

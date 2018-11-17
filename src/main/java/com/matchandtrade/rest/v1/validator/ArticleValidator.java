@@ -59,7 +59,7 @@ public class ArticleValidator {
 	 * @param userId
 	 */
 	private void verifyThatUserExists(Integer userId) {
-		UserEntity user = userRepositoryFacade.get(userId);
+		UserEntity user = userRepositoryFacade.find(userId);
 		if (user == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does not exist.", userId));
 		}
@@ -72,7 +72,7 @@ public class ArticleValidator {
 	 * @param articleId
 	 */
 	private void verifyThatUserHasArticle(Integer userId, Integer articleId) {
-		ArticleEntity article = articleRepositoryFacade.getByUserIdAndArticleId(userId, articleId);
+		ArticleEntity article = articleRepositoryFacade.findByUserIdAndArticleId(userId, articleId);
 		if (article == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does have Article.articleId: %d.", userId, articleId));
 		}

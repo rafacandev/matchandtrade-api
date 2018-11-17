@@ -45,7 +45,7 @@ public class ArticleRandom {
 	
 	@Transactional
 	public ArticleEntity createPersistedEntity(MembershipEntity membership) {
-		MembershipEntity tme = membershipRepository.get(membership.getMembershipId());
+		MembershipEntity tme = membershipRepository.find(membership.getMembershipId());
 		ArticleEntity result = nextEntity();
 		articleRepositoryFacade.save(result);
 		tme.getArticles().add(result);
@@ -57,7 +57,7 @@ public class ArticleRandom {
 
 	@Transactional
 	public ArticleEntity createPersistedEntity(MembershipEntity membership, String name) {
-		MembershipEntity tme = membershipRepository.get(membership.getMembershipId());
+		MembershipEntity tme = membershipRepository.find(membership.getMembershipId());
 		ArticleEntity result = new ArticleEntity();
 		result.setName(name);
 		articleRepositoryFacade.save(result);

@@ -95,8 +95,8 @@ public class AttachmentService {
 		return ImageUtil.obtainCenterCrop(imageResized, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
 	}
 	
-	public AttachmentEntity get(Integer attachmentId) {
-		return attachmentRepositoryFacade.get(attachmentId);
+	public AttachmentEntity find(Integer attachmentId) {
+		return attachmentRepositoryFacade.find(attachmentId);
 	}
 
 	private void saveThumbnailEssence(AttachmentEntity attachment, Path thumbnailRelativePath) {

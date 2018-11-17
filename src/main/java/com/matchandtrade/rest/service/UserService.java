@@ -18,8 +18,8 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public UserEntity get(Integer userId) {
-		return userRepository.get(userId);
+	public UserEntity find(Integer userId) {
+		return userRepository.find(userId);
 	}
 	
 	public UserEntity searchByArticleId(Integer articleId) {

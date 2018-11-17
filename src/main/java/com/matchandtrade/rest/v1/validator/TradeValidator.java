@@ -77,7 +77,7 @@ public class TradeValidator {
 		checkDescriptionLength(json.getDescription());
 
 		// Validates if the Trade.tradeId exists otherwise return status NOT_FOUND
-		TradeEntity t = tradeService.get(json.getTradeId());
+		TradeEntity t = tradeService.find(json.getTradeId());
 		if (t == null) {
 			throw new RestException(HttpStatus.NOT_FOUND);
 		}
@@ -104,7 +104,7 @@ public class TradeValidator {
 	
 	@Transactional
 	public void validateDelete(Integer tradeId) {
-		TradeEntity tradeEntity = tradeService.get(tradeId);
+		TradeEntity tradeEntity = tradeService.find(tradeId);
 		if (tradeEntity == null) {
 			throw new RestException(HttpStatus.NOT_FOUND);
 		}
@@ -115,7 +115,7 @@ public class TradeValidator {
 	}
 
 	public void validateGet(Integer tradeId) {
-		TradeEntity entity = tradeService.get(tradeId);
+		TradeEntity entity = tradeService.find(tradeId);
 		if (entity == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Trade.tradeId was not found");
 		}

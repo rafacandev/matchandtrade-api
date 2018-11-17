@@ -4,7 +4,7 @@ import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.ArticleRecipeQueryBuilder;
 import com.matchandtrade.persistence.entity.Entity;
-import com.matchandtrade.persistence.facade.QueryableRepository;
+import com.matchandtrade.persistence.criteria.QueryableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

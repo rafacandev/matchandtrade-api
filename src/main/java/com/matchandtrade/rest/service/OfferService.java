@@ -31,7 +31,7 @@ public class OfferService {
 
 	@Transactional
 	public void create(Integer membershipId, OfferEntity offer) {
-		MembershipEntity membership = membershipRepositoryFacade.get(membershipId);
+		MembershipEntity membership = membershipRepositoryFacade.find(membershipId);
 		offerRepositoryFacade.save(offer);
 		membership.getOffers().add(offer);
 		membershipRepositoryFacade.save(membership);
@@ -39,15 +39,15 @@ public class OfferService {
 
 	@Transactional
 	public void delete(Integer offerId) {
-		MembershipEntity membership = membershipRepositoryFacade.getByOfferId(offerId);
-		OfferEntity offer = offerRepositoryFacade.get(offerId);
+		MembershipEntity membership = membershipRepositoryFacade.findByOfferId(offerId);
+		OfferEntity offer = offerRepositoryFacade.find(offerId);
 		membership.getOffers().remove(offer);
 		membershipRepositoryFacade.save(membership);
 		offerRepositoryFacade.delete(offerId);
 	}
 
-	public OfferEntity get(Integer offerId) {
-		return offerRepositoryFacade.get(offerId);
+	public OfferEntity find(Integer offerId) {
+		return offerRepositoryFacade.find(offerId);
 	}
 
 	public SearchResult<OfferEntity> search(Integer membershipId, Integer offeredArticleId, Integer wantedArticleId,
@@ -66,7 +66,7 @@ public class OfferService {
 	}
 
 	public List<OfferEntity> searchByOfferedArticleId(Integer offeredArticleId) {
-		return offerRepositoryFacade.getByOfferedArticleId(offeredArticleId);
+		return offerRepositoryFacade.findByOfferedArticleId(offeredArticleId);
 	}
 
 }

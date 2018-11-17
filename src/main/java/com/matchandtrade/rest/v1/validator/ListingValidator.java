@@ -47,7 +47,7 @@ public class ListingValidator {
 	}
 
 	private void verifyThatArticleBelongsToUser(Integer userId, Integer articleId) {
-		ArticleEntity article = articleRepositoryFacade.getByUserIdAndArticleId(userId, articleId);
+		ArticleEntity article = articleRepositoryFacade.findByUserIdAndArticleId(userId, articleId);
 		if (article == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Article.articleId: %d does not belong to User.userId: %d", articleId, userId));
 		}
