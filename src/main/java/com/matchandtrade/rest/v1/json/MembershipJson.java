@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.matchandtrade.rest.JsonLinkSupport;
 
+import java.util.Objects;
+
 public class MembershipJson extends JsonLinkSupport {
 
 	public enum Type {
@@ -14,6 +16,18 @@ public class MembershipJson extends JsonLinkSupport {
 	private Integer userId;
 	private Integer tradeId;
 	private Type type;
+
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		MembershipJson that = (MembershipJson) o;
+		return Objects.equals(membershipId, that.membershipId) &&
+			Objects.equals(userId, that.userId) &&
+			Objects.equals(tradeId, that.tradeId) &&
+			type == that.type;
+	}
 
 	public Integer getTradeId() {
 		return tradeId;
@@ -31,6 +45,11 @@ public class MembershipJson extends JsonLinkSupport {
 
 	public Integer getUserId() {
 		return userId;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(membershipId, userId, tradeId, type);
 	}
 
 	public void setTradeId(Integer tradeId) {

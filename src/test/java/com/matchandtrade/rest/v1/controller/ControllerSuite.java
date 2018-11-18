@@ -10,7 +10,8 @@ import org.springframework.test.context.TestPropertySource;
 @RunWith(Suite.class)
 @SuiteClasses({
 	UserControllerIT.class,
-	TradeControllerIT.class
+	TradeControllerIT.class,
+	MembershipControllerIT.class
 })
 public class ControllerSuite {
 
