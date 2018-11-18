@@ -16,7 +16,7 @@ import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.rest.v1.validator.UserValidator;
 
 @RestController
-@RequestMapping(path="/matchandtrade-api/v1/users/")
+@RequestMapping(path="/matchandtrade-api/v1/users")
 public class UserController implements Controller {
 
 	@Autowired
@@ -27,7 +27,7 @@ public class UserController implements Controller {
 	@Autowired
 	UserValidator userValidador;
 
-	@RequestMapping(path="{userId}", method=RequestMethod.GET)
+	@RequestMapping(path="/{userId}", method=RequestMethod.GET)
 	public UserJson get(@PathVariable("userId") Integer userId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
@@ -42,7 +42,7 @@ public class UserController implements Controller {
 		return response;
 	}
 	
-	@RequestMapping(path="{userId}", method=RequestMethod.PUT)
+	@RequestMapping(path="/{userId}", method=RequestMethod.PUT)
 	public UserJson put(@PathVariable("userId") Integer userId, @RequestBody UserJson requestJson) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
@@ -59,4 +59,5 @@ public class UserController implements Controller {
 		UserLinkAssember.assemble(response);
 		return response;
 	}
+
 }

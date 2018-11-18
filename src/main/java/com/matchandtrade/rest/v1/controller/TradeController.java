@@ -72,7 +72,7 @@ public class TradeController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		tradeValidador.validateDelete(tradeId);
+		tradeValidador.validateDelete(authenticationProvider.getAuthentication().getUser(), tradeId);
 		// Delegate to service layer
 		tradeService.delete(tradeId);
 	}

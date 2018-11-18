@@ -54,14 +54,14 @@ public class StringRandom {
 	}
 	
 	public static String nextEmail() {
-		return nextName() + "@random.com";
+		return nextName().replace(" ", "").replace("-", "") + "@random.com";
 	}
 	
 	public static String nextString() {
 		return random.nextInt(99999) + "-" + random.nextInt(99999) + "-" + random.nextInt(99999);		
 	}
 
-	public static String sequencialNumericString(int length) {
+	public static String sequentialNumericString(int length) {
 		StringBuilder result = new StringBuilder();
 		for (int i=0; i<length; i++) {
 			result.append(i % 10);

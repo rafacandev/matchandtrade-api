@@ -56,13 +56,6 @@ public class TradeService {
 	@Transactional
 	public void update(TradeEntity tradeEntity) {
 		tradeRepository.save(tradeEntity);
-		// Make authenticated user the owner of the trade
-		// TODO: Review this, can we remove membership save from here?
-		MembershipEntity membershipEntity = new MembershipEntity();
-		membershipEntity.setTrade(tradeEntity);
-		membershipEntity.setType(MembershipEntity.Type.OWNER);
-		membershipRepository.save(membershipEntity);
-		
 		if (TradeEntity.State.GENERATE_RESULTS == tradeEntity.getState()) {
 			tradeResultService.generateResults(tradeEntity.getTradeId());
 		}

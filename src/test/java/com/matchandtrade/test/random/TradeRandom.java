@@ -15,9 +15,15 @@ public class TradeRandom {
 	@Autowired
 	private TradeService tradeService;
 	private TradeTransformer tradeTransformer = new TradeTransformer();
+	@Autowired
+	private UserRandom userRandom;
 
 	public TradeEntity createEntity() {
 		return tradeTransformer.transform(createJson());
+	}
+
+	public TradeEntity createPersistedEntity() {
+		return createPersistedEntity(userRandom.createPersistedEntity());
 	}
 
 	public TradeEntity createPersistedEntity(UserEntity owner) {
@@ -28,7 +34,7 @@ public class TradeRandom {
 
 	public static TradeJson createJson() {
 		TradeJson result = new TradeJson();
-		result.setName(StringRandom.nextName());
+		result.setName(StringRandom.nextName() + System.currentTimeMillis());
 		result.setDescription(StringRandom.nextDescription());
 		result.setState(TradeJson.State.SUBMITTING_ARTICLES);
 		return result;

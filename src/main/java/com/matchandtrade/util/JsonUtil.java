@@ -1,6 +1,8 @@
 package com.matchandtrade.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,6 +37,27 @@ public class JsonUtil {
 	}
 
 	/**
+	 * Parse a string representing a JSON array to a {@code List<jsonClass>}.
+	 * This parsing approach is slow, use with caution.
+	 *
+	 * @param listString
+	 * @param jsonClass
+	 * @throws java.io.IOException
+	 * @return equivalent Java List
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> fromArrayString(String listString, Class<T> jsonClass) throws java.io.IOException {
+		List<T> rawList = JsonUtil.fromString(listString, List.class);
+		List<T> result = new ArrayList<>();
+		for (T entry : rawList) {
+			String entryAsString = JsonUtil.toJson(entry);
+			T json = JsonUtil.fromString(entryAsString, jsonClass);
+			result.add(json);
+		}
+		return result;
+	}
+
+	/**
 	 * Instantiate objectMapper with default configuration if it is null, then, return objectMapper. 
 	 * @return objectMapper with default config
 	 */
@@ -65,7 +88,6 @@ public class JsonUtil {
 			return json;
 		}
 	}
-
 
 	/**
 	 * Parse an object to a JSON string.

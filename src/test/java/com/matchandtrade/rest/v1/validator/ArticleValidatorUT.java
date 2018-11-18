@@ -44,13 +44,13 @@ public class ArticleValidatorUT {
 
 	@Test
 	public void validatePost_When_NameLengthIs150_Then_Succeeds() {
-		defaultArticle.setName(StringRandom.sequencialNumericString(150));
+		defaultArticle.setName(StringRandom.sequentialNumericString(150));
 		fixture.validatePost(1, defaultArticle);
 	}
 
 	@Test
 	public void validatePost_When_WithNameLengthIs3_Then_Succeeds() {
-		defaultArticle.setName(StringRandom.sequencialNumericString(3));
+		defaultArticle.setName(StringRandom.sequentialNumericString(3));
 		fixture.validatePost(1, defaultArticle);
 	}
 
@@ -67,7 +67,7 @@ public class ArticleValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_NameLengthIs2_Then_ThrowsBadRequest() {
-		defaultArticle.setName(StringRandom.sequencialNumericString(2));
+		defaultArticle.setName(StringRandom.sequentialNumericString(2));
 		try {
 			fixture.validatePost(1, defaultArticle);
 		} catch (RestException e) {
@@ -78,7 +78,7 @@ public class ArticleValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_NameLengthIs151_Then_ThrowsBadRequest() {
-		defaultArticle.setName(StringRandom.sequencialNumericString(151));
+		defaultArticle.setName(StringRandom.sequentialNumericString(151));
 		try {
 			fixture.validatePost(1, defaultArticle);
 		} catch (RestException e) {
@@ -89,7 +89,7 @@ public class ArticleValidatorUT {
 
 	@Test
 	public void validatePost_When_DescriptionLengthIs2000_Then_Succeeds() {
-		defaultArticle.setDescription(StringRandom.sequencialNumericString(2000));
+		defaultArticle.setDescription(StringRandom.sequentialNumericString(2000));
 		fixture.validatePost(1, defaultArticle);
 	}
 
@@ -100,7 +100,7 @@ public class ArticleValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_DescriptionLengthIs2001_Then_ThrowsBadRequest() {
-		defaultArticle.setDescription(StringRandom.sequencialNumericString(2001));
+		defaultArticle.setDescription(StringRandom.sequentialNumericString(2001));
 		try {
 			fixture.validatePost(1, defaultArticle);
 		} catch (RestException e) {
