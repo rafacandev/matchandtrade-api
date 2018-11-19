@@ -7,12 +7,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.List;
+
 @RunWith(Suite.class)
 @SuiteClasses({
 	UserControllerIT.class,
 	TradeControllerIT.class,
 	MembershipControllerIT.class,
-	TradeResultControllerIT.class
+	TradeResultControllerIT.class,
+	ListingControllerIT.class
 })
 public class ControllerSuite {
 

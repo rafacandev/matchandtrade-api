@@ -19,7 +19,7 @@ public class ListingController {
 	@Autowired
 	private ListingService listingService;
 
-	@RequestMapping(path="/", method=RequestMethod.POST)
+	@PostMapping("/")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void post(@RequestBody ListingJson request) {
 		// Validate request identity
@@ -31,7 +31,7 @@ public class ListingController {
 		// TODO add heteroas
 	}
 
-	@RequestMapping(path="/", method=RequestMethod.DELETE)
+	@DeleteMapping("/")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@RequestBody  ListingJson request) {
 		// Validate request identity

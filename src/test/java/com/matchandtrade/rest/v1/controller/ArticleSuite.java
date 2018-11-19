@@ -11,9 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	ArticleControllerPutIT.class,
 	ArticleControllerDeleteIT.class,
 	ArticleAttachmentControllerPostIT.class,
-	ArticleAttachmentControllerDeleteIT.class,
-	ListingControllerPostIT.class,
-	ListingControllerDeleteIT.class
+	ArticleAttachmentControllerDeleteIT.class
 })
 public class ArticleSuite {
 
