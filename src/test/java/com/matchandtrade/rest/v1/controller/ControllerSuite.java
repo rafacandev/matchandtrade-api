@@ -11,7 +11,8 @@ import org.springframework.test.context.TestPropertySource;
 @SuiteClasses({
 	UserControllerIT.class,
 	TradeControllerIT.class,
-	MembershipControllerIT.class
+	MembershipControllerIT.class,
+	TradeResultControllerIT.class
 })
 public class ControllerSuite {
 
