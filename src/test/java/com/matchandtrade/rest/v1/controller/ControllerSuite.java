@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+	AuthenticationControllerIT.class,
 	UserControllerIT.class,
 	TradeControllerIT.class,
 	MembershipControllerIT.class,
