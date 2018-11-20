@@ -54,7 +54,7 @@ public class ArticleRepositoryFacade {
 		return articleRepository.findArticleByUserIdAndArticleId(userId, articleId);
 	}
 
-	public SearchResult<ArticleEntity> findAll(int pageNumber, int pageSize) {
+	public SearchResult<ArticleEntity> findAll(Integer pageNumber, Integer pageSize) {
 		Pageable pageable = PersistenceUtil.buildPageable(pageNumber, pageSize);
 		Page<ArticleEntity> page = articleRepository.findAll(pageable);
 		return PersistenceUtil.buildSearchResult(pageable, page);

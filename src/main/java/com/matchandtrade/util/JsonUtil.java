@@ -1,15 +1,13 @@
 package com.matchandtrade.util;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility class for common JSON manipulations
@@ -21,19 +19,16 @@ public class JsonUtil {
 	
 	private static ObjectMapper objectMapper;
 
-	// Utility classes, which are a collection of static members, are not meant to be instantiated.
-	private JsonUtil() { }
-	
 	/**
 	 * Parse an JSON Object from a string.
-	 * @param o
+	 *
+	 * @param jsonString in JSON format
+	 * @param type class equivalent to {@code jsonString}
 	 * @return JSON string
 	 * @throws IOException 
-	 * @throws JsonMappingException 
-	 * @throws JsonParseException 
 	 */
-	public static <T> T fromString(String string, Class<T> type ) throws JsonParseException, JsonMappingException, IOException {
-		return getObjectMapper().readValue(string, type);
+	public static <T> T fromString(String jsonString, Class<T> type ) throws IOException {
+		return getObjectMapper().readValue(jsonString, type);
 	}
 
 	/**
@@ -46,7 +41,7 @@ public class JsonUtil {
 	 * @return equivalent Java List
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> List<T> fromArrayString(String listString, Class<T> jsonClass) throws java.io.IOException {
+	public static <T> List<T> fromArrayString(String listString, Class<T> jsonClass) throws IOException {
 		List<T> rawList = JsonUtil.fromString(listString, List.class);
 		List<T> result = new ArrayList<>();
 		for (T entry : rawList) {

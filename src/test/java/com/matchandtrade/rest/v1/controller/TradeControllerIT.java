@@ -92,7 +92,7 @@ public class TradeControllerIT {
 	}
 
 	@Test
-	public void getOne_When_TradeExists_Then_Succeeds() throws Exception {
+	public void get_When_GetByTradeId_Then_Succeeds() throws Exception {
 		TradeEntity expected = tradeRandom.createPersistedEntity();
 		MockHttpServletResponse response = mockMvc.perform(
 				get("/matchandtrade-api/v1/trades/{tradeId}", expected.getTradeId())
