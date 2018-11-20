@@ -31,8 +31,6 @@ public class OfferValidator {
 	public void validateDelete(Integer membershipId, Integer offerId, Integer authenticatedUserId) {
 		MembershipEntity membership = membershipService.find(membershipId);
 		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
-		
-		
 		UserEntity offeredArticleUser = userService.searchByOfferId(offerId);
 		if (offeredArticleUser == null || !offeredArticleUser.getUserId().equals(authenticatedUserId)) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offerId must bellong to the offering User.userId.");

@@ -12,7 +12,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	MembershipControllerIT.class,
 	TradeResultControllerIT.class,
 	ListingControllerIT.class,
-	ArticleAttachmentControllerIT.class
+	ArticleAttachmentControllerIT.class,
+	OfferControllerIT.class
 
 })
 public class ControllerSuite {
