@@ -1,40 +1,29 @@
 package com.matchandtrade.rest.v1.controller;
 
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
+import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
-import com.matchandtrade.test.JsonTestUtil;
 import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.random.ArticleRandom;
-import com.matchandtrade.test.random.MembershipRandom;
-import com.matchandtrade.test.random.TradeRandom;
-import com.matchandtrade.test.random.UserRandom;
-import com.matchandtrade.util.JsonUtil;
+import com.matchandtrade.test.random.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.File;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -45,6 +34,8 @@ public class ArticleAttachmentControllerIT {
 
 	@Autowired
 	private ArticleRandom articleRandom;
+	@Autowired
+	private AttachmentRandom attachmentRandom;
 	private ArticleTransformer articleTransformer = new ArticleTransformer();
 	private String authorizationHeader;
 	@Autowired
@@ -54,6 +45,7 @@ public class ArticleAttachmentControllerIT {
 	private MembershipRandom membershipRandom;
 	@Autowired
 	private MembershipTransformer membershipTransformer;
+	private MockMultipartFile multipartFile;
 	private UserEntity user;
 	@Autowired
 	private UserRandom userRandom;
@@ -70,20 +62,27 @@ public class ArticleAttachmentControllerIT {
 			user = userRandom.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
+		multipartFile = AttachmentRandom.newSampleMockMultiPartFile();
 	}
 
 	@Test
 	public void post_When_NewArticle_Then_Succeeds() throws Exception {
 		ArticleEntity expectedArticle = articleRandom.createPersistedEntity(user);
-		MockMvcRequestBuilders.fileUpload("").file(new MockMultipartFile()).;
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+			.fileUpload("/matchandtrade-api/v1/articles/{articleId}/attachments/", expectedArticle.getArticleId())
+			.file(multipartFile);
+		mockMvc.perform(request.header(HttpHeaders.AUTHORIZATION, authorizationHeader)).andExpect(status().isCreated());
+	}
 
-		mockMvc
-			.perform(
-				post("/matchandtrade-api/v1/articles/")
-					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-					.contentType(MediaType.APPLICATION_JSON)
+	@Test
+	public void delete_When_AttachmentExists_Then_Succeeds() throws Exception {
+		ArticleEntity expectedArticle = articleRandom.createPersistedEntity(user);
+		AttachmentEntity expected = attachmentRandom.createPersistedEntity(expectedArticle);
+		mockMvc.perform(
+				delete("/matchandtrade-api/v1/articles/{articleId}/attachments/{attachmentId}", expectedArticle.getArticleId(), expected.getAttachmentId())
+				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 			)
-			.andExpect(status().isCreated());
+			.andExpect(status().isNoContent());
 	}
 
 }

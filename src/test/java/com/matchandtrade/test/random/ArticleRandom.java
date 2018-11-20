@@ -97,7 +97,7 @@ public class ArticleRandom {
 
 	@Transactional
 	public ArticleEntity createAttachmentToArticle(ArticleEntity article, String attachmentName) {
-		ArticleEntity persistedArticle = articleRepositoryFacade.get(article.getArticleId());
+		ArticleEntity persistedArticle = articleRepositoryFacade.find(article.getArticleId());
 		AttachmentEntity attachment = new AttachmentEntity();
 		attachment.setName(attachmentName);
 		attachmentRepositoryFacade.save(attachment);

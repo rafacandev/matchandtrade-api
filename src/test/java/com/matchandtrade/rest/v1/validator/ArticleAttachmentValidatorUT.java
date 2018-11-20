@@ -40,7 +40,7 @@ public class ArticleAttachmentValidatorUT {
 		fixture.userRepositoryFacade = userRepositoryFacadeMock;
 
 		// Mock articleRepositoryFacadeMock
-		doReturn(new ArticleEntity()).when(articleRepositoryFacadeMock).get(any());
+		doReturn(new ArticleEntity()).when(articleRepositoryFacadeMock).find(any());
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 
 		// Mock attachmentRepositoryFacadeMock

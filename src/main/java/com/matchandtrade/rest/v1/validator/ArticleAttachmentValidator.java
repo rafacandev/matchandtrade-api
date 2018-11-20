@@ -34,7 +34,7 @@ public class ArticleAttachmentValidator {
 	}
 
 	private void verifyThatArticleHasLessThanTwoFiles(Integer articleId) {
-		ArticleEntity article = articleRepositoryFacade.get(articleId);
+		ArticleEntity article = articleRepositoryFacade.find(articleId);
 		if (article.getAttachments().size() > 2) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Articles cannot have more than 3 files.");
 		}

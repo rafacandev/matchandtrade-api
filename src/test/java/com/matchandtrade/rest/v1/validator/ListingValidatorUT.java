@@ -39,7 +39,7 @@ public class ListingValidatorUT {
 		when(searchServiceMock.search(any(), any())).thenReturn(searchResult);
 		fixture.searchService = searchServiceMock;
 
-		when(articleRepositoryFacadeMock.get(1)).thenReturn(new ArticleEntity());
+		when(articleRepositoryFacadeMock.find(1)).thenReturn(new ArticleEntity());
 		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(1, 1)).thenReturn(new ArticleEntity());
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 	}

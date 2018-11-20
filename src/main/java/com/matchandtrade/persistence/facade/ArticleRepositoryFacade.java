@@ -25,7 +25,7 @@ public class ArticleRepositoryFacade {
 	@Autowired
 	private EntityManager entityManger;
 
-	public ArticleEntity get(Integer articleId) {
+	public ArticleEntity find(Integer articleId) {
 		return articleRepository.findOne(articleId);
 	}
 

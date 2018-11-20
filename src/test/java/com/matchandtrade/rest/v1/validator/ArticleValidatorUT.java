@@ -33,7 +33,7 @@ public class ArticleValidatorUT {
 		when(userRepositoryFacadeMock.find(1)).thenReturn(new UserEntity());
 		fixture.userRepositoryFacade = userRepositoryFacadeMock;
 
-		when(articleRepositoryFacadeMock.get(1)).thenReturn(new ArticleEntity());
+		when(articleRepositoryFacadeMock.find(1)).thenReturn(new ArticleEntity());
 		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(1, 1)).thenReturn(new ArticleEntity());
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 

@@ -71,7 +71,7 @@ public class AttachmentService {
 		result.getEssences().add(originalEssence);
 		attachmentRepositoryFacade.save(result);
 
-		if (multipartFile.getContentType().contains("image")) {
+		if (multipartFile.getContentType() != null && multipartFile.getContentType().contains("image")) {
 			Path thumbnailRelativePath = buildNewRelativePath(multipartFile.getOriginalFilename());
 			LOGGER.debug("Attempting to generate thumbnail for content type: {}; from essence file: {}; to thumbnail file: {}", multipartFile.getContentType(), originalEssenceRelativePath, thumbnailRelativePath);
 			try {

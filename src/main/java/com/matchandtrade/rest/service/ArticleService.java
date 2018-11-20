@@ -25,7 +25,7 @@ public class ArticleService {
 	}
 
 	public ArticleEntity find(Integer articleId) {
-		return articleRepositoryFacade.get(articleId);
+		return articleRepositoryFacade.find(articleId);
 	}
 
 	public void update(ArticleEntity article) {
@@ -35,7 +35,7 @@ public class ArticleService {
 	@Transactional
 	public void delete(Integer articleId) {
 		UserEntity user = userRepositoryFacade.findByArticleId(articleId);
-		ArticleEntity article = articleRepositoryFacade.get(articleId);
+		ArticleEntity article = articleRepositoryFacade.find(articleId);
 		user.getArticles().remove(article);
 		userRepositoryFacade.save(user);
 		articleRepositoryFacade.delete(articleId);

@@ -18,7 +18,7 @@ public class ListingRandom {
 
 	@Transactional
 	public void createPersisted(Integer articleId, Integer membershipId) {
-		ArticleEntity article = articleRepositoryFacade.get(articleId);
+		ArticleEntity article = articleRepositoryFacade.find(articleId);
 		MembershipEntity membership = membershipRepositoryFacade.find(membershipId);
 		membership.getArticles().add(article);
 		membershipRepositoryFacade.save((membership));

@@ -13,6 +13,8 @@ import org.springframework.core.env.Environment;
 
 import com.matchandtrade.authentication.AuthenticationOAuth;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 @Configuration
 public class AppConfiguration {
@@ -45,5 +47,5 @@ public class AppConfiguration {
 			}
 	    };
 	}
-	
+
 }

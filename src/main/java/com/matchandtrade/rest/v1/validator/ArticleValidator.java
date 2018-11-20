@@ -25,7 +25,7 @@ public class ArticleValidator {
 	 * @param restExceptionStatus HttpStatus to be used if RestException is thrown
 	 */
 	private void verifyThatArticleExists(Integer articleId, HttpStatus restExceptionStatus) {
-		ArticleEntity articleEntity = articleRepositoryFacade.get(articleId);
+		ArticleEntity articleEntity = articleRepositoryFacade.find(articleId);
 		if (articleEntity == null) {
 			throw new RestException(restExceptionStatus, String.format("Article.articleId: %d does not exist.", articleId));
 		}

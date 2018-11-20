@@ -24,7 +24,7 @@ public class ArticleAttachmentController implements Controller {
 	@Autowired
 	AuthenticationProvider authenticationProvider;
 
-	@DeleteMapping("/articles/{articleId}/attachments/{attachmentId}/")
+	@DeleteMapping("/articles/{articleId}/attachments/{attachmentId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
@@ -35,11 +35,11 @@ public class ArticleAttachmentController implements Controller {
 		articleAttachmentService.delete(articleId, attachmentId);
 	}
 
-	@PostMapping(path="/articles/{attachmentId}/attachments/")
+	@PostMapping(path="/articles/{articleId}/attachments/")
 	@ResponseStatus(HttpStatus.CREATED)
 	public AttachmentJson post(
 			@PathVariable Integer articleId,
-			@RequestPart(required=true, name="file") MultipartFile multipartFile) {
+			@RequestPart(name="file") MultipartFile multipartFile) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request

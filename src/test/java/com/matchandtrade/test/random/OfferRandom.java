@@ -28,8 +28,8 @@ public class OfferRandom {
 	}
 
 	public OfferEntity createPersistedEntity(Integer membershipId, Integer offeredArticleId, Integer wantedArticleId) {
-		ArticleEntity offeredArticle = articleRepositoryFacade.get(offeredArticleId);
-		ArticleEntity wantedArticle = articleRepositoryFacade.get(wantedArticleId);
+		ArticleEntity offeredArticle = articleRepositoryFacade.find(offeredArticleId);
+		ArticleEntity wantedArticle = articleRepositoryFacade.find(wantedArticleId);
 
 		OfferEntity offer = new OfferEntity();
 		offer.setOfferedArticle(offeredArticle);

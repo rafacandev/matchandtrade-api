@@ -76,7 +76,7 @@ public class TradeMaximizerTransformer {
 			MembershipEntity offeringMembership = membershipRepositoryFacade.find(linePojo.offeringMembershipId);
 			csvRecord.add(offeringMembership.getUser().getUserId());
 			csvRecord.add(offeringMembership.getUser().getName());
-			ArticleEntity offeringArticle = articleRepositoryFacade.get(linePojo.offeringArticleId);
+			ArticleEntity offeringArticle = articleRepositoryFacade.find(linePojo.offeringArticleId);
 			csvRecord.add(offeringArticle.getArticleId());
 			csvRecord.add(offeringArticle.getName());
 			if (linePojo.receivingArticleId != null) {
@@ -85,7 +85,7 @@ public class TradeMaximizerTransformer {
 				MembershipEntity receivingMembership = membershipRepositoryFacade.find(linePojo.receivingMembershipId);
 				csvRecord.add(receivingMembership.getUser().getUserId());
 				csvRecord.add(receivingMembership.getUser().getName());
-				ArticleEntity receivingArticle = articleRepositoryFacade.get(linePojo.receivingArticleId);
+				ArticleEntity receivingArticle = articleRepositoryFacade.find(linePojo.receivingArticleId);
 				csvRecord.add(receivingArticle.getArticleId());
 				csvRecord.add(receivingArticle.getName());
 				csvRecord.add(":SENDS:");
@@ -218,7 +218,7 @@ public class TradeMaximizerTransformer {
 			tradedArticle.setUserId(offeringMembership.getUser().getUserId());
 			tradedArticle.setUserName(offeringMembership.getUser().getName());
 			
-			ArticleEntity offeringArticle = articleRepositoryFacade.get(linePojo.offeringArticleId);
+			ArticleEntity offeringArticle = articleRepositoryFacade.find(linePojo.offeringArticleId);
 			tradedArticle.setArticleId(offeringArticle.getArticleId());
 			tradedArticle.setArticleName(offeringArticle.getName());
 			
@@ -226,7 +226,7 @@ public class TradeMaximizerTransformer {
 			tradedArticle.setReceivingUserId(receivingMembership.getUser().getUserId());
 			tradedArticle.setReceivingUserName(receivingMembership.getUser().getName());
 			
-			ArticleEntity receivingArticle = articleRepositoryFacade.get(linePojo.receivingArticleId);
+			ArticleEntity receivingArticle = articleRepositoryFacade.find(linePojo.receivingArticleId);
 			tradedArticle.setReceivingArticleId(receivingArticle.getArticleId());
 			tradedArticle.setReceivingArticleName(receivingArticle.getName());
 			
