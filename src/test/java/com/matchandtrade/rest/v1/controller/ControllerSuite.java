@@ -14,7 +14,6 @@ import org.junit.runners.Suite.SuiteClasses;
 	ListingControllerIT.class,
 	ArticleAttachmentControllerIT.class,
 	OfferControllerIT.class
-
 })
 public class ControllerSuite {
 

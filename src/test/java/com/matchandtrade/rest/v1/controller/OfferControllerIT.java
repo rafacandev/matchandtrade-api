@@ -160,7 +160,6 @@ public class OfferControllerIT {
 				get("/matchandtrade-api/v1/memberships/{membershipId}/offers?offeredArticleId={offeredArticleId}", membership.getMembershipId(), expected.getOfferedArticleId())
 					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 			)
-			.andDo(print())
 			.andExpect(status().isOk())
 			.andReturn()
 			.getResponse()
