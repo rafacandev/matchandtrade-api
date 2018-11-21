@@ -74,7 +74,7 @@ public class ListingControllerIT {
 	}
 
 	private ListingJson buildListingWhenUserOwnsArticleAndMembership() {
-		ArticleEntity article = articleRandom.createPersistedEntity(user, false);
+		ArticleEntity article = articleRandom.createPersistedEntity(user);
 		MembershipEntity membership = membershipRandom.createPersistedEntity(user);
 		ListingJson expected = new ListingJson();
 		expected.setArticleId(article.getArticleId());
