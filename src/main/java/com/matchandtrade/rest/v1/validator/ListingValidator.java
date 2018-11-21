@@ -23,15 +23,15 @@ public class ListingValidator {
 	SearchService<MembershipEntity> searchService;
 
 	public void validateDelete(Integer userId, ListingJson listing) {
-		verifyThatMembershipBelongsToUser(userId, listing.getMembershipId());
-		verifyThatArticleBelongsToUser(userId, listing.getArticleId());
+		verifyThatUserOwnsMembership(userId, listing.getMembershipId());
+		verifyThatUserOwnsArticle(userId, listing.getArticleId());
 	}
 
 	public void validatePost(Integer userId, ListingJson listing) {
 		verifyThatMembershipIdIsNotNull(listing.getMembershipId());
 		verifyThatArticleIdIsNotNull(listing.getArticleId());
-		verifyThatMembershipBelongsToUser(userId, listing.getMembershipId());
-		verifyThatArticleBelongsToUser(userId, listing.getArticleId());
+		verifyThatUserOwnsMembership(userId, listing.getMembershipId());
+		verifyThatUserOwnsArticle(userId, listing.getArticleId());
 	}
 
 	private void verifyThatMembershipIdIsNotNull(Integer membershipId) {
@@ -46,20 +46,20 @@ public class ListingValidator {
 		}
 	}
 
-	private void verifyThatArticleBelongsToUser(Integer userId, Integer articleId) {
+	private void verifyThatUserOwnsArticle(Integer userId, Integer articleId) {
 		ArticleEntity article = articleRepositoryFacade.findByUserIdAndArticleId(userId, articleId);
 		if (article == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Article.articleId: %d does not belong to User.userId: %d", articleId, userId));
+			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %s does not own Article.articleId: %s", userId, articleId));
 		}
 	}
 
-	private void verifyThatMembershipBelongsToUser(Integer userId, Integer membershipId) {
+	private void verifyThatUserOwnsMembership(Integer userId, Integer membershipId) {
 		SearchCriteria criteria = new SearchCriteria(new Pagination());
 		criteria.addCriterion(MembershipQueryBuilder.Field.USER_ID, userId);
 		criteria.addCriterion(MembershipQueryBuilder.Field.MEMBERSHIP_ID, membershipId);
 		SearchResult<MembershipEntity> searchResult = searchService.search(criteria, MembershipQueryBuilder.class);
 		if (searchResult.getPagination().getTotal() < 1) {
-			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Membership.membershipId: %d does not belong to User.userId: %d", membershipId, userId));
+			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %s does not own Membership.membershipId: %s", userId, membershipId));
 		}
 	}
 

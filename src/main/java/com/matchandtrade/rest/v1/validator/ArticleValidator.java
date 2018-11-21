@@ -1,8 +1,11 @@
 package com.matchandtrade.rest.v1.validator;
 
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
+import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ArticleJson;
@@ -11,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class ArticleValidator {
 
@@ -18,6 +25,8 @@ public class ArticleValidator {
 	ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	UserRepositoryFacade userRepositoryFacade;
+	@Autowired
+	private MembershipRepositoryFacade membershipRepositoryFacade;
 
 	/**
 	 * Throws {@code RestException(restExceptionStatus)} if there is no {@code Article} for the given {@code articleId}.
@@ -66,7 +75,7 @@ public class ArticleValidator {
 	}
 
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code User.userId} does not have the given {@code Article.articleId}
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code User.userId} owns the given {@code Article.articleId}
 	 *
 	 * @param userId
 	 * @param articleId
@@ -74,18 +83,27 @@ public class ArticleValidator {
 	private void verifyThatUserHasArticle(Integer userId, Integer articleId) {
 		ArticleEntity article = articleRepositoryFacade.findByUserIdAndArticleId(userId, articleId);
 		if (article == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does have Article.articleId: %d.", userId, articleId));
+			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does not own Article.articleId: %d.", userId, articleId));
 		}
 	}
 
 	/**
-	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code User.userId} does not have the given {@code Article.articleId}
+	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code User.userId} owns the given {@code Article.articleId}
 	 *
 	 * @param userId
 	 * @param articleId
 	 */
 	public void validateDelete(Integer userId, Integer articleId) {
 		verifyThatUserHasArticle(userId, articleId);
+		verifyThatArticleIsNotListed(articleId);
+	}
+
+	private void verifyThatArticleIsNotListed(Integer articleId) {
+		SearchResult<MembershipEntity> searchResult = membershipRepositoryFacade.findByArticleIdId(articleId, 1, 10);
+		if (searchResult.getPagination().getTotal() > 0) {
+			List<Integer> membershipIds = searchResult.getResultList().stream().map(v -> v.getMembershipId()).collect(Collectors.toList());
+			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Article.articleId: %s is listed on Membership.membershipId: %s ", articleId, membershipIds));
+		}
 	}
 
 	/**
@@ -98,7 +116,6 @@ public class ArticleValidator {
 	}
 
 	/**
-	 * Throws {@code RestException(HttpStatus.NOT_FOUND)} if {@code membershipId} returns no Membership
 	 * Throws {@code RestException(HttpStatus.FORBIDDEN)} if {@code userId} is not a associated with {@code membershipId}
 	 * Throws {@code RestException(HttpStatus.BAD_REQUEST)} if {@code Article.name} is null or length is not between 3 and 150.
 	 *

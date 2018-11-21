@@ -3,6 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
+import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.json.ListingJson;
@@ -10,10 +11,7 @@ import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
 import com.matchandtrade.test.JsonTestUtil;
 import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.random.ArticleRandom;
-import com.matchandtrade.test.random.MembershipRandom;
-import com.matchandtrade.test.random.TradeRandom;
-import com.matchandtrade.test.random.UserRandom;
+import com.matchandtrade.test.random.*;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +33,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -72,9 +71,11 @@ public class ArticleControllerIT {
 		}
 	}
 
+	@Autowired
+	ListingRandom lr;
 	@Test
 	public void delete_When_DeleteByArticleId_Then_Succeeds() throws Exception {
-		ArticleEntity expectedEntity = articleRandom.createPersistedEntity();
+		ArticleEntity expectedEntity = articleRandom.createPersistedEntity(user, false);
 		ArticleJson expected = articleTransformer.transform(expectedEntity);
 		mockMvc.perform(
 			delete("/matchandtrade-api/v1/articles/{articleId}", expected.getArticleId())

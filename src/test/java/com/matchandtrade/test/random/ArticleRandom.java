@@ -65,7 +65,8 @@ public class ArticleRandom {
 		membershipRepository.save(tme);
 		return result;
 	}
-	
+
+	// TODO break this down. it is causing testing confusion
 	@Transactional
 	public ArticleEntity createPersistedEntity(UserEntity tradeOwner) {
 		MembershipEntity existingTradeMemberhip = membershipRandom.createPersistedEntity(tradeOwner);
