@@ -4,11 +4,8 @@ import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
-import com.matchandtrade.test.random.StringRandom;
-import com.matchandtrade.test.random.UserRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class ControllerHelper {
@@ -31,7 +28,6 @@ public class ControllerHelper {
 		return authorizationToken;
 	}
 
-	@Transactional
 	private UserEntity saveUserWithAuthorizationToken(UserEntity result, String authorizationToken) {
 		userRepositoryFacade.save(result);
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();

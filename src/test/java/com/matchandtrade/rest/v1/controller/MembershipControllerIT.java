@@ -6,9 +6,9 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.MembershipJson;
 import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
 import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.random.MembershipRandom;
-import com.matchandtrade.test.random.TradeRandom;
-import com.matchandtrade.test.random.UserRandom;
+import com.matchandtrade.test.helper.MembershipRandom;
+import com.matchandtrade.test.helper.TradeRandom;
+import com.matchandtrade.test.helper.UserRandom;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,7 +68,7 @@ public class MembershipControllerIT {
 	@Test
 	public void get_When_MembershipExists_Then_Succeeds() throws Exception {
 		TradeEntity trade = tradeRandom.createPersistedEntity();
-		MembershipEntity expectedEntity = membershipRandom.createPersistedEntity(user, trade, MembershipEntity.Type.MEMBER);
+		MembershipEntity expectedEntity = membershipRandom.subscribeUserToTrade(user, trade);
 		MembershipJson expected = membershipTransformer.transform(expectedEntity);
 
 		MockHttpServletResponse response = mockMvc

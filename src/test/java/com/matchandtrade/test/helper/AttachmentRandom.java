@@ -1,7 +1,8 @@
-package com.matchandtrade.test.random;
+package com.matchandtrade.test.helper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
@@ -30,26 +31,25 @@ public class AttachmentRandom {
 	@Transactional
 	public AttachmentEntity createPersistedEntity(ArticleEntity article) {
 		MultipartFile file = newSampleMockMultiPartFile();
-		AttachmentEntity attachment = attachmentService.create(file);
-		// We need the persisted entity so JPA can save it instead of trying to create a new one
+		AttachmentEntity result = attachmentService.create(file);
 		ArticleEntity persistedArticle = articleRepositoryFacade.find(article.getArticleId());
-		persistedArticle.getAttachments().add(attachment);
+		persistedArticle.getAttachments().add(result);
 		articleRepositoryFacade.save(persistedArticle);
 		// Also adding the attachment to the original article for consistency
-		article.getAttachments().add(attachment);
-		return attachment;
+		article.getAttachments().add(result);
+		return result;
 	}
 
 	public static MockMultipartFile newSampleMockMultiPartFile() {
 		String imageResource = "image-landscape.png";
-		MockMultipartFile multipartFile;
+		MockMultipartFile result;
 		try {
 			InputStream imageInputStream = AttachmentRandom.class.getClassLoader().getResource(imageResource).openStream();
-			multipartFile = new MockMultipartFile("file", imageResource, "image/jpeg", imageInputStream);
+			result = new MockMultipartFile("file", imageResource, "image/jpeg", imageInputStream);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
-		return multipartFile;
+		return result;
 	}
 
 }

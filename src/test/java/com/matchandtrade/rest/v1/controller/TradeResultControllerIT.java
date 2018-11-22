@@ -7,8 +7,7 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeResultJson;
 import com.matchandtrade.rest.v1.json.TradedArticleJson;
-import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.random.*;
+import com.matchandtrade.test.helper.*;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,18 +96,18 @@ public class TradeResultControllerIT {
 			result.trade = tradeRandom.createPersistedEntity(user);
 
 			// Create owner's articles (Greek letters)
-			result.greekMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("GREEK"), result.trade, MembershipEntity.Type.MEMBER);
+			result.greekMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("GREEK"), result.trade);
 			result.alpha = articleRandom.createPersistedEntity(result.greekMembership, "alpha");
 			result.beta = articleRandom.createPersistedEntity(result.greekMembership, "beta");
 
 			// Create member's articles (country names)
-			result.countryMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("COUNTRY"), result.trade, MembershipEntity.Type.MEMBER);
+			result.countryMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("COUNTRY"), result.trade);
 			result.argentina = articleRandom.createPersistedEntity(result.countryMembership, "argentina");
 			result.brazil = articleRandom.createPersistedEntity(result.countryMembership, "brazil");
 			result.canada = articleRandom.createPersistedEntity(result.countryMembership, "canada");
 
 			// Create member's articles (ordinal numbers)
-			result.ordinalMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("ORDINAL"), result.trade, MembershipEntity.Type.MEMBER);
+			result.ordinalMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("ORDINAL"), result.trade);
 			result.first = articleRandom.createPersistedEntity(result.ordinalMembership, "first");
 
 			offerRandom.createPersistedEntity(result.greekMembership.getMembershipId(), result.alpha.getArticleId(), result.canada.getArticleId());

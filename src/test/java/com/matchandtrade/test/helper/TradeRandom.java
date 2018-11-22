@@ -1,4 +1,4 @@
-package com.matchandtrade.test.random;
+package com.matchandtrade.test.helper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +18,14 @@ public class TradeRandom {
 	@Autowired
 	private UserRandom userRandom;
 
+	public static TradeJson createJson() {
+		TradeJson result = new TradeJson();
+		result.setName(StringRandom.nextName() + System.currentTimeMillis());
+		result.setDescription(StringRandom.nextDescription());
+		result.setState(TradeJson.State.SUBMITTING_ARTICLES);
+		return result;
+	}
+
 	public TradeEntity createEntity() {
 		return tradeTransformer.transform(createJson());
 	}
@@ -29,14 +37,6 @@ public class TradeRandom {
 	public TradeEntity createPersistedEntity(UserEntity owner) {
 		TradeEntity result = createEntity();
 		tradeService.create(result, owner);
-		return result;
-	}
-
-	public static TradeJson createJson() {
-		TradeJson result = new TradeJson();
-		result.setName(StringRandom.nextName() + System.currentTimeMillis());
-		result.setDescription(StringRandom.nextDescription());
-		result.setState(TradeJson.State.SUBMITTING_ARTICLES);
 		return result;
 	}
 

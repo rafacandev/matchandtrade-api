@@ -16,11 +16,11 @@ import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.ArticleRandom;
-import com.matchandtrade.test.random.OfferRandom;
-import com.matchandtrade.test.random.MembershipRandom;
-import com.matchandtrade.test.random.TradeRandom;
-import com.matchandtrade.test.random.UserRandom;
+import com.matchandtrade.test.helper.ArticleRandom;
+import com.matchandtrade.test.helper.OfferRandom;
+import com.matchandtrade.test.helper.MembershipRandom;
+import com.matchandtrade.test.helper.TradeRandom;
+import com.matchandtrade.test.helper.UserRandom;
 
 
 @RunWith(SpringRunner.class)
@@ -66,15 +66,15 @@ public class TradeResultServiceIT {
 		TradeEntity trade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 		
 		// Create owner's articles (Greek letters)
-		MembershipEntity greekMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("GREEK"), trade, MembershipEntity.Type.MEMBER);
+		MembershipEntity greekMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("GREEK"), trade);
 		ArticleEntity beta = articleRandom.createPersistedEntity(greekMembership);
 		
 		// Create member's articles (country names)
-		MembershipEntity countryMemberhip = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("COUNTRY"), trade, MembershipEntity.Type.MEMBER);
+		MembershipEntity countryMemberhip = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("COUNTRY"), trade);
 		ArticleEntity brazil = articleRandom.createPersistedEntity(countryMemberhip);
 
 		// Create member's articles (ordinal numbers)
-		MembershipEntity ordinalMemberhip = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("ORDINAL"), trade, MembershipEntity.Type.MEMBER);
+		MembershipEntity ordinalMemberhip = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("ORDINAL"), trade);
 		ArticleEntity first = articleRandom.createPersistedEntity(ordinalMemberhip);
 
 		offerRandom.createPersistedEntity(greekMembership.getMembershipId(), beta.getArticleId(), brazil.getArticleId());
@@ -125,17 +125,17 @@ public class TradeResultServiceIT {
 		TradeEntity trade = tradeRandom.createPersistedEntity(userRandom.createPersistedEntity());
 
 		// Alice is also the trade owner
-		MembershipEntity aliceMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("alice"), trade);
+		MembershipEntity aliceMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("alice"), trade);
 		ArticleEntity one = articleRandom.createPersistedEntity(aliceMembership);
-		MembershipEntity bettyMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("betty"), trade, MembershipEntity.Type.MEMBER);
+		MembershipEntity bettyMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("betty"), trade);
 		ArticleEntity two = articleRandom.createPersistedEntity(bettyMembership);
-		MembershipEntity craigMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("craig"), trade, MembershipEntity.Type.MEMBER);
+		MembershipEntity craigMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("craig"), trade);
 		ArticleEntity three = articleRandom.createPersistedEntity(craigMembership);
-		MembershipEntity davidMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("david"), trade, MembershipEntity.Type.MEMBER);
+		MembershipEntity davidMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("david"), trade);
 		ArticleEntity four = articleRandom.createPersistedEntity(davidMembership);
-		MembershipEntity ethanMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("ethan"), trade, MembershipEntity.Type.MEMBER);
-		ArticleEntity five = articleRandom.createPersistedEntity(ethanMembership);
-		MembershipEntity fionaMembership = membershipRandom.createPersistedEntity(userRandom.createPersistedEntity("fiona"), trade, MembershipEntity.Type.MEMBER);
+		MembershipEntity ericMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("eric"), trade);
+		ArticleEntity five = articleRandom.createPersistedEntity(ericMembership);
+		MembershipEntity fionaMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("fiona"), trade);
 		ArticleEntity six = articleRandom.createPersistedEntity(fionaMembership);
 
 		//(Alice) 1 : 3 2 6
@@ -153,11 +153,11 @@ public class TradeResultServiceIT {
 		//(David) 4 : 2
 		offerRandom.createPersistedEntity(davidMembership.getMembershipId(), four.getArticleId(), two.getArticleId());
 		//(Ethan) 5 : 1 2 3 4 6
-		offerRandom.createPersistedEntity(ethanMembership.getMembershipId(), five.getArticleId(), one.getArticleId());
-		offerRandom.createPersistedEntity(ethanMembership.getMembershipId(), five.getArticleId(), two.getArticleId());
-		offerRandom.createPersistedEntity(ethanMembership.getMembershipId(), five.getArticleId(), three.getArticleId());
-		offerRandom.createPersistedEntity(ethanMembership.getMembershipId(), five.getArticleId(), four.getArticleId());
-		offerRandom.createPersistedEntity(ethanMembership.getMembershipId(), five.getArticleId(), six.getArticleId());
+		offerRandom.createPersistedEntity(ericMembership.getMembershipId(), five.getArticleId(), one.getArticleId());
+		offerRandom.createPersistedEntity(ericMembership.getMembershipId(), five.getArticleId(), two.getArticleId());
+		offerRandom.createPersistedEntity(ericMembership.getMembershipId(), five.getArticleId(), three.getArticleId());
+		offerRandom.createPersistedEntity(ericMembership.getMembershipId(), five.getArticleId(), four.getArticleId());
+		offerRandom.createPersistedEntity(ericMembership.getMembershipId(), five.getArticleId(), six.getArticleId());
 		//(Fiona) 6 : 1 2
 		offerRandom.createPersistedEntity(fionaMembership.getMembershipId(), six.getArticleId(), one.getArticleId());
 		offerRandom.createPersistedEntity(fionaMembership.getMembershipId(), six.getArticleId(), two.getArticleId());

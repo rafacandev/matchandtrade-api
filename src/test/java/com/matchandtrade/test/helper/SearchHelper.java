@@ -1,11 +1,10 @@
 package com.matchandtrade.test.helper;
 
-import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ArticleQueryBuilder;
-import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.rest.service.SearchService;
+import com.matchandtrade.persistence.entity.MembershipEntity;
+import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.rest.service.MembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,14 +12,22 @@ import org.springframework.stereotype.Component;
 public class SearchHelper {
 
 	@Autowired
-	private SearchService<ArticleEntity> searchServiceArticle;
+	private MembershipService membershipService;
 
-	public boolean membershipContainsArticle(Integer membershipId, Integer articleId) {
-		SearchCriteria criteria = new SearchCriteria(new Pagination());
-		criteria.addCriterion(ArticleQueryBuilder.Field.MEMBERSHIP_ID, membershipId);
-		criteria.addCriterion(ArticleQueryBuilder.Field.ARTICLE_ID, articleId);
-		SearchResult<ArticleEntity> searchResult = searchServiceArticle.search(criteria, ArticleQueryBuilder.class);
-		return searchResult.getResultList().size() > 0;
+	public MembershipEntity findMembership(UserEntity user, TradeEntity trade) {
+		SearchResult<MembershipEntity> searchResult = membershipService.findByTradeIdUserIdType(
+			trade.getTradeId(),
+			user.getUserId(),
+			null,
+			1,
+			1);
+		MembershipEntity persistedEntity = searchResult.getResultList().get(0);
+		MembershipEntity result = new MembershipEntity();
+		result.setMembershipId(persistedEntity.getMembershipId());
+		result.setType(persistedEntity.getType());
+		result.setUser(user);
+		result.setTrade(trade);
+		return result;
 	}
 
 }

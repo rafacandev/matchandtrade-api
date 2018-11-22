@@ -1,4 +1,4 @@
-package com.matchandtrade.test.random;
+package com.matchandtrade.test.helper;
 
 import java.util.Random;
 

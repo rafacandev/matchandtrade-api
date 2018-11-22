@@ -3,7 +3,7 @@ package com.matchandtrade.rest.service;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.test.TestingDefaultAnnotations;
-import com.matchandtrade.test.random.ArticleRandom;
+import com.matchandtrade.test.helper.ArticleRandom;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

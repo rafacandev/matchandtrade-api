@@ -3,7 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.random.UserRandom;
+import com.matchandtrade.test.helper.UserRandom;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;

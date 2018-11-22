@@ -6,7 +6,7 @@ import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ArticleJson;
-import com.matchandtrade.test.random.StringRandom;
+import com.matchandtrade.test.helper.StringRandom;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

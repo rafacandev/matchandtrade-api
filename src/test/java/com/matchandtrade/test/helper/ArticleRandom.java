@@ -1,13 +1,12 @@
-package com.matchandtrade.test.random;
+package com.matchandtrade.test.helper;
 
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
-import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
-import com.matchandtrade.persistence.repository.UserRepository;
+import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +18,13 @@ public class ArticleRandom {
 	
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
-	@Autowired
-	private AttachmentRepositoryFacade attachmentRepositoryFacade;
 	private static ArticleTransformer articleTransformer = new ArticleTransformer();
 	@Autowired
-	private MembershipRepositoryFacade membershipRepository;
+	private MembershipRepositoryFacade membershipRepositoryFacade;
 	@Autowired
 	private MembershipRandom membershipRandom;
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepositoryFacade userRepositoryFacade;
 	@Autowired
 	private UserRandom userRandom;
 
@@ -47,13 +44,13 @@ public class ArticleRandom {
 		articleRepositoryFacade.save(result);
 		UserEntity user = userRandom.createPersistedEntity();
 		user.getArticles().add(result);
-		userRepository.save(user);
+		userRepositoryFacade.save(user);
 		return result;
 	}
 
 	@Transactional
 	public ArticleEntity createPersistedEntity(MembershipEntity membership) {
-		MembershipEntity persistedMembership = membershipRepository.find(membership.getMembershipId());
+		MembershipEntity persistedMembership = membershipRepositoryFacade.find(membership.getMembershipId());
 		ArticleEntity result = createEntity();
 		persistArticleAndMembershipAndUser(persistedMembership, result);
 		return result;
@@ -61,7 +58,7 @@ public class ArticleRandom {
 
 	@Transactional
 	public ArticleEntity createPersistedEntity(MembershipEntity membership, String articleName) {
-		MembershipEntity persistedMembership = membershipRepository.find(membership.getMembershipId());
+		MembershipEntity persistedMembership = membershipRepositoryFacade.find(membership.getMembershipId());
 		ArticleEntity result = createEntity();
 		result.setName(articleName);
 		persistArticleAndMembershipAndUser(persistedMembership, result);
@@ -72,18 +69,18 @@ public class ArticleRandom {
 	public ArticleEntity createPersistedEntity(UserEntity user) {
 		ArticleEntity result = createEntity();
 		articleRepositoryFacade.save(result);
-		UserEntity persistedUser = userRepository.findOne(user.getUserId());
+		UserEntity persistedUser = userRepositoryFacade.find(user.getUserId());
 		persistedUser.getArticles().add(result);
-		userRepository.save(persistedUser);
+		userRepositoryFacade.save(persistedUser);
 		return result;
 	}
 
 	private void persistArticleAndMembershipAndUser(MembershipEntity persistedMembership, ArticleEntity result) {
 		articleRepositoryFacade.save(result);
 		persistedMembership.getArticles().add(result);
-		membershipRepository.save(persistedMembership);
+		membershipRepositoryFacade.save(persistedMembership);
 		persistedMembership.getUser().getArticles().add(result);
-		userRepository.save(persistedMembership.getUser());
+		userRepositoryFacade.save(persistedMembership.getUser());
 	}
 
 }

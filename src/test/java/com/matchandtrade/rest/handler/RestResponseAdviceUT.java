@@ -3,7 +3,7 @@ package com.matchandtrade.rest.handler;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.rest.v1.json.UserJson;
-import com.matchandtrade.test.random.UserRandom;
+import com.matchandtrade.test.helper.UserRandom;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.Before;
 import org.junit.Test;

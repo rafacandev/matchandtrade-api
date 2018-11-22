@@ -1,4 +1,4 @@
-package com.matchandtrade.test.random;
+package com.matchandtrade.test.helper;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;

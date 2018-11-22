@@ -9,7 +9,7 @@ import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
-import com.matchandtrade.test.random.StringRandom;
+import com.matchandtrade.test.helper.StringRandom;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

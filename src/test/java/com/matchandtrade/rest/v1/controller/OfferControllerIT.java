@@ -6,8 +6,7 @@ import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
 import com.matchandtrade.rest.v1.json.OfferJson;
 import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
 import com.matchandtrade.rest.v1.transformer.OfferTransformer;
-import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.random.*;
+import com.matchandtrade.test.helper.*;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +53,8 @@ public class OfferControllerIT {
 	private OfferRepositoryFacade offerRepositoryFacade;
 	@Autowired
 	private OfferTransformer offerTransformer;
+	@Autowired
+	private SearchHelper searchHelper;
 	private UserEntity user;
 	@Autowired
 	private UserRandom userRandom;
@@ -82,12 +83,12 @@ public class OfferControllerIT {
 			TradeEntity trade = tradeRandom.createPersistedEntity(user);
 
 			// Create owner's articles (Greek letters)
-			membership = membershipRandom.createPersistedEntity(user, trade);
+			membership = searchHelper.findMembership(user, trade);
 			offeredArticle = articleRandom.createPersistedEntity(membership);
 
 			// Create member's articles (country names)
 			UserEntity memberUser = userRandom.createPersistedEntity();
-			MembershipEntity memberTradeMemberhip = membershipRandom.createPersistedEntity(memberUser, trade, MembershipEntity.Type.MEMBER);
+			MembershipEntity memberTradeMemberhip = membershipRandom.subscribeUserToTrade(memberUser, trade);
 			wantedArticle = articleRandom.createPersistedEntity(memberTradeMemberhip);
 
 			// Owner offers Alpha for Australia

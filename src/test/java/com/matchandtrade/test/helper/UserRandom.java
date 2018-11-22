@@ -1,23 +1,18 @@
-package com.matchandtrade.test.random;
-
-import com.matchandtrade.persistence.entity.AuthenticationEntity;
-import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+package com.matchandtrade.test.helper;
 
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class UserRandom {
 	
 	@Autowired
 	private UserRepositoryFacade userRepositoryFacade;
-	@Autowired
-	private AuthenticationRespositoryFacade authenticationRespositoryFacade;
 	private UserTransformer userTransformer = new UserTransformer();
 	
 	public UserEntity createEntity() {
