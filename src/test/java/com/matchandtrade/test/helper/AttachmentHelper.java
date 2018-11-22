@@ -16,18 +16,13 @@ import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.service.AttachmentService;
 
 @Component
-public class AttachmentRandom {
+public class AttachmentHelper {
 
 	@Autowired
 	private AttachmentService attachmentService;
 	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	
-	public AttachmentEntity createPersistedEntity() {
-		MultipartFile file = newSampleMockMultiPartFile();
-		return attachmentService.create(file);
-	}
-
 	@Transactional
 	public AttachmentEntity createPersistedEntity(ArticleEntity article) {
 		MultipartFile file = newSampleMockMultiPartFile();
@@ -44,7 +39,7 @@ public class AttachmentRandom {
 		String imageResource = "image-landscape.png";
 		MockMultipartFile result;
 		try {
-			InputStream imageInputStream = AttachmentRandom.class.getClassLoader().getResource(imageResource).openStream();
+			InputStream imageInputStream = AttachmentHelper.class.getClassLoader().getResource(imageResource).openStream();
 			result = new MockMultipartFile("file", imageResource, "image/jpeg", imageInputStream);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);

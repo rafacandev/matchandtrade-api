@@ -1,5 +1,6 @@
 package com.matchandtrade.test.helper;
 
+import com.matchandtrade.test.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,15 +11,25 @@ import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 
 @Component
-public class TradeRandom {
+public class TradeHelper {
 
 	@Autowired
 	private TradeService tradeService;
 	private TradeTransformer tradeTransformer = new TradeTransformer();
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 
-	public static TradeJson createJson() {
+	public TradeEntity createPersistedEntity() {
+		return createPersistedEntity(userHelper.createPersistedEntity());
+	}
+
+	public TradeEntity createPersistedEntity(UserEntity owner) {
+		TradeEntity result = createRandomEntity();
+		tradeService.create(result, owner);
+		return result;
+	}
+
+	public static TradeJson createRandomJson() {
 		TradeJson result = new TradeJson();
 		result.setName(StringRandom.nextName() + System.currentTimeMillis());
 		result.setDescription(StringRandom.nextDescription());
@@ -26,18 +37,8 @@ public class TradeRandom {
 		return result;
 	}
 
-	public TradeEntity createEntity() {
-		return tradeTransformer.transform(createJson());
-	}
-
-	public TradeEntity createPersistedEntity() {
-		return createPersistedEntity(userRandom.createPersistedEntity());
-	}
-
-	public TradeEntity createPersistedEntity(UserEntity owner) {
-		TradeEntity result = createEntity();
-		tradeService.create(result, owner);
-		return result;
+	public TradeEntity createRandomEntity() {
+		return tradeTransformer.transform(createRandomJson());
 	}
 
 }

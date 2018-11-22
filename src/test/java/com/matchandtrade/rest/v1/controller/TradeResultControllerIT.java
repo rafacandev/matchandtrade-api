@@ -37,31 +37,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TradeResultControllerIT {
 
 	@Autowired
-	private ArticleRandom articleRandom;
+	private ArticleHelper articleHelper;
 	private String authorizationHeader;
 	@Autowired
 	private ControllerHelper controllerHelper;
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	@Autowired
-	private MembershipRandom membershipRandom;
+	private MembershipHelper membershipHelper;
 	private MockMvc mockMvc;
 	@Autowired
-	private OfferRandom offerRandom;
+	private OfferHelper offerHelper;
 	@Autowired
-	private TradeRandom tradeRandom;
+	private TradeHelper tradeHelper;
 	@Autowired
 	private TradeService tradeService;
 	private UserEntity user;
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 
 	@Before
 	public void before() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		// Reusing user and authorization header for better performance
 		if (user == null) {
-			user = userRandom.createPersistedEntity();
+			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
 	}
@@ -82,40 +82,40 @@ public class TradeResultControllerIT {
 
 		public TradeResultFactory make(
 					UserEntity user,
-					UserRandom userRandom,
-					TradeRandom tradeRandom,
+					UserHelper userHelper,
+					TradeHelper tradeHelper,
 					TradeService tradeService,
-					MembershipRandom membershipRandom,
-					ArticleRandom articleRandom,
-					OfferRandom offerRandom,
+					MembershipHelper membershipHelper,
+					ArticleHelper articleHelper,
+					OfferHelper offerHelper,
 					MockMvc mockMvc,
 					String contentType) throws Exception {
 			TradeResultFactory result = new TradeResultFactory();
 
 			// Create a trade for a random user
-			result.trade = tradeRandom.createPersistedEntity(user);
+			result.trade = tradeHelper.createPersistedEntity(user);
 
 			// Create owner's articles (Greek letters)
-			result.greekMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("GREEK"), result.trade);
-			result.alpha = articleRandom.createPersistedEntity(result.greekMembership, "alpha");
-			result.beta = articleRandom.createPersistedEntity(result.greekMembership, "beta");
+			result.greekMembership = membershipHelper.subscribeUserToTrade(userHelper.createPersistedEntity("GREEK"), result.trade);
+			result.alpha = articleHelper.createPersistedEntity(result.greekMembership, "alpha");
+			result.beta = articleHelper.createPersistedEntity(result.greekMembership, "beta");
 
 			// Create member's articles (country names)
-			result.countryMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("COUNTRY"), result.trade);
-			result.argentina = articleRandom.createPersistedEntity(result.countryMembership, "argentina");
-			result.brazil = articleRandom.createPersistedEntity(result.countryMembership, "brazil");
-			result.canada = articleRandom.createPersistedEntity(result.countryMembership, "canada");
+			result.countryMembership = membershipHelper.subscribeUserToTrade(userHelper.createPersistedEntity("COUNTRY"), result.trade);
+			result.argentina = articleHelper.createPersistedEntity(result.countryMembership, "argentina");
+			result.brazil = articleHelper.createPersistedEntity(result.countryMembership, "brazil");
+			result.canada = articleHelper.createPersistedEntity(result.countryMembership, "canada");
 
 			// Create member's articles (ordinal numbers)
-			result.ordinalMembership = membershipRandom.subscribeUserToTrade(userRandom.createPersistedEntity("ORDINAL"), result.trade);
-			result.first = articleRandom.createPersistedEntity(result.ordinalMembership, "first");
+			result.ordinalMembership = membershipHelper.subscribeUserToTrade(userHelper.createPersistedEntity("ORDINAL"), result.trade);
+			result.first = articleHelper.createPersistedEntity(result.ordinalMembership, "first");
 
-			offerRandom.createPersistedEntity(result.greekMembership.getMembershipId(), result.alpha.getArticleId(), result.canada.getArticleId());
-			offerRandom.createPersistedEntity(result.greekMembership.getMembershipId(), result.beta.getArticleId(), result.argentina.getArticleId());
-			offerRandom.createPersistedEntity(result.greekMembership.getMembershipId(), result.beta.getArticleId(), result.brazil.getArticleId());
-			offerRandom.createPersistedEntity(result.countryMembership.getMembershipId(), result.brazil.getArticleId(), result.first.getArticleId());
-			offerRandom.createPersistedEntity(result.countryMembership.getMembershipId(), result.canada.getArticleId(), result.alpha.getArticleId());
-			offerRandom.createPersistedEntity(result.ordinalMembership.getMembershipId(), result.first.getArticleId(), result.beta.getArticleId());
+			offerHelper.createPersistedEntity(result.greekMembership.getMembershipId(), result.alpha.getArticleId(), result.canada.getArticleId());
+			offerHelper.createPersistedEntity(result.greekMembership.getMembershipId(), result.beta.getArticleId(), result.argentina.getArticleId());
+			offerHelper.createPersistedEntity(result.greekMembership.getMembershipId(), result.beta.getArticleId(), result.brazil.getArticleId());
+			offerHelper.createPersistedEntity(result.countryMembership.getMembershipId(), result.brazil.getArticleId(), result.first.getArticleId());
+			offerHelper.createPersistedEntity(result.countryMembership.getMembershipId(), result.canada.getArticleId(), result.alpha.getArticleId());
+			offerHelper.createPersistedEntity(result.ordinalMembership.getMembershipId(), result.first.getArticleId(), result.beta.getArticleId());
 
 			// Generate the trade results
 			result.trade.setState(TradeEntity.State.GENERATE_RESULTS);
@@ -138,7 +138,7 @@ public class TradeResultControllerIT {
 	@Test
 	public void get_When_ResultsAreGeneratedInCsvFormat() throws Exception {
 		TradeResultFactory tradeResultFactory = new TradeResultFactory()
-			.make(user, userRandom, tradeRandom, tradeService, membershipRandom, articleRandom, offerRandom, mockMvc, "text/csv");
+			.make(user, userHelper, tradeHelper, tradeService, membershipHelper, articleHelper, offerHelper, mockMvc, "text/csv");
 		MembershipEntity greekMembership = tradeResultFactory.greekMembership;
 		ArticleEntity alpha = tradeResultFactory.alpha;
 		ArticleEntity beta = tradeResultFactory.beta;
@@ -166,7 +166,7 @@ public class TradeResultControllerIT {
 	@Test
 	public void get_When_ResultsAreGeneratedInJsonFormat_Then_Suceeds() throws Exception {
 		TradeResultFactory tradeResultFactory = new TradeResultFactory()
-			.make(user, userRandom, tradeRandom, tradeService, membershipRandom, articleRandom, offerRandom, mockMvc, MediaType.APPLICATION_JSON.toString());
+			.make(user, userHelper, tradeHelper, tradeService, membershipHelper, articleHelper, offerHelper, mockMvc, MediaType.APPLICATION_JSON.toString());
 
 		TradeEntity trade = tradeResultFactory.trade;
 		MembershipEntity greekMembership = tradeResultFactory.greekMembership;

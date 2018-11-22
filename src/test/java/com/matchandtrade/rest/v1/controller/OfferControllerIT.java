@@ -38,13 +38,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OfferControllerIT {
 
 	@Autowired
-	private ArticleRandom articleRandom;
+	private ArticleHelper articleHelper;
 	private String authorizationHeader;
 	@Autowired
 	private ControllerHelper controllerHelper;
 	private MockMvc mockMvc;
 	@Autowired
-	private MembershipRandom membershipRandom;
+	private MembershipHelper membershipHelper;
 	@Autowired
 	private MembershipTransformer membershipTransformer;
 	@Autowired
@@ -57,18 +57,18 @@ public class OfferControllerIT {
 	private SearchHelper searchHelper;
 	private UserEntity user;
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	@Autowired
-	private TradeRandom tradeRandom;
+	private TradeHelper tradeHelper;
 
 	@Before
 	public void before() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		// Reusing user and authorization header for better performance
 		if (user == null) {
-			user = userRandom.createPersistedEntity();
+			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
 	}
@@ -80,16 +80,16 @@ public class OfferControllerIT {
 		OfferJson offer;
 		public OfferBuilder build() {
 			// Create a trade for a random user
-			TradeEntity trade = tradeRandom.createPersistedEntity(user);
+			TradeEntity trade = tradeHelper.createPersistedEntity(user);
 
 			// Create owner's articles (Greek letters)
 			membership = searchHelper.findMembership(user, trade);
-			offeredArticle = articleRandom.createPersistedEntity(membership);
+			offeredArticle = articleHelper.createPersistedEntity(membership);
 
 			// Create member's articles (country names)
-			UserEntity memberUser = userRandom.createPersistedEntity();
-			MembershipEntity memberTradeMemberhip = membershipRandom.subscribeUserToTrade(memberUser, trade);
-			wantedArticle = articleRandom.createPersistedEntity(memberTradeMemberhip);
+			UserEntity memberUser = userHelper.createPersistedEntity();
+			MembershipEntity memberTradeMemberhip = membershipHelper.subscribeUserToTrade(memberUser, trade);
+			wantedArticle = articleHelper.createPersistedEntity(memberTradeMemberhip);
 
 			// Owner offers Alpha for Australia
 			offer = new OfferJson();

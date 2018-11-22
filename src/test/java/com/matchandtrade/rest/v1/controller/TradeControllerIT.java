@@ -6,8 +6,8 @@ import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.helper.TradeRandom;
-import com.matchandtrade.test.helper.UserRandom;
+import com.matchandtrade.test.helper.TradeHelper;
+import com.matchandtrade.test.helper.UserHelper;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,13 +45,13 @@ public class TradeControllerIT {
 	private WebApplicationContext webApplicationContext;
 	private MockMvc mockMvc;
 	@Autowired
-	private TradeRandom tradeRandom;
+	private TradeHelper tradeHelper;
 	@Autowired
 	private TradeRepositoryFacade tradeRepositoryFacade;
 	private TradeTransformer tradeTransformer = new TradeTransformer();
 	private UserEntity user;
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 
 
 	@Before
@@ -59,14 +59,14 @@ public class TradeControllerIT {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		// Reusing user and authorization header for better performance
 		if (user == null) {
-			user = userRandom.createPersistedEntity();
+			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
 	}
 
 	@Test
 	public void delete_When_TradeExists_Then_Succeeds() throws Exception {
-		TradeEntity expected = tradeRandom.createPersistedEntity(user);
+		TradeEntity expected = tradeHelper.createPersistedEntity(user);
 		MockHttpServletResponse response = mockMvc
 			.perform(
 				delete("/matchandtrade-api/v1/trades/{tradeId}", expected.getTradeId())
@@ -81,7 +81,7 @@ public class TradeControllerIT {
 
 	@Test
 	public void getAll_When_TradesExist_Then_Succeeds() throws Exception {
-		tradeRandom.createPersistedEntity();
+		tradeHelper.createPersistedEntity();
 		MockHttpServletResponse response = mockMvc.perform(get("/matchandtrade-api/v1/trades/"))
 			.andExpect(status().isOk())
 			.andReturn()
@@ -93,7 +93,7 @@ public class TradeControllerIT {
 
 	@Test
 	public void get_When_GetByTradeId_Then_Succeeds() throws Exception {
-		TradeEntity expected = tradeRandom.createPersistedEntity();
+		TradeEntity expected = tradeHelper.createPersistedEntity();
 		MockHttpServletResponse response = mockMvc.perform(
 				get("/matchandtrade-api/v1/trades/{tradeId}", expected.getTradeId())
 				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
@@ -108,7 +108,7 @@ public class TradeControllerIT {
 
 	@Test
 	public void post_When_TradeWithUniqueNames_Then_Succeeds() throws Exception {
-		TradeJson expected = TradeRandom.createJson();
+		TradeJson expected = TradeHelper.createRandomJson();
 		MockHttpServletResponse response = mockMvc
 			.perform(
 				post("/matchandtrade-api/v1/trades/")
@@ -127,7 +127,7 @@ public class TradeControllerIT {
 
 	@Test
 	public void put_When_TradeExists_Then_Succeeds() throws Exception {
-		TradeEntity expected = tradeRandom.createPersistedEntity(user);
+		TradeEntity expected = tradeHelper.createPersistedEntity(user);
 		MockHttpServletResponse response = mockMvc
 			.perform(
 				put("/matchandtrade-api/v1/trades/{tradeId}", expected.getTradeId())
@@ -145,7 +145,7 @@ public class TradeControllerIT {
 
 	@Test
 	public void put_When_TradeStateIsUpdatedToGenerateResults_Then_TriggersGeneratingResultsProcess() throws Exception {
-		TradeEntity expected = tradeRandom.createPersistedEntity(user);
+		TradeEntity expected = tradeHelper.createPersistedEntity(user);
 		expected.setState(GENERATE_RESULTS);
 		MockHttpServletResponse response = mockMvc
 			.perform(

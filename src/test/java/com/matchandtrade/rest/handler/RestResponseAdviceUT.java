@@ -3,7 +3,7 @@ package com.matchandtrade.rest.handler;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.rest.v1.json.UserJson;
-import com.matchandtrade.test.helper.UserRandom;
+import com.matchandtrade.test.helper.UserHelper;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class RestResponseAdviceUT {
 
 	private ServerHttpResponse serverHttpResponse;
 	private ServerHttpRequest serverHttpResquest;
-	private UserRandom userRandom = new UserRandom();
+	private UserHelper userHelper = new UserHelper();
 
 	@Before
 	public void before() {
@@ -62,13 +62,13 @@ public class RestResponseAdviceUT {
 		ServerHttpRequest requestMock = mock(ServerHttpRequest.class);
 		when(requestMock.getURI()).thenReturn(uri);
 		List<UserJson> resultList = new ArrayList<>();
-		UserJson user1 = userRandom.createJson();
+		UserJson user1 = userHelper.createJson();
 		user1.setUserId(1);
 		resultList.add(user1);
-		UserJson user2 = userRandom.createJson();
+		UserJson user2 = userHelper.createJson();
 		user2.setUserId(2);
 		resultList.add(user2);
-		UserJson user3 = userRandom.createJson();
+		UserJson user3 = userHelper.createJson();
 		user3.setUserId(3);
 		resultList.add(user3);
 		SearchResult<UserJson> body = new SearchResult<>(resultList, new Pagination(pageNumber, pageSize, total));

@@ -5,11 +5,8 @@ import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.ListingJson;
 import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
-import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.helper.ArticleRandom;
-import com.matchandtrade.test.helper.MembershipRandom;
-import com.matchandtrade.test.helper.TradeRandom;
-import com.matchandtrade.test.helper.UserRandom;
+import com.matchandtrade.test.helper.*;
+import com.matchandtrade.test.helper.ArticleHelper;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,36 +36,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ListingControllerIT {
 
 	@Autowired
-	private ArticleRandom articleRandom;
+	private ArticleHelper articleHelper;
 	private String authorizationHeader;
 	@Autowired
 	private ControllerHelper controllerHelper;
 	private MockMvc mockMvc;
 	@Autowired
-	private MembershipRandom membershipRandom;
+	private MembershipHelper membershipHelper;
 	@Autowired
 	private MembershipTransformer membershipTransformer;
 	private UserEntity user;
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	@Autowired
-	private TradeRandom tradeRandom;
+	private TradeHelper tradeHelper;
 
 	@Before
 	public void before() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		// Reusing user and authorization header for better performance
 		if (user == null) {
-			user = userRandom.createPersistedEntity();
+			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
 	}
 
 	private ListingJson buildListingWhenUserOwnsArticleAndMembership() {
-		ArticleEntity article = articleRandom.createPersistedEntity(user);
-		MembershipEntity membership = membershipRandom.createPersistedEntity(user);
+		ArticleEntity article = articleHelper.createPersistedEntity(user);
+		MembershipEntity membership = membershipHelper.createPersistedEntity(user);
 		ListingJson expected = new ListingJson();
 		expected.setArticleId(article.getArticleId());
 		expected.setMembershipId(membership.getMembershipId());

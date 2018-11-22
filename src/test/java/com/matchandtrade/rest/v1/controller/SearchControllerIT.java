@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SearchControllerIT {
 
 	@Autowired
-	private ArticleRandom articleRandom;
+	private ArticleHelper articleHelper;
 	private String authorizationHeader;
 	@Autowired
 	private ControllerHelper controllerHelper;
@@ -47,12 +47,12 @@ public class SearchControllerIT {
 	private UserEntity expecteduser;
 	private TradeEntity expectedTrade;
 	@Autowired
-	private ListingRandom listingRandom;
+	private ListingHelper listingHelper;
 	private MockMvc mockMvc;
 	@Autowired
-	private MembershipRandom membershipRandom;
+	private MembershipHelper membershipHelper;
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
@@ -62,17 +62,17 @@ public class SearchControllerIT {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		// Reusing user and authorization header for better performance
 		if (expecteduser == null) {
-			expecteduser = userRandom.createPersistedEntity();
+			expecteduser = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(expecteduser);
 			buildListingWhenUserOwnsArticleAndMembership();
 		}
 	}
 
 	private void buildListingWhenUserOwnsArticleAndMembership() {
-		expectedMembership = membershipRandom.createPersistedEntity(expecteduser);
-		expectedArticle = articleRandom.createPersistedEntity(expectedMembership);
+		expectedMembership = membershipHelper.createPersistedEntity(expecteduser);
+		expectedArticle = articleHelper.createPersistedEntity(expectedMembership);
 		expectedTrade = expectedMembership.getTrade();
-		listingRandom.createPersisted(expectedArticle.getArticleId(), expectedMembership.getMembershipId());
+		listingHelper.createPersisted(expectedArticle.getArticleId(), expectedMembership.getMembershipId());
 	}
 
 	@Test

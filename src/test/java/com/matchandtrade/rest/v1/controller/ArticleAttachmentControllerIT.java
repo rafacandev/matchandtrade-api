@@ -32,41 +32,41 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ArticleAttachmentControllerIT {
 
 	@Autowired
-	private ArticleRandom articleRandom;
+	private ArticleHelper articleHelper;
 	@Autowired
-	private AttachmentRandom attachmentRandom;
+	private AttachmentHelper attachmentHelper;
 	private ArticleTransformer articleTransformer = new ArticleTransformer();
 	private String authorizationHeader;
 	@Autowired
 	private ControllerHelper controllerHelper;
 	private MockMvc mockMvc;
 	@Autowired
-	private MembershipRandom membershipRandom;
+	private MembershipHelper membershipHelper;
 	@Autowired
 	private MembershipTransformer membershipTransformer;
 	private MockMultipartFile multipartFile;
 	private UserEntity user;
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	@Autowired
-	private TradeRandom tradeRandom;
+	private TradeHelper tradeHelper;
 
 	@Before
 	public void before() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		// Reusing user and authorization header for better performance
 		if (user == null) {
-			user = userRandom.createPersistedEntity();
+			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
-		multipartFile = AttachmentRandom.newSampleMockMultiPartFile();
+		multipartFile = AttachmentHelper.newSampleMockMultiPartFile();
 	}
 
 	@Test
 	public void post_When_NewArticle_Then_Succeeds() throws Exception {
-		ArticleEntity expectedArticle = articleRandom.createPersistedEntity(user);
+		ArticleEntity expectedArticle = articleHelper.createPersistedEntity(user);
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 			.fileUpload("/matchandtrade-api/v1/articles/{articleId}/attachments/", expectedArticle.getArticleId())
 			.file(multipartFile);
@@ -75,8 +75,8 @@ public class ArticleAttachmentControllerIT {
 
 	@Test
 	public void delete_When_AttachmentExists_Then_Succeeds() throws Exception {
-		ArticleEntity expectedArticle = articleRandom.createPersistedEntity(user);
-		AttachmentEntity expected = attachmentRandom.createPersistedEntity(expectedArticle);
+		ArticleEntity expectedArticle = articleHelper.createPersistedEntity(user);
+		AttachmentEntity expected = attachmentHelper.createPersistedEntity(expectedArticle);
 		mockMvc.perform(
 				delete("/matchandtrade-api/v1/articles/{articleId}/attachments/{attachmentId}", expectedArticle.getArticleId(), expected.getAttachmentId())
 				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)

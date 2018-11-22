@@ -36,39 +36,39 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ArticleControllerIT {
 
 	@Autowired
-	private ArticleRandom articleRandom;
+	private ArticleHelper articleHelper;
 	private ArticleTransformer articleTransformer = new ArticleTransformer();
 	private String authorizationHeader;
 	@Autowired
 	private ControllerHelper controllerHelper;
 	private MockMvc mockMvc;
 	@Autowired
-	private MembershipRandom membershipRandom;
+	private MembershipHelper membershipHelper;
 	@Autowired
 	private MembershipTransformer membershipTransformer;
 	private UserEntity user;
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	@Autowired
-	private TradeRandom tradeRandom;
+	private TradeHelper tradeHelper;
 
 	@Before
 	public void before() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		// Reusing user and authorization header for better performance
 		if (user == null) {
-			user = userRandom.createPersistedEntity();
+			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
 	}
 
 	@Autowired
-	ListingRandom lr;
+	ListingHelper lr;
 	@Test
 	public void delete_When_DeleteByArticleId_Then_Succeeds() throws Exception {
-		ArticleEntity expected = articleRandom.createPersistedEntity(user);
+		ArticleEntity expected = articleHelper.createPersistedEntity(user);
 		mockMvc.perform(
 			delete("/matchandtrade-api/v1/articles/{articleId}", expected.getArticleId())
 				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
@@ -78,7 +78,7 @@ public class ArticleControllerIT {
 
 	@Test
 	public void get_When_GetByArticleId_Then_Succeeds() throws Exception {
-		ArticleEntity expectedEntity = articleRandom.createPersistedEntity();
+		ArticleEntity expectedEntity = articleHelper.createPersistedEntity();
 		ArticleJson expected = articleTransformer.transform(expectedEntity);
 		String response = mockMvc.perform(
 			get("/matchandtrade-api/v1/articles/{articleId}", expected.getArticleId())
@@ -94,9 +94,9 @@ public class ArticleControllerIT {
 
 	@Test
 	public void get_When_GetAllAndPageSizeIs2_Then_Returns2Articles() throws Exception {
-		articleRandom.createPersistedEntity();
-		articleRandom.createPersistedEntity();
-		articleRandom.createPersistedEntity();
+		articleHelper.createPersistedEntity();
+		articleHelper.createPersistedEntity();
+		articleHelper.createPersistedEntity();
 		MockHttpServletResponse response = mockMvc.perform(
 			get("/matchandtrade-api/v1/articles?_pageNumber=1&_pageSize=2")
 				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
@@ -113,7 +113,7 @@ public class ArticleControllerIT {
 
 	@Test
 	public void post_When_NewArticle_Then_Succeeds() throws Exception {
-		ArticleJson expected = ArticleRandom.createJson();
+		ArticleJson expected = ArticleHelper.createRandomJson();
 		mockMvc
 			.perform(
 				post("/matchandtrade-api/v1/articles/")
@@ -126,7 +126,7 @@ public class ArticleControllerIT {
 
 	@Test
 	public void put_When_ExistingArticle_Then_Succeeds() throws Exception {
-		ArticleEntity expectedEntity = articleRandom.createPersistedEntity(user);
+		ArticleEntity expectedEntity = articleHelper.createPersistedEntity(user);
 		expectedEntity.setName(expectedEntity.getName() + " - updated");
 		ArticleJson expected = articleTransformer.transform(expectedEntity);
 		String response = mockMvc

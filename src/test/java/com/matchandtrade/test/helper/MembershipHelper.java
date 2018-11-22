@@ -4,12 +4,7 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.rest.service.MembershipService;
-import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
-import com.matchandtrade.util.JsonUtil;
-import com.mchange.v2.beans.BeansUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,17 +12,15 @@ import static com.matchandtrade.persistence.entity.MembershipEntity.Type.MEMBER;
 import static com.matchandtrade.persistence.entity.MembershipEntity.Type.OWNER;
 
 @Component
-public class MembershipRandom {
+public class MembershipHelper {
 	
-	@Autowired
-	private MembershipRepositoryFacade membershipRepositoryFacade;
 	@Autowired
 	private MembershipService membershipService;
 	@Autowired
-	private TradeRandom tradeRandom;
+	private TradeHelper tradeHelper;
 
 	public MembershipEntity createPersistedEntity(UserEntity user) {
-		TradeEntity trade = tradeRandom.createPersistedEntity(user);
+		TradeEntity trade = tradeHelper.createPersistedEntity(user);
 		SearchResult<MembershipEntity> searchResult = membershipService.findByTradeIdUserIdType(
 			trade.getTradeId(),
 			user.getUserId(),

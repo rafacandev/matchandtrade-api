@@ -4,12 +4,13 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
+import com.matchandtrade.test.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class UserRandom {
+public class UserHelper {
 	
 	@Autowired
 	private UserRepositoryFacade userRepositoryFacade;

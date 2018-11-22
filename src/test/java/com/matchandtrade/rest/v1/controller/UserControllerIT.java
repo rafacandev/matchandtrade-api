@@ -3,7 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.helper.UserRandom;
+import com.matchandtrade.test.helper.UserHelper;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class UserControllerIT {
 	private MockMvc mockMvc;
 	private UserEntity user;
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
@@ -47,7 +47,7 @@ public class UserControllerIT {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		// Reusing user and authorization header for better performance
 		if (user == null) {
-			user = userRandom.createPersistedEntity();
+			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
 	}
@@ -70,7 +70,7 @@ public class UserControllerIT {
 
 	@Test
 	public void get_When_UserExistsAndRequestInfoForDifferentUser_Then_ReturnOnlyIdAndName() throws Exception {
-		UserEntity expected = userRandom.createPersistedEntity();
+		UserEntity expected = userHelper.createPersistedEntity();
 		MockHttpServletResponse response = mockMvc
 			.perform(
 				get("/matchandtrade-api/v1/users/{userId}", expected.getUserId())

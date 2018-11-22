@@ -4,8 +4,8 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.helper.TradeRandom;
-import com.matchandtrade.test.helper.UserRandom;
+import com.matchandtrade.test.helper.TradeHelper;
+import com.matchandtrade.test.helper.UserHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,13 +37,13 @@ public class AuthenticationControllerIT {
 	private WebApplicationContext webApplicationContext;
 	private MockMvc mockMvc;
 	@Autowired
-	private TradeRandom tradeRandom;
+	private TradeHelper tradeHelper;
 	@Autowired
 	private TradeRepositoryFacade tradeRepositoryFacade;
 	private TradeTransformer tradeTransformer = new TradeTransformer();
 	private UserEntity user;
 	@Autowired
-	private UserRandom userRandom;
+	private UserHelper userHelper;
 
 
 	@Before
@@ -51,7 +51,7 @@ public class AuthenticationControllerIT {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		// Reusing user and authorization header for better performance
 		if (user == null) {
-			user = userRandom.createPersistedEntity();
+			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
 	}
