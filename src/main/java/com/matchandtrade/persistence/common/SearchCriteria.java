@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * POJO for search criteria.
+ * Search Criteria to be used with QueryBuilders
  * 
  * @author rafael.santos.bra@gmail.com
  *

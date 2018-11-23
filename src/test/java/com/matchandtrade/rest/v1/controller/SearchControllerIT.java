@@ -43,7 +43,6 @@ public class SearchControllerIT {
 	@Autowired
 	private ControllerHelper controllerHelper;
 	private ArticleEntity expectedArticle;
-	private MembershipEntity expectedMembership;
 	private UserEntity expecteduser;
 	private TradeEntity expectedTrade;
 	@Autowired
@@ -69,7 +68,7 @@ public class SearchControllerIT {
 	}
 
 	private void buildListingWhenUserOwnsArticleAndMembership() {
-		expectedMembership = membershipHelper.createPersistedEntity(expecteduser);
+		MembershipEntity expectedMembership = expectedMembership = membershipHelper.createPersistedEntity(expecteduser);
 		expectedArticle = articleHelper.createPersistedEntity(expectedMembership);
 		expectedTrade = expectedMembership.getTrade();
 		listingHelper.createPersisted(expectedArticle.getArticleId(), expectedMembership.getMembershipId());
