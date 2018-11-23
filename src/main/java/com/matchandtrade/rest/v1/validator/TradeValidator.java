@@ -10,8 +10,10 @@ import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.rest.service.TradeService;
+import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +21,13 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 
+import static com.matchandtrade.persistence.entity.MembershipEntity.Type.OWNER;
+
 @Component
 public class TradeValidator {
 
 	@Autowired
-	SearchService<TradeEntity> searchServiceTrade;
-	@Autowired
-	SearchService<MembershipEntity> searchServiceMembership;
+	MembershipService membershipService;
 	@Autowired
 	TradeService tradeService;
 
@@ -77,23 +79,14 @@ public class TradeValidator {
 		}
 	}
 
-	// TODO: Add a test in SearchService for this scenario
 	private void verifyThatNameIsUnique(TradeJson json) {
-		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(TradeQueryBuilder.Field.NAME, json.getName(), Restriction.EQUALS_IGNORE_CASE);
-		SearchResult<TradeEntity> searchResult = searchServiceTrade.search(searchCriteria, TradeQueryBuilder.class);
-		if (!searchResult.getResultList().isEmpty()) {
+		if (!tradeService.isNameUnique(json.getName())) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
 		}
 	}
 
-	// TODO: Add a test in SearchService for this scenario
 	private void verifyThatNameIsUniqueExceptForTheCurrentTrade(TradeJson json) {
-		SearchCriteria searchCriteriaUniqueName = new SearchCriteria(new Pagination(1,1));
-		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.NAME, json.getName());
-		searchCriteriaUniqueName.addCriterion(TradeQueryBuilder.Field.TRADE_ID, json.getTradeId(), Restriction.NOT_EQUALS);
-		SearchResult<TradeEntity> searchResultUniqueName = searchServiceTrade.search(searchCriteriaUniqueName, TradeQueryBuilder.class);
-		if (!searchResultUniqueName.getResultList().isEmpty()) {
+		if (!tradeService.isNameUniqueExceptForTradeId(json.getName(), json.getTradeId())) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
 		}
 	}
@@ -111,15 +104,10 @@ public class TradeValidator {
 		}
 	}
 
-	// TODO: Add a test in SearchService for this scenario
 	private void validateThatUserOwnsTrade(Integer tradeId, Integer userId) {
-		SearchCriteria searchCriteriaTradeOwner = new SearchCriteria(new Pagination(1,1));
-		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.TRADE_ID, tradeId);
-		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.USER_ID, userId);
-		searchCriteriaTradeOwner.addCriterion(MembershipQueryBuilder.Field.TYPE, MembershipEntity.Type.OWNER);
-		SearchResult<MembershipEntity> searchResultTradeOwner = searchServiceMembership.search(searchCriteriaTradeOwner, MembershipQueryBuilder.class);
-		if (searchResultTradeOwner.getResultList().isEmpty()) {
-			throw new RestException(HttpStatus.FORBIDDEN, "Authenticated user is not the owner of Trade.tradeId: " + tradeId);
+		SearchResult<MembershipEntity> searchResult = membershipService.findByTradeIdUserIdType(tradeId, userId, OWNER, 1, 1);
+		if (searchResult.isEmpty()) {
+			throw new RestException(HttpStatus.FORBIDDEN, String.format("Authenticated User.userId: %s is not the owner of Trade.tradeId: %s", userId, tradeId));
 		}
 	}
 

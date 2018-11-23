@@ -15,6 +15,11 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 
+import static com.matchandtrade.persistence.common.Criterion.Restriction.EQUALS_IGNORE_CASE;
+import static com.matchandtrade.persistence.common.Criterion.Restriction.NOT_EQUALS;
+import static com.matchandtrade.persistence.criteria.TradeQueryBuilder.Field.NAME;
+import static com.matchandtrade.persistence.criteria.TradeQueryBuilder.Field.TRADE_ID;
+
 @Component
 public class TradeService {
 
@@ -39,6 +44,21 @@ public class TradeService {
 		membershipRepository.save(membershipEntity);
 	}
 
+	public boolean isNameUniqueExceptForTradeId(String name, Integer tradeId) {
+		SearchCriteria searchCriteriaUniqueName = new SearchCriteria(new Pagination(1,1));
+		searchCriteriaUniqueName.addCriterion(NAME, name);
+		searchCriteriaUniqueName.addCriterion(TRADE_ID, tradeId, NOT_EQUALS);
+		SearchResult<TradeEntity> searchResult = searchService.search(searchCriteriaUniqueName, TradeQueryBuilder.class);
+		return searchResult.isEmpty();
+	}
+
+	public boolean isNameUnique(String name) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
+		searchCriteria.addCriterion(NAME, name, EQUALS_IGNORE_CASE);
+		SearchResult<TradeEntity> searchResult = searchService.search(searchCriteria, TradeQueryBuilder.class);
+		return searchResult.isEmpty();
+	}
+
 	public void delete(Integer tradeId) {
 		tradeRepository.delete(tradeId);
 	}
@@ -49,7 +69,7 @@ public class TradeService {
 
 	public SearchResult<TradeEntity> search(Integer pageNumber, Integer pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
-		searchCriteria.addSort(new Sort(TradeQueryBuilder.Field.TRADE_ID, Sort.Type.DESC));
+		searchCriteria.addSort(new Sort(TRADE_ID, Sort.Type.DESC));
 		return searchService.search(searchCriteria, TradeQueryBuilder.class);
 	}
 
@@ -60,5 +80,5 @@ public class TradeService {
 			tradeResultService.generateResults(tradeEntity.getTradeId());
 		}
 	}
-	
+
 }

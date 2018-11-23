@@ -8,6 +8,7 @@ import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ListingService;
 import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.rest.v1.json.ListingJson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class ListingValidator {
 	@Autowired
 	ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
-	SearchService<MembershipEntity> searchService;
+	ListingService listingService;
 
 	public void validateDelete(Integer userId, ListingJson listing) {
 		verifyThatUserOwnsMembership(userId, listing.getMembershipId());
@@ -54,11 +55,8 @@ public class ListingValidator {
 	}
 
 	private void verifyThatUserOwnsMembership(Integer userId, Integer membershipId) {
-		SearchCriteria criteria = new SearchCriteria(new Pagination());
-		criteria.addCriterion(MembershipQueryBuilder.Field.USER_ID, userId);
-		criteria.addCriterion(MembershipQueryBuilder.Field.MEMBERSHIP_ID, membershipId);
-		SearchResult<MembershipEntity> searchResult = searchService.search(criteria, MembershipQueryBuilder.class);
-		if (searchResult.getPagination().getTotal() < 1) {
+		SearchResult<MembershipEntity> searchResult = listingService.findMembershipByUserIdAndMembershpiId(userId, membershipId);
+		if (searchResult.isEmpty()) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %s does not own Membership.membershipId: %s", userId, membershipId));
 		}
 	}

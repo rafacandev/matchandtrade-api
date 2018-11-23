@@ -18,6 +18,10 @@ public class SearchResult<T> {
 		this.pagination = pagination;
 	}
 
+	public boolean isEmpty() {
+		return pagination.getTotal() < 1;
+	}
+
 	public Pagination getPagination() {
 		return pagination;
 	}
