@@ -21,8 +21,8 @@ public class UserService {
 	public UserEntity find(Integer userId) {
 		return userRepository.find(userId);
 	}
-	
-	public UserEntity searchByArticleId(Integer articleId) {
+
+	public UserEntity findByArticleId(Integer articleId) {
 		return userRepository.findByArticleId(articleId);
 	}
 

@@ -22,26 +22,11 @@ public class ArticleRepositoryFacade {
 	
 	@Autowired
 	private ArticleRepository articleRepository;
-	@Autowired
-	private EntityManager entityManger;
 
 	public ArticleEntity find(Integer articleId) {
 		return articleRepository.findOne(articleId);
 	}
 
-	/**
-	 * True if all articleIds belong to existing {@code Article}s
-	 * @param articleIds
-	 */
-	public boolean exists(Integer[] articleIds) {
-		List<Integer> ids = Arrays.asList(articleIds);
-		TypedQuery<Integer> query = entityManger.createQuery("SELECT a.articleId FROM ArticleEntity AS a WHERE a.articleId IN (:ids)", Integer.class);
-		query.setParameter("ids", ids);
-		query.setMaxResults(articleIds.length);
-		List<Integer> resultList = query.getResultList();
-		return (resultList.size() == articleIds.length);
-	}
-	
 	public void save(ArticleEntity entity) {
 		articleRepository.save(entity);
 	}

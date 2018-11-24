@@ -46,8 +46,6 @@ public class OfferControllerIT {
 	@Autowired
 	private MembershipHelper membershipHelper;
 	@Autowired
-	private MembershipTransformer membershipTransformer;
-	@Autowired
 	private MembershipRepositoryFacade membershipRepositoryFacade;
 	@Autowired
 	private OfferRepositoryFacade offerRepositoryFacade;
@@ -59,9 +57,9 @@ public class OfferControllerIT {
 	@Autowired
 	private UserHelper userHelper;
 	@Autowired
-	private WebApplicationContext webApplicationContext;
-	@Autowired
 	private TradeHelper tradeHelper;
+	@Autowired
+	private WebApplicationContext webApplicationContext;
 
 	@Before
 	public void before() {
@@ -88,8 +86,8 @@ public class OfferControllerIT {
 
 			// Create member's articles (country names)
 			UserEntity memberUser = userHelper.createPersistedEntity();
-			MembershipEntity memberTradeMemberhip = membershipHelper.subscribeUserToTrade(memberUser, trade);
-			wantedArticle = articleHelper.createPersistedEntity(memberTradeMemberhip);
+			MembershipEntity memberTradeMembership = membershipHelper.subscribeUserToTrade(memberUser, trade);
+			wantedArticle = articleHelper.createPersistedEntity(memberTradeMembership);
 
 			// Owner offers Alpha for Australia
 			offer = new OfferJson();
@@ -97,22 +95,28 @@ public class OfferControllerIT {
 			offer.setWantedArticleId(wantedArticle.getArticleId());
 			return this;
 		}
+
+		public OfferEntity persistOffer() {
+			OfferEntity offerEntity = new OfferEntity();
+			offerEntity.setOfferedArticle(offeredArticle);
+			offerEntity.setWantedArticle(wantedArticle);
+			offerRepositoryFacade.save(offerEntity);
+			membership.getOffers().add(offerEntity);
+			membershipRepositoryFacade.save(membership);
+			return offerEntity;
+		}
+
 	}
 
 	@Test
 	public void delete_When_UserOwnsOffer_Then_Succeeds() throws Exception {
 		OfferBuilder offerBuilder = new OfferBuilder().build();
-		MembershipEntity membership = offerBuilder.membership;
-		OfferEntity expectedEntity = new OfferEntity();
-		expectedEntity.setOfferedArticle(offerBuilder.offeredArticle);
-		expectedEntity.setWantedArticle(offerBuilder.wantedArticle);
-		offerRepositoryFacade.save(expectedEntity);
-		membership.getOffers().add(expectedEntity);
-		membershipRepositoryFacade.save(membership);
+		Integer membershipId = offerBuilder.membership.getMembershipId();
+		OfferEntity expectedEntity = offerBuilder.persistOffer();
 		OfferJson expected = offerTransformer.transform(expectedEntity);
 		mockMvc
 			.perform(
-				delete("/matchandtrade-api/v1/memberships/{membershipId}/offers/{offerId}", membership.getMembershipId(), expected.getOfferId())
+				delete("/matchandtrade-api/v1/memberships/{membershipId}/offers/{offerId}", membershipId, expected.getOfferId())
 					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 			)
 			.andExpect(status().isNoContent());
@@ -121,17 +125,12 @@ public class OfferControllerIT {
 	@Test
 	public void get_When_UserOwnsOffer_Then_Succeeds() throws Exception {
 		OfferBuilder offerBuilder = new OfferBuilder().build();
-		MembershipEntity membership = offerBuilder.membership;
-		OfferEntity expectedEntity = new OfferEntity();
-		expectedEntity.setOfferedArticle(offerBuilder.offeredArticle);
-		expectedEntity.setWantedArticle(offerBuilder.wantedArticle);
-		offerRepositoryFacade.save(expectedEntity);
-		membership.getOffers().add(expectedEntity);
-		membershipRepositoryFacade.save(membership);
+		Integer membershipId = offerBuilder.membership.getMembershipId();
+		OfferEntity expectedEntity = offerBuilder.persistOffer();
 		OfferJson expected = offerTransformer.transform(expectedEntity);
 		String response = mockMvc
 			.perform(
-				get("/matchandtrade-api/v1/memberships/{membershipId}/offers/{offerId}", membership.getMembershipId(), expected.getOfferId())
+				get("/matchandtrade-api/v1/memberships/{membershipId}/offers/{offerId}", membershipId, expected.getOfferId())
 					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(JsonUtil.toJson(expected))
@@ -148,17 +147,12 @@ public class OfferControllerIT {
 	@Test
 	public void get_When_GetByOfferedArticleIdAndOfferedArticleExists_Then_Succeeds() throws Exception {
 		OfferBuilder offerBuilder = new OfferBuilder().build();
-		MembershipEntity membership = offerBuilder.membership;
-		OfferEntity expectedEntity = new OfferEntity();
-		expectedEntity.setOfferedArticle(offerBuilder.offeredArticle);
-		expectedEntity.setWantedArticle(offerBuilder.wantedArticle);
-		offerRepositoryFacade.save(expectedEntity);
-		membership.getOffers().add(expectedEntity);
-		membershipRepositoryFacade.save(membership);
+		Integer membershipId = offerBuilder.membership.getMembershipId();
+		OfferEntity expectedEntity = offerBuilder.persistOffer();
 		OfferJson expected = offerTransformer.transform(expectedEntity);
 		String response = mockMvc
 			.perform(
-				get("/matchandtrade-api/v1/memberships/{membershipId}/offers?offeredArticleId={offeredArticleId}", membership.getMembershipId(), expected.getOfferedArticleId())
+				get("/matchandtrade-api/v1/memberships/{membershipId}/offers?offeredArticleId={offeredArticleId}", membershipId, expected.getOfferedArticleId())
 					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 			)
 			.andExpect(status().isOk())
@@ -174,11 +168,10 @@ public class OfferControllerIT {
 	@Test
 	public void post_When_UserOwnsArticleAndMembership_Then_Succeeds() throws Exception {
 		OfferBuilder offerBuilder = new OfferBuilder().build();
-		MembershipEntity membership = offerBuilder.membership;
 		OfferJson expected = offerBuilder.offer;
 		String response = mockMvc
 			.perform(
-				post("/matchandtrade-api/v1/memberships/{membershipId}/offers/", membership.getMembershipId())
+				post("/matchandtrade-api/v1/memberships/{membershipId}/offers/", offerBuilder.membership.getMembershipId())
 					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(JsonUtil.toJson(expected))

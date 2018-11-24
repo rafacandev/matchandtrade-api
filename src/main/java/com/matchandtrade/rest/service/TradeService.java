@@ -4,6 +4,7 @@ import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.common.Sort;
+import com.matchandtrade.persistence.criteria.MembershipQueryBuilder;
 import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
@@ -15,8 +16,12 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 
+import java.util.Arrays;
+
 import static com.matchandtrade.persistence.common.Criterion.Restriction.EQUALS_IGNORE_CASE;
+import static com.matchandtrade.persistence.common.Criterion.Restriction.IN;
 import static com.matchandtrade.persistence.common.Criterion.Restriction.NOT_EQUALS;
+import static com.matchandtrade.persistence.criteria.MembershipQueryBuilder.Field.ARTICLE_ID;
 import static com.matchandtrade.persistence.criteria.TradeQueryBuilder.Field.NAME;
 import static com.matchandtrade.persistence.criteria.TradeQueryBuilder.Field.TRADE_ID;
 
@@ -26,12 +31,20 @@ public class TradeService {
 	@Autowired
 	private SearchService<TradeEntity> searchService;
 	@Autowired
-	private TradeRepositoryFacade tradeRepository;
-	@Autowired
 	private MembershipRepositoryFacade membershipRepository;
 	@Autowired
+	private TradeRepositoryFacade tradeRepository;
+	@Autowired
 	private TradeResultService tradeResultService;
-	
+
+	public boolean areArticlesInSameTrade(Integer tradeId, Integer... articleIds) {
+		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
+		searchCriteria.addCriterion(MembershipQueryBuilder.Field.TRADE_ID, tradeId);
+		searchCriteria.addCriterion(ARTICLE_ID, Arrays.asList(articleIds), IN);
+		SearchResult<TradeEntity> searchResult = searchService.search(searchCriteria, MembershipQueryBuilder.class);
+		return searchResult.getPagination().getTotal() == articleIds.length;
+	}
+
 	@Transactional
 	public void create(TradeEntity tradeEntity, UserEntity tradeOwner) {
 		tradeEntity.setState(TradeEntity.State.SUBMITTING_ARTICLES);

@@ -25,11 +25,6 @@ public class OfferService {
 	private MembershipRepositoryFacade membershipRepositoryFacade;
 
 	@Transactional
-	public boolean areArticlesAssociatedToSameTrade(Integer ...articles) {
-		return offerRepositoryFacade.areArticlesAssociatedToSameTrade(articles);
-	}
-
-	@Transactional
 	public void create(Integer membershipId, OfferEntity offer) {
 		MembershipEntity membership = membershipRepositoryFacade.find(membershipId);
 		offerRepositoryFacade.save(offer);

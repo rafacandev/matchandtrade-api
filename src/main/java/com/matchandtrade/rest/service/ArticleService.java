@@ -41,16 +41,6 @@ public class ArticleService {
 		articleRepositoryFacade.delete(articleId);
 	}
 
-	/**
-	 * Returns true when all {@articleId}s are associated with existing articles
-	 *
-	 * @param articleIds
-	 * @return
-	 */
-	public boolean exists(Integer... articleIds) {
-		return articleRepositoryFacade.exists(articleIds);
-	}
-
 	public SearchResult<ArticleEntity> search(Integer pageNumber, Integer pageSize) {
 		return articleRepositoryFacade.findAll(pageNumber, pageSize);
 	}

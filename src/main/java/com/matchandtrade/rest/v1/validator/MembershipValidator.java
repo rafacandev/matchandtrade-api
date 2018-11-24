@@ -25,7 +25,6 @@ public class MembershipValidator {
 	UserService userService;
 	
 	/**
-	 *
 	 * <p>@{code HttpStatus.BAD_REQUEST, "Membership.userId must refer to an existing User"}</p>
 	 * <p>@{code HttpStatus.BAD_REQUEST, "Membership.tradeId must refer to an existing Trade"}</p>
 	 * <p>@{code HttpStatus.BAD_REQUEST, "Trade.State must be SUBMITTING_ARTICLES when creating a new Membership"}</p>
@@ -51,6 +50,13 @@ public class MembershipValidator {
 		}
 	}
 
+	/**
+	 * <p>{@code HttpStatus.NOT_FOUND, "Membership.membershipId was not found"}</p>
+	 * <p>{@code HttpStatus.FORBIDDEN, "User.userId does not own Membership.membershipId"}</p>
+	 *
+	 * @param authenticatedUser
+	 * @param membershipId
+	 */
 	public void validateDelete(UserEntity authenticatedUser, Integer membershipId) {
 		MembershipEntity membership = membershipService.find(membershipId);
 		if (membership == null) {
@@ -65,6 +71,11 @@ public class MembershipValidator {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
 	}
 
+	/**
+	 * <p>{@code HttpStatus.NOT_FOUND, "Membership.membershipId was not found"}</p>
+	 *
+	 * @param membershipId
+	 */
 	public void validateGet(Integer membershipId) {
 		MembershipEntity membership = membershipService.find(membershipId);
 		if (membership == null) {

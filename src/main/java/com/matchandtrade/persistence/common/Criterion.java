@@ -8,7 +8,7 @@ package com.matchandtrade.persistence.common;
  */
 public class Criterion {
 
-	public enum Restriction {EQUALS, NOT_EQUALS, EQUALS_IGNORE_CASE, LIKE_IGNORE_CASE}
+	public enum Restriction {EQUALS, NOT_EQUALS, EQUALS_IGNORE_CASE, LIKE_IGNORE_CASE, IN}
 	public enum LogicalOperator {AND, OR}
 	
 	private Field field;

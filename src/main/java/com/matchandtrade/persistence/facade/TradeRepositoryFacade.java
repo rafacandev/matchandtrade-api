@@ -1,15 +1,14 @@
 package com.matchandtrade.persistence.facade;
 
-import java.util.List;
-
+import com.matchandtrade.persistence.entity.MembershipEntity;
+import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.persistence.repository.MembershipRepository;
+import com.matchandtrade.persistence.repository.TradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.MembershipEntity;
-import com.matchandtrade.persistence.repository.MembershipRepository;
-import com.matchandtrade.persistence.repository.TradeRepository;
+import java.util.List;
 
 @Repository
 public class TradeRepositoryFacade {
@@ -33,5 +32,5 @@ public class TradeRepositoryFacade {
 	public void save(TradeEntity entity) {
 		tradeRepository.save(entity);
 	}
-	
+
 }

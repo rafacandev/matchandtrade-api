@@ -1,7 +1,6 @@
 package com.matchandtrade.persistence.criteria;
 
 import com.matchandtrade.persistence.common.Criterion;
-import com.matchandtrade.persistence.common.Criterion.LogicalOperator;
 import com.matchandtrade.persistence.common.Criterion.Restriction;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.Sort;
@@ -20,9 +19,6 @@ public class QueryBuilderHelper {
 	@Autowired
 	private EntityManager entityManager;
 
-	// Utility classes should not have public constructors
-	private QueryBuilderHelper() { }
-	
 	/**
 	 * Builds a string representing a JPA Query WHERE clause.
 	 * It takes in consideration the {@code Criterion.LogicalOperator} and {@code Criterion.Restriction} 
@@ -54,6 +50,8 @@ public class QueryBuilderHelper {
 			result.append("UPPER(").append(alias).append(") = UPPER(:").append(param).append(")");
 		} else if (criterion.getRestriction().equals(Restriction.LIKE_IGNORE_CASE)) {
 			result.append("UPPER(").append(alias).append(") LIKE UPPER(:").append(param).append(")");
+		} else if (criterion.getRestriction().equals(Restriction.IN)) {
+			result.append(alias).append(" IN :").append(param);
 		}
 		return result.toString();
 	}

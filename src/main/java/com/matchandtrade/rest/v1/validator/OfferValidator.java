@@ -1,5 +1,6 @@
 package com.matchandtrade.rest.v1.validator;
 
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.rest.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,13 +15,15 @@ import com.matchandtrade.rest.v1.json.OfferJson;
 public class OfferValidator {
 
 	@Autowired
-	private ArticleService articleService;
+	ArticleService articleService;
 	@Autowired
 	private OfferService offerService;
 	@Autowired
-	private MembershipService membershipService;
+	MembershipService membershipService;
 	@Autowired
-	private UserService userService;
+	TradeService tradeService;
+	@Autowired
+	UserService userService;
 
 	private static void membershipMustBelongToAuthenticatedUser(MembershipEntity membership, Integer authenticatedUserId) {
 		if (membership == null || !membership.getUser().getUserId().equals(authenticatedUserId)) {
@@ -38,7 +41,7 @@ public class OfferValidator {
 	}
 
 	public void validateGetAll(Integer membershipId, Integer pageNumber, Integer pageSize, Integer authenticatedUserId) {
-		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);	
+		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
 		MembershipEntity membership = membershipService.find(membershipId);
 		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 	}
@@ -48,41 +51,42 @@ public class OfferValidator {
 		membershipMustBelongToAuthenticatedUser(membership, authenticatedUserId);
 	}
 
-	public void validatePost(Integer membershipId, OfferJson offer, Integer offeringUserId) {
-		if (offer == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer is mandatory.");
-		}
-
+	public void validatePost(Integer membershipId, OfferJson offer, Integer authenticatedUserId) {
 		if (offer.getOfferedArticleId() == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId is mandatory.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId is mandatory");
 		}
 
 		if (offer.getWantedArticleId() == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.wantedArticleId is mandatory.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.wantedArticleId is mandatory");
 		}
-		
+
 		if (offer.getOfferedArticleId().equals(offer.getWantedArticleId())) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must differ.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must differ");
 		}
-		
-		boolean articlesExist = articleService.exists(offer.getOfferedArticleId(), offer.getWantedArticleId());
-		if (!articlesExist) {	
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must belong to existing Articles.");
+
+		ArticleEntity offeredArticle = articleService.find(offer.getOfferedArticleId());
+		if (offeredArticle == null) {
+			throw new RestException(HttpStatus.NOT_FOUND, "Offer.offeredArticleId was not found");
 		}
-		
+
+		ArticleEntity wantedArticle = articleService.find(offer.getWantedArticleId());
+		if (wantedArticle == null) {
+			throw new RestException(HttpStatus.NOT_FOUND, "Offer.wantedArticleId was not found");
+		}
+
 		MembershipEntity membership = membershipService.find(membershipId);
-		if (!offeringUserId.equals(membership.getUser().getUserId())) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Membership must belong to the current authenticated User.");
+		if (!authenticatedUserId.equals(membership.getUser().getUserId())) {
+			throw new RestException(HttpStatus.FORBIDDEN, "User.userId does not own Membership.membershipId");
 		}
-		
-		UserEntity offeredArticleUser = userService.searchByArticleId(offer.getOfferedArticleId());
-		if (offeredArticleUser == null || !offeredArticleUser.getUserId().equals(offeringUserId)) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId must belong to the offering User.userId.");
+
+		UserEntity userOfOfferedArticle = userService.findByArticleId(offer.getOfferedArticleId());
+		if (!userOfOfferedArticle.getUserId().equals(authenticatedUserId)) {
+			throw new RestException(HttpStatus.FORBIDDEN, "User.userId does not own Offer.offeredArticleId");
 		}
-		
-		boolean articlesAssociatedToSameTrade = offerService.areArticlesAssociatedToSameTrade(offer.getOfferedArticleId(), offer.getWantedArticleId());
-		if (!articlesAssociatedToSameTrade) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must be associated to the same Trade.");
+
+		boolean areArticlesInSameTrade = tradeService.areArticlesInSameTrade(membership.getTrade().getTradeId(), offer.getOfferedArticleId(), offer.getWantedArticleId());
+		if (!areArticlesInSameTrade) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must be associated to the same Trade.tradeId");
 		}
 	}
 
