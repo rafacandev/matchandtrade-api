@@ -66,6 +66,19 @@ public class UserValidatorUT {
 		}
 	}
 
+	@Test(expected = RestException.class)
+	public void validatePut_When_AuthenticatedUserIsSameAsGiveUserButEmailIsNull_Then_Forbidden() {
+		UserJson givenUser = new UserJson();
+		givenUser.setUserId(1);
+		try {
+			fixture.validatePut(existingAuthenticatedUser, givenUser);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("User.email cannot be updated", e.getDescription());
+			throw e;
+		}
+	}
+
 	@Test
 	public void validatePut_When_AuthenticatedUserIsSameAsGivenUserAndEmailDidNotChange_Then_Succeeds() {
 		UserJson givenUser = new UserJson();
