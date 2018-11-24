@@ -12,9 +12,12 @@ import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.test.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional
+@Commit
 public class ArticleHelper {
 	
 	@Autowired

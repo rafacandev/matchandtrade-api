@@ -7,9 +7,12 @@ import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.test.StringRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional
+@Commit
 public class UserHelper {
 	
 	@Autowired
@@ -27,14 +30,12 @@ public class UserHelper {
 		return result;
 	}
 	
-	@Transactional
 	public UserEntity createPersistedEntity() {
 		UserEntity result = createEntity();
 		userRepositoryFacade.save(result);
 		return result;
 	}
 
-	@Transactional
 	public UserEntity createPersistedEntity(String name) {
 		UserEntity result = createEntity();
 		result.setName(name);

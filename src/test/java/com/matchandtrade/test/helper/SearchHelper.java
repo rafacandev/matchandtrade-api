@@ -7,8 +7,12 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.service.MembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional
+@Commit
 public class SearchHelper {
 
 	@Autowired
