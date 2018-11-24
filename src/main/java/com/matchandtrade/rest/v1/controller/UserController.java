@@ -48,7 +48,7 @@ public class UserController implements Controller {
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
 		requestJson.setUserId(userId); // Always get the id from the URL when working on PUT methods
-		userValidador.validatePut(requestJson);
+		userValidador.validatePut(authenticationProvider.getAuthentication().getUser(), requestJson);
 		// Transform the request
 		UserEntity userEntity = userTransformer.transform(requestJson);
 		// Delegate to Service layer

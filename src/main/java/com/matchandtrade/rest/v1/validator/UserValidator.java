@@ -13,16 +13,24 @@ import com.matchandtrade.rest.v1.json.UserJson;
 public class UserValidator {
 
 	@Autowired
-	private UserService userService;
+	UserService userService;
 
 	/**
-	 * {@code UserJson.email} cannot change on PUT operations.
-	 * @param json
+	 * <p>{@code RestException(HttpStatus.FORBIDDEN, "User.userId is not reference the authenticated user")}</p>
+	 * <p>{@code RestException(HttpStatus.BAD_REQUEST, "User.email cannot be updated")}</p>
+	 *
+	 * @param authenticatedUser
+	 * @param changeRequestUser
 	 */
-	public void validatePut(UserJson json) {
-		UserEntity userEntity = userService.find(json.getUserId());
-		if (json.getEmail() == null || userEntity == null || !json.getEmail().equalsIgnoreCase(userEntity.getEmail())) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Cannot change User.email on PUT operations.");
+	public void validatePut(UserEntity authenticatedUser, UserJson changeRequestUser) {
+		UserEntity targetUser = userService.find(changeRequestUser.getUserId());
+
+		if (!authenticatedUser.getUserId().equals(targetUser.getUserId())) {
+			throw new RestException(HttpStatus.FORBIDDEN, "User.userId is not reference the authenticated user");
+		}
+
+		if (changeRequestUser.getEmail() == null || !targetUser.getEmail().equals(changeRequestUser.getEmail())) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "User.email cannot be updated");
 		}
 	}
 	
