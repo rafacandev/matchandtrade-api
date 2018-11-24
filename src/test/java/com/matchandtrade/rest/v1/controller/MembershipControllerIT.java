@@ -5,10 +5,7 @@ import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.MembershipJson;
 import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
-import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.helper.MembershipHelper;
-import com.matchandtrade.test.helper.TradeHelper;
-import com.matchandtrade.test.helper.UserHelper;
+import com.matchandtrade.test.helper.*;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -63,6 +61,17 @@ public class MembershipControllerIT {
 			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
 		}
+	}
+
+	@Test
+	public void delete_When_MembershipExists_Then_Succeeds() throws Exception {
+		MembershipEntity expected = membershipHelper.createPersistedEntity(user);
+		mockMvc
+			.perform(
+				delete("/matchandtrade-api/v1/memberships/{membershipId}", expected.getMembershipId())
+				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+			)
+			.andExpect(status().isNoContent());
 	}
 
 	@Test
@@ -106,14 +115,20 @@ public class MembershipControllerIT {
 	}
 
 	@Test
-	public void delete_When_MembershipExists_Then_Succeeds() throws Exception {
-		MembershipEntity expected = membershipHelper.createPersistedEntity(user);
+	public void post_When_MembershipDoesNotExist_Then_Succeeds() throws Exception {
+		UserEntity existingUser = userHelper.createPersistedEntity();
+		TradeEntity existingTrade = tradeHelper.createPersistedEntity(existingUser);
+		MembershipJson expected = new MembershipJson();
+		expected.setUserId(user.getUserId());
+		expected.setTradeId(existingTrade.getTradeId());
 		mockMvc
 			.perform(
-				delete("/matchandtrade-api/v1/memberships/{membershipId}", expected.getMembershipId())
+				post("/matchandtrade-api/v1/memberships/")
 					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(JsonUtil.toJson(expected))
 			)
-			.andExpect(status().isNoContent());
+			.andExpect(status().isCreated());
 	}
 
 }

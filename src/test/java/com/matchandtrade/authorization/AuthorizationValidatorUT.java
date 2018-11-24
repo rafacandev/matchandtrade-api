@@ -1,26 +1,28 @@
 package com.matchandtrade.authorization;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
+import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.test.TestingDefaultAnnotations;
+import org.junit.Test;
 
-@RunWith(SpringRunner.class)
-@TestingDefaultAnnotations
-public class AuthorizationValidatorIT {
+public class AuthorizationValidatorUT {
 
 	@Test(expected=RestException.class)
-	public void validateIdentityNegativeNull() {
+	public void validateIdentity_When_AuthenticationEntityIsNull_Then_RestException() {
 		AuthorizationValidator.validateIdentity(null);
 	}
 	
 	@Test(expected=RestException.class)
-	public void validateIdentityNegativeInvalidUser() {
+	public void validateIdentity_When_AuthenticationEntityUserIsNull_Then_RestException() {
 		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
 		AuthorizationValidator.validateIdentity(authenticationEntity);
 	}
-	
+
+	@Test
+	public void validateIdentity_When_AuthenticationEntityUserIsNotNull_Then_RestException() {
+		AuthenticationEntity authenticationEntity = new AuthenticationEntity();
+		authenticationEntity.setUser(new UserEntity());
+		AuthorizationValidator.validateIdentity(authenticationEntity);
+	}
+
 }

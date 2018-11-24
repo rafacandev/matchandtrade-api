@@ -1,12 +1,7 @@
 package com.matchandtrade.rest.v1.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
@@ -30,8 +25,8 @@ public class MembershipController implements Controller {
 	MembershipTransformer membershipTransformer;
 	@Autowired
 	MembershipService membershipService;
-	
-	@RequestMapping(path="/", method=RequestMethod.POST)
+
+	@PostMapping("/")
 	@ResponseStatus(HttpStatus.CREATED)
 	public MembershipJson post(@RequestBody MembershipJson requestJson) {
 		// Validate request identity
@@ -48,8 +43,8 @@ public class MembershipController implements Controller {
 		MembershipLinkAssember.assemble(response);
 		return response;
 	}
-	
-	@RequestMapping(path="/{membershipId}", method=RequestMethod.GET)
+
+	@GetMapping("/{membershipId}")
 	public MembershipJson get(@PathVariable("membershipId") Integer membershipId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
@@ -63,12 +58,12 @@ public class MembershipController implements Controller {
 		MembershipLinkAssember.assemble(response);		
 		return response;
 	}
-	
-	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
+
+	@GetMapping()
 	public SearchResult<MembershipJson> get(Integer tradeId, Integer userId, MembershipEntity.Type type, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		// Validate the request - Nothing to validate
+		// Validate the request
 		membershipValidador.validateGet(_pageNumber, _pageSize);
 		// Delegate to Service layer
 		SearchResult<MembershipEntity> searchResult = membershipService.findByTradeIdUserIdType(tradeId, userId, type, _pageNumber, _pageSize);
@@ -78,13 +73,14 @@ public class MembershipController implements Controller {
 		MembershipLinkAssember.assemble(response);		
 		return response;
 	}
-	
-	@RequestMapping(path="/{membershipId}", method=RequestMethod.DELETE)
+
+	@DeleteMapping("/{membershipId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Integer membershipId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
-		membershipValidador.validateDelete(membershipId);
+		// Validate the request
+		membershipValidador.validateDelete(authenticationProvider.getAuthentication().getUser(), membershipId);
 		// Delegate to Service layer
 		membershipService.delete(membershipId);
 	}
