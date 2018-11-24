@@ -26,7 +26,7 @@ public class UserService {
 		return userRepository.findByArticleId(articleId);
 	}
 
-	public UserEntity searchByOfferId(Integer offerId) {
+	public UserEntity findByOfferId(Integer offerId) {
 		return userRepository.findByOfferId(offerId);
 	}
 

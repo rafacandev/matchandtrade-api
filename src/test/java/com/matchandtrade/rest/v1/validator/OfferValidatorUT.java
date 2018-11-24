@@ -59,10 +59,38 @@ public class OfferValidatorUT {
 		fixture.membershipService = mockMembershipService;
 
 		when(mockUserService.findByArticleId(2)).thenReturn(user);
+		when(mockUserService.findByOfferId(1)).thenReturn(user);
 		fixture.userService = mockUserService;
 
 		when(mockTradeService.areArticlesInSameTrade(1, 2, 3)).thenReturn(true);
 		fixture.tradeService = mockTradeService;
+	}
+
+	@Test
+	public void validateDelete_When_OfferBelongsToUser_Then_Succeeds() {
+		fixture.validateDelete(1, 1, 1);
+	}
+
+	@Test(expected = RestException.class)
+	public void validateDelete_When_UserDoesNotOwnMembership_Then_Forbidden() {
+		try {
+			fixture.validateDelete(1, 1, 2);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
+			assertEquals("User.userId does not own Membership.membershipId", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validateDelete_When_UserDoesNotOwnOffer_Then_Forbidden() {
+		try {
+			fixture.validateDelete(1, -1, 1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
+			assertEquals("User.userId does not own Offer.offerId", e.getDescription());
+			throw e;
+		}
 	}
 
 	@Test(expected = RestException.class)
