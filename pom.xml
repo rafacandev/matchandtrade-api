@@ -406,7 +406,7 @@
 				</executions>				
 				<configuration>
 					<parallel>suites</parallel>
-					<threadCount>4</threadCount>
+					<threadCount>6</threadCount>
 					<excludes>
 						<exclude>**/*Test.java</exclude>
 						<exclude>**/*UT.java</exclude>
@@ -414,7 +414,7 @@
 					<includes>
 						<include>**/*Suite.java</include>
 					</includes>
-					<!-- -Xverify:none may reduce startup time. No need to verify bitecode on the test phase -->
+					<!-- -Xverify:none may reduce startup time. No need to verify bytecode on the test phase -->
 					<!-- ${surefireArgLine} jacoco instrumentation -->
 					<argLine>-Xverify:none ${failsafeArgLine}</argLine>
 				</configuration>
