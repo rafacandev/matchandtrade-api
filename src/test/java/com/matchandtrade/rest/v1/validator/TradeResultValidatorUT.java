@@ -34,10 +34,11 @@ public class TradeResultValidatorUT {
 	public void before() {
 		fixture = new TradeResultValidator();
 		existingTrade = new TradeEntity();
-
+		existingTrade.setTradeId(1);
 		existingTrade.setState(RESULTS_GENERATED);
 		existingTrade.setResult(new TradeResultEntity());
-		when(mockTradeService.find(1)).thenReturn(existingTrade);
+
+		when(mockTradeService.find(existingTrade.getTradeId())).thenReturn(existingTrade);
 		fixture.tradeService = mockTradeService;
 	}
 
@@ -48,7 +49,7 @@ public class TradeResultValidatorUT {
 		for (State state : statesExpectedToFail) {
 			existingTrade.setState(state);
 			try {
-				fixture.validateGet(1);
+				fixture.validateGet(existingTrade.getTradeId());
 			} catch (RestException e) {
 				assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 				assertEquals("TradeResult is only available when Trade.State is RESULTS_GENERATED", e.getDescription());
@@ -62,7 +63,7 @@ public class TradeResultValidatorUT {
 	public void validateGet_When_TradeHasNoResults_Then_InternalSeverErro() {
 		existingTrade.setResult(null);
 		try {
-			fixture.validateGet(1);
+			fixture.validateGet(existingTrade.getTradeId());
 		} catch (RestException e) {
 			assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, e.getHttpStatus());
 			assertEquals("There is no results for Trade.tradeId: 1", e.getDescription());
@@ -72,7 +73,7 @@ public class TradeResultValidatorUT {
 
 	@Test
 	public void validateGet_When_TradeHasResults_Then_Succeeds() {
-		fixture.validateGet(1);
+		fixture.validateGet(existingTrade.getTradeId());
 	}
 
 }

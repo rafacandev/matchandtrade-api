@@ -4,8 +4,7 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.UserJson;
-import com.matchandtrade.rest.v1.json.search.Recipe;
-import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
+import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +19,11 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class UserValidatorUT {
 	private UserEntity existingAuthenticatedUser;
+	private UserJson givenUser;
 	private UserValidator fixture;
 	@Mock
 	private UserService mockUserService;
+	private UserTransformer userTransformer = new UserTransformer();
 
 	@Before
 	public void before() {
@@ -30,32 +31,30 @@ public class UserValidatorUT {
 		existingAuthenticatedUser = new UserEntity();
 		existingAuthenticatedUser.setUserId(1);
 		existingAuthenticatedUser.setEmail("existing-authenticated-user@test.com");
-		when(mockUserService.find(1)).thenReturn(existingAuthenticatedUser);
-		UserEntity existingUnrelatedUser = new UserEntity();
-		existingUnrelatedUser.setUserId(2);
-		existingUnrelatedUser.setEmail("existing-unrelated-user@test.com");
-		when(mockUserService.find(2)).thenReturn(existingUnrelatedUser);
+		givenUser = userTransformer.transform(existingAuthenticatedUser);
+		UserEntity existingUserDifferent = new UserEntity();
+		existingUserDifferent.setUserId(2);
+		existingUserDifferent.setEmail("existing-unrelated-user@test.com");
+
+		when(mockUserService.find(existingAuthenticatedUser.getUserId())).thenReturn(existingAuthenticatedUser);
+		when(mockUserService.find(existingUserDifferent.getUserId())).thenReturn(existingUserDifferent);
 		fixture.userService = mockUserService;
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePut_When_AuthenticatedUserIsNotSameAsGiveUser_Then_Forbidden() {
-		UserJson givenUser = new UserJson();
-		givenUser.setUserId(2);
-		givenUser.setEmail("another-user@test.com");
+	public void validatePut_When_AuthenticatedUserIsNotSameAsGivenUser_Then_Forbidden() {
+		givenUser.setUserId(999);
 		try {
 			fixture.validatePut(existingAuthenticatedUser, givenUser);
 		} catch (RestException e) {
-			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
-			assertEquals("User.userId is not reference the authenticated user", e.getDescription());
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+			assertEquals("User.userId was not found", e.getDescription());
 			throw e;
 		}
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePut_When_AuthenticatedUserIsSameAsGiveUserButEmailIsDifferent_Then_Forbidden() {
-		UserJson givenUser = new UserJson();
-		givenUser.setUserId(1);
+	public void validatePut_When_AuthenticatedUserIsSameAsGiveUserButEmailIsDifferent_Then_BadRequest() {
 		givenUser.setEmail("different-email@test.com");
 		try {
 			fixture.validatePut(existingAuthenticatedUser, givenUser);
@@ -68,8 +67,7 @@ public class UserValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePut_When_AuthenticatedUserIsSameAsGiveUserButEmailIsNull_Then_Forbidden() {
-		UserJson givenUser = new UserJson();
-		givenUser.setUserId(1);
+		givenUser.setEmail(null);
 		try {
 			fixture.validatePut(existingAuthenticatedUser, givenUser);
 		} catch (RestException e) {
@@ -81,9 +79,6 @@ public class UserValidatorUT {
 
 	@Test
 	public void validatePut_When_AuthenticatedUserIsSameAsGivenUserAndEmailDidNotChange_Then_Succeeds() {
-		UserJson givenUser = new UserJson();
-		givenUser.setUserId(existingAuthenticatedUser.getUserId());
-		givenUser.setEmail(existingAuthenticatedUser.getEmail());
 		fixture.validatePut(existingAuthenticatedUser, givenUser);
 	}
 }

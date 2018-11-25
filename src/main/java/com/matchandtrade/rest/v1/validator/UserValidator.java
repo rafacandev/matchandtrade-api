@@ -25,6 +25,10 @@ public class UserValidator {
 	public void validatePut(UserEntity authenticatedUser, UserJson changeRequestUser) {
 		UserEntity targetUser = userService.find(changeRequestUser.getUserId());
 
+		if (targetUser == null) {
+			throw new RestException(HttpStatus.NOT_FOUND, "User.userId was not found");
+		}
+
 		if (!authenticatedUser.getUserId().equals(targetUser.getUserId())) {
 			throw new RestException(HttpStatus.FORBIDDEN, "User.userId is not reference the authenticated user");
 		}

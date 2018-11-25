@@ -30,6 +30,7 @@ public class TradeValidator {
 	MembershipService membershipService;
 	@Autowired
 	TradeService tradeService;
+	private static final String TRADE_NAME_MUST_BE_UNIQUE = "Trade.name must be unique";
 
 	@Transactional
 	public void validateDelete(UserEntity user, Integer tradeId) {
@@ -75,19 +76,19 @@ public class TradeValidator {
 
 	private void verifyThatDescriptionIsBetween3And1000(String description) {
 		if (description != null && (description.length() < 3 || description.length() > 1000)) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.description must be between 3 and 1000 in length.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.description must be between 3 and 1000 in length");
 		}
 	}
 
 	private void verifyThatNameIsUnique(TradeJson json) {
 		if (!tradeService.isNameUnique(json.getName())) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
+			throw new RestException(HttpStatus.BAD_REQUEST, TRADE_NAME_MUST_BE_UNIQUE);
 		}
 	}
 
 	private void verifyThatNameIsUniqueExceptForTheCurrentTrade(TradeJson json) {
 		if (!tradeService.isNameUniqueExceptForTradeId(json.getName(), json.getTradeId())) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.name must be unique.");
+			throw new RestException(HttpStatus.BAD_REQUEST, TRADE_NAME_MUST_BE_UNIQUE);
 		}
 	}
 
@@ -107,7 +108,7 @@ public class TradeValidator {
 	private void validateThatUserOwnsTrade(Integer tradeId, Integer userId) {
 		SearchResult<MembershipEntity> searchResult = membershipService.findByTradeIdUserIdType(tradeId, userId, OWNER, 1, 1);
 		if (searchResult.isEmpty()) {
-			throw new RestException(HttpStatus.FORBIDDEN, String.format("Authenticated User.userId: %s is not the owner of Trade.tradeId: %s", userId, tradeId));
+			throw new RestException(HttpStatus.FORBIDDEN, String.format("User.userId: %s is not the owner of Trade.tradeId: %s", userId, tradeId));
 		}
 	}
 
