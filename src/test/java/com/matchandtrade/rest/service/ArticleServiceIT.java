@@ -2,7 +2,7 @@ package com.matchandtrade.rest.service;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.test.TestingDefaultAnnotations;
+import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.ArticleHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringRunner.class)
-@TestingDefaultAnnotations
+@DefaultTestingConfiguration
 public class ArticleServiceIT {
 
 	@Autowired

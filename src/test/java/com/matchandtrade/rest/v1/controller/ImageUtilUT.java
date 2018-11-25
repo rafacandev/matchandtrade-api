@@ -10,10 +10,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matchandtrade.test.TestingDefaultAnnotations;
 import com.matchandtrade.util.ImageUtil;
 
 public class ImageUtilUT {

@@ -30,11 +30,11 @@ public class UserValidatorUT {
 		fixture = new UserValidator();
 		existingAuthenticatedUser = new UserEntity();
 		existingAuthenticatedUser.setUserId(1);
-		existingAuthenticatedUser.setEmail("existing-authenticated-user@test.com");
+		existingAuthenticatedUser.setEmail("existing-authenticated-authenticatedUser@test.com");
 		givenUser = userTransformer.transform(existingAuthenticatedUser);
 		UserEntity existingUserDifferent = new UserEntity();
 		existingUserDifferent.setUserId(2);
-		existingUserDifferent.setEmail("existing-unrelated-user@test.com");
+		existingUserDifferent.setEmail("existing-unrelated-authenticatedUser@test.com");
 
 		when(mockUserService.find(existingAuthenticatedUser.getUserId())).thenReturn(existingAuthenticatedUser);
 		when(mockUserService.find(existingUserDifferent.getUserId())).thenReturn(existingUserDifferent);

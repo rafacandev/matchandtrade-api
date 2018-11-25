@@ -32,7 +32,7 @@ public class UserService {
 
 	/**
 	 * Only return {@code UserEntity.userId and UserEntity.name}
-	 * if the authenticated user is requesting information from a user that is not their selves.
+	 * if the authenticated user is requesting information from a user that is not themselves.
 	 * @param requestingUser
 	 * @param authenticatedUser
 	 * @return

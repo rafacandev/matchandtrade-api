@@ -14,6 +14,6 @@ import org.springframework.test.context.TestPropertySource;
 @SpringBootTest
 @Commit
 @TestPropertySource(locations = "file:config/matchandtrade.properties")
-public @interface TestingDefaultAnnotations {
+public @interface DefaultTestingConfiguration {
 
 }

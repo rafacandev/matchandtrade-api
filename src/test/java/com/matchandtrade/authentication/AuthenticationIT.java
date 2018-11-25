@@ -8,10 +8,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
-import com.matchandtrade.test.TestingDefaultAnnotations;
+import com.matchandtrade.test.DefaultTestingConfiguration;
 
 @RunWith(SpringRunner.class)
-@TestingDefaultAnnotations
+@DefaultTestingConfiguration
 public class AuthenticationIT {
 
 	@Autowired

@@ -2,71 +2,43 @@ package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
-import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
-import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
-import com.matchandtrade.test.helper.*;
+import com.matchandtrade.test.DefaultTestingConfiguration;
+import com.matchandtrade.test.helper.ArticleHelper;
+import com.matchandtrade.test.helper.AttachmentHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource(locations = "file:config/matchandtrade.properties")
-@SpringBootTest
+@DefaultTestingConfiguration
 @WebAppConfiguration
-public class ArticleAttachmentControllerIT {
+public class ArticleAttachmentControllerIT extends BaseControllerIT {
 
 	@Autowired
 	private ArticleHelper articleHelper;
 	@Autowired
 	private AttachmentHelper attachmentHelper;
-	private ArticleTransformer articleTransformer = new ArticleTransformer();
-	private String authorizationHeader;
-	@Autowired
-	private ControllerHelper controllerHelper;
-	private MockMvc mockMvc;
-	@Autowired
-	private MembershipHelper membershipHelper;
-	@Autowired
-	private MembershipTransformer membershipTransformer;
 	private MockMultipartFile multipartFile;
-	private UserEntity user;
-	@Autowired
-	private UserHelper userHelper;
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-	@Autowired
-	private TradeHelper tradeHelper;
 
 	@Before
 	public void before() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		// Reusing user and authorization header for better performance
-		if (user == null) {
-			user = userHelper.createPersistedEntity();
-			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
-		}
+		super.before();
 		multipartFile = AttachmentHelper.newSampleMockMultiPartFile();
 	}
 
 	@Test
 	public void post_When_NewArticle_Then_Succeeds() throws Exception {
-		ArticleEntity expectedArticle = articleHelper.createPersistedEntity(user);
+		ArticleEntity expectedArticle = articleHelper.createPersistedEntity(authenticatedUser);
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 			.fileUpload("/matchandtrade-api/v1/articles/{articleId}/attachments/", expectedArticle.getArticleId())
 			.file(multipartFile);
@@ -75,7 +47,7 @@ public class ArticleAttachmentControllerIT {
 
 	@Test
 	public void delete_When_AttachmentExists_Then_Succeeds() throws Exception {
-		ArticleEntity expectedArticle = articleHelper.createPersistedEntity(user);
+		ArticleEntity expectedArticle = articleHelper.createPersistedEntity(authenticatedUser);
 		AttachmentEntity expected = attachmentHelper.createPersistedEntity(expectedArticle);
 		mockMvc.perform(
 				delete("/matchandtrade-api/v1/articles/{articleId}/attachments/{attachmentId}", expectedArticle.getArticleId(), expected.getAttachmentId())

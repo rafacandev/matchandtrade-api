@@ -2,6 +2,7 @@ package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.UserJson;
+import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.ControllerHelper;
 import com.matchandtrade.test.helper.UserHelper;
 import com.matchandtrade.util.JsonUtil;
@@ -27,8 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource(locations = "file:config/matchandtrade.properties")
-@SpringBootTest
+@DefaultTestingConfiguration
 @WebAppConfiguration
 public class UserControllerIT {
 
@@ -45,7 +45,7 @@ public class UserControllerIT {
 	@Before
 	public void before() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		// Reusing user and authorization header for better performance
+		// Reusing authenticatedUser and authorization header for better performance
 		if (user == null) {
 			user = userHelper.createPersistedEntity();
 			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
