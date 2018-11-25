@@ -94,13 +94,13 @@ public class OfferValidatorUT {
 
 	@Test
 	public void validateDelete_When_UserOwnsOffer_Then_Succeeds() {
-		fixture.validateDelete(existingMembership.getMembershipId(), givenOffer.getOfferId(), existingUser.getUserId());
+		fixture.validateDelete(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer.getOfferId());
 	}
 
 	@Test(expected = RestException.class)
 	public void validateDelete_When_UserDoesNotOwnMembership_Then_Forbidden() {
 		try {
-			fixture.validateDelete(existingMembership.getMembershipId(), givenOffer.getOfferId(), existingUserDifferent.getUserId());
+			fixture.validateDelete(existingUserDifferent.getUserId(), existingMembership.getMembershipId(), givenOffer.getOfferId());
 		} catch (RestException e) {
 			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
 			assertEquals("User.userId does not own Membership.membershipId", e.getDescription());
@@ -111,7 +111,7 @@ public class OfferValidatorUT {
 	@Test(expected = RestException.class)
 	public void validateDelete_When_UserDoesNotOwnOffer_Then_Forbidden() {
 		try {
-			fixture.validateDelete(existingMembershipOwnedByDifferentUser.getMembershipId(), givenOffer.getOfferId(), existingUserDifferent.getUserId());
+			fixture.validateDelete(existingUserDifferent.getUserId(), existingMembershipOwnedByDifferentUser.getMembershipId(), givenOffer.getOfferId());
 		} catch (RestException e) {
 			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
 			assertEquals("User.userId does not own Offer.offerId", e.getDescription());
@@ -123,7 +123,7 @@ public class OfferValidatorUT {
 	public void validatePost_When_OfferedArticleIdIdIsNull_Then_BadRequest() {
 		givenOffer.setOfferedArticleId(null);
 		try {
-			fixture.validatePost(existingMembership.getMembershipId(), givenOffer, existingUser.getUserId());
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			assertEquals("Offer.offeredArticleId is mandatory", e.getDescription());
@@ -135,7 +135,7 @@ public class OfferValidatorUT {
 	public void validatePost_When_WantedArticleIdIdIsNull_Then_BadRequest() {
 		givenOffer.setWantedArticleId(null);
 		try {
-			fixture.validatePost(existingMembership.getMembershipId(), givenOffer, existingUser.getUserId());
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			assertEquals("Offer.wantedArticleId is mandatory", e.getDescription());
@@ -148,7 +148,7 @@ public class OfferValidatorUT {
 		givenOffer.setOfferedArticleId(existingArticle.getArticleId());
 		givenOffer.setWantedArticleId(existingArticle.getArticleId());
 		try {
-			fixture.validatePost(existingMembership.getMembershipId(), givenOffer, existingUser.getUserId());
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			assertEquals("Offer.offeredArticleId and Offer.wantedArticleId must differ", e.getDescription());
@@ -160,7 +160,7 @@ public class OfferValidatorUT {
 	public void validatePost_When_OfferedArticleIsNotFound_Then_NotFound() {
 		givenOffer.setOfferedArticleId(0);
 		try {
-			fixture.validatePost(existingMembership.getMembershipId(), givenOffer, existingUser.getUserId());
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
 			assertEquals("Offer.offeredArticleId was not found", e.getDescription());
@@ -172,7 +172,7 @@ public class OfferValidatorUT {
 	public void validatePost_When_WantedArticleIsNotFound_Then_NotFound() {
 		givenOffer.setWantedArticleId(0);
 		try {
-			fixture.validatePost(existingMembership.getMembershipId(), givenOffer, existingUser.getUserId());
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
 			assertEquals("Offer.wantedArticleId was not found", e.getDescription());
@@ -183,7 +183,7 @@ public class OfferValidatorUT {
 	@Test(expected = RestException.class)
 	public void validatePost_When_UserDoesNotOwnMembership_Then_Forbidden() {
 		try {
-			fixture.validatePost(existingMembershipOwnedByDifferentUser.getMembershipId(), givenOffer, existingUser.getUserId());
+			fixture.validatePost(existingUser.getUserId(), existingMembershipOwnedByDifferentUser.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
 			assertEquals("User.userId does not own Membership.membershipId", e.getDescription());
@@ -196,7 +196,7 @@ public class OfferValidatorUT {
 		givenOffer.setOfferedArticleId(existingArticleOwnedByDifferentUser.getArticleId());
 		givenOffer.setWantedArticleId(existingArticle.getArticleId());
 		try {
-			fixture.validatePost(existingMembership.getMembershipId(), givenOffer, existingUser.getUserId());
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
 			assertEquals("User.userId does not own Offer.offeredArticleId", e.getDescription());
@@ -209,7 +209,7 @@ public class OfferValidatorUT {
 		givenOffer.setOfferedArticleId(existingArticle.getArticleId());
 		givenOffer.setWantedArticleId(existingArticleNotInTrade.getArticleId());
 		try {
-			fixture.validatePost(existingMembership.getMembershipId(), givenOffer, existingUser.getUserId());
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			assertEquals("Offer.offeredArticleId and Offer.wantedArticleId must be associated to the same Trade.tradeId", e.getDescription());
@@ -218,7 +218,7 @@ public class OfferValidatorUT {
 	}
 
 	public void validatePost_When_OfferedArticleAndWantedArticleAreAssociatedToTheSameTrade_Then_Succeeds() {
-		fixture.validatePost(existingMembership.getMembershipId(), givenOffer, existingUser.getUserId());
+		fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 	}
 
 }

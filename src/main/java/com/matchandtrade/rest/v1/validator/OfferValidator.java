@@ -25,7 +25,7 @@ public class OfferValidator {
 	@Autowired
 	UserService userService;
 
-	public void validateDelete(Integer membershipId, Integer offerId, Integer authenticatedUserId) {
+	public void validateDelete(Integer authenticatedUserId, Integer membershipId, Integer offerId) {
 		MembershipEntity membership = membershipService.find(membershipId);
 		verifyThatUserOwnsMembership(membership, authenticatedUserId);
 
@@ -41,12 +41,12 @@ public class OfferValidator {
 		verifyThatUserOwnsMembership(membership, authenticatedUserId);
 	}
 
-	public void validateGetById(Integer membershipId, Integer authenticatedUserId) {
+	public void validateGetById(Integer authenticatedUserId, Integer membershipId) {
 		MembershipEntity membership = membershipService.find(membershipId);
 		verifyThatUserOwnsMembership(membership, authenticatedUserId);
 	}
 
-	public void validatePost(Integer membershipId, OfferJson offer, Integer authenticatedUserId) {
+	public void validatePost(Integer authenticatedUserId, Integer membershipId, OfferJson offer) {
 		if (offer.getOfferedArticleId() == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId is mandatory");
 		}
