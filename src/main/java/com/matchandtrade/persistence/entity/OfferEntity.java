@@ -1,14 +1,7 @@
 package com.matchandtrade.persistence.entity;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 @Entity
 @Table(name="offer")
@@ -48,7 +41,8 @@ public class OfferEntity implements com.matchandtrade.persistence.entity.Entity 
 	
 	@Id
 	@Column(name = "offer_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name="offer_id_generator", sequenceName = "offer_id_sequence")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "offer_id_generator")
 	public Integer getOfferId() {
 		return offerId;
 	}

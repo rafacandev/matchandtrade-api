@@ -1,11 +1,7 @@
 package com.matchandtrade.persistence.entity;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "essence") // 'file' is a reserved word in most databases, hence we prefix it with '_tb'
@@ -48,7 +44,8 @@ public class EssenceEntity implements com.matchandtrade.persistence.entity.Entit
 
 	@Id
 	@Column(name = "essence_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name="essence_id_generator", sequenceName = "essence_id_sequence")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "essence_id_generator")
 	public Integer getEssenceId() {
 		return essenceId;
 	}

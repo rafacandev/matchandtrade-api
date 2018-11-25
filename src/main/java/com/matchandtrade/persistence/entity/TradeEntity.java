@@ -1,16 +1,7 @@
 package com.matchandtrade.persistence.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "trade")
@@ -56,7 +47,8 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 
 	@Id
 	@Column(name = "trade_id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@SequenceGenerator(name="trade_id_generator", sequenceName = "trade_id_sequence")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "trade_id_generator")
 	public Integer getTradeId() {
 		return tradeId;
 	}

@@ -1,12 +1,7 @@
 package com.matchandtrade.persistence.entity;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "trade_result")
@@ -31,7 +26,8 @@ public class TradeResultEntity implements com.matchandtrade.persistence.entity.E
 
 	@Id
 	@Column(name = "trade_result_id", nullable = false)
-	@GeneratedValue(strategy=GenerationType.IDENTITY) // TODO: Change all from identity to sequence
+	@SequenceGenerator(name="trade_result_id_generator", sequenceName = "trade_result_id_sequence")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "trade_result_id_generator")
 	public Integer getTradeResultId() {
 		return tradeResultId;
 	}

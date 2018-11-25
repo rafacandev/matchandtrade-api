@@ -3,17 +3,8 @@ package com.matchandtrade.persistence.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "attachment")
@@ -69,7 +60,8 @@ public class AttachmentEntity implements com.matchandtrade.persistence.entity.En
 	
 	@Id
 	@Column(name = "attachment_id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@SequenceGenerator(name="attachment_id_generator", sequenceName = "attachment_id_sequence")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "attachment_id_generator")
 	public Integer getAttachmentId() {
 		return attachmentId;
 	}

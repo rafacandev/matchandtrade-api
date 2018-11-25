@@ -47,10 +47,8 @@ public class StringRandom {
 	}
 
 	public static String nextDescription() {
-		int aPosition = random.nextInt(adjectives.length);
-		int nPosition = random.nextInt(noums.length);
 		int pPosition = random.nextInt(prepositions.length);
-		return adjectives[aPosition] + " " + noums[nPosition] + " " + prepositions[pPosition] + " " + adjectives[aPosition] + " " + noums[nPosition];
+		return nextName() + " - " + prepositions[pPosition] + " " + nextName();
 	}
 	
 	public static String nextEmail() {

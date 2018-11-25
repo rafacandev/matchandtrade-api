@@ -1,14 +1,7 @@
 package com.matchandtrade.persistence.entity;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "authentication")
@@ -36,7 +29,8 @@ public class AuthenticationEntity implements com.matchandtrade.persistence.entit
 	
 	@Id
 	@Column(name = "authentication_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name="authentication_id_generator", sequenceName = "authentication_id_sequence")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "authentication_id_generator")
 	public Integer getAuthenticationId() {
 		return authenticationId;
 	}
