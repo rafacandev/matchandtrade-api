@@ -21,12 +21,13 @@ public class TradeRepositoryFacade {
 	@Transactional
 	public void delete(Integer tradeId) {
 		List<MembershipEntity> memberships = membershipRepository.findByTrade_TradeId(tradeId);
-		membershipRepository.delete(memberships);
-		tradeRepository.delete(tradeId);
+		// TODO: Diactivate instead of deleting??
+		membershipRepository.deleteAll(memberships);
+		tradeRepository.deleteById(tradeId);
 	}
 
 	public TradeEntity find(Integer tradeId) {
-		return tradeRepository.findOne(tradeId);
+		return tradeRepository.findById(tradeId).get();
 	}
 	
 	public void save(TradeEntity entity) {

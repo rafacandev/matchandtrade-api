@@ -17,7 +17,7 @@ public class EssenceRepositoryFacade {
 	}
 
 	public void delete(Integer essenceId) {
-		essenceRepository.delete(essenceId);
+		essenceRepository.deleteById(essenceId);
 	}
 
 }

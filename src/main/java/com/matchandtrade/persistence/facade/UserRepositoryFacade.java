@@ -12,8 +12,9 @@ public class UserRepositoryFacade {
 	@Autowired
 	private UserRepository userRepository;
 
+	// TODO: Optional ??
 	public UserEntity find(Integer userId) {
-		return userRepository.findOne(userId);
+		return userRepository.findById(userId).get();
 	}
 
 	public UserEntity findByEmail(String email) {

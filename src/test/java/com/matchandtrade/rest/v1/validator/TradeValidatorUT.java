@@ -1,7 +1,5 @@
 package com.matchandtrade.rest.v1.validator;
 
-import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -16,13 +14,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 
 import static com.matchandtrade.persistence.entity.MembershipEntity.Type.OWNER;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -65,8 +61,6 @@ public class TradeValidatorUT {
 
 		when(mockMembershipService.findByTradeIdUserIdType(existingTrade.getTradeId(), existingUser.getUserId(), OWNER, 1, 1))
 			.thenReturn(SearchHelper.buildSearchResult(new MembershipEntity()));
-		when(mockMembershipService.findByTradeIdUserIdType(existingTrade.getTradeId(), existingUserDifferent.getUserId(), OWNER, 1, 1))
-			.thenReturn(SearchHelper.buildEmptySearchResult());
 		when(mockMembershipService.findByTradeIdUserIdType(existingTradeOwnedByDifferentUser.getTradeId(), existingUser.getUserId(), OWNER, 1, 1))
 			.thenReturn(SearchHelper.buildEmptySearchResult());
 		fixture.membershipService = mockMembershipService;

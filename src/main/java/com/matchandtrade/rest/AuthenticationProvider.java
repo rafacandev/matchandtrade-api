@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
-import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
+import com.matchandtrade.persistence.facade.AuthenticationRepositoryFacade;
 
 @Component
 @RequestScope
 public class AuthenticationProvider {
 
 	@Autowired
-	protected AuthenticationRespositoryFacade authenticationRepository;
+	protected AuthenticationRepositoryFacade authenticationRepository;
 	@Autowired
 	private HttpServletRequest httpRequest;
 	

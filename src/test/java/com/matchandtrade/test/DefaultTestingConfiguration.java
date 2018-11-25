@@ -13,7 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest
 @Commit
-@TestPropertySource(locations = "file:config/matchandtrade.properties")
+@TestPropertySource(locations = {"classpath:application.properties", "file:config/matchandtrade.properties"})
 public @interface DefaultTestingConfiguration {
 
 }

@@ -16,11 +16,12 @@ public class MembershipRepositoryFacade {
 	private MembershipRepository membershipRepository;
 
 	public void delete(Integer membershipId) {
-		membershipRepository.delete(membershipId);
+		membershipRepository.deleteById(membershipId);
 	}
 
+	// TODO: Handle optinal??
 	public MembershipEntity find(Integer membershipId) {
-		return membershipRepository.findOne(membershipId);
+		return membershipRepository.findById(membershipId).get();
 	}
 
 	public MembershipEntity findByOfferId(Integer offerId) {

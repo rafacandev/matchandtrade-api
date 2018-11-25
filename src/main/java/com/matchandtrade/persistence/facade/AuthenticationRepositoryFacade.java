@@ -7,7 +7,7 @@ import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.repository.AuthenticationRepository;
 
 @Repository
-public class AuthenticationRespositoryFacade {
+public class AuthenticationRepositoryFacade {
 
 	@Autowired
 	private AuthenticationRepository authenticationRepository;
@@ -16,8 +16,9 @@ public class AuthenticationRespositoryFacade {
 		authenticationRepository.save(entity);
 	}
 
+	// TODO: Optional
 	public AuthenticationEntity find(Integer authenticationId) {
-		return authenticationRepository.findOne(authenticationId);
+		return authenticationRepository.findById(authenticationId).get();
 	}
 	
 	/**

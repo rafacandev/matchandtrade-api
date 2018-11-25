@@ -86,9 +86,6 @@ public class OfferValidatorUT {
 		when(mockUserService.findByOfferId(givenOffer.getOfferId())).thenReturn(existingUser);
 		fixture.userService = mockUserService;
 
-		when(mockTradeService.areArticlesInSameTrade(
-				existingTrade.getTradeId(), givenOffer.getOfferedArticleId(), givenOffer.getWantedArticleId()))
-			.thenReturn(true);
 		fixture.tradeService = mockTradeService;
 	}
 

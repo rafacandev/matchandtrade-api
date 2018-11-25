@@ -37,7 +37,6 @@ public class UserValidatorUT {
 		existingUserDifferent.setEmail("existing-unrelated-authenticatedUser@test.com");
 
 		when(mockUserService.find(existingAuthenticatedUser.getUserId())).thenReturn(existingAuthenticatedUser);
-		when(mockUserService.find(existingUserDifferent.getUserId())).thenReturn(existingUserDifferent);
 		fixture.userService = mockUserService;
 	}
 

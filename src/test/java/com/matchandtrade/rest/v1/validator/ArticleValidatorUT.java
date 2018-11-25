@@ -1,7 +1,5 @@
 package com.matchandtrade.rest.v1.validator;
 
-import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -17,11 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -63,8 +58,6 @@ public class ArticleValidatorUT {
 		fixture.userRepositoryFacade = mockUserRepositoryFacade;
 
 		when(articleRepositoryFacadeMock.find(givenExistingArticle.getArticleId())).thenReturn(existingArticle);
-		when(articleRepositoryFacadeMock.find(existingListedArticle.getArticleId())).thenReturn(existingListedArticle);
-		when(articleRepositoryFacadeMock.find(existingArticleOwnedByDifferentUser.getArticleId())).thenReturn(existingArticleOwnedByDifferentUser);
 		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);
 		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingListedArticle.getArticleId())).thenReturn(existingListedArticle);
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
