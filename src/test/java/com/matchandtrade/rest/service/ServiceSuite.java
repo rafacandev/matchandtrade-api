@@ -6,8 +6,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+	ArticleServiceIT.class,
 	TradeResultServiceIT.class,
-	ArticleServiceIT.class
+	TradeServiceIT.class
 })
 public class ServiceSuite {
 

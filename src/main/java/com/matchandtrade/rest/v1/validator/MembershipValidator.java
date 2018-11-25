@@ -25,16 +25,21 @@ public class MembershipValidator {
 	UserService userService;
 	
 	/**
-	 * <p>@{code HttpStatus.BAD_REQUEST, "Membership.userId must refer to an existing User"}</p>
-	 * <p>@{code HttpStatus.BAD_REQUEST, "Membership.tradeId must refer to an existing Trade"}</p>
-	 * <p>@{code HttpStatus.BAD_REQUEST, "Trade.State must be SUBMITTING_ARTICLES when creating a new Membership"}</p>
-	 * <p>@{code HttpStatus.BAD_REQUEST, "Membership.tradeId and Membership.userId combined must be unique"}</p>
+	 * <p>{@code throw new RestException(HttpStatus.BAD_REQUEST, "Membership.userId is mandatory and must refer to an existing User");}</p>
+	 * <p>{@code throw new RestException(HttpStatus.NOT_FOUND, "Membership.userId must refer to an existing User");}</p>
+	 * <p>{@code throw new RestException(HttpStatus.BAD_REQUEST, "Membership.tradeId must refer to an existing Trade");}</p>
+	 * <p>{@code throw new RestException(HttpStatus.BAD_REQUEST, "Trade.State must be SUBMITTING_ARTICLES when creating a new Membership");}</p>
+	 * <p>{@code throw new RestException(HttpStatus.BAD_REQUEST, "Membership.tradeId and Membership.userId combined must be unique");}</p>
 	 *
-	 * @param membership to be validated
+	 * @param membership
 	 */
 	public void validatePost(MembershipJson membership) {
-		if (membership.getUserId() == null || userService.find(membership.getUserId()) == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Membership.userId must refer to an existing User");
+		if (membership.getUserId() == null) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Membership.userId is mandatory and must refer to an existing User");
+		}
+
+		if (userService.find(membership.getUserId()) == null) {
+			throw new RestException(HttpStatus.NOT_FOUND, "Membership.userId must refer to an existing User");
 		}
 
 		TradeEntity trade = tradeService.find(membership.getTradeId());

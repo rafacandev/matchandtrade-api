@@ -43,14 +43,14 @@ public class ArticleAttachmentValidator {
 	private void verifyThatAttachmentExists(Integer attachmentId) {
 		AttachmentEntity attachment = attachmentRespositoryFacade.find(attachmentId);
 		if (attachment == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Attachment.attachmentId: %s does not exist.", attachmentId));
+			throw new RestException(HttpStatus.NOT_FOUND, String.format("Attachment.attachmentId: %s does not exist.", attachmentId));
 		}
 	}
 
 	private void verifyThatUserOwnsArticle(Integer userId, Integer articleId) {
 		UserEntity user = userRepositoryFacade.findByArticleId(articleId);
 		if (user == null || !userId.equals(user.getUserId())) {
-			throw new RestException(HttpStatus.BAD_REQUEST,
+			throw new RestException(HttpStatus.FORBIDDEN,
 				String.format("User.userId: %s is not the owner of Article.articleId: %s", userId, articleId));
 		}
 	}

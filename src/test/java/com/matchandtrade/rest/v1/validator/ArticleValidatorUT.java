@@ -12,6 +12,7 @@ import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.test.StringRandom;
+import com.matchandtrade.test.helper.SearchHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,15 +32,15 @@ public class ArticleValidatorUT {
 	@Mock
 	private ArticleRepositoryFacade articleRepositoryFacadeMock;
 	private ArticleTransformer articleTransformer = new ArticleTransformer();
-	private ArticleEntity existingListedArticle;
 	private ArticleEntity existingArticleOwnedByDifferentUser;
+	private ArticleEntity existingListedArticle;
 	private UserEntity existingUser;
 	private ArticleJson givenExistingArticle;
 	private ArticleValidator fixture;
 	@Mock
 	private MembershipRepositoryFacade mockMembershipRepositoryFacade;
 	@Mock
-	private UserRepositoryFacade userRepositoryFacadeMock;
+	private UserRepositoryFacade mockUserRepositoryFacade;
 
 	@Before
 	public void before() {
@@ -58,8 +59,8 @@ public class ArticleValidatorUT {
 		existingArticleOwnedByDifferentUser = new ArticleEntity();
 		existingArticleOwnedByDifferentUser.setArticleId(22);
 
-		when(userRepositoryFacadeMock.find(existingUser.getUserId())).thenReturn(existingUser);
-		fixture.userRepositoryFacade = userRepositoryFacadeMock;
+		when(mockUserRepositoryFacade.find(existingUser.getUserId())).thenReturn(existingUser);
+		fixture.userRepositoryFacade = mockUserRepositoryFacade;
 
 		when(articleRepositoryFacadeMock.find(givenExistingArticle.getArticleId())).thenReturn(existingArticle);
 		when(articleRepositoryFacadeMock.find(existingListedArticle.getArticleId())).thenReturn(existingListedArticle);
@@ -71,9 +72,11 @@ public class ArticleValidatorUT {
 		MembershipEntity existingListedMembership = new MembershipEntity();
 		existingListedMembership.setMembershipId(30);
 		existingListedMembership.getArticles().add(existingListedArticle);
-		SearchResult<MembershipEntity> searchResultExistingListedArticle = new SearchResult<>(Arrays.asList(existingListedMembership),new Pagination(1, 10, 1L));
-		when(mockMembershipRepositoryFacade.findByArticleIdId(existingListedArticle.getArticleId(), 1, 10))	.thenReturn(searchResultExistingListedArticle);
-		when(mockMembershipRepositoryFacade.findByArticleIdId(givenExistingArticle.getArticleId(), 1, 10)).thenReturn(new SearchResult<>(new ArrayList<>(), new Pagination(1, 1, 0L)));
+
+		when(mockMembershipRepositoryFacade.findByArticleIdId(existingListedArticle.getArticleId(), 1, 10))
+			.thenReturn(SearchHelper.buildSearchResult(existingListedMembership));
+		when(mockMembershipRepositoryFacade.findByArticleIdId(givenExistingArticle.getArticleId(), 1, 10))
+			.thenReturn(SearchHelper.buildEmptySearchResult());
 		fixture.membershipRepositoryFacade = mockMembershipRepositoryFacade;
 	}
 
@@ -112,7 +115,7 @@ public class ArticleValidatorUT {
 	@Test(expected = RestException.class)
 	public void validateGet_When_ArticleDoesNotExist_Then_NotFound() {
 		try {
-			fixture.validateGet(-1);
+			fixture.validateGet(0);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
 			throw e;
@@ -189,7 +192,7 @@ public class ArticleValidatorUT {
 	@Test(expected = RestException.class)
 	public void validatePost_When_UserDoesNotExist_Then_BadRequest() {
 		try {
-			fixture.validatePost(-1, givenExistingArticle);
+			fixture.validatePost(0, givenExistingArticle);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
@@ -215,7 +218,7 @@ public class ArticleValidatorUT {
 	@Test(expected = RestException.class)
 	public void validatePut_When_UserDoesNotExist_Then_BadRequest() {
 		try {
-			fixture.validatePut(-1, givenExistingArticle);
+			fixture.validatePut(0, givenExistingArticle);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
