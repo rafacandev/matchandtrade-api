@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +25,7 @@ public class ArticleValidator {
 	@Autowired
 	UserRepositoryFacade userRepositoryFacade;
 	@Autowired
-	private MembershipRepositoryFacade membershipRepositoryFacade;
+	MembershipRepositoryFacade membershipRepositoryFacade;
 
 	/**
 	 * Throws {@code RestException(restExceptionStatus)} if there is no {@code Article} for the given {@code articleId}.
@@ -80,10 +79,10 @@ public class ArticleValidator {
 	 * @param userId
 	 * @param articleId
 	 */
-	private void verifyThatUserHasArticle(Integer userId, Integer articleId) {
+	private void verifyThatUserOwnsArticle(Integer userId, Integer articleId) {
 		ArticleEntity article = articleRepositoryFacade.findByUserIdAndArticleId(userId, articleId);
 		if (article == null) {
-			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does not own Article.articleId: %d.", userId, articleId));
+			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does not own Article.articleId: %d", userId, articleId));
 		}
 	}
 
@@ -94,15 +93,15 @@ public class ArticleValidator {
 	 * @param articleId
 	 */
 	public void validateDelete(Integer userId, Integer articleId) {
-		verifyThatUserHasArticle(userId, articleId);
+		verifyThatUserOwnsArticle(userId, articleId);
 		verifyThatArticleIsNotListed(articleId);
 	}
 
 	private void verifyThatArticleIsNotListed(Integer articleId) {
 		SearchResult<MembershipEntity> searchResult = membershipRepositoryFacade.findByArticleIdId(articleId, 1, 10);
-		if (searchResult.getPagination().getTotal() > 0) {
-			List<Integer> membershipIds = searchResult.getResultList().stream().map(v -> v.getMembershipId()).collect(Collectors.toList());
-			throw new RestException(HttpStatus.BAD_REQUEST, String.format("Article.articleId: %s is listed on Membership.membershipId: %s ", articleId, membershipIds));
+		if (!searchResult.isEmpty()) {
+			List<Integer> membershipIds = searchResult.getResultList().stream().map(MembershipEntity::getMembershipId).collect(Collectors.toList());
+			throw new RestException(HttpStatus.FORBIDDEN, String.format("Article.articleId: %s is listed on Membership.membershipId: %s", articleId, membershipIds));
 		}
 	}
 
@@ -142,7 +141,7 @@ public class ArticleValidator {
 	public void validatePut(Integer userId, ArticleJson article) {
 		validatePost(userId, article);
 		verifyThatArticleExists(article.getArticleId(), HttpStatus.BAD_REQUEST);
-		verifyThatUserHasArticle(userId, article.getArticleId());
+		verifyThatUserOwnsArticle(userId, article.getArticleId());
 	}
 
 }

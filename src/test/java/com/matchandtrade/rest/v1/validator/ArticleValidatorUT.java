@@ -1,11 +1,16 @@
 package com.matchandtrade.rest.v1.validator;
 
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
+import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.v1.json.ArticleJson;
+import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.test.StringRandom;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +18,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -22,43 +30,112 @@ public class ArticleValidatorUT {
 
 	@Mock
 	private ArticleRepositoryFacade articleRepositoryFacadeMock;
-	private ArticleJson defaultArticle;
+	private ArticleTransformer articleTransformer = new ArticleTransformer();
+	private ArticleEntity existingListedArticle;
+	private ArticleEntity existingArticleOwnedByDifferentUser;
+	private UserEntity existingUser;
+	private ArticleJson givenExistingArticle;
 	private ArticleValidator fixture;
+	@Mock
+	private MembershipRepositoryFacade mockMembershipRepositoryFacade;
 	@Mock
 	private UserRepositoryFacade userRepositoryFacadeMock;
 
 	@Before
 	public void before() {
 		fixture = new ArticleValidator();
-		when(userRepositoryFacadeMock.find(1)).thenReturn(new UserEntity());
+		existingUser = new UserEntity();
+		existingUser.setUserId(1);
+
+		givenExistingArticle = new ArticleJson();
+		givenExistingArticle.setArticleId(20);
+		givenExistingArticle.setName("existing-article-name");
+		ArticleEntity existingArticle = articleTransformer.transform(givenExistingArticle);
+
+		existingListedArticle = new ArticleEntity();
+		existingListedArticle.setArticleId(21);
+
+		existingArticleOwnedByDifferentUser = new ArticleEntity();
+		existingArticleOwnedByDifferentUser.setArticleId(22);
+
+		when(userRepositoryFacadeMock.find(existingUser.getUserId())).thenReturn(existingUser);
 		fixture.userRepositoryFacade = userRepositoryFacadeMock;
 
-		when(articleRepositoryFacadeMock.find(1)).thenReturn(new ArticleEntity());
-		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(1, 1)).thenReturn(new ArticleEntity());
+		when(articleRepositoryFacadeMock.find(givenExistingArticle.getArticleId())).thenReturn(existingArticle);
+		when(articleRepositoryFacadeMock.find(existingListedArticle.getArticleId())).thenReturn(existingListedArticle);
+		when(articleRepositoryFacadeMock.find(existingArticleOwnedByDifferentUser.getArticleId())).thenReturn(existingArticleOwnedByDifferentUser);
+		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);
+		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingListedArticle.getArticleId())).thenReturn(existingListedArticle);
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 
-		defaultArticle = new ArticleJson();
-		defaultArticle.setName("name");
-		defaultArticle.setDescription("description");
+		MembershipEntity existingListedMembership = new MembershipEntity();
+		existingListedMembership.setMembershipId(30);
+		existingListedMembership.getArticles().add(existingListedArticle);
+		SearchResult<MembershipEntity> searchResultExistingListedArticle = new SearchResult<>(Arrays.asList(existingListedMembership),new Pagination(1, 10, 1L));
+		when(mockMembershipRepositoryFacade.findByArticleIdId(existingListedArticle.getArticleId(), 1, 10))	.thenReturn(searchResultExistingListedArticle);
+		when(mockMembershipRepositoryFacade.findByArticleIdId(givenExistingArticle.getArticleId(), 1, 10)).thenReturn(new SearchResult<>(new ArrayList<>(), new Pagination(1, 1, 0L)));
+		fixture.membershipRepositoryFacade = mockMembershipRepositoryFacade;
+	}
+
+	@Test(expected = RestException.class)
+	public void validateDelete_When_ArticleIsListed_Then_Forbidden() {
+		try {
+			fixture.validateDelete(existingUser.getUserId(), existingListedArticle.getArticleId());
+		} catch (RestException e) {
+			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
+			assertEquals("Article.articleId: 21 is listed on Membership.membershipId: [30]", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validateDelete_When_UserDoesNotOwnArticle_Then_Forbidden() {
+		try {
+			fixture.validateDelete(existingUser.getUserId(), existingArticleOwnedByDifferentUser.getArticleId());
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("User.userId: 1 does not own Article.articleId: 22", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test
+	public void validateDelete_When_ArticleIsNotListed_Then_Succeeds() {
+		fixture.validateDelete(existingUser.getUserId(), givenExistingArticle.getArticleId());
+	}
+
+	@Test
+	public void validateGet_When_ArticleExist_Then_Succeeds() {
+		fixture.validateGet(givenExistingArticle.getArticleId());
+	}
+
+	@Test(expected = RestException.class)
+	public void validateGet_When_ArticleDoesNotExist_Then_NotFound() {
+		try {
+			fixture.validateGet(-1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+			throw e;
+		}
 	}
 
 	@Test
 	public void validatePost_When_NameLengthIs150_Then_Succeeds() {
-		defaultArticle.setName(StringRandom.sequentialNumericString(150));
-		fixture.validatePost(1, defaultArticle);
+		givenExistingArticle.setName(StringRandom.sequentialNumericString(150));
+		fixture.validatePost(existingUser.getUserId(), givenExistingArticle);
 	}
 
 	@Test
-	public void validatePost_When_WithNameLengthIs3_Then_Succeeds() {
-		defaultArticle.setName(StringRandom.sequentialNumericString(3));
-		fixture.validatePost(1, defaultArticle);
+	public void validatePost_When_NameLengthIs3_Then_Succeeds() {
+		givenExistingArticle.setName(StringRandom.sequentialNumericString(3));
+		fixture.validatePost(existingUser.getUserId(), givenExistingArticle);
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_NameIsNull_Then_ThrowsBadRequest() {
-		defaultArticle.setName(null);
+	public void validatePost_When_NameIsNull_Then_BadRequest() {
+		givenExistingArticle.setName(null);
 		try {
-			fixture.validatePost(1, defaultArticle);
+			fixture.validatePost(existingUser.getUserId(), givenExistingArticle);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw (e);
@@ -66,10 +143,10 @@ public class ArticleValidatorUT {
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_NameLengthIs2_Then_ThrowsBadRequest() {
-		defaultArticle.setName(StringRandom.sequentialNumericString(2));
+	public void validatePost_When_NameLengthIs2_Then_BadRequest() {
+		givenExistingArticle.setName(StringRandom.sequentialNumericString(2));
 		try {
-			fixture.validatePost(1, defaultArticle);
+			fixture.validatePost(existingUser.getUserId(), givenExistingArticle);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw (e);
@@ -77,10 +154,10 @@ public class ArticleValidatorUT {
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_NameLengthIs151_Then_ThrowsBadRequest() {
-		defaultArticle.setName(StringRandom.sequentialNumericString(151));
+	public void validatePost_When_NameLengthIs151_Then_BadRequest() {
+		givenExistingArticle.setName(StringRandom.sequentialNumericString(151));
 		try {
-			fixture.validatePost(1, defaultArticle);
+			fixture.validatePost(existingUser.getUserId(), givenExistingArticle);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw (e);
@@ -89,20 +166,20 @@ public class ArticleValidatorUT {
 
 	@Test
 	public void validatePost_When_DescriptionLengthIs2000_Then_Succeeds() {
-		defaultArticle.setDescription(StringRandom.sequentialNumericString(2000));
-		fixture.validatePost(1, defaultArticle);
+		givenExistingArticle.setDescription(StringRandom.sequentialNumericString(2000));
+		fixture.validatePost(existingUser.getUserId(), givenExistingArticle);
 	}
 
 	@Test
 	public void validatePost_When_DescriptionIsNull_Then_Succeeds() {
-		fixture.validatePost(1, defaultArticle);
+		fixture.validatePost(existingUser.getUserId(), givenExistingArticle);
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_DescriptionLengthIs2001_Then_ThrowsBadRequest() {
-		defaultArticle.setDescription(StringRandom.sequentialNumericString(2001));
+	public void validatePost_When_DescriptionLengthIs2001_Then_BadRequest() {
+		givenExistingArticle.setDescription(StringRandom.sequentialNumericString(2001));
 		try {
-			fixture.validatePost(1, defaultArticle);
+			fixture.validatePost(existingUser.getUserId(), givenExistingArticle);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
@@ -110,10 +187,9 @@ public class ArticleValidatorUT {
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_UserDoesNotExist_Then_ThrowsBadRequest() {
-		when(userRepositoryFacadeMock.find(0)).thenReturn(null);
+	public void validatePost_When_UserDoesNotExist_Then_BadRequest() {
 		try {
-			fixture.validatePost(0, defaultArticle);
+			fixture.validatePost(-1, givenExistingArticle);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
@@ -121,30 +197,15 @@ public class ArticleValidatorUT {
 	}
 
 	@Test
-	public void validateGet_When_ArticleIdExist_Then_Succeeds() {
-		fixture.validateGet(1);
+	public void validatePut_When_ArticleExists_Then_Succeeds() {
+		fixture.validatePut(existingUser.getUserId(), givenExistingArticle);
 	}
 
 	@Test(expected = RestException.class)
-	public void validateGet_When_ArticleIdExists_Then_ThrowsNotFound() {
+	public void validatePut_When_ArticleDoesNotExists_Then_BadRequest() {
+		ArticleJson articleOwnedByDifferentUser =  articleTransformer.transform(existingArticleOwnedByDifferentUser);
 		try {
-			fixture.validateGet(0);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
-			throw e;
-		}
-	}
-
-	@Test
-	public void validatePut_When_ArticleIdExists_Then_Succeeds() {
-		defaultArticle.setArticleId(1);
-		fixture.validatePut(1, defaultArticle);
-	}
-
-	@Test(expected = RestException.class)
-	public void validatePut_When_ArticleIdDoesNotExists_Then_ThrowsBadRequest() {
-		try {
-			fixture.validatePut(1, defaultArticle);
+			fixture.validatePut(existingUser.getUserId(), articleOwnedByDifferentUser);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
@@ -152,9 +213,9 @@ public class ArticleValidatorUT {
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePut_When_UserDoesNotExist_Then_ThrowsBadRequest() {
+	public void validatePut_When_UserDoesNotExist_Then_BadRequest() {
 		try {
-			fixture.validatePut(0, defaultArticle);
+			fixture.validatePut(-1, givenExistingArticle);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			throw e;
