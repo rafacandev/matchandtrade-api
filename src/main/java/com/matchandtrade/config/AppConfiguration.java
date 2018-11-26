@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 
 @Configuration
 public class AppConfiguration {
-	
 	@Autowired
 	private AppConfigurationProperties configProperties;
 
@@ -30,5 +29,4 @@ public class AppConfiguration {
 			}
 	    };
 	}
-
 }

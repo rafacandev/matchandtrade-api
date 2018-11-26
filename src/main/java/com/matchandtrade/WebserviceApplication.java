@@ -6,11 +6,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 // TODO: Test this removal
 //@ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
 @EnableAutoConfiguration()
+@EntityScan(basePackages = "com.matchandtrade.persistence.entity") // TODO: Review this
 public class WebserviceApplication {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebserviceApplication.class);
