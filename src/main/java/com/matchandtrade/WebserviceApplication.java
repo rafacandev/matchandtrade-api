@@ -1,32 +1,23 @@
 package com.matchandtrade;
 
-import com.matchandtrade.authentication.AuthenticationServlet;
 import com.matchandtrade.cli.AppCli;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 
-@ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
+// TODO: Test this removal
+//@ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
 @EnableAutoConfiguration()
-	// Required, matchandtrade-doc-maker fails if we exclude: 
-	// EmbeddedServletContainerAutoConfiguration.class
-	// WebMvcAutoConfiguration.class
-	// DispatcherServletAutoConfiguration.class
-	
-	// Classed found on the auto-configuration report Positive Matches
-//	DataSourceAutoConfiguration.class
-//})
 public class WebserviceApplication {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebserviceApplication.class);
-	private static final String CONFIGURATION_FILE_PROPERTY_KEY = "--configFile or -cf or -Dspring.config.location";
+	private static final String CONFIGURATION_FILE_PROPERTY_DESCRIPTION = "--configFile or -cf or -Dspring.config.location";
+	private static final String CONFIGURATION_FILE_PROPERTY_KEY = "spring.config.location";
 
-	public static void main(String[] arguments) throws Throwable {
+	public static void main(String[] arguments) {
 		// Handles the command line options.
 		AppCli cli = null;
 		try {
@@ -39,32 +30,27 @@ public class WebserviceApplication {
 		// Load the correct configuration file as an environment property
 		String configurationFile = loadConfigurationFileProperty(cli);
 
-		// If line output message is interrupted (e.g: invalid command line); then, display message CommandLineOutputMessage 
-		if (cli.isInterrupted()) {
+		if (configurationFile == null || cli.isInterrupted()) {
+			LOGGER.debug("Did not find {}", CONFIGURATION_FILE_PROPERTY_DESCRIPTION);
 			LOGGER.info(cli.getCommandLineOutputMessage());
 		} else {
 			// Proceed normally
 			SpringApplication.run(WebserviceApplication.class);
-			LOGGER.info("Using {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
 		}
 	}
 
 	private static String loadConfigurationFileProperty(AppCli cli) {
-		String configurationFile = System.getProperty(CONFIGURATION_FILE_PROPERTY_KEY);
-		if (configurationFile == null) {
-			LOGGER.debug("Did not find {}", CONFIGURATION_FILE_PROPERTY_KEY);
-		} else {
-			LOGGER.debug("Found {}={}", CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
-		}
+		String configurationFile;
 		if (cli.configurationFilePath() != null) {
-			LOGGER.debug("Found {}={}", CONFIGURATION_FILE_PROPERTY_KEY, cli.configurationFilePath());
+			LOGGER.debug("Found {}={}", CONFIGURATION_FILE_PROPERTY_DESCRIPTION, cli.configurationFilePath());
 			configurationFile = cli.configurationFilePath();
+			System.setProperty(CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
+		} else {
+			configurationFile = System.getenv(CONFIGURATION_FILE_PROPERTY_KEY);
+			if (configurationFile == null) {
+				configurationFile = System.getProperty(CONFIGURATION_FILE_PROPERTY_KEY);
+			}
 		}
-		if (configurationFile == null) {
-			LOGGER.info("Unable to start the application {} is required", CONFIGURATION_FILE_PROPERTY_KEY);
-			System.exit(2);
-		}
-		System.setProperty("spring.config.location", configurationFile);
 		return configurationFile;
 	}
 

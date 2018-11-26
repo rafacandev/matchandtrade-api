@@ -18,7 +18,7 @@ public class AppCli {
 	private String commandLineOutputMessage = "";
 	private CommandLine cli;
 	
-	public AppCli(String[] arguments) throws IOException {
+	public AppCli(String[] arguments) {
 		
 		Options options = new Options();
 
@@ -53,8 +53,6 @@ public class AppCli {
 				if (!configFile.canRead()) {
 					throw new IllegalArgumentException("Configuration file [" + cli.getOptionValue("cf") + "] cannot be read.");
 				}
-			} else {
-				buildHelpOutput(options);
 			}
 		} catch (ParseException e) {
 			isInterrupted = true;
