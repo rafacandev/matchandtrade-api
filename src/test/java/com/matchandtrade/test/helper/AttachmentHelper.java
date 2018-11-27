@@ -7,6 +7,7 @@ import java.io.UncheckedIOException;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Commit;
@@ -43,11 +44,17 @@ public class AttachmentHelper {
 		MockMultipartFile result;
 		try {
 			InputStream imageInputStream = AttachmentHelper.class.getClassLoader().getResource(imageResource).openStream();
-			result = new MockMultipartFile("file", imageResource, "image/jpeg", imageInputStream);
+			result = new MockMultipartFile("file", imageResource, MediaType.IMAGE_PNG_VALUE, imageInputStream);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
 		return result;
+	}
+
+	public static MockMultipartFile newTextMockMultiPartFile(String contentType) {
+		String fileName = "plain-text-multipart.txt";
+		String content = "Plain text file with content type: " + contentType;
+		return new MockMultipartFile("file", fileName, contentType, content.getBytes());
 	}
 
 }

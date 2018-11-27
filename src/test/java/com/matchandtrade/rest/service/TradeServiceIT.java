@@ -3,7 +3,6 @@ package com.matchandtrade.rest.service;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.test.helper.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +55,7 @@ public class TradeServiceIT {
 	}
 
 	@Test
-	public void areArticlesInSameTrade_When_1ArticleInTrade_Then_True() {
+	public void areArticlesInSameTrade_When_1ArticleIsInTrade_Then_True() {
 		MembershipEntity firstMembership = membershipHelper.subscribeUserToTrade(userHelper.createPersistedEntity(), existingTrade);
 		ArticleEntity firstArticle = articleHelper.createPersistedEntity(firstMembership);
 		boolean actual = fixture.areArticlesInSameTrade(existingTrade.getTradeId(), firstArticle.getArticleId());

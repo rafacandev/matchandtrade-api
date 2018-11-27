@@ -29,9 +29,11 @@ import static com.matchandtrade.persistence.criteria.TradeQueryBuilder.Field.TRA
 public class TradeService {
 
 	@Autowired
-	private SearchService<TradeEntity> searchService;
-	@Autowired
 	private MembershipRepositoryFacade membershipRepository;
+	@Autowired
+	private SearchService<MembershipEntity> searchServiceMembership;
+	@Autowired
+	private SearchService<TradeEntity> searchServiceTrade;
 	@Autowired
 	private TradeRepositoryFacade tradeRepository;
 	@Autowired
@@ -41,7 +43,7 @@ public class TradeService {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(MembershipQueryBuilder.Field.TRADE_ID, tradeId);
 		searchCriteria.addCriterion(ARTICLE_ID, Arrays.asList(articleIds), IN);
-		SearchResult<TradeEntity> searchResult = searchService.search(searchCriteria, MembershipQueryBuilder.class);
+		SearchResult<MembershipEntity> searchResult = searchServiceMembership.search(searchCriteria, MembershipQueryBuilder.class);
 		return searchResult.getPagination().getTotal() == articleIds.length;
 	}
 
@@ -61,14 +63,14 @@ public class TradeService {
 		SearchCriteria searchCriteriaUniqueName = new SearchCriteria(new Pagination(1,1));
 		searchCriteriaUniqueName.addCriterion(NAME, name);
 		searchCriteriaUniqueName.addCriterion(TRADE_ID, tradeId, NOT_EQUALS);
-		SearchResult<TradeEntity> searchResult = searchService.search(searchCriteriaUniqueName, TradeQueryBuilder.class);
+		SearchResult<TradeEntity> searchResult = searchServiceTrade.search(searchCriteriaUniqueName, TradeQueryBuilder.class);
 		return searchResult.isEmpty();
 	}
 
 	public boolean isNameUnique(String name) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
 		searchCriteria.addCriterion(NAME, name, EQUALS_IGNORE_CASE);
-		SearchResult<TradeEntity> searchResult = searchService.search(searchCriteria, TradeQueryBuilder.class);
+		SearchResult<TradeEntity> searchResult = searchServiceTrade.search(searchCriteria, TradeQueryBuilder.class);
 		return searchResult.isEmpty();
 	}
 
@@ -83,7 +85,7 @@ public class TradeService {
 	public SearchResult<TradeEntity> search(Integer pageNumber, Integer pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
 		searchCriteria.addSort(new Sort(TRADE_ID, Sort.Type.DESC));
-		return searchService.search(searchCriteria, TradeQueryBuilder.class);
+		return searchServiceTrade.search(searchCriteria, TradeQueryBuilder.class);
 	}
 
 	@Transactional

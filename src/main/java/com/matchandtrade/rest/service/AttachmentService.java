@@ -79,7 +79,7 @@ public class AttachmentService {
 				LOGGER.debug("Saving thumbnail essence entity");
 				saveThumbnailEssence(result, thumbnailRelativePath);
 			} catch (IOException | IllegalArgumentException e) {
-				LOGGER.warn("Unable to store and save thumbnail, proceding without a thumbnail. {}", e.getMessage());
+				LOGGER.warn("Unable to save thumbnail, proceeding without a thumbnail. {}", e.getMessage());
 			}
 		}
 		return result;
@@ -113,8 +113,8 @@ public class AttachmentService {
 		try {
 			essenceStorageService.store(multipartFile.getBytes(), relativePath);
 		} catch (IOException e) {
-			LOGGER.error("Unable to ready file", e);
-			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to ready file. " + e.getMessage());
+			LOGGER.error("Unable to store file", e);
+			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to store file. " + e.getMessage());
 		}
 	}
 

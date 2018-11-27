@@ -53,9 +53,8 @@ public class ImageUtil {
 	 * @param image: the reference image
 	 * @param shortEdgeLength: the target value of the resulting image's short edge
 	 * @return Image
-	 * @throws IOException
 	 */
-	public static Image obtainShortEdgeResizedImage(final Image image, final int shortEdgeLength) throws IOException {
+	public static Image obtainShortEdgeResizedImage(final Image image, final int shortEdgeLength) {
 		int imageWidth = image.getWidth(null);
 		int imageHeight = image.getHeight(null);
 		double shortEdgeRatio;
