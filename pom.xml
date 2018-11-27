@@ -31,19 +31,15 @@
 		<java.version>1.8</java.version>
 
 		<chrisokasaki.tm.trade-maximizer.version>1.3c-beta</chrisokasaki.tm.trade-maximizer.version>
-		<org.springframework.boot.version>2.1.0.RELEASE</org.springframework.boot.version>
-		<io.springfox.version>2.6.0</io.springfox.version> <!-- TODO: Remove this -->
 
 		<com.h2database.h2.version>1.4.197</com.h2database.h2.version>
 		<org.apache.httpcomponents.httpclient>4.5.3</org.apache.httpcomponents.httpclient>
-		<cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version> <!-- TODO: Remove this -->
 		<apache-commons-cli>1.3.1</apache-commons-cli>
 		<org.jacoco.version>0.8.1</org.jacoco.version>
 		<org.apache.commons.commons-csv>1.4</org.apache.commons.commons-csv>
-		<commons-fileupload.commons-fileupload>1.3.3</commons-fileupload.commons-fileupload> <!-- TODO: Remove this ? -->
 	</properties>
 
-	<!-- TODO: do not use spring parent ??? -->
+	<!-- Spring Boot Parent. See: https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-build-systems.html -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -51,40 +47,47 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<!-- Using Spring Boot without the parent POM. See: https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-build-systems.html -->
-	<!--<dependencyManagement>-->
-		<!--<dependencies>-->
-			<!--<dependency>-->
-				<!--&lt;!&ndash; Import dependency management from Spring Boot &ndash;&gt;-->
-				<!--<groupId>org.springframework.boot</groupId>-->
-				<!--<artifactId>spring-boot-dependencies</artifactId>-->
-				<!--<version>${org.springframework.boot.version}</version>-->
-				<!--<type>pom</type>-->
-				<!--<scope>import</scope>-->
-			<!--</dependency>-->
-		<!--</dependencies>-->
-	<!--</dependencyManagement>-->
-
 	<dependencies>
-
-		<!-- TODO: Remove after migration -->
+		<!-- TradeMaximizer -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-properties-migrator</artifactId>
-			<version>2.1.0.RELEASE</version>
-			<scope>runtime</scope>
+			<groupId>chrisokasaki.tm</groupId>
+			<artifactId>trade-maximizer</artifactId>
+			<version>${chrisokasaki.tm.trade-maximizer.version}</version>
 		</dependency>
 
-
+		<!-- Spring Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.aspectj</groupId>
+                    <artifactId>aspectjweaver</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.yaml</groupId>
+					<artifactId>snakeyaml</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.hibernate.validator</groupId>
+					<artifactId>hibernate-validator</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -96,83 +99,11 @@
 			<scope>test</scope>
 		</dependency>
 
-
-		<!-- Spring Boot. Substitutes spring-boot-starter -->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-autoconfigure</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>ch.qos.logback</groupId>-->
-			<!--<artifactId>logback-classic</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework</groupId>-->
-			<!--<artifactId>spring-core</artifactId>-->
-			<!--<exclusions>-->
-				<!--<exclusion>-->
-					<!--<groupId>commons-logging</groupId>-->
-					<!--<artifactId>commons-logging</artifactId>-->
-				<!--</exclusion>-->
-			<!--</exclusions>-->
-		<!--</dependency>-->
-
-
-
-		
-		<!-- Spring Web. Substitutes spring-boot-starter-web -->
-		<!--<dependency>-->
-			<!--<groupId>org.apache.tomcat.embed</groupId>-->
-			<!--<artifactId>tomcat-embed-core</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>com.fasterxml.jackson.core</groupId>-->
-			<!--<artifactId>jackson-databind</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework</groupId>-->
-			<!--<artifactId>spring-web</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework</groupId>-->
-			<!--<artifactId>spring-webmvc</artifactId>-->
-		<!--</dependency>-->
-
-		<!-- JPA dependencies. Substitutes spring-boot-starter-data-jpa -->
-		<!-- TODO: Expand starter -->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-data-jpa</artifactId>-->
-		<!--</dependency>-->
-
-		<!-- JAXRS. Substitutes spring-boot-starter-jersey -->
+		<!-- JAXRS --><!-- TODO: See if we can remove this dependency -->
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>2.0</version>
-		</dependency>
-
-		<!-- Spring HATEOAS. Substitutes spring-boot-starter-hateoas -->
-		<dependency>
-			<groupId>org.springframework.hateoas</groupId>
-			<artifactId>spring-hateoas</artifactId>
-		</dependency>
-
-		<!-- Spring testing -->
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-test</artifactId>-->
-			<!--<scope>test</scope>-->
-		<!--</dependency>-->
-
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-logging</artifactId>
 		</dependency>
 
 		<!-- H2 Database -->
@@ -183,20 +114,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- JAXB Dependency required for JDK v9+ -->
-		<dependency>
-			<artifactId>jaxb-api</artifactId>
-			<groupId>javax.xml.bind</groupId>
-			<version>2.3.0</version>
-		</dependency>
-
-		<!-- Apache HttpComponents -->
+		<!-- Apache HttpComponents --><!-- TODO: See if we can remove this dependency -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>
 
-		<!-- Apache Commons CLI -->
+		<!-- Apache Commons CLI --><!-- TODO: See if we can remove this dependency -->
 		<dependency>
 			<groupId>commons-cli</groupId>
 			<artifactId>commons-cli</artifactId>
@@ -208,21 +132,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
 			<version>${org.apache.commons.commons-csv}</version>
-		</dependency>
-
-		<!-- Apache Commons Fileupload -->
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>${commons-fileupload.commons-fileupload}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- TradeMaximizer -->
-		<dependency>
-			<groupId>chrisokasaki.tm</groupId>
-			<artifactId>trade-maximizer</artifactId>
-			<version>${chrisokasaki.tm.trade-maximizer.version}</version>
 		</dependency>
 
 	</dependencies>
@@ -378,7 +287,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${org.springframework.boot.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -396,7 +304,6 @@
 						<argument>${basedir}/config/matchandtrade.properties</argument>
 					</arguments>
 					<mainClass>com.matchandtrade.WebserviceApplication</mainClass>
-					<jvmArguments>-Dlogging.file="target/log/matchandtrade.log"</jvmArguments>
 				</configuration>
 			</plugin>
 			

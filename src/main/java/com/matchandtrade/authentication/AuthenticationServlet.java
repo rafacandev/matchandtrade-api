@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-@WebServlet(name="authenticationServlet", urlPatterns="/matchandtrade-api/v1/authenticate/*")
+@WebServlet(urlPatterns="/matchandtrade-api/v1/authenticate/*")
 @Component
 public class AuthenticationServlet extends HttpServlet {
 	private static final long serialVersionUID = 373664290851751809L;

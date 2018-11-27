@@ -1,5 +1,6 @@
 package com.matchandtrade;
 
+import com.matchandtrade.authentication.AuthenticationServlet;
 import com.matchandtrade.cli.AppCli;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,9 +8,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
-// TODO: Test this removal
-//@ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
+@ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
 @SpringBootApplication
 @EnableAutoConfiguration()
 @EntityScan(basePackages = "com.matchandtrade.persistence.entity") // TODO: Review this
