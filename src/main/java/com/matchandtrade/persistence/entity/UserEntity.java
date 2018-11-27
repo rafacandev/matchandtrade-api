@@ -40,7 +40,8 @@ public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 
 	@Id
 	@Column(name = "user_id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@SequenceGenerator(name="user_id_generator", sequenceName = "user_id_sequence")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "user_id_generator")
 	public Integer getUserId() {
 		return userId;
 	}
@@ -70,5 +71,5 @@ public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	
+
 }

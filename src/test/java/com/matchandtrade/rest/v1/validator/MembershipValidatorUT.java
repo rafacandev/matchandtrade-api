@@ -10,61 +10,84 @@ import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.MembershipJson;
+import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
+import com.matchandtrade.rest.v1.transformer.TradeTransformer;
+import com.matchandtrade.test.helper.SearchHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 
+import static com.matchandtrade.persistence.entity.TradeEntity.State.GENERATING_RESULTS;
 import static com.matchandtrade.persistence.entity.TradeEntity.State.SUBMITTING_ARTICLES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MembershipValidatorUT {
 
 	private MembershipValidator fixture;
+	private UserEntity existingUser;
+	private TradeEntity existingTrade;
+	private MembershipEntity existingMembershipOwnedByDifferentUser;
+	private MembershipJson givenMembership;
+	private MembershipTransformer membershipTransformer = new MembershipTransformer();
 	@Mock
 	private TradeService mockTradeService;
 	@Mock
 	private UserService mockUserService;
 	@Mock
 	private MembershipService mockMembershipService;
-	private UserEntity givenAuthenticatedUser;
-	private MembershipJson givenMembership;
-	private TradeEntity expectedTrade;
 
 	@Before
 	public void before() {
 		fixture = new MembershipValidator();
 
-		givenAuthenticatedUser = new UserEntity();
-		givenAuthenticatedUser.setUserId(1);
+		existingUser = new UserEntity();
+		existingUser.setUserId(1);
+		UserEntity existingDifferentUser = new UserEntity();
+		existingDifferentUser.setUserId(2);
 
-		givenMembership = new MembershipJson();
-		givenMembership.setUserId(1);
+		existingTrade = new TradeEntity();
+		existingTrade.setState(SUBMITTING_ARTICLES);
+		existingTrade.setTradeId(11);
 
-		doReturn(givenAuthenticatedUser).when(mockUserService).find(1);
+		MembershipEntity existingMembership = new MembershipEntity();
+		existingMembership.setMembershipId(21);
+		existingMembership.setUser(existingUser);
+		existingMembership.setTrade(existingTrade);
+		givenMembership = membershipTransformer.transform(existingMembership);
+
+		existingMembershipOwnedByDifferentUser = new MembershipEntity();
+		existingMembershipOwnedByDifferentUser.setUser(existingDifferentUser);
+		existingMembershipOwnedByDifferentUser.setMembershipId(22);
+
+		when(mockUserService.find(existingUser.getUserId())).thenReturn(existingUser);
 		fixture.userService = mockUserService;
 
-		expectedTrade = new TradeEntity();
-		expectedTrade.setState(SUBMITTING_ARTICLES);
-		expectedTrade.setTradeId(1);
-		doReturn(expectedTrade).when(mockTradeService).find(1);
+		when(mockTradeService.find(existingTrade.getTradeId())).thenReturn(existingTrade);
 		fixture.tradeService = mockTradeService;
 
+		when(mockMembershipService.find(existingMembershipOwnedByDifferentUser.getMembershipId()))
+			.thenReturn(existingMembershipOwnedByDifferentUser);
+		when(mockMembershipService.findByTradeIdUserIdType(any(), any(), any(), any(), any()))
+			.thenReturn(SearchHelper.buildEmptySearchResult());
+		when(mockMembershipService.findByTradeIdUserIdType(eq(givenMembership.getTradeId()), eq(givenMembership.getUserId()), any(), any(), any()))
+			.thenReturn(SearchHelper.buildSearchResult(existingMembership));
 		fixture.membershipService = mockMembershipService;
 	}
 
 	@Test(expected = RestException.class)
 	public void validateDelete_When_MembershipIdIsNotFound_Then_NotFound() {
 		try {
-			fixture.validateDelete(givenAuthenticatedUser, -1);
+			fixture.validateDelete(existingUser, 0);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
 			assertEquals("Membership.membershipId was not found", e.getDescription());
@@ -73,12 +96,9 @@ public class MembershipValidatorUT {
 	}
 
 	@Test(expected = RestException.class)
-	public void validateDelete_When_UserDoesNotOwnMembershipId_Then_Forbidden() {
-		MembershipEntity membership = new MembershipEntity();
-		membership.setUser(new UserEntity());
-		doReturn(membership).when(mockMembershipService).find(1);
+	public void validateDelete_When_UserDoesNotOwnMembership_Then_Forbidden() {
 		try {
-			fixture.validateDelete(givenAuthenticatedUser, 1);
+			fixture.validateDelete(existingUser, existingMembershipOwnedByDifferentUser.getMembershipId());
 		} catch (RestException e) {
 			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
 			assertEquals("User.userId does not own Membership.membershipId", e.getDescription());
@@ -87,9 +107,9 @@ public class MembershipValidatorUT {
 	}
 
 	@Test(expected = RestException.class)
-	public void validateGet_When_MembershipIdIsNotFound_Then_NotFound() {
+	public void validateGet_When_MembershipIsNotFound_Then_NotFound() {
 		try {
-			fixture.validateGet(-1);
+			fixture.validateGet(0);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
 			assertEquals("Membership.membershipId was not found", e.getDescription());
@@ -104,18 +124,18 @@ public class MembershipValidatorUT {
 			fixture.validatePost(givenMembership);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertEquals("Membership.userId must refer to an existing User", e.getDescription());
+			assertEquals("Membership.userId is mandatory and must refer to an existing User", e.getDescription());
 			throw e;
 		}
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_MembershipUserIdIsNotFound_Then_BadRequest() {
-		givenMembership.setUserId(-1);
+	public void validatePost_When_MembershipUserIdIsNotFound_Then_NotFound() {
+		givenMembership.setUserId(0);
 		try {
 			fixture.validatePost(givenMembership);
 		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
 			assertEquals("Membership.userId must refer to an existing User", e.getDescription());
 			throw e;
 		}
@@ -123,6 +143,7 @@ public class MembershipValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_MembershipTradeIdIsNull_Then_BadRequest() {
+		givenMembership.setTradeId(null);
 		try {
 			fixture.validatePost(givenMembership);
 		} catch (RestException e) {
@@ -134,8 +155,7 @@ public class MembershipValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_MembershipTradeIsNotSubmittingArticles_Then_BadRequest() {
-		givenMembership.setTradeId(1);
-		expectedTrade.setState(null);
+		existingTrade.setState(GENERATING_RESULTS);
 		try {
 			fixture.validatePost(givenMembership);
 		} catch (RestException e) {
@@ -147,9 +167,6 @@ public class MembershipValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_MembershipUserIdAndMemershipTradeIsMustBeUnique_Then_BadRequest() {
-		doReturn(new SearchResult<MembershipEntity>(new ArrayList<>(), new Pagination(1, 1, 1L)))
-			.when(mockMembershipService).findByTradeIdUserIdType(1, 1, null, 1, 1);
-		givenMembership.setTradeId(1);
 		try {
 			fixture.validatePost(givenMembership);
 		} catch (RestException e) {

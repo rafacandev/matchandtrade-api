@@ -2,7 +2,7 @@ package com.matchandtrade.authentication;
 
 import com.matchandtrade.config.AppConfigurationProperties;
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
-import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
+import com.matchandtrade.persistence.facade.AuthenticationRepositoryFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class AuthenticationServlet extends HttpServlet {
 	@Autowired
 	AuthenticationCallback authenticationCallbak;
 	@Autowired
-	AuthenticationRespositoryFacade authenticationRepository;
+	AuthenticationRepositoryFacade authenticationRepository;
 	@Autowired
 	AppConfigurationProperties configProperties;
 

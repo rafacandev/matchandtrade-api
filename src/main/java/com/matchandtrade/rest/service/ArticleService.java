@@ -41,7 +41,7 @@ public class ArticleService {
 		articleRepositoryFacade.delete(articleId);
 	}
 
-	public SearchResult<ArticleEntity> search(Integer pageNumber, Integer pageSize) {
+	public SearchResult<ArticleEntity> findAll(Integer pageNumber, Integer pageSize) {
 		return articleRepositoryFacade.findAll(pageNumber, pageSize);
 	}
 

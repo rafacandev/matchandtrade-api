@@ -10,11 +10,11 @@ public class PaginationValidator {
 	PaginationValidator() { }
 
 	public static void validatePageNumberAndPageSize(Integer pageNumber, Integer pageSize) {
-		if (pageNumber != null && pageNumber < 0) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "_pageNumber must be greater than 0 when present.");
+		if (pageNumber != null && pageNumber < 1) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "PageNumber must be greater than 0 when present");
 		}
-		if (pageSize != null && (pageSize < 0 || pageSize > 50)) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "_pageSize must be between 0 and 50 when present.");
+		if (pageSize != null && (pageSize < 1 || pageSize > 50)) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "PageSize must be between 1 and 50 when present");
 		}
 	}
 

@@ -12,12 +12,12 @@ import com.matchandtrade.rest.service.TradeService;
 public class TradeResultValidator {
 
 	@Autowired
-	private TradeService tradeService;
+	TradeService tradeService;
 
 	public void validateGet(Integer tradeId) {
 		TradeEntity trade = tradeService.find(tradeId);
 		if (trade.getState() != TradeEntity.State.RESULTS_GENERATED) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "TradeResult is only availble when Trade.State is RESULTS_GENERATED.");
+			throw new RestException(HttpStatus.BAD_REQUEST, "TradeResult is only available when Trade.State is RESULTS_GENERATED");
 		}
 		if (trade.getResult() == null) {
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "There is no results for Trade.tradeId: " + tradeId);

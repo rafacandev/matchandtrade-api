@@ -44,7 +44,7 @@ public class ArticleController implements Controller {
 	public SearchResult<ArticleJson> get(Integer _pageNumber, Integer _pageSize) {
 		// Validate the request - Nothing to validate
 		// Delegate to service layer
-		SearchResult<ArticleEntity> searchResult = articleService.search(_pageNumber, _pageSize);
+		SearchResult<ArticleEntity> searchResult = articleService.findAll(_pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<ArticleJson> response = articleTransformer.transform(searchResult);
 		// Assemble links

@@ -4,23 +4,18 @@ import com.matchandtrade.persistence.entity.*;
 import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
 import com.matchandtrade.rest.v1.json.OfferJson;
-import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
 import com.matchandtrade.rest.v1.transformer.OfferTransformer;
+import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.*;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -32,17 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource(locations = "file:config/matchandtrade.properties")
-@SpringBootTest
+@DefaultTestingConfiguration
 @WebAppConfiguration
-public class OfferControllerIT {
+public class OfferControllerIT extends BaseControllerIT {
 
 	@Autowired
 	private ArticleHelper articleHelper;
-	private String authorizationHeader;
-	@Autowired
-	private ControllerHelper controllerHelper;
-	private MockMvc mockMvc;
 	@Autowired
 	private MembershipHelper membershipHelper;
 	@Autowired
@@ -53,22 +43,12 @@ public class OfferControllerIT {
 	private OfferTransformer offerTransformer;
 	@Autowired
 	private SearchHelper searchHelper;
-	private UserEntity user;
-	@Autowired
-	private UserHelper userHelper;
 	@Autowired
 	private TradeHelper tradeHelper;
-	@Autowired
-	private WebApplicationContext webApplicationContext;
 
 	@Before
 	public void before() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		// Reusing user and authorization header for better performance
-		if (user == null) {
-			user = userHelper.createPersistedEntity();
-			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
-		}
+		super.before();
 	}
 
 	private class OfferBuilder {
@@ -77,11 +57,11 @@ public class OfferControllerIT {
 		MembershipEntity membership;
 		OfferJson offer;
 		public OfferBuilder build() {
-			// Create a trade for a random user
-			TradeEntity trade = tradeHelper.createPersistedEntity(user);
+			// Create a trade for a random authenticatedUser
+			TradeEntity trade = tradeHelper.createPersistedEntity(authenticatedUser);
 
 			// Create owner's articles (Greek letters)
-			membership = searchHelper.findMembership(user, trade);
+			membership = searchHelper.findMembership(authenticatedUser, trade);
 			offeredArticle = articleHelper.createPersistedEntity(membership);
 
 			// Create member's articles (country names)

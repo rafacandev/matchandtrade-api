@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArticleAttachmentValidatorUT {
@@ -29,61 +30,72 @@ public class ArticleAttachmentValidatorUT {
 	@Mock
 	private UserRepositoryFacade userRepositoryFacadeMock;
 
+	private UserEntity existingUser;
+	private ArticleEntity existingArticle;
+	private ArticleEntity existingArticleOwnByDifferentUser;
+	private AttachmentEntity existingAttachment;
+
 	@Before
 	public void before() {
 		fixture = new ArticleAttachmentValidator();
+		existingUser = new UserEntity();
+		existingUser.setUserId(1);
 
-		// Mock userRepositoryFacadeMock
-		UserEntity articleOwner = new UserEntity();
-		articleOwner.setUserId(1);
-		doReturn(articleOwner).when(userRepositoryFacadeMock).findByArticleId(1);
+		existingArticle = new ArticleEntity();
+		existingArticle.setArticleId(11);
+		existingArticleOwnByDifferentUser = new ArticleEntity();
+		existingArticleOwnByDifferentUser.setArticleId(12);
+
+		existingAttachment = new AttachmentEntity();
+		existingAttachment.setAttachmentId(21);
+
+
+		doReturn(existingUser).when(userRepositoryFacadeMock).findByArticleId(existingArticle.getArticleId());
 		fixture.userRepositoryFacade = userRepositoryFacadeMock;
 
-		// Mock articleRepositoryFacadeMock
-		doReturn(new ArticleEntity()).when(articleRepositoryFacadeMock).find(any());
+		when(articleRepositoryFacadeMock.find(existingArticle.getArticleId())).thenReturn(existingArticle);
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 
-		// Mock attachmentRepositoryFacadeMock
-		doReturn(new AttachmentEntity()).when(attachmentRepositoryFacadeMock).find(1);
+		when(attachmentRepositoryFacadeMock.find(21)).thenReturn(existingAttachment);
 		fixture.attachmentRespositoryFacade = attachmentRepositoryFacadeMock;
 	}
 
 	@Test
 	public void validateDelete_When_UserOwnsArticleAndAttachmentExists_Then_Succeeds() {
-		fixture.validateDelete(1, 1, 1);
+		fixture.validateDelete(existingUser.getUserId(), existingArticle.getArticleId(), existingAttachment.getAttachmentId());
 	}
 
 	@Test(expected = RestException.class)
-	public void validateDelete_When_UserOwnsArticleAndAttachmentDoesNotExist_Then_BadRequest() {
+	public void validateDelete_When_UserOwnsArticleAndAttachmentDoesNotExist_Then_NotFound() {
 		try {
-			fixture.validateDelete(1, 1, 0);
+			fixture.validateDelete(existingUser.getUserId(), existingArticle.getArticleId(), -1);
 		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
 			throw e;
 		}
 	}
 
 	@Test(expected = RestException.class)
-	public void validateDelete_When_UserDoesNotOwnArticle_Then_BadRequest() {
+	public void validateDelete_When_UserDoesNotOwnArticle_Then_Forbidden() {
 		try {
-			fixture.validateDelete(0, 1, 1);
+			fixture.validateDelete(existingUser.getUserId(), existingArticleOwnByDifferentUser.getArticleId(), existingAttachment.getAttachmentId());
 		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
 			throw e;
 		}
 	}
 
 	@Test
 	public void validatePost_When_UserOwnsArticle_Then_Succeeds() {
-		fixture.validatePost(1, 1);
+		fixture.validatePost(existingUser.getUserId(), existingArticle.getArticleId());
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_UserDoesNotOwnArticle_Then_BadRequest() {
+	public void validatePost_When_UserDoesNotOwnArticle_Then_Forbidden() {
 		try {
-			fixture.validatePost(0, 1);
+			fixture.validatePost(existingUser.getUserId(), existingArticleOwnByDifferentUser.getArticleId());
 		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
 			throw e;
 		}
 	}

@@ -3,6 +3,8 @@ package com.matchandtrade.rest.service;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.persistence.entity.UserEntity;
+import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(SpringRunner.class)
-@TestPropertySource(locations = "file:config/matchandtrade.properties")
-@Commit
-@SpringBootTest
+@DefaultTestingConfiguration
 public class TradeServiceIT {
 
 	@Autowired

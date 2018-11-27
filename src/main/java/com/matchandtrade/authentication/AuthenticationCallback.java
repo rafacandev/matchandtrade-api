@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
+import com.matchandtrade.persistence.facade.AuthenticationRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 
 @Component
@@ -32,7 +32,7 @@ public class AuthenticationCallback {
 	@Autowired
 	protected UserRepositoryFacade userRepository;
 	@Autowired
-	protected AuthenticationRespositoryFacade authenticationRepository;
+	protected AuthenticationRepositoryFacade authenticationRepository;
 
 	@Transactional
 	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws IOException {

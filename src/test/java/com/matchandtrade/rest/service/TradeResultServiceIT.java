@@ -15,7 +15,7 @@ import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
-import com.matchandtrade.test.TestingDefaultAnnotations;
+import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.ArticleHelper;
 import com.matchandtrade.test.helper.OfferHelper;
 import com.matchandtrade.test.helper.MembershipHelper;
@@ -24,7 +24,7 @@ import com.matchandtrade.test.helper.UserHelper;
 
 
 @RunWith(SpringRunner.class)
-@TestingDefaultAnnotations
+@DefaultTestingConfiguration
 public class TradeResultServiceIT {
 	
 	@Autowired

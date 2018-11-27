@@ -67,14 +67,10 @@ public class AppConfigurationProperties {
 
 	@Component
 	public static class Datasource {
-		@Value("${datasource.driver.class}")
+		@Value("${spring.datasource.driver-class-name}")
 		private String driverClass;
-		@Value("${datasource.jdbc.url}")
+		@Value("${spring.datasource.url}")
 		private String jdbcUrl;
-		@Value("${datasource.password}")
-		private String password;
-		@Value("${datasource.user}")
-		private String user;
 
 		public String getDriverClass() {
 			return driverClass;
@@ -82,14 +78,6 @@ public class AppConfigurationProperties {
 
 		public String getJdbcUrl() {
 			return jdbcUrl;
-		}
-
-		public String getPassword() {
-			return password;
-		}
-
-		public String getUser() {
-			return user;
 		}
 	}
 

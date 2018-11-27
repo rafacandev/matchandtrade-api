@@ -18,11 +18,12 @@ public class OfferRepositoryFacade {
 	private TradeRepository tradeRepository;
 	
 	public void delete(Integer offerId) {
-		offerRepository.delete(offerId);
+		offerRepository.deleteById(offerId);
 	}
 
+	// TODO: Optional ??
 	public OfferEntity find(Integer offerId) {
-		return offerRepository.findOne(offerId);
+		return offerRepository.findById(offerId).get();
 	}
 
 	public List<OfferEntity> findByOfferedArticleId(Integer offeredArticleId) {

@@ -15,9 +15,10 @@ public class AttachmentRepositoryFacade {
 	
 	@Autowired
 	private AttachmentRepository attachmentRepository;
-	
+
+	// TODO: Optional?
 	public AttachmentEntity find(Integer attachmentId) {
-		return attachmentRepository.findOne(attachmentId);
+		return attachmentRepository.findById(attachmentId).get();
 	}
 
 	public void save(AttachmentEntity entity) {
@@ -25,7 +26,7 @@ public class AttachmentRepositoryFacade {
 	}
 
 	public void delete(Integer fileId) {
-		attachmentRepository.delete(fileId);
+		attachmentRepository.deleteById(fileId);
 	}
 
 	public SearchResult<AttachmentEntity> findAttachmentsByArticleId(Integer articleId, Integer pageNumber, Integer pageSize) {

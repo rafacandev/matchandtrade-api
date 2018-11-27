@@ -20,7 +20,7 @@ import org.springframework.mock.web.MockHttpSession;
 
 import com.matchandtrade.persistence.entity.AuthenticationEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
+import com.matchandtrade.persistence.facade.AuthenticationRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -36,7 +36,7 @@ public class AuthenticationCallbackUT {
 	private String antiForgeryState = "antiForgeryState";
 
 	@Mock
-	protected AuthenticationRespositoryFacade authenticationRepositoryFacadeMock;
+	protected AuthenticationRepositoryFacade authenticationRepositoryFacadeMock;
 	@Before
 	public void before() {
 		fixture = new AuthenticationCallback();

@@ -37,7 +37,7 @@ public class OfferController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validateDelete(membershipId, offerId, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, offerId);
 		// Delegate to Service layer
 		offerService.delete(offerId);
 	}
@@ -47,7 +47,7 @@ public class OfferController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validateGetById(membershipId, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validateGetById(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId);
 		// Delegate to Service layer
 		OfferEntity entity = offerService.find(offerId);
 		// Transform the response
@@ -76,7 +76,7 @@ public class OfferController implements Controller {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
 		// Validate the request
-		offerValidator.validatePost(membershipId, requestJson, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, requestJson);
 		// Transform the request
 		OfferEntity entity = offerTransformer.transform(requestJson); 
 		// Delegate to service layer

@@ -3,18 +3,8 @@ package com.matchandtrade.persistence.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "article")
@@ -50,7 +40,8 @@ public class ArticleEntity implements com.matchandtrade.persistence.entity.Entit
 
 	@Id
 	@Column(name = "article_id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@SequenceGenerator(name="article_id_generator", sequenceName = "article_id_sequence")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "article_id_generator")
 	public Integer getArticleId() {
 		return articleId;
 	}

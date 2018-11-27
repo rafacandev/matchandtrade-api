@@ -1,11 +1,11 @@
 package com.matchandtrade.authentication;
 
-import com.matchandtrade.persistence.facade.AuthenticationRespositoryFacade;
+import com.matchandtrade.persistence.facade.AuthenticationRepositoryFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -16,18 +16,18 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+// TODO: Remove Silent runner and fix issues
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class AuthenticationServletUT {
 
 	@Mock
 	private AuthenticationCallback authenticationCallbackMock;
 	@Mock
-	private AuthenticationRespositoryFacade authenticationRepositoryFacadeMock;
+	private AuthenticationRepositoryFacade authenticationRepositoryFacadeMock;
 	private AuthenticationServlet fixture;
 	private URI redirectUri;
 	private MockHttpServletRequest requestMock;

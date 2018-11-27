@@ -3,27 +3,22 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.json.search.Recipe;
 import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
+import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.*;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -32,43 +27,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource(locations = "file:config/matchandtrade.properties")
-@SpringBootTest
+@DefaultTestingConfiguration
 @WebAppConfiguration
-public class SearchControllerIT {
+public class SearchControllerIT extends BaseControllerIT {
 
 	@Autowired
 	private ArticleHelper articleHelper;
-	private String authorizationHeader;
-	@Autowired
-	private ControllerHelper controllerHelper;
 	private ArticleEntity expectedArticle;
-	private UserEntity expecteduser;
 	private TradeEntity expectedTrade;
 	@Autowired
 	private ListingHelper listingHelper;
-	private MockMvc mockMvc;
 	@Autowired
 	private MembershipHelper membershipHelper;
-	@Autowired
-	private UserHelper userHelper;
-	@Autowired
-	private WebApplicationContext webApplicationContext;
 
 	@Transactional
 	@Before
 	public void before() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		// Reusing user and authorization header for better performance
-		if (expecteduser == null) {
-			expecteduser = userHelper.createPersistedEntity();
-			authorizationHeader = controllerHelper.generateAuthorizationHeader(expecteduser);
-			buildListingWhenUserOwnsArticleAndMembership();
-		}
-	}
-
-	private void buildListingWhenUserOwnsArticleAndMembership() {
-		MembershipEntity expectedMembership = expectedMembership = membershipHelper.createPersistedEntity(expecteduser);
+		super.before();
+		MembershipEntity expectedMembership = membershipHelper.createPersistedEntity(authenticatedUser);
 		expectedArticle = articleHelper.createPersistedEntity(expectedMembership);
 		expectedTrade = expectedMembership.getTrade();
 		listingHelper.createPersisted(expectedArticle.getArticleId(), expectedMembership.getMembershipId());

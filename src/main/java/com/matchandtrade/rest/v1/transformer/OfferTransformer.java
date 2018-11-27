@@ -25,8 +25,9 @@ public class OfferTransformer extends Transformer<OfferEntity, OfferJson> {
 	public OfferEntity transform(OfferJson json) {
 		OfferEntity result = new OfferEntity();
 		result.setOfferId(json.getOfferId());
-		result.setOfferedArticle(articleRepository.findOne(json.getOfferedArticleId()));
-		result.setWantedArticle(articleRepository.findOne(json.getWantedArticleId()));
+		// TODO: Use repository facade instead
+		result.setOfferedArticle(articleRepository.findById(json.getOfferedArticleId()).get());
+		result.setWantedArticle(articleRepository.findById(json.getWantedArticleId()).get());
 		return result;
 	}
 

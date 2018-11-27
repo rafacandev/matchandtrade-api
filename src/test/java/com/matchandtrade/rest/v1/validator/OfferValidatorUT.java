@@ -25,6 +25,14 @@ public class OfferValidatorUT {
 
 	private OfferJson givenOffer;
 	private OfferValidator fixture;
+	private ArticleEntity existingArticleOwnedByDifferentUser;
+	private ArticleEntity existingArticle;
+	private ArticleEntity existingArticleNotInTrade;
+	private MembershipEntity existingMembership;
+	private MembershipEntity existingMembershipOwnedByDifferentUser;
+	private UserEntity existingUser;
+	private UserEntity existingUserDifferent;
+
 	@Mock
 	private ArticleService mockArticleService;
 	@Mock
@@ -36,104 +44,60 @@ public class OfferValidatorUT {
 
 	@Before
 	public void before() {
-		givenOffer = new OfferJson();
-		givenOffer.setOfferId(-1);
-		givenOffer.setOfferedArticleId(-2);
-		givenOffer.setWantedArticleId(-3);
-
 		fixture = new OfferValidator();
+		existingUser = new UserEntity();
+		existingUser.setUserId(1);
+		existingUserDifferent = new UserEntity();
+		existingUserDifferent.setUserId(2);
 
-		when(mockArticleService.find(2)).thenReturn(new ArticleEntity());
-		when(mockArticleService.find(3)).thenReturn(new ArticleEntity());
-		when(mockArticleService.find(4)).thenReturn(new ArticleEntity());
+		TradeEntity existingTrade = new TradeEntity();
+		existingTrade.setTradeId(11);
+		existingMembership = new MembershipEntity();
+		existingMembership.setMembershipId(21);
+		existingMembership.setUser(existingUser);
+		existingMembership.setTrade(existingTrade);
+		existingMembershipOwnedByDifferentUser = new MembershipEntity();
+		existingMembershipOwnedByDifferentUser.setMembershipId(22);
+		existingMembershipOwnedByDifferentUser.setUser(existingUserDifferent);
+
+		existingArticle = new ArticleEntity();
+		existingArticle.setArticleId(31);
+		existingArticleOwnedByDifferentUser = new ArticleEntity();
+		existingArticleOwnedByDifferentUser.setArticleId(32);
+		existingArticleNotInTrade = new ArticleEntity();
+		existingArticleNotInTrade.setArticleId(33);
+
+		givenOffer = new OfferJson();
+		givenOffer.setOfferId(41);
+		givenOffer.setOfferedArticleId(existingArticle.getArticleId());
+		givenOffer.setWantedArticleId(existingArticleOwnedByDifferentUser.getArticleId());
+
+		when(mockArticleService.find(existingArticle.getArticleId())).thenReturn(existingArticle);
+		when(mockArticleService.find(existingArticleNotInTrade.getArticleId())).thenReturn(existingArticleNotInTrade);
+		when(mockArticleService.find(existingArticleOwnedByDifferentUser.getArticleId())).thenReturn(existingArticleOwnedByDifferentUser);
 		fixture.articleService = mockArticleService;
 
-		MembershipEntity membership = new MembershipEntity();
-		UserEntity user = new UserEntity();
-		user.setUserId(1);
-		membership.setUser(user);
-		TradeEntity trade = new TradeEntity();
-		trade.setTradeId(1);
-		membership.setTrade(trade);
-		when(mockMembershipService.find(1)).thenReturn(membership);
+		when(mockMembershipService.find(existingMembership.getMembershipId())).thenReturn(existingMembership);
+		when(mockMembershipService.find(existingMembershipOwnedByDifferentUser.getMembershipId())).thenReturn(existingMembershipOwnedByDifferentUser);
 		fixture.membershipService = mockMembershipService;
 
-		when(mockUserService.findByArticleId(2)).thenReturn(user);
+		when(mockUserService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingUser);
+		when(mockUserService.findByArticleId(existingArticleOwnedByDifferentUser.getArticleId())).thenReturn(existingUserDifferent);
+		when(mockUserService.findByOfferId(givenOffer.getOfferId())).thenReturn(existingUser);
 		fixture.userService = mockUserService;
 
-		when(mockTradeService.areArticlesInSameTrade(1, 2, 3)).thenReturn(true);
 		fixture.tradeService = mockTradeService;
 	}
 
-	@Test(expected = RestException.class)
-	public void validatePost_When_OfferOfferedArticleIdIdIsNull_Then_BadRequest() {
-		givenOffer.setOfferedArticleId(null);
-		try {
-			fixture.validatePost(0, givenOffer, 1);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertEquals("Offer.offeredArticleId is mandatory", e.getDescription());
-			throw e;
-		}
+	@Test
+	public void validateDelete_When_UserOwnsOffer_Then_Succeeds() {
+		fixture.validateDelete(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer.getOfferId());
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_OfferOfferIdIsNull_Then_BadRequest() {
-		givenOffer.setWantedArticleId(null);
+	public void validateDelete_When_UserDoesNotOwnMembership_Then_Forbidden() {
 		try {
-			fixture.validatePost(0, givenOffer, 1);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertEquals("Offer.wantedArticleId is mandatory", e.getDescription());
-			throw e;
-		}
-	}
-
-	@Test(expected = RestException.class)
-	public void validatePost_When_OfferOfferedArticleIdAndWantedArticleIdAreEqual_Then_BadRequest() {
-		givenOffer.setWantedArticleId(-5);
-		givenOffer.setOfferedArticleId(-5);
-		try {
-			fixture.validatePost(0, givenOffer, 1);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertEquals("Offer.offeredArticleId and Offer.wantedArticleId must differ", e.getDescription());
-			throw e;
-		}
-	}
-
-	@Test(expected = RestException.class)
-	public void validatePost_When_OfferOfferedArticleIdIsNotFound_Then_NotFound() {
-		try {
-			fixture.validatePost(0, givenOffer, 1);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
-			assertEquals("Offer.offeredArticleId was not found", e.getDescription());
-			throw e;
-		}
-	}
-
-	@Test(expected = RestException.class)
-	public void validatePost_When_OfferWantedArticleIdIsNotFound_Then_NotFound() {
-		givenOffer.setOfferedArticleId(2);
-		try {
-			fixture.validatePost(0, givenOffer, 1);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
-			assertEquals("Offer.wantedArticleId was not found", e.getDescription());
-			throw e;
-		}
-	}
-
-	@Test(expected = RestException.class)
-	public void validatePost_When_AuthenticatedUserDoesNotOwnMembershipId_Then_Forbidden() {
-		MembershipEntity membership = new MembershipEntity();
-		membership.setUser(new UserEntity());
-		when(mockMembershipService.find(1)).thenReturn(membership);
-		givenOffer.setOfferedArticleId(2);
-		givenOffer.setWantedArticleId(3);
-		try {
-			fixture.validatePost(1, givenOffer, 1);
+			fixture.validateDelete(existingUserDifferent.getUserId(), existingMembership.getMembershipId(), givenOffer.getOfferId());
 		} catch (RestException e) {
 			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
 			assertEquals("User.userId does not own Membership.membershipId", e.getDescription());
@@ -142,14 +106,94 @@ public class OfferValidatorUT {
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_AuthenticatedUserDoesNotOwnOfferOfferedArticleId_Then_Forbidden() {
-		UserEntity user = new UserEntity();
-		user.setUserId(2);
-		when(mockUserService.findByArticleId(2)).thenReturn(user);
-		givenOffer.setOfferedArticleId(2);
-		givenOffer.setWantedArticleId(3);
+	public void validateDelete_When_UserDoesNotOwnOffer_Then_Forbidden() {
 		try {
-			fixture.validatePost(1, givenOffer, 1);
+			fixture.validateDelete(existingUserDifferent.getUserId(), existingMembershipOwnedByDifferentUser.getMembershipId(), givenOffer.getOfferId());
+		} catch (RestException e) {
+			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
+			assertEquals("User.userId does not own Offer.offerId", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_OfferedArticleIdIdIsNull_Then_BadRequest() {
+		givenOffer.setOfferedArticleId(null);
+		try {
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("Offer.offeredArticleId is mandatory", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_WantedArticleIdIdIsNull_Then_BadRequest() {
+		givenOffer.setWantedArticleId(null);
+		try {
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("Offer.wantedArticleId is mandatory", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_OfferedArticleAndWantedArticleAreEqual_Then_BadRequest() {
+		givenOffer.setOfferedArticleId(existingArticle.getArticleId());
+		givenOffer.setWantedArticleId(existingArticle.getArticleId());
+		try {
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("Offer.offeredArticleId and Offer.wantedArticleId must differ", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_OfferedArticleIsNotFound_Then_NotFound() {
+		givenOffer.setOfferedArticleId(0);
+		try {
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+			assertEquals("Offer.offeredArticleId was not found", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_WantedArticleIsNotFound_Then_NotFound() {
+		givenOffer.setWantedArticleId(0);
+		try {
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+			assertEquals("Offer.wantedArticleId was not found", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_UserDoesNotOwnMembership_Then_Forbidden() {
+		try {
+			fixture.validatePost(existingUser.getUserId(), existingMembershipOwnedByDifferentUser.getMembershipId(), givenOffer);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
+			assertEquals("User.userId does not own Membership.membershipId", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_UserDoesNotOwnOfferedArticleId_Then_Forbidden() {
+		givenOffer.setOfferedArticleId(existingArticleOwnedByDifferentUser.getArticleId());
+		givenOffer.setWantedArticleId(existingArticle.getArticleId());
+		try {
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
 			assertEquals("User.userId does not own Offer.offeredArticleId", e.getDescription());
@@ -158,11 +202,11 @@ public class OfferValidatorUT {
 	}
 
 	@Test(expected = RestException.class)
-	public void validatePost_When_OfferOfferedArticleIdAndOfferWantedArticleIdAreNotAssociatedToTheSameTradeId_Then_BadRequest() {
-		givenOffer.setOfferedArticleId(2);
-		givenOffer.setWantedArticleId(4);
+	public void validatePost_When_OfferedArticleAndWantedArticleAreNotAssociatedToTheSameTrade_Then_BadRequest() {
+		givenOffer.setOfferedArticleId(existingArticle.getArticleId());
+		givenOffer.setWantedArticleId(existingArticleNotInTrade.getArticleId());
 		try {
-			fixture.validatePost(1, givenOffer, 1);
+			fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
 			assertEquals("Offer.offeredArticleId and Offer.wantedArticleId must be associated to the same Trade.tradeId", e.getDescription());
@@ -170,10 +214,8 @@ public class OfferValidatorUT {
 		}
 	}
 
-	public void validatePost_When_OfferOfferedArticleIdAndOfferWantedArticleIdAreAssociatedToTheSameTradeId_Then_Succeeds() {
-		givenOffer.setOfferedArticleId(2);
-		givenOffer.setWantedArticleId(3);
-		fixture.validatePost(1, givenOffer, 1);
+	public void validatePost_When_OfferedArticleAndWantedArticleAreAssociatedToTheSameTrade_Then_Succeeds() {
+		fixture.validatePost(existingUser.getUserId(), existingMembership.getMembershipId(), givenOffer);
 	}
 
 }

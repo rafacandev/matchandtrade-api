@@ -36,12 +36,4 @@ public class AppCliUT {
 		assertTrue(cli.getCommandLineOutputMessage().contains("java -jar THIS_JAR.jar"));
 	}
 
-	@Test
-	public void startup_When_HasEmptyArguments_Then_OutputsHelp() throws IOException {
-		String[] arguments = {""};
-		AppCli cli = new AppCli(arguments);
-		assertTrue(cli.isInterrupted());
-		assertTrue(cli.getCommandLineOutputMessage().contains("java -jar THIS_JAR.jar"));
-	}
-
 }
