@@ -1,7 +1,6 @@
 package com.matchandtrade.rest.service;
 
 import com.matchandtrade.config.AppConfigurationProperties;
-import com.sun.istack.internal.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ public class EssenceStorageService {
 		rootFolder = targetRootPath;
 	}
 	
-	public void store(byte[] bytes, @NotNull Path relativePath) {
+	public void store(byte[] bytes, Path relativePath) {
 		if (relativePath == null) {
 			throw new IllegalArgumentException("Relative path cannot be null.");
 		}
