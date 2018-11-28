@@ -1,14 +1,11 @@
 package com.matchandtrade.rest.v1.validator;
 
-import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
-import com.matchandtrade.rest.service.ListingService;
-import com.matchandtrade.rest.service.SearchService;
+import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.v1.json.ListingJson;
 import com.matchandtrade.test.helper.SearchHelper;
 import org.junit.Before;
@@ -17,11 +14,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -38,7 +30,7 @@ public class ListingValidatorUT {
 	private UserEntity existingUser;
 	private ListingValidator fixture;
 	@Mock
-	private ListingService listingService;
+	private MembershipService membershipService;
 
 	@Before
 	public void before() {
@@ -53,11 +45,11 @@ public class ListingValidatorUT {
 		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 
-		when(listingService.findMembershipByUserIdAndMembershpiId(any(), any()))
+		when(membershipService.findByUserIdAndMembershpiId(any(), any()))
 			.thenReturn(SearchHelper.buildEmptySearchResult());
-		when(listingService.findMembershipByUserIdAndMembershpiId(existingUser.getUserId(), existingMembership.getMembershipId()))
+		when(membershipService.findByUserIdAndMembershpiId(existingUser.getUserId(), existingMembership.getMembershipId()))
 			.thenReturn(SearchHelper.buildSearchResult(new MembershipEntity()));
-		fixture.listingService = listingService;
+		fixture.membershipService = membershipService;
 	}
 
 	@Test

@@ -36,7 +36,7 @@ public class EssenceStorageService {
 		rootFolder = targetRootPath;
 	}
 	
-	public void store(byte[] bytes, Path relativePath) {
+	public void store(byte[] bytes, Path relativePath) throws IOException {
 		if (relativePath == null) {
 			throw new IllegalArgumentException("Relative path cannot be null.");
 		}
@@ -47,9 +47,7 @@ public class EssenceStorageService {
 			}
 			Files.copy(inputStream, rootFolder.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
-			RuntimeException ioExceptionAsRuntimeException = new RuntimeException("Failed to store essence file: " + relativePath + " at: " + rootFolder, e);
-			LOGGER.error(ioExceptionAsRuntimeException.getMessage(), e);
-			throw ioExceptionAsRuntimeException;
+			throw e;
 		}
 	}
 

@@ -47,4 +47,11 @@ public class MembershipService {
 		return searchService.search(searchCriteria, MembershipQueryBuilder.class);
 	}
 
+	public SearchResult<MembershipEntity> findByUserIdAndMembershpiId(Integer userId, Integer membershipId) {
+		SearchCriteria criteria = new SearchCriteria(new Pagination());
+		criteria.addCriterion(MembershipQueryBuilder.Field.USER_ID, userId);
+		criteria.addCriterion(MembershipQueryBuilder.Field.MEMBERSHIP_ID, membershipId);
+		return searchService.search(criteria, MembershipQueryBuilder.class);
+	}
+
 }
