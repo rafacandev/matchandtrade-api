@@ -31,11 +31,9 @@ public class ArticleAttachmentService {
 	public void delete(Integer articleId, Integer attachmentId) {
 		AttachmentEntity attachment = attachmentRepositoryFacade.find(attachmentId);
 		ArticleEntity article = articleService.find(articleId);
-		// TODO: More performant implementation, this could be slow if articles have several attachments
-		if (article.getAttachments().remove(attachment)) {
-			articleService.update(article);
-			attachmentRepositoryFacade.delete(attachmentId);
-		}
+		article.getAttachments().remove(attachment);
+		articleService.update(article);
+		attachmentRepositoryFacade.delete(attachmentId);
 	}
 
 }

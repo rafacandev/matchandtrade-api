@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.service;
 
 import com.matchandtrade.config.AppConfigurationProperties;
+import com.sun.istack.internal.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,13 @@ public class EssenceStorageService {
 		rootFolder = targetRootPath;
 	}
 	
-	public void store(byte[] bytes, Path relativePath) {
-		InputStream inputStream = new ByteArrayInputStream(bytes);
-		try {
-			if (relativePath == null) {
-				throw new IllegalArgumentException("Relative path cannot be null.");
-			}
-			if (!rootFolder.resolve(relativePath.getParent()).toFile().exists()) {
+	public void store(byte[] bytes, @NotNull Path relativePath) {
+		if (relativePath == null) {
+			throw new IllegalArgumentException("Relative path cannot be null.");
+		}
+		try (InputStream inputStream = new ByteArrayInputStream(bytes)) {
+			Path parentPath = relativePath.getParent();
+			if (parentPath != null && !rootFolder.resolve(parentPath).toFile().exists()) {
 				Files.createDirectories(rootFolder.resolve(relativePath.getParent()));
 			}
 			Files.copy(inputStream, rootFolder.resolve(relativePath), StandardCopyOption.REPLACE_EXISTING);
@@ -50,12 +51,6 @@ public class EssenceStorageService {
 			RuntimeException ioExceptionAsRuntimeException = new RuntimeException("Failed to store essence file: " + relativePath + " at: " + rootFolder, e);
 			LOGGER.error(ioExceptionAsRuntimeException.getMessage(), e);
 			throw ioExceptionAsRuntimeException;
-		} finally {
-			try {
-				inputStream.close();
-			} catch (IOException e) {
-				LOGGER.error("Not possible to close input stream", e);
-			}
 		}
 	}
 

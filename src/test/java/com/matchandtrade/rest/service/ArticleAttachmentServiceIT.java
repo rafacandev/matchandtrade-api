@@ -2,6 +2,7 @@ package com.matchandtrade.rest.service;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
+import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.ArticleHelper;
 import com.matchandtrade.test.helper.AttachmentHelper;
 import org.junit.Test;
@@ -19,9 +20,7 @@ import static org.junit.Assert.assertNotNull;
 
 
 @RunWith(SpringRunner.class)
-@TestPropertySource(locations = "file:config/matchandtrade.properties")
-@Commit
-@SpringBootTest
+@DefaultTestingConfiguration
 public class ArticleAttachmentServiceIT {
 
 	@Autowired
