@@ -1,7 +1,4 @@
 package com.matchandtrade.rest.v1.controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
@@ -9,9 +6,11 @@ import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.v1.json.MembershipJson;
-import com.matchandtrade.rest.v1.link.MembershipLinkAssember;
 import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
 import com.matchandtrade.rest.v1.validator.MembershipValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path="/matchandtrade-api/v1/memberships")
@@ -39,8 +38,7 @@ public class MembershipController implements Controller {
 		membershipService.create(membershipEntity);
 		// Transform the response
 		MembershipJson response = membershipTransformer.transform(membershipEntity);
-		// Assemble links
-		MembershipLinkAssember.assemble(response);
+		// TODO: Assemble links
 		return response;
 	}
 
@@ -54,8 +52,7 @@ public class MembershipController implements Controller {
 		MembershipEntity searchResult = membershipService.find(membershipId);
 		// Transform the response
 		MembershipJson response = membershipTransformer.transform(searchResult);
-		// Assemble links
-		MembershipLinkAssember.assemble(response);		
+		// TODO: Assemble links
 		return response;
 	}
 
@@ -69,8 +66,7 @@ public class MembershipController implements Controller {
 		SearchResult<MembershipEntity> searchResult = membershipService.findByTradeIdUserIdType(tradeId, userId, type, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<MembershipJson> response = membershipTransformer.transform(searchResult);
-		// Assemble links
-		MembershipLinkAssember.assemble(response);		
+		// TODO: Assemble links
 		return response;
 	}
 

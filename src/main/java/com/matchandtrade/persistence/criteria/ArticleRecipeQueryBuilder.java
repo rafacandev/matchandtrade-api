@@ -17,7 +17,7 @@ public class ArticleRecipeQueryBuilder implements QueryBuilder {
 	private QueryBuilderHelper queryBuilderHelper;
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		TRADE_ID("membership.trade.tradeId"), TRADE_MEMBERSHIP_ID("membership.membershipId");
+		TRADE_ID("membership.trade.tradeId"), TRADE_MEMBERSHIP_ID("membership.membershipId"), ARTICLE_ID("article.articleId");
 
 		private String alias;
 		

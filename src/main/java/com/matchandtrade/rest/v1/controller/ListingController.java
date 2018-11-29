@@ -28,7 +28,6 @@ public class ListingController {
 		listingValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), request);
 		// Delegate to service layer
 		listingService.create(request.getMembershipId(), request.getArticleId());
-		// TODO add heteroas
 	}
 
 	@DeleteMapping("/")
@@ -40,7 +39,6 @@ public class ListingController {
 		listingValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), request);
 		// Delegate to service layer
 		listingService.delete(request.getMembershipId(), request.getArticleId());
-		// TODO add heteroas
 	}
 
 }

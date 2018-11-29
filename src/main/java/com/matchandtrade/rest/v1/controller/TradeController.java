@@ -1,12 +1,4 @@
 package com.matchandtrade.rest.v1.controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
@@ -14,9 +6,11 @@ import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
-import com.matchandtrade.rest.v1.link.TradeLinkAssember;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path="/matchandtrade-api/v1/trades")
@@ -43,8 +37,7 @@ public class TradeController implements Controller {
 		tradeService.create(tradeEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
 		TradeJson response = tradeTransformer.transform(tradeEntity);
-		// Assemble links
-		TradeLinkAssember.assemble(response);
+		// TODO: Assemble links
 		return response;
 	}
 	
@@ -61,8 +54,7 @@ public class TradeController implements Controller {
 		tradeService.update(tradeEntity);
 		// Transform the response
 		TradeJson response = tradeTransformer.transform(tradeEntity);
-		// Assemble links
-		TradeLinkAssember.assemble(response);
+		// TODO: Assemble links
 		return response;
 	}
 	
@@ -86,8 +78,7 @@ public class TradeController implements Controller {
 		SearchResult<TradeEntity> searchResult = tradeService.search(_pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<TradeJson> response = tradeTransformer.transform(searchResult);
-		// Assemble links
-		TradeLinkAssember.assemble(response);
+		// TODO: Assemble links
 		return response;
 	}
 
@@ -101,8 +92,7 @@ public class TradeController implements Controller {
 		TradeEntity tradeEntity = tradeService.find(tradeId);
 		// Transform the response
 		TradeJson response = tradeTransformer.transform(tradeEntity);
-		// Assemble links
-		TradeLinkAssember.assemble(response);
+		// TODO: Assemble links
 		return response;
 	}
 

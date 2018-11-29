@@ -34,8 +34,7 @@ public class ArticleController implements Controller {
 		ArticleEntity articleEntity = articleService.find(articleId);
 		// Transform the response
 		ArticleJson response = articleTransformer.transform(articleEntity);
-		// Assemble links
-//		ArticleLinkAssember.assemble(response, membershipId);
+		// TODO: Assemble links
 		return response;
 	}
 
@@ -47,8 +46,7 @@ public class ArticleController implements Controller {
 		SearchResult<ArticleEntity> searchResult = articleService.findAll(_pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<ArticleJson> response = articleTransformer.transform(searchResult);
-		// Assemble links
-//		ArticleLinkAssember.assemble(response, membershipId);
+		// TODO: Assemble links
 		return response;
 	}
 
@@ -76,8 +74,7 @@ public class ArticleController implements Controller {
 		articleService.create(authenticationProvider.getAuthentication().getUser(), articleEntity);
 		// Transform the response
 		ArticleJson response = articleTransformer.transform(articleEntity);
-		// Assemble links
-//		ArticleLinkAssember.assemble(response, membershipId);
+		// TODO: Assemble links
 		return response;
 	}
 

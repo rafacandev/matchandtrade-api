@@ -1,19 +1,14 @@
 package com.matchandtrade.rest.v1.controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.UserJson;
-import com.matchandtrade.rest.v1.link.UserLinkAssember;
 import com.matchandtrade.rest.v1.transformer.UserTransformer;
 import com.matchandtrade.rest.v1.validator.UserValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path="/matchandtrade-api/v1/users")
@@ -37,8 +32,7 @@ public class UserController implements Controller {
 		UserEntity sanitizedUser = userService.sanitize(userEntity, authenticationProvider.getAuthentication().getUser());
 		// Transform the response
 		UserJson response = userTransformer.transform(sanitizedUser);
-		// Assemble links
-		UserLinkAssember.assemble(response);
+		// TODO: Assemble links
 		return response;
 	}
 	
@@ -55,8 +49,7 @@ public class UserController implements Controller {
 		userService.update(userEntity);
 		// Transform the response
 		UserJson response = userTransformer.transform(userEntity);
-		// Assemble links
-		UserLinkAssember.assemble(response);
+		// TODO: Assemble links
 		return response;
 	}
 

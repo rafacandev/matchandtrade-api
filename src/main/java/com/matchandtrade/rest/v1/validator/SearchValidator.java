@@ -12,6 +12,9 @@ public class SearchValidator {
 	//Utility classes should not have public constructors
 	SearchValidator() { }
 
+
+	// TODO Add validation to only allow valid criteria: e.g: article.articleId...
+
 	/**
 	 * Validates if request.recipe is present.
 	 * @param json

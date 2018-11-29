@@ -27,7 +27,7 @@ public class AppConfigurationProperties {
 		private String clientSecret;
 		@Value("${authentication.redirect.url}")
 		private String redirectUrl;
-		@Value("${authentication.callback.url}")
+		@Value("${authentication.callback.url:#{null}}")
 		private String callbackUrl;
 		@Value("${authentication.session.timeout}")
 		private int sessionTimeout;

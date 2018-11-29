@@ -52,7 +52,7 @@ public class AuthenticationServlet extends HttpServlet {
 			}
 			switch (targetAction) {
 			case SIGN_OFF:
-				signOut(request, response);
+				signOff(request, response);
 				break;
 			case AUTHENTICATE:
 				redirectToAuthenticationServer(response);
@@ -106,8 +106,8 @@ public class AuthenticationServlet extends HttpServlet {
 		LOGGER.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", configProperties.authentication.getRedirectUrl());
 	}
 	
-	private void signOut(HttpServletRequest request, HttpServletResponse response) {
-		LOGGER.debug("Signing out from session id: [{}]", request.getSession().getId());
+	private void signOff(HttpServletRequest request, HttpServletResponse response) {
+		LOGGER.debug("Signing off from session id: [{}]", request.getSession().getId());
 		// Delete authentication details
 		String accessToken = request.getHeader(AuthenticationOAuth.AUTHORIZATION_HEADER);
 		if (accessToken != null) {
