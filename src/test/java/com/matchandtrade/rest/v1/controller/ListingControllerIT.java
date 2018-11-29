@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
-@WebAppConfiguration
 public class ListingControllerIT extends BaseControllerIT {
 
 	@Autowired

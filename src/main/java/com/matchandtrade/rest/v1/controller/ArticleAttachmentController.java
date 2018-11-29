@@ -51,4 +51,6 @@ public class ArticleAttachmentController implements Controller {
 		return attachmentTransformer.transform(attachment);
 	}
 
+	// TODO getAttachments
+
 }

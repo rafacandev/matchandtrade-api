@@ -2,6 +2,7 @@ package com.matchandtrade.rest.v1.json;
 
 import com.matchandtrade.rest.JsonLinkSupport;
 
+// TODO: Add essences
 public class AttachmentJson extends JsonLinkSupport {
 
 	private Integer attachmentId;

@@ -15,7 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 
@@ -27,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
-@WebAppConfiguration
 public class TradeControllerIT extends BaseControllerIT {
 
 	@Autowired
@@ -141,5 +139,4 @@ public class TradeControllerIT extends BaseControllerIT {
 		TradeEntity tradeGeneratingResults = tradeRepositoryFacade.find(actual.getTradeId());
 		assertTrue(tradeGeneratingResults.getState() == GENERATING_RESULTS || tradeGeneratingResults.getState() == RESULTS_GENERATED);
 	}
-
 }

@@ -28,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
-@WebAppConfiguration
 public class MembershipControllerIT extends BaseControllerIT{
 
 	@Autowired

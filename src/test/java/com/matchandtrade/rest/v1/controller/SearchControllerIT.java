@@ -24,13 +24,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
-@WebAppConfiguration
 public class SearchControllerIT extends BaseControllerIT {
-
 	@Autowired
 	private ArticleHelper articleHelper;
 	private ArticleEntity expectedArticle;
@@ -55,6 +54,7 @@ public class SearchControllerIT extends BaseControllerIT {
 		SearchCriteriaJson request = new SearchCriteriaJson();
 		request.setRecipe(Recipe.ARTICLES);
 		request.addCriterion("Trade.tradeId", expectedTrade.getTradeId());
+		String requestBody = JsonUtil.toJson(request);
 		String response = mockMvc
 			.perform(
 				post("/matchandtrade-api/v1/search/")
@@ -62,7 +62,7 @@ public class SearchControllerIT extends BaseControllerIT {
 					.param("_pageSize", "3")
 					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 					.contentType(MediaType.APPLICATION_JSON)
-					.content(JsonUtil.toJson(request))
+					.content(requestBody)
 			)
 			.andExpect(status().isOk())
 			.andReturn()
@@ -73,5 +73,4 @@ public class SearchControllerIT extends BaseControllerIT {
 		ArticleJson expected = articleTransformer.transform(expectedArticle);
 		assertEquals(expected, actual.get(0));
 	}
-
 }

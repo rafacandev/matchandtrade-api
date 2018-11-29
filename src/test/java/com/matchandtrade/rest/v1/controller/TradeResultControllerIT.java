@@ -29,9 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
-@WebAppConfiguration
 public class TradeResultControllerIT extends BaseControllerIT {
-
 	@Autowired
 	private ArticleHelper articleHelper;
 	@Autowired
@@ -232,5 +230,4 @@ public class TradeResultControllerIT extends BaseControllerIT {
 		assertTrue(ordinalOfferedFirstReceivesBetaSendsToCountry);
 		assertFalse(foundArgentinaInTradeResults);
 	}
-
 }

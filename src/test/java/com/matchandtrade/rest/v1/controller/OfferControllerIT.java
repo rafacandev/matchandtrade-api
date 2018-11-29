@@ -28,9 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
-@WebAppConfiguration
 public class OfferControllerIT extends BaseControllerIT {
-
 	@Autowired
 	private ArticleHelper articleHelper;
 	@Autowired
@@ -164,5 +162,4 @@ public class OfferControllerIT extends BaseControllerIT {
 		expected.setOfferId(actual.getOfferId());
 		assertEquals(expected, actual);
 	}
-
 }

@@ -25,9 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@DefaultTestingConfiguration
 public class UserControllerIT {
-
 	private String authorizationHeader;
 	@Autowired
 	private ControllerHelper controllerHelper;
@@ -99,5 +97,4 @@ public class UserControllerIT {
 		UserJson actual = JsonUtil.fromString(response.getContentAsString(), UserJson.class);
 		assertEquals(expectedName, actual.getName());
 	}
-
 }
