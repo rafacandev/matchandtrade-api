@@ -84,8 +84,12 @@ public class AuthenticationCallback {
 	 */
 	private void redirectResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String callbackUrl = configProperties.authentication.getCallbackUrl();
-		LOGGER.debug("Redirecting request to callback url property {} with value: {}", "authentication.callback.url", callbackUrl);
-		response.sendRedirect(callbackUrl);
+		if (callbackUrl == null || callbackUrl.isEmpty()) {
+			LOGGER.warn("Redirecting URL property (authentication.callback.url) is missing. Skipping redirect.", callbackUrl);
+		} else {
+			LOGGER.debug("Redirecting request to callback url property {} with value: {}", "authentication.callback.url", callbackUrl);
+			response.sendRedirect(callbackUrl);
+		}
 	}
 
 	/*
