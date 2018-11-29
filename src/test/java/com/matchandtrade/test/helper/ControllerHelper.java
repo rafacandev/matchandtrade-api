@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
 @Transactional
 @Commit
+@Component
 public class ControllerHelper {
 	@Autowired
 	private AuthenticationRepositoryFacade authenticationRepositoryFacade;
@@ -29,5 +29,4 @@ public class ControllerHelper {
 		authenticationRepositoryFacade.save(authenticationEntity);
 		return authorizationToken;
 	}
-
 }

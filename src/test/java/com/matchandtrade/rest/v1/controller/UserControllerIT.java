@@ -4,7 +4,6 @@ import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.v1.json.UserJson;
 import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.ControllerHelper;
-import com.matchandtrade.test.helper.UserHelper;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,41 +24,28 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-public class UserControllerIT {
-	private String authorizationHeader;
-	@Autowired
-	private ControllerHelper controllerHelper;
-	private MockMvc mockMvc;
-	private UserEntity user;
-	@Autowired
-	private UserHelper userHelper;
-	@Autowired
-	private WebApplicationContext webApplicationContext;
+@DefaultTestingConfiguration
+public class UserControllerIT extends BaseControllerIT {
 
 	@Before
 	public void before() {
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		// Reusing authenticatedUser and authorization header for better performance
-		if (user == null) {
-			user = userHelper.createPersistedEntity();
-			authorizationHeader = controllerHelper.generateAuthorizationHeader(user);
-		}
+		super.before();
 	}
 
 	@Test
 	public void get_When_UserExistsAndRequestInfoForTheSameUser_Then_ReturnAllUserData() throws Exception {
 		MockHttpServletResponse response = mockMvc
 			.perform(
-				get("/matchandtrade-api/v1/users/{userId}", user.getUserId())
+				get("/matchandtrade-api/v1/users/{userId}", authenticatedUser.getUserId())
 				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 			)
 			.andExpect(status().isOk())
 			.andReturn()
 			.getResponse();
 		UserJson actual = JsonUtil.fromString(response.getContentAsString(), UserJson.class);
-		assertEquals(user.getUserId(), actual.getUserId());
-		assertEquals(user.getName(), actual.getName());
-		assertEquals(user.getEmail(), actual.getEmail());
+		assertEquals(authenticatedUser.getUserId(), actual.getUserId());
+		assertEquals(authenticatedUser.getName(), actual.getName());
+		assertEquals(authenticatedUser.getEmail(), actual.getEmail());
 	}
 
 	@Test
@@ -79,17 +65,16 @@ public class UserControllerIT {
 		assertNull(actual.getEmail());
 	}
 
-
 	@Test
 	public void put_When_UserExistsAndChangesItsName_Then_Succeeds() throws Exception {
-		String expectedName = user.getName() + " - updated";
-		user.setName(expectedName);
+		String expectedName = authenticatedUser.getName() + " - updated";
+		authenticatedUser.setName(expectedName);
 		MockHttpServletResponse response = mockMvc
 			.perform(
-				put("/matchandtrade-api/v1/users/{userId}", user.getUserId())
+				put("/matchandtrade-api/v1/users/{userId}", authenticatedUser.getUserId())
 				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(JsonUtil.toJson(user))
+				.content(JsonUtil.toJson(authenticatedUser))
 			)
 			.andExpect(status().isOk())
 			.andReturn()
