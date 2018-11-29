@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -33,7 +34,7 @@ public class ArticleAttachmentControllerIT extends BaseControllerIT {
 	@Before
 	public void before() {
 		super.before();
-		multipartFile = AttachmentHelper.newSampleMockMultiPartFile();
+		multipartFile = AttachmentHelper.newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
 	}
 
 	@Test

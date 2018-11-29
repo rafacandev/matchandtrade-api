@@ -1,16 +1,11 @@
 package com.matchandtrade.rest.service;
 
-import java.awt.Image;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.UUID;
-
-import javax.imageio.ImageIO;
-
+import com.matchandtrade.persistence.entity.AttachmentEntity;
+import com.matchandtrade.persistence.entity.EssenceEntity;
+import com.matchandtrade.persistence.entity.EssenceEntity.Type;
+import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
+import com.matchandtrade.rest.RestException;
+import com.matchandtrade.util.ImageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,42 +14,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.matchandtrade.persistence.entity.AttachmentEntity;
-import com.matchandtrade.persistence.entity.EssenceEntity;
-import com.matchandtrade.persistence.entity.EssenceEntity.Type;
-import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
-import com.matchandtrade.persistence.facade.EssenceRepositoryFacade;
-import com.matchandtrade.rest.RestException;
-import com.matchandtrade.util.ImageUtil;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
 
 @Service
 public class AttachmentService {
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentService.class);
 
 	@Autowired
 	private EssenceStorageService essenceStorageService;
 	@Autowired
-	private AttachmentRepositoryFacade attachmentRepositoryFacade;
+	private EssenceService essenceService;
 	@Autowired
-	private EssenceRepositoryFacade essenceRepositoryFacade;
-	
+	private AttachmentRepositoryFacade attachmentRepositoryFacade;
+
 	private final int THUMBNAIL_SIZE = 128;
-	
-	// TODO: Potentially move this to FileStorageService
-	private Path buildNewRelativePath(String filename) {
-		String fileExtention = ".file";
-		if (filename != null && !filename.isEmpty() && filename.lastIndexOf(".") < filename.length()) {
-			fileExtention = filename.substring(filename.lastIndexOf(".")).toLowerCase();
-		}
-		LocalDate now = LocalDate.now();
-		String pathAsString = now.getYear() + "" + File.separatorChar + "" + now.getMonthValue() + File.separatorChar + UUID.randomUUID().toString() + fileExtention;
-		return Paths.get(pathAsString);
-	}
 
 	@Transactional
 	public AttachmentEntity create(MultipartFile multipartFile) {
-		Path originalEssenceRelativePath = buildNewRelativePath(multipartFile.getOriginalFilename());
+		Path originalEssenceRelativePath = essenceStorageService.makeRelativePath(multipartFile.getOriginalFilename());
 		LOGGER.debug("Storing original essence file at: {}", originalEssenceRelativePath);
 		storeFileOnFileSystem(multipartFile, originalEssenceRelativePath);
 
@@ -62,7 +43,7 @@ public class AttachmentService {
 		EssenceEntity originalEssence = new EssenceEntity();
 		originalEssence.setType(Type.ORIGINAL);
 		originalEssence.setRelativePath(originalEssenceRelativePath.toString());
-		essenceRepositoryFacade.save(originalEssence);
+		essenceService.save(originalEssence);
 		
 		LOGGER.debug("Saving AttachmentEntity with original EssenceEntity");
 		AttachmentEntity result = new AttachmentEntity();
@@ -72,7 +53,7 @@ public class AttachmentService {
 		attachmentRepositoryFacade.save(result);
 
 		if (multipartFile.getContentType() != null && multipartFile.getContentType().contains("image")) {
-			Path thumbnailRelativePath = buildNewRelativePath(multipartFile.getOriginalFilename());
+			Path thumbnailRelativePath = essenceStorageService.makeRelativePath(multipartFile.getOriginalFilename());
 			LOGGER.debug("Attempting to generate thumbnail for content type: {}; from essence file: {}; to thumbnail file: {}", multipartFile.getContentType(), originalEssenceRelativePath, thumbnailRelativePath);
 			try {
 				storeThumbnailOnFileSystem(originalEssenceRelativePath, thumbnailRelativePath);
@@ -95,15 +76,11 @@ public class AttachmentService {
 		return ImageUtil.obtainCenterCrop(imageResized, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
 	}
 	
-	public AttachmentEntity find(Integer attachmentId) {
-		return attachmentRepositoryFacade.find(attachmentId);
-	}
-
 	private void saveThumbnailEssence(AttachmentEntity attachment, Path thumbnailRelativePath) {
 		EssenceEntity thumbnailEssence = new EssenceEntity();
 		thumbnailEssence.setRelativePath(thumbnailRelativePath.toString());
 		thumbnailEssence.setType(Type.THUMBNAIL);
-		essenceRepositoryFacade.save(thumbnailEssence);
+		essenceService.save(thumbnailEssence);
 		LOGGER.debug("Saving AttachmentEntity with thumbnail EssenceEntity");
 		attachment.getEssences().add(thumbnailEssence);
 		attachmentRepositoryFacade.save(attachment);
@@ -127,5 +104,4 @@ public class AttachmentService {
 			}
 		}
 	}
-
 }

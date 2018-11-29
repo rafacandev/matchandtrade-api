@@ -29,7 +29,7 @@ public class AttachmentHelper {
 	
 	@Transactional
 	public AttachmentEntity createPersistedEntity(ArticleEntity article) {
-		MultipartFile file = newSampleMockMultiPartFile();
+		MultipartFile file = newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
 		AttachmentEntity result = attachmentService.create(file);
 		ArticleEntity persistedArticle = articleRepositoryFacade.find(article.getArticleId());
 		persistedArticle.getAttachments().add(result);
@@ -39,12 +39,12 @@ public class AttachmentHelper {
 		return result;
 	}
 
-	public static MockMultipartFile newSampleMockMultiPartFile() {
+	public static MockMultipartFile newMockMultiPartFileImage(String mediaType) {
 		String imageResource = "image-landscape.png";
 		MockMultipartFile result;
 		try {
 			InputStream imageInputStream = AttachmentHelper.class.getClassLoader().getResource(imageResource).openStream();
-			result = new MockMultipartFile("file", imageResource, MediaType.IMAGE_PNG_VALUE, imageInputStream);
+			result = new MockMultipartFile("file", imageResource, mediaType, imageInputStream);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
