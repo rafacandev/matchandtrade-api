@@ -7,17 +7,15 @@ import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.v1.json.ListingJson;
-import com.matchandtrade.test.helper.SearchHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,14 +39,17 @@ public class ListingValidatorUT {
 		existingArticle.setArticleId(11);
 		existingMembership = new MembershipEntity();
 		existingMembership.setMembershipId(21);
+		existingMembership.setUser(existingUser);
 
 		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 
-		when(membershipService.findByUserIdAndMembershpiId(any(), any()))
-			.thenReturn(SearchHelper.buildEmptySearchResult());
-		when(membershipService.findByUserIdAndMembershpiId(existingUser.getUserId(), existingMembership.getMembershipId()))
-			.thenReturn(SearchHelper.buildSearchResult(new MembershipEntity()));
+		MembershipEntity existingMembershipForDifferentUser = new MembershipEntity();
+		UserEntity existingUserDifferent = new UserEntity();
+		existingUserDifferent.setUserId(2);
+		existingMembershipForDifferentUser.setUser(existingUserDifferent);
+		when(membershipService.find(any())).thenReturn(existingMembershipForDifferentUser);
+		when(membershipService.find(existingMembership.getMembershipId())).thenReturn(existingMembership);
 		fixture.membershipService = membershipService;
 	}
 

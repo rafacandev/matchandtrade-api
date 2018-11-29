@@ -1,6 +1,7 @@
 package com.matchandtrade.persistence.entity;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -20,6 +21,17 @@ public class MembershipEntity implements com.matchandtrade.persistence.entity.En
 	private Integer membershipId;
 	private Type type;
 	private UserEntity user;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		MembershipEntity that = (MembershipEntity) o;
+		return Objects.equals(trade, that.trade) &&
+			Objects.equals(membershipId, that.membershipId) &&
+			type == that.type &&
+			Objects.equals(user, that.user);
+	}
 
 	@OneToMany
 	@JoinTable(name="membership_to_article", joinColumns=@JoinColumn(name="membership_id", foreignKey=@ForeignKey(name="membership_to_article_membership_id_fk")), inverseJoinColumns = @JoinColumn(name="article_id", foreignKey=@ForeignKey(name="membership_to_article_article_id_fk")))
@@ -57,6 +69,11 @@ public class MembershipEntity implements com.matchandtrade.persistence.entity.En
 	@JoinColumn(name="user_id", foreignKey=@ForeignKey(name="membership_user_id_fk"))
 	public UserEntity getUser() {
 		return user;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(trade, membershipId, type, user);
 	}
 
 	public void setArticles(Set<ArticleEntity> articles) {

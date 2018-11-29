@@ -2,6 +2,7 @@ package com.matchandtrade.persistence.entity;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import java.util.Objects;
 
 @Entity
 @Table(name = "trade")
@@ -22,7 +23,17 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 	private String name;
 	private State state;
 	private TradeResultEntity result;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		TradeEntity that = (TradeEntity) o;
+		return Objects.equals(description, that.description) &&
+			Objects.equals(tradeId, that.tradeId) &&
+			Objects.equals(name, that.name);
+	}
+
 	@Column(name = "description", length = 1000, nullable = true, unique = false)
 	public String getDescription() {
 		return description;
@@ -52,7 +63,12 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 	public Integer getTradeId() {
 		return tradeId;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(description, tradeId, name, state);
+	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -72,5 +88,5 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 	public void setTradeId(Integer tradeId) {
 		this.tradeId = tradeId;
 	}
-	
+
 }

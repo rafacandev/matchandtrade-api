@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class MembershipRepositoryFacade {
-
 	@Autowired
 	private MembershipRepository membershipRepository;
 
@@ -37,5 +36,4 @@ public class MembershipRepositoryFacade {
 	public void save(MembershipEntity entity) {
 		membershipRepository.save(entity);
 	}
-	
 }

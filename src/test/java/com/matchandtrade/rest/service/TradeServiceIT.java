@@ -3,16 +3,12 @@ package com.matchandtrade.rest.service;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertFalse;
@@ -38,7 +34,10 @@ public class TradeServiceIT {
 
 	@Before
 	public void before() {
-		existingTrade = tradeHelper.createPersistedEntity(userHelper.createPersistedEntity());
+		// Build scenario only once for better performance
+		if (existingTrade == null) {
+			existingTrade = tradeHelper.createPersistedEntity(userHelper.createPersistedEntity());
+		}
 	}
 
 	@Test

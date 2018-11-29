@@ -1,6 +1,5 @@
 package com.matchandtrade.rest.v1.validator;
 
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
@@ -51,8 +50,8 @@ public class ListingValidator {
 	}
 
 	private void verifyThatUserOwnsMembership(Integer userId, Integer membershipId) {
-		SearchResult<MembershipEntity> searchResult = membershipService.findByUserIdAndMembershpiId(userId, membershipId);
-		if (searchResult.isEmpty()) {
+		MembershipEntity membership = membershipService.find(membershipId);
+		if (!userId.equals(membership.getUser().getUserId())) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %s does not own Membership.membershipId: %s", userId, membershipId));
 		}
 	}

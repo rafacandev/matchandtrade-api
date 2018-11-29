@@ -1,6 +1,7 @@
 package com.matchandtrade.persistence.entity;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -27,7 +28,18 @@ public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 	public Set<ArticleEntity> getArticles() {
 		return articles;
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		UserEntity that = (UserEntity) o;
+		return Objects.equals(userId, that.userId) &&
+			Objects.equals(email, that.email) &&
+			Objects.equals(name, that.name) &&
+			role == that.role;
+	}
+
 	@Column(name = "email", length = 500, nullable = false, unique = true)
 	public String getEmail() {
 		return email;
@@ -44,6 +56,11 @@ public class UserEntity implements com.matchandtrade.persistence.entity.Entity {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "user_id_generator")
 	public Integer getUserId() {
 		return userId;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(userId, email, name, role);
 	}
 	
 	public void setArticles(Set<ArticleEntity> articles) {
