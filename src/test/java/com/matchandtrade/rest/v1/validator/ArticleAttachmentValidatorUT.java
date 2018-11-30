@@ -57,7 +57,7 @@ public class ArticleAttachmentValidatorUT {
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 
 		when(attachmentRepositoryFacadeMock.find(21)).thenReturn(existingAttachment);
-		fixture.attachmentRespositoryFacade = attachmentRepositoryFacadeMock;
+		fixture.attachmentRepositoryFacade = attachmentRepositoryFacadeMock;
 	}
 
 	@Test

@@ -23,6 +23,7 @@ import java.nio.file.Path;
 @Service
 public class AttachmentService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentService.class);
+	private final int THUMBNAIL_SIZE = 128;
 
 	@Autowired
 	private EssenceStorageService essenceStorageService;
@@ -30,8 +31,6 @@ public class AttachmentService {
 	private EssenceService essenceService;
 	@Autowired
 	private AttachmentRepositoryFacade attachmentRepositoryFacade;
-
-	private final int THUMBNAIL_SIZE = 128;
 
 	@Transactional
 	public AttachmentEntity create(MultipartFile multipartFile) {
@@ -74,6 +73,14 @@ public class AttachmentService {
 		}
 		Image imageResized = ImageUtil.obtainShortEdgeResizedImage(image, THUMBNAIL_SIZE);
 		return ImageUtil.obtainCenterCrop(imageResized, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+	}
+
+	public void delete(Integer attachmentId) {
+		attachmentRepositoryFacade.delete(attachmentId);
+	}
+
+	public AttachmentEntity find(Integer attachmentId) {
+		return attachmentRepositoryFacade.find(attachmentId);
 	}
 	
 	private void saveThumbnailEssence(AttachmentEntity attachment, Path thumbnailRelativePath) {

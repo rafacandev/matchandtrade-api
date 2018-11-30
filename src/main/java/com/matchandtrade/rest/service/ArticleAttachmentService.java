@@ -2,7 +2,6 @@ package com.matchandtrade.rest.service;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
-import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,9 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ArticleAttachmentService {
-	
-	@Autowired
-	private AttachmentRepositoryFacade attachmentRepositoryFacade;
 	@Autowired
 	private AttachmentService attachmentService;
 	@Autowired
@@ -29,11 +25,14 @@ public class ArticleAttachmentService {
 
 	@Transactional
 	public void delete(Integer articleId, Integer attachmentId) {
-		AttachmentEntity attachment = attachmentRepositoryFacade.find(attachmentId);
+		AttachmentEntity attachment = attachmentService.find(attachmentId);
 		ArticleEntity article = articleService.find(articleId);
 		article.getAttachments().remove(attachment);
 		articleService.update(article);
-		attachmentRepositoryFacade.delete(attachmentId);
+		attachmentService.delete(attachmentId);
 	}
 
+	public AttachmentEntity find(Integer attachmentId) {
+		return attachmentService.find(attachmentId);
+	}
 }

@@ -35,6 +35,17 @@ public class ArticleAttachmentController implements Controller {
 		articleAttachmentService.delete(articleId, attachmentId);
 	}
 
+	// TODO: change to get all
+	@GetMapping("/articles/{articleId}/attachments/{attachmentId}")
+	public AttachmentJson get(@PathVariable Integer articleId, @PathVariable Integer attachmentId) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Delegate to service layer
+		AttachmentEntity entity = articleAttachmentService.find(attachmentId);
+		// TODO: Links
+		return attachmentTransformer.transform(entity);
+	}
+
 	@PostMapping(path="/articles/{articleId}/attachments/")
 	@ResponseStatus(HttpStatus.CREATED)
 	public AttachmentJson post(

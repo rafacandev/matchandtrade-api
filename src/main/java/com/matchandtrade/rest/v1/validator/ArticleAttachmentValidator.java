@@ -18,7 +18,7 @@ public class ArticleAttachmentValidator {
 	@Autowired
 	ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
-	AttachmentRepositoryFacade attachmentRespositoryFacade;
+	AttachmentRepositoryFacade attachmentRepositoryFacade;
 	@Autowired
 	UserRepositoryFacade userRepositoryFacade;
 
@@ -41,7 +41,7 @@ public class ArticleAttachmentValidator {
 	}
 
 	private void verifyThatAttachmentExists(Integer attachmentId) {
-		AttachmentEntity attachment = attachmentRespositoryFacade.find(attachmentId);
+		AttachmentEntity attachment = attachmentRepositoryFacade.find(attachmentId);
 		if (attachment == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, String.format("Attachment.attachmentId: %s does not exist.", attachmentId));
 		}
@@ -55,4 +55,6 @@ public class ArticleAttachmentValidator {
 		}
 	}
 
+	public void validateGet(UserEntity user, Integer articleId, Integer attachmentId) {
+	}
 }
