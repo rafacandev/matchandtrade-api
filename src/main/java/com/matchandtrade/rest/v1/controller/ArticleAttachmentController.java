@@ -1,6 +1,7 @@
 package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.AuthenticationProvider;
 import com.matchandtrade.rest.service.ArticleAttachmentService;
@@ -35,11 +36,26 @@ public class ArticleAttachmentController implements Controller {
 		articleAttachmentService.delete(articleId, attachmentId);
 	}
 
-	// TODO: change to get all
+	@GetMapping("/articles/{articleId}/attachments")
+	public SearchResult<AttachmentJson> get(@PathVariable Integer articleId) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		articleAttachmentValidator.validateGetByArticleId(articleId);
+		// Delegate to service layer
+		SearchResult<AttachmentEntity> searchResult = articleAttachmentService.findByArticleId(articleId);
+		// Transform the response
+		SearchResult<AttachmentJson> response = attachmentTransformer.transform(searchResult);
+		// TODO: Links
+		return response;
+	}
+
 	@GetMapping("/articles/{articleId}/attachments/{attachmentId}")
 	public AttachmentJson get(@PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		// Validate the request
+		articleAttachmentValidator.validateGet(attachmentId);
 		// Delegate to service layer
 		AttachmentEntity entity = articleAttachmentService.find(attachmentId);
 		// TODO: Links
@@ -61,7 +77,5 @@ public class ArticleAttachmentController implements Controller {
 		// TODO Assemble links
 		return attachmentTransformer.transform(attachment);
 	}
-
-	// TODO getAttachments
 
 }

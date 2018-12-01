@@ -1,5 +1,6 @@
 package com.matchandtrade.rest.service;
 
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,9 @@ public class ArticleAttachmentService {
 
 	public AttachmentEntity find(Integer attachmentId) {
 		return attachmentService.find(attachmentId);
+	}
+
+	public SearchResult<AttachmentEntity> findByArticleId(Integer articleId) {
+		return attachmentService.findByArticleId(articleId);
 	}
 }

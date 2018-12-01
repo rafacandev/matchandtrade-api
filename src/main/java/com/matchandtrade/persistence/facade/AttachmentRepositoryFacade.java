@@ -10,6 +10,8 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.repository.AttachmentRepository;
 
+import java.util.Optional;
+
 @Repository
 public class AttachmentRepositoryFacade {
 	
@@ -18,7 +20,8 @@ public class AttachmentRepositoryFacade {
 
 	// TODO: Optional?
 	public AttachmentEntity find(Integer attachmentId) {
-		return attachmentRepository.findById(attachmentId).get();
+		Optional<AttachmentEntity> entity = attachmentRepository.findById(attachmentId);
+		return  entity.get();
 	}
 
 	public void save(AttachmentEntity entity) {
@@ -29,10 +32,9 @@ public class AttachmentRepositoryFacade {
 		attachmentRepository.deleteById(fileId);
 	}
 
-	public SearchResult<AttachmentEntity> findAttachmentsByArticleId(Integer articleId, Integer pageNumber, Integer pageSize) {
-		Pageable pageable = PersistenceUtil.buildPageable(pageNumber, pageSize);
+	public SearchResult<AttachmentEntity> findByArticleId(Integer articleId) {
+		Pageable pageable = PersistenceUtil.buildPageable(1, 10);
 		Page<AttachmentEntity> page = attachmentRepository.findAttachmentsByArticleId(articleId, pageable);
 		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
-	
 }

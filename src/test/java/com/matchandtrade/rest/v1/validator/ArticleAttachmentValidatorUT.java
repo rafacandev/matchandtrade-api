@@ -11,11 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -81,6 +80,22 @@ public class ArticleAttachmentValidatorUT {
 			fixture.validateDelete(existingUser.getUserId(), existingArticleOwnByDifferentUser.getArticleId(), existingAttachment.getAttachmentId());
 		} catch (RestException e) {
 			assertEquals(HttpStatus.FORBIDDEN, e.getHttpStatus());
+			throw e;
+		}
+	}
+
+	@Test
+	public void validateGet_When_AttachmentExists_Then_Succeeds() {
+		fixture.validateGet(existingAttachment.getAttachmentId());
+	}
+
+	@Test(expected = RestException.class)
+	public void validateGet_When_AttachmentDoesNotExist_Then_NotFound() {
+		try {
+			fixture.validateGet(-1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.NOT_FOUND, e.getHttpStatus());
+			assertEquals("Attachment.attachmentId: -1 was not found", e.getDescription());
 			throw e;
 		}
 	}

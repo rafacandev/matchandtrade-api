@@ -16,7 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -47,7 +46,7 @@ public class ArticleControllerIT extends BaseControllerIT {
 	}
 
 	@Test
-	public void get_When_GetByArticleId_Then_Succeeds() throws Exception {
+	public void get_When_GetByAttachment_Then_Succeeds() throws Exception {
 		ArticleEntity expectedEntity = articleHelper.createPersistedEntity();
 		ArticleJson expected = articleTransformer.transform(expectedEntity);
 		String response = mockMvc.perform(

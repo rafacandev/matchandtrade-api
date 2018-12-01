@@ -20,16 +20,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
 public class ArticleAttachmentControllerIT extends BaseControllerIT {
-
 	@Autowired
 	private ArticleHelper articleHelper;
 	@Autowired
@@ -51,7 +51,6 @@ public class ArticleAttachmentControllerIT extends BaseControllerIT {
 			get("/matchandtrade-api/v1/articles/{articleId}/attachments/{attachmentId}", existingArticle.getArticleId(), givenAttachment.getAttachmentId())
 				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 			)
-			.andDo(print())
 			.andExpect(status().isOk())
 			.andReturn()
 			.getResponse();
@@ -59,6 +58,25 @@ public class ArticleAttachmentControllerIT extends BaseControllerIT {
 		AttachmentJson expected = attachmentTransformer.transform(givenAttachment);
 		assertEquals(expected, actual);
 	}
+
+	@Test
+	public void get_When_GetAllByArticleId_Then_Succeeds() throws Exception {
+		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
+		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity(existingArticle);
+		String response = mockMvc.perform(
+			get("/matchandtrade-api/v1/articles/{articleId}/attachments", existingArticle.getArticleId())
+				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+			)
+			.andExpect(status().isOk())
+			.andReturn()
+			.getResponse()
+			.getContentAsString();
+		List<AttachmentJson> actual = JsonUtil.fromArrayString(response, AttachmentJson.class);
+		assertEquals(1, actual.size());
+		AttachmentJson expectedAttachment = attachmentTransformer.transform(existingAttachment);
+		assertEquals(expectedAttachment, actual.get(0));
+	}
+
 
 	@Test
 	public void delete_When_AttachmentExists_Then_Succeeds() throws Exception {

@@ -6,7 +6,10 @@ import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
 import com.matchandtrade.rest.v1.json.OfferJson;
 import com.matchandtrade.rest.v1.transformer.OfferTransformer;
 import com.matchandtrade.test.DefaultTestingConfiguration;
-import com.matchandtrade.test.helper.*;
+import com.matchandtrade.test.helper.ArticleHelper;
+import com.matchandtrade.test.helper.MembershipHelper;
+import com.matchandtrade.test.helper.SearchHelper;
+import com.matchandtrade.test.helper.TradeHelper;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,15 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)

@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 @Component
 public class ArticleAttachmentValidator {
 
@@ -43,18 +46,25 @@ public class ArticleAttachmentValidator {
 	private void verifyThatAttachmentExists(Integer attachmentId) {
 		AttachmentEntity attachment = attachmentRepositoryFacade.find(attachmentId);
 		if (attachment == null) {
-			throw new RestException(HttpStatus.NOT_FOUND, String.format("Attachment.attachmentId: %s does not exist.", attachmentId));
+			throw new RestException(NOT_FOUND, String.format("Attachment.attachmentId: %s does not exist.", attachmentId));
 		}
 	}
 
 	private void verifyThatUserOwnsArticle(Integer userId, Integer articleId) {
 		UserEntity user = userRepositoryFacade.findByArticleId(articleId);
 		if (user == null || !userId.equals(user.getUserId())) {
-			throw new RestException(HttpStatus.FORBIDDEN,
+			throw new RestException(FORBIDDEN,
 				String.format("User.userId: %s is not the owner of Article.articleId: %s", userId, articleId));
 		}
 	}
 
-	public void validateGet(UserEntity user, Integer articleId, Integer attachmentId) {
+	public void validateGet(Integer attachmentId) {
+		AttachmentEntity entity = attachmentRepositoryFacade.find(attachmentId);
+		if (entity == null) {
+			throw new RestException(NOT_FOUND, String.format("Attachment.attachmentId: %s was not found", attachmentId));
+		}
+	}
+
+	public void validateGetByArticleId(Integer articleId) {
 	}
 }

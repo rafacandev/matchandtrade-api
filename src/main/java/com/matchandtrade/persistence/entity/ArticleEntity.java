@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 @Table(name = "article")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class ArticleEntity implements com.matchandtrade.persistence.entity.Entity {
-
 	private Integer articleId;
 	private String description;
 	private String name;
@@ -89,5 +88,4 @@ public class ArticleEntity implements com.matchandtrade.persistence.entity.Entit
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 }

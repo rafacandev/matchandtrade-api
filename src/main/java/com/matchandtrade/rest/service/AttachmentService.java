@@ -1,5 +1,6 @@
 package com.matchandtrade.rest.service;
 
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.EssenceEntity;
 import com.matchandtrade.persistence.entity.EssenceEntity.Type;
@@ -81,6 +82,10 @@ public class AttachmentService {
 
 	public AttachmentEntity find(Integer attachmentId) {
 		return attachmentRepositoryFacade.find(attachmentId);
+	}
+
+	public SearchResult<AttachmentEntity> findByArticleId(Integer articleId) {
+		return attachmentRepositoryFacade.findByArticleId(articleId);
 	}
 	
 	private void saveThumbnailEssence(AttachmentEntity attachment, Path thumbnailRelativePath) {
