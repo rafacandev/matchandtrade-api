@@ -1,16 +1,15 @@
 package com.matchandtrade.rest.v1.transformer;
 
 import com.matchandtrade.persistence.entity.OfferEntity;
-import com.matchandtrade.persistence.repository.ArticleRepository;
+import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.v1.json.OfferJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OfferTransformer extends Transformer<OfferEntity, OfferJson> {
-	
 	@Autowired
-	private ArticleRepository articleRepository;
+	private ArticleService articleService;
 
 	@Override
 	public OfferJson transform(OfferEntity entity) {
@@ -25,10 +24,8 @@ public class OfferTransformer extends Transformer<OfferEntity, OfferJson> {
 	public OfferEntity transform(OfferJson json) {
 		OfferEntity result = new OfferEntity();
 		result.setOfferId(json.getOfferId());
-		// TODO: Use repository facade instead
-		result.setOfferedArticle(articleRepository.findById(json.getOfferedArticleId()).get());
-		result.setWantedArticle(articleRepository.findById(json.getWantedArticleId()).get());
+		result.setOfferedArticle(articleService.findByArticleId(json.getOfferedArticleId()));
+		result.setWantedArticle(articleService.findByArticleId(json.getWantedArticleId()));
 		return result;
 	}
-
 }
