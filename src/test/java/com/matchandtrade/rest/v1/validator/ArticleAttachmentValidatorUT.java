@@ -3,10 +3,10 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.AttachmentService;
+import com.matchandtrade.rest.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class ArticleAttachmentValidatorUT {
 	@Mock
 	private AttachmentService mockAttachmentService;
 	@Mock
-	private UserRepositoryFacade mockUserRepositoryFacade;
+	private UserService mockUserService;
 	private UserEntity existingUser;
 	private ArticleEntity existingArticle;
 	private ArticleEntity existingArticleOwnByDifferentUser;
@@ -48,8 +48,8 @@ public class ArticleAttachmentValidatorUT {
 		existingAttachment.setAttachmentId(21);
 
 
-		doReturn(existingUser).when(mockUserRepositoryFacade).findByArticleId(existingArticle.getArticleId());
-		fixture.userRepositoryFacade = mockUserRepositoryFacade;
+		doReturn(existingUser).when(mockUserService).findByArticleId(existingArticle.getArticleId());
+		fixture.userService = mockUserService;
 
 		when(mockArticleService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
 		fixture.articleService = mockArticleService;

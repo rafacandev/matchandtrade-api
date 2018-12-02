@@ -11,23 +11,23 @@ import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 public class UserService {
 
 	@Autowired
-	private UserRepositoryFacade userRepository;
+	private UserRepositoryFacade userRepositoryFacade;
 
 	@Transactional
 	public void update(UserEntity user) {
-		userRepository.save(user);
+		userRepositoryFacade.save(user);
 	}
 
 	public UserEntity findByArticleId(Integer articleId) {
-		return userRepository.findByArticleId(articleId);
+		return userRepositoryFacade.findByArticleId(articleId);
 	}
 
 	public UserEntity findByOfferId(Integer offerId) {
-		return userRepository.findByOfferId(offerId);
+		return userRepositoryFacade.findByOfferId(offerId);
 	}
 
 	public UserEntity findByUserId(Integer userId) {
-		return userRepository.findByUserId(userId);
+		return userRepositoryFacade.findByUserId(userId);
 	}
 
 	/**
@@ -51,4 +51,7 @@ public class UserService {
 		}
 	}
 
+	public void save(UserEntity user) {
+		userRepositoryFacade.save(user);
+	}
 }

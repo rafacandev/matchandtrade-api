@@ -3,10 +3,10 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.AttachmentService;
+import com.matchandtrade.rest.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class ArticleAttachmentValidator {
 	@Autowired
 	AttachmentService attachmentService;
 	@Autowired
-	UserRepositoryFacade userRepositoryFacade;
+	UserService userService;
 
 	public void validateDelete(Integer userId, Integer articleId, Integer attachmentId) {
 		verifyThatAttachmentExists(attachmentId);
@@ -51,7 +51,7 @@ public class ArticleAttachmentValidator {
 	}
 
 	private void verifyThatUserOwnsArticle(Integer userId, Integer articleId) {
-		UserEntity user = userRepositoryFacade.findByArticleId(articleId);
+		UserEntity user = userService.findByArticleId(articleId);
 		if (user == null || !userId.equals(user.getUserId())) {
 			throw new RestException(FORBIDDEN,
 				String.format("User.userId: %s is not the owner of Article.articleId: %s", userId, articleId));

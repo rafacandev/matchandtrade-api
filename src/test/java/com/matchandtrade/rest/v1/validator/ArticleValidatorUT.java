@@ -3,11 +3,10 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
-import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.MembershipService;
+import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.test.StringRandom;
@@ -36,7 +35,7 @@ public class ArticleValidatorUT {
 	@Mock
 	private MembershipService mockMembershipService;
 	@Mock
-	private UserRepositoryFacade mockUserRepositoryFacade;
+	private UserService mockUserService;
 
 	@Before
 	public void before() {
@@ -55,8 +54,8 @@ public class ArticleValidatorUT {
 		existingArticleOwnedByDifferentUser = new ArticleEntity();
 		existingArticleOwnedByDifferentUser.setArticleId(22);
 
-		when(mockUserRepositoryFacade.findByUserId(existingUser.getUserId())).thenReturn(existingUser);
-		fixture.userRepositoryFacade = mockUserRepositoryFacade;
+		when(mockUserService.findByUserId(existingUser.getUserId())).thenReturn(existingUser);
+		fixture.userService = mockUserService;
 
 		when(articleService.findByArticleId(givenExistingArticle.getArticleId())).thenReturn(existingArticle);
 		when(articleService.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);

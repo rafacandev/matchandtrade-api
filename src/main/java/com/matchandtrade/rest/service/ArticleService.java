@@ -4,7 +4,6 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
-import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +13,13 @@ public class ArticleService {
 @Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
-	private UserRepositoryFacade userRepositoryFacade;
+	private UserService userService;
 
 	@Transactional
 	public void create(UserEntity user, ArticleEntity article) {
 		articleRepositoryFacade.save(article);
 		user.getArticles().add(article);
-		userRepositoryFacade.save(user);
+		userService.save(user);
 	}
 
 	public ArticleEntity findByArticleId(Integer articleId) {
@@ -37,10 +36,10 @@ public class ArticleService {
 
 	@Transactional
 	public void delete(Integer articleId) {
-		UserEntity user = userRepositoryFacade.findByArticleId(articleId);
+		UserEntity user = userService.findByArticleId(articleId);
 		ArticleEntity article = articleRepositoryFacade.findByArticleId(articleId);
 		user.getArticles().remove(article);
-		userRepositoryFacade.save(user);
+		userService.save(user);
 		articleRepositoryFacade.delete(articleId);
 	}
 

@@ -4,10 +4,10 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.MembershipService;
+import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class ArticleValidator {
 	@Autowired
 	ArticleService articleService;
 	@Autowired
-	UserRepositoryFacade userRepositoryFacade;
+	UserService userService;
 	@Autowired
 	MembershipService membershipService;
 
@@ -67,7 +67,7 @@ public class ArticleValidator {
 	 * @param userId
 	 */
 	private void verifyThatUserExists(Integer userId) {
-		UserEntity user = userRepositoryFacade.findByUserId(userId);
+		UserEntity user = userService.findByUserId(userId);
 		if (user == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does not exist.", userId));
 		}
