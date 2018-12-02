@@ -3,10 +3,10 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
+import com.matchandtrade.rest.service.AttachmentService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,14 +21,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ArticleAttachmentValidatorUT {
 
-	@Mock
-	private ArticleService articleService;
-	@Mock
-	private AttachmentRepositoryFacade attachmentRepositoryFacadeMock;
 	private ArticleAttachmentValidator fixture;
 	@Mock
-	private UserRepositoryFacade userRepositoryFacadeMock;
-
+	private ArticleService mockArticleService;
+	@Mock
+	private AttachmentService mockAttachmentService;
+	@Mock
+	private UserRepositoryFacade mockUserRepositoryFacade;
 	private UserEntity existingUser;
 	private ArticleEntity existingArticle;
 	private ArticleEntity existingArticleOwnByDifferentUser;
@@ -49,14 +48,14 @@ public class ArticleAttachmentValidatorUT {
 		existingAttachment.setAttachmentId(21);
 
 
-		doReturn(existingUser).when(userRepositoryFacadeMock).findByArticleId(existingArticle.getArticleId());
-		fixture.userRepositoryFacade = userRepositoryFacadeMock;
+		doReturn(existingUser).when(mockUserRepositoryFacade).findByArticleId(existingArticle.getArticleId());
+		fixture.userRepositoryFacade = mockUserRepositoryFacade;
 
-		when(articleService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
-		fixture.articleService = articleService;
+		when(mockArticleService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
+		fixture.articleService = mockArticleService;
 
-		when(attachmentRepositoryFacadeMock.findByAttachmentId(21)).thenReturn(existingAttachment);
-		fixture.attachmentRepositoryFacade = attachmentRepositoryFacadeMock;
+		when(mockAttachmentService.findByAttachmentId(21)).thenReturn(existingAttachment);
+		fixture.attachmentService = mockAttachmentService;
 	}
 
 	@Test

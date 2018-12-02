@@ -3,10 +3,10 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
+import com.matchandtrade.rest.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class ArticleAttachmentValidator {
 	@Autowired
 	ArticleService articleService;
 	@Autowired
-	AttachmentRepositoryFacade attachmentRepositoryFacade;
+	AttachmentService attachmentService;
 	@Autowired
 	UserRepositoryFacade userRepositoryFacade;
 
@@ -44,7 +44,7 @@ public class ArticleAttachmentValidator {
 	}
 
 	private void verifyThatAttachmentExists(Integer attachmentId) {
-		AttachmentEntity attachment = attachmentRepositoryFacade.findByAttachmentId(attachmentId);
+		AttachmentEntity attachment = attachmentService.findByAttachmentId(attachmentId);
 		if (attachment == null) {
 			throw new RestException(NOT_FOUND, String.format("Attachment.attachmentId: %s does not exist.", attachmentId));
 		}
@@ -59,7 +59,7 @@ public class ArticleAttachmentValidator {
 	}
 
 	public void validateGet(Integer attachmentId) {
-		AttachmentEntity entity = attachmentRepositoryFacade.findByAttachmentId(attachmentId);
+		AttachmentEntity entity = attachmentService.findByAttachmentId(attachmentId);
 		if (entity == null) {
 			throw new RestException(NOT_FOUND, String.format("Attachment.attachmentId: %s was not found", attachmentId));
 		}
