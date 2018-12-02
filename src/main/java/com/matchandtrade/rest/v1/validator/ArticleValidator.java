@@ -4,10 +4,10 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
+import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class ArticleValidator {
 	@Autowired
 	UserRepositoryFacade userRepositoryFacade;
 	@Autowired
-	MembershipRepositoryFacade membershipRepositoryFacade;
+	MembershipService membershipService;
 
 	/**
 	 * Throws {@code RestException(restExceptionStatus)} if there is no {@code Article} for the given {@code articleId}.
@@ -98,7 +98,7 @@ public class ArticleValidator {
 	}
 
 	private void verifyThatArticleIsNotListed(Integer articleId) {
-		SearchResult<MembershipEntity> searchResult = membershipRepositoryFacade.findByArticleIdId(articleId, 1, 10);
+		SearchResult<MembershipEntity> searchResult = membershipService.findByArticleIdId(articleId, 1, 10);
 		if (!searchResult.isEmpty()) {
 			List<Integer> membershipIds = searchResult.getResultList().stream().map(MembershipEntity::getMembershipId).collect(Collectors.toList());
 			throw new RestException(HttpStatus.FORBIDDEN, String.format("Article.articleId: %s is listed on Membership.membershipId: %s", articleId, membershipIds));

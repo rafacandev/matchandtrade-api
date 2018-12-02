@@ -3,9 +3,9 @@ package com.matchandtrade.rest.v1.transformer;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.service.ArticleService;
+import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.v1.json.TradeResultJson;
 import com.matchandtrade.rest.v1.json.TradedArticleJson;
 import org.apache.commons.csv.CSVFormat;
@@ -23,7 +23,7 @@ public class TradeMaximizerTransformer {
 	@Autowired
 	private ArticleService articleService;
 	@Autowired
-	private MembershipRepositoryFacade membershipRepositoryFacade;
+	private MembershipService membershipService;
 	@Autowired
 	private TradeRepositoryFacade tradeRepositoryFacade;
 
@@ -72,7 +72,7 @@ public class TradeMaximizerTransformer {
 			}
 			
 			List<Object> csvRecord = new ArrayList<>();
-			MembershipEntity offeringMembership = membershipRepositoryFacade.findByMembershipId(linePojo.offeringMembershipId);
+			MembershipEntity offeringMembership = membershipService.findByMembershipId(linePojo.offeringMembershipId);
 			csvRecord.add(offeringMembership.getUser().getUserId());
 			csvRecord.add(offeringMembership.getUser().getName());
 			ArticleEntity offeringArticle = articleService.findByArticleId(linePojo.offeringArticleId);
@@ -81,14 +81,14 @@ public class TradeMaximizerTransformer {
 			if (linePojo.receivingArticleId != null) {
 				tradedArticlesCount++;
 				csvRecord.add(":RECEIVES:");
-				MembershipEntity receivingMembership = membershipRepositoryFacade.findByMembershipId(linePojo.receivingMembershipId);
+				MembershipEntity receivingMembership = membershipService.findByMembershipId(linePojo.receivingMembershipId);
 				csvRecord.add(receivingMembership.getUser().getUserId());
 				csvRecord.add(receivingMembership.getUser().getName());
 				ArticleEntity receivingArticle = articleService.findByArticleId(linePojo.receivingArticleId);
 				csvRecord.add(receivingArticle.getArticleId());
 				csvRecord.add(receivingArticle.getName());
 				csvRecord.add(":SENDS:");
-				MembershipEntity sendingMembership = membershipRepositoryFacade.findByMembershipId(linePojo.sendingMembershipId);
+				MembershipEntity sendingMembership = membershipService.findByMembershipId(linePojo.sendingMembershipId);
 				csvRecord.add(sendingMembership.getUser().getUserId());
 				csvRecord.add(sendingMembership.getUser().getName());
 			}
@@ -212,7 +212,7 @@ public class TradeMaximizerTransformer {
 			}
 			totalOfTradedArticles++;
 			
-			MembershipEntity offeringMembership = membershipRepositoryFacade.findByMembershipId(linePojo.offeringMembershipId);
+			MembershipEntity offeringMembership = membershipService.findByMembershipId(linePojo.offeringMembershipId);
 			TradedArticleJson tradedArticle = new TradedArticleJson();
 			tradedArticle.setUserId(offeringMembership.getUser().getUserId());
 			tradedArticle.setUserName(offeringMembership.getUser().getName());
@@ -221,7 +221,7 @@ public class TradeMaximizerTransformer {
 			tradedArticle.setArticleId(offeringArticle.getArticleId());
 			tradedArticle.setArticleName(offeringArticle.getName());
 			
-			MembershipEntity receivingMembership = membershipRepositoryFacade.findByMembershipId(linePojo.receivingMembershipId);
+			MembershipEntity receivingMembership = membershipService.findByMembershipId(linePojo.receivingMembershipId);
 			tradedArticle.setReceivingUserId(receivingMembership.getUser().getUserId());
 			tradedArticle.setReceivingUserName(receivingMembership.getUser().getName());
 			
@@ -229,7 +229,7 @@ public class TradeMaximizerTransformer {
 			tradedArticle.setReceivingArticleId(receivingArticle.getArticleId());
 			tradedArticle.setReceivingArticleName(receivingArticle.getName());
 			
-			MembershipEntity sendingMemberhip = membershipRepositoryFacade.findByMembershipId(linePojo.sendingMembershipId);
+			MembershipEntity sendingMemberhip = membershipService.findByMembershipId(linePojo.sendingMembershipId);
 			tradedArticle.setSendingUserId(sendingMemberhip.getUser().getUserId());
 			tradedArticle.setSendingUserName(sendingMemberhip.getUser().getName());
 

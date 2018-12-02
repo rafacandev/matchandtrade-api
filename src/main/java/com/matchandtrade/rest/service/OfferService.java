@@ -6,7 +6,6 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.criteria.OfferQueryBuilder;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.OfferEntity;
-import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.OfferRepositoryFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,22 +20,22 @@ public class OfferService {
 	@Autowired
 	private SearchService<OfferEntity> searchService;
 	@Autowired
-	private MembershipRepositoryFacade membershipRepositoryFacade;
+	private MembershipService membershipService;
 
 	@Transactional
 	public void create(Integer membershipId, OfferEntity offer) {
-		MembershipEntity membership = membershipRepositoryFacade.findByMembershipId(membershipId);
+		MembershipEntity membership = membershipService.findByMembershipId(membershipId);
 		offerRepositoryFacade.save(offer);
 		membership.getOffers().add(offer);
-		membershipRepositoryFacade.save(membership);
+		membershipService.save(membership);
 	}
 
 	@Transactional
 	public void delete(Integer offerId) {
-		MembershipEntity membership = membershipRepositoryFacade.findByOfferId(offerId);
+		MembershipEntity membership = membershipService.findByOfferId(offerId);
 		OfferEntity offer = offerRepositoryFacade.findByOfferId(offerId);
 		membership.getOffers().remove(offer);
-		membershipRepositoryFacade.save(membership);
+		membershipService.save(membership);
 		offerRepositoryFacade.delete(offerId);
 	}
 

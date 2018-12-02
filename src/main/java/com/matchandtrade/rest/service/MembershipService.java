@@ -45,4 +45,16 @@ public class MembershipService {
 		// Delegate to Repository layer
 		return searchService.search(searchCriteria, MembershipQueryBuilder.class);
 	}
+
+	public SearchResult<MembershipEntity> findByArticleIdId(Integer articleId, int pageNumber, int pageSize) {
+		return membershipRepositoryFacade.findByArticleIdId(articleId, pageNumber, pageSize);
+	}
+
+	public MembershipEntity findByOfferId(Integer offerId) {
+		return membershipRepositoryFacade.findByOfferId(offerId);
+	}
+
+	public void save(MembershipEntity membership) {
+		membershipRepositoryFacade.save(membership);
+	}
 }

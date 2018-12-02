@@ -9,18 +9,14 @@ import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-
 import java.util.Arrays;
 
-import static com.matchandtrade.persistence.common.Criterion.Restriction.EQUALS_IGNORE_CASE;
-import static com.matchandtrade.persistence.common.Criterion.Restriction.IN;
-import static com.matchandtrade.persistence.common.Criterion.Restriction.NOT_EQUALS;
+import static com.matchandtrade.persistence.common.Criterion.Restriction.*;
 import static com.matchandtrade.persistence.criteria.MembershipQueryBuilder.Field.ARTICLE_ID;
 import static com.matchandtrade.persistence.criteria.TradeQueryBuilder.Field.NAME;
 import static com.matchandtrade.persistence.criteria.TradeQueryBuilder.Field.TRADE_ID;
@@ -28,7 +24,7 @@ import static com.matchandtrade.persistence.criteria.TradeQueryBuilder.Field.TRA
 @Component
 public class TradeService {
 	@Autowired
-	private MembershipRepositoryFacade membershipRepository;
+	private MembershipService membershipService;
 	@Autowired
 	private SearchService<MembershipEntity> searchServiceMembership;
 	@Autowired
@@ -55,7 +51,7 @@ public class TradeService {
 		membershipEntity.setTrade(tradeEntity);
 		membershipEntity.setUser(tradeOwner);
 		membershipEntity.setType(MembershipEntity.Type.OWNER);
-		membershipRepository.save(membershipEntity);
+		membershipService.save(membershipEntity);
 	}
 
 	public boolean isNameUniqueExceptForTradeId(String name, Integer tradeId) {

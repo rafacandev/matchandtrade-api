@@ -7,6 +7,7 @@ import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
+import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.test.StringRandom;
@@ -33,7 +34,7 @@ public class ArticleValidatorUT {
 	private ArticleJson givenExistingArticle;
 	private ArticleValidator fixture;
 	@Mock
-	private MembershipRepositoryFacade mockMembershipRepositoryFacade;
+	private MembershipService mockMembershipService;
 	@Mock
 	private UserRepositoryFacade mockUserRepositoryFacade;
 
@@ -66,11 +67,11 @@ public class ArticleValidatorUT {
 		existingListedMembership.setMembershipId(30);
 		existingListedMembership.getArticles().add(existingListedArticle);
 
-		when(mockMembershipRepositoryFacade.findByArticleIdId(existingListedArticle.getArticleId(), 1, 10))
+		when(mockMembershipService.findByArticleIdId(existingListedArticle.getArticleId(), 1, 10))
 			.thenReturn(SearchHelper.buildSearchResult(existingListedMembership));
-		when(mockMembershipRepositoryFacade.findByArticleIdId(givenExistingArticle.getArticleId(), 1, 10))
+		when(mockMembershipService.findByArticleIdId(givenExistingArticle.getArticleId(), 1, 10))
 			.thenReturn(SearchHelper.buildEmptySearchResult());
-		fixture.membershipRepositoryFacade = mockMembershipRepositoryFacade;
+		fixture.membershipService = mockMembershipService;
 	}
 
 	@Test(expected = RestException.class)
