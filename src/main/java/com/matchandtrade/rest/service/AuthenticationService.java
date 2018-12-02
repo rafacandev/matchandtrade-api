@@ -1,27 +1,22 @@
-package com.matchandtrade.rest;
+package com.matchandtrade.rest.service;
+
+import com.matchandtrade.authentication.AuthenticationOAuth;
+import com.matchandtrade.persistence.entity.AuthenticationEntity;
+import com.matchandtrade.persistence.facade.AuthenticationRepositoryFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.matchandtrade.authentication.AuthenticationOAuth;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
-
-import com.matchandtrade.persistence.entity.AuthenticationEntity;
-import com.matchandtrade.persistence.facade.AuthenticationRepositoryFacade;
-
 @Component
-@RequestScope
-public class AuthenticationProvider {
-
+public class AuthenticationService {
 	@Autowired
 	protected AuthenticationRepositoryFacade authenticationRepository;
 	@Autowired
 	private HttpServletRequest httpRequest;
 	
-	public AuthenticationEntity getAuthentication() {
+	public AuthenticationEntity findCurrentAuthentication() {
 		String authenticationHeader = httpRequest.getHeader(AuthenticationOAuth.AUTHORIZATION_HEADER);
 		return authenticationRepository.findByToken(authenticationHeader);
 	}
-
 }

@@ -1,7 +1,7 @@
 package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
-import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.AuthenticationService;
 import com.matchandtrade.rest.service.ListingService;
 import com.matchandtrade.rest.v1.json.ListingJson;
 import com.matchandtrade.rest.v1.validator.ListingValidator;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path="/matchandtrade-api/v1/listing")
 public class ListingController {
 	@Autowired
-	AuthenticationProvider authenticationProvider;
+	AuthenticationService authenticationService;
 	@Autowired
 	private ListingValidator listingValidator;
 	@Autowired
@@ -23,9 +23,9 @@ public class ListingController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void post(@RequestBody ListingJson request) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
-		listingValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), request);
+		listingValidator.validatePost(authenticationService.findCurrentAuthentication().getUser().getUserId(), request);
 		// Delegate to service layer
 		listingService.create(request.getMembershipId(), request.getArticleId());
 	}
@@ -34,9 +34,9 @@ public class ListingController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@RequestBody  ListingJson request) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
-		listingValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), request);
+		listingValidator.validateDelete(authenticationService.findCurrentAuthentication().getUser().getUserId(), request);
 		// Delegate to service layer
 		listingService.delete(request.getMembershipId(), request.getArticleId());
 	}

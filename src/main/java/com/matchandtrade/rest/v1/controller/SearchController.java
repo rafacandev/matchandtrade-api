@@ -3,7 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.dto.Dto;
-import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.AuthenticationService;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.service.SearchRecipeService;
 import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchController implements Controller {
 
 	@Autowired
-	AuthenticationProvider authenticationProvider;
+	AuthenticationService authenticationService;
 	@Autowired
 	private SearchRecipeService searchRecipeService;
 	
 	@RequestMapping(path={"", "/"}, method=RequestMethod.POST)
 	public SearchResult<Json> post(@RequestBody SearchCriteriaJson request, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
 		SearchValidator.validatePost(request, _pageNumber, _pageSize);
 		/*

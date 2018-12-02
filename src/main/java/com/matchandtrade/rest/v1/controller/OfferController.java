@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.OfferEntity;
-import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.AuthenticationService;
 import com.matchandtrade.rest.service.OfferService;
 import com.matchandtrade.rest.v1.json.OfferJson;
 import com.matchandtrade.rest.v1.transformer.OfferTransformer;
@@ -23,7 +23,7 @@ import com.matchandtrade.rest.v1.validator.OfferValidator;
 public class OfferController implements Controller {
 
 	@Autowired
-	AuthenticationProvider authenticationProvider;
+	AuthenticationService authenticationService;
 	@Autowired
 	OfferTransformer offerTransformer;
 	@Autowired
@@ -35,9 +35,9 @@ public class OfferController implements Controller {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable("membershipId")Integer membershipId, @PathVariable("offerId")Integer offerId) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
-		offerValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, offerId);
+		offerValidator.validateDelete(authenticationService.findCurrentAuthentication().getUser().getUserId(), membershipId, offerId);
 		// Delegate to Service layer
 		offerService.delete(offerId);
 	}
@@ -45,9 +45,9 @@ public class OfferController implements Controller {
 	@RequestMapping(path="/{membershipId}/offers/{offerId}", method=RequestMethod.GET)
 	public OfferJson get(@PathVariable("membershipId") Integer membershipId, @PathVariable("offerId") Integer offerId) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
-		offerValidator.validateGetById(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId);
+		offerValidator.validateGetById(authenticationService.findCurrentAuthentication().getUser().getUserId(), membershipId);
 		// Delegate to Service layer
 		OfferEntity entity = offerService.findByOfferId(offerId);
 		// Transform the response
@@ -59,9 +59,9 @@ public class OfferController implements Controller {
 	@RequestMapping(path="/{membershipId}/offers", method=RequestMethod.GET)
 	public SearchResult<OfferJson> get(@PathVariable("membershipId") Integer membershipId, Integer offeredArticleId, Integer wantedArticleId, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
-		offerValidator.validateGetAll(membershipId, _pageNumber, _pageSize, authenticationProvider.getAuthentication().getUser().getUserId());
+		offerValidator.validateGetAll(membershipId, _pageNumber, _pageSize, authenticationService.findCurrentAuthentication().getUser().getUserId());
 		// Delegate to service layer
 		SearchResult<OfferEntity> searchResult = offerService.findByMembershipIdOfferedArticleIdWantedArticleId(membershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize);
 		// Transform the response
@@ -74,9 +74,9 @@ public class OfferController implements Controller {
 	@ResponseStatus(HttpStatus.CREATED)
 	public OfferJson post(@PathVariable Integer membershipId, @RequestBody OfferJson requestJson) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
-		offerValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId, requestJson);
+		offerValidator.validatePost(authenticationService.findCurrentAuthentication().getUser().getUserId(), membershipId, requestJson);
 		// Transform the request
 		OfferEntity entity = offerTransformer.transform(requestJson); 
 		// Delegate to service layer

@@ -3,7 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
-import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.AuthenticationService;
 import com.matchandtrade.rest.service.ArticleAttachmentService;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.rest.v1.transformer.AttachmentTransformer;
@@ -23,15 +23,15 @@ public class ArticleAttachmentController implements Controller {
 	private ArticleAttachmentService articleAttachmentService;
 	private AttachmentTransformer attachmentTransformer = new AttachmentTransformer();
 	@Autowired
-	AuthenticationProvider authenticationProvider;
+	AuthenticationService authenticationService;
 
 	@DeleteMapping("/articles/{articleId}/attachments/{attachmentId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
-		articleAttachmentValidator.validateDelete(authenticationProvider.getAuthentication().getUser().getUserId(), articleId, attachmentId);
+		articleAttachmentValidator.validateDelete(authenticationService.findCurrentAuthentication().getUser().getUserId(), articleId, attachmentId);
 		// Delegate to service layer
 		articleAttachmentService.delete(articleId, attachmentId);
 	}
@@ -39,7 +39,7 @@ public class ArticleAttachmentController implements Controller {
 	@GetMapping("/articles/{articleId}/attachments")
 	public SearchResult<AttachmentJson> get(@PathVariable Integer articleId) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
 		articleAttachmentValidator.validateGetByArticleId(articleId);
 		// Delegate to service layer
@@ -53,7 +53,7 @@ public class ArticleAttachmentController implements Controller {
 	@GetMapping("/articles/{articleId}/attachments/{attachmentId}")
 	public AttachmentJson get(@PathVariable Integer articleId, @PathVariable Integer attachmentId) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
 		articleAttachmentValidator.validateGet(attachmentId);
 		// Delegate to service layer
@@ -68,9 +68,9 @@ public class ArticleAttachmentController implements Controller {
 			@PathVariable Integer articleId,
 			@RequestPart(name="file") MultipartFile multipartFile) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
-		articleAttachmentValidator.validatePost(authenticationProvider.getAuthentication().getUser().getUserId(), articleId);
+		articleAttachmentValidator.validatePost(authenticationService.findCurrentAuthentication().getUser().getUserId(), articleId);
 		// Transform the request - nothing to transform
 		// Delegate to service layer
 		AttachmentEntity attachment = articleAttachmentService.create(articleId, multipartFile);

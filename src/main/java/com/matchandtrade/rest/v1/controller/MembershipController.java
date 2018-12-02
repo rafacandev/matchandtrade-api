@@ -3,7 +3,7 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.MembershipEntity;
-import com.matchandtrade.rest.AuthenticationProvider;
+import com.matchandtrade.rest.service.AuthenticationService;
 import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.v1.json.MembershipJson;
 import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class MembershipController implements Controller {
 
 	@Autowired
-	AuthenticationProvider authenticationProvider;
+	AuthenticationService authenticationService;
 	@Autowired
 	MembershipValidator membershipValidador;
 	@Autowired
@@ -29,7 +29,7 @@ public class MembershipController implements Controller {
 	@ResponseStatus(HttpStatus.CREATED)
 	public MembershipJson post(@RequestBody MembershipJson requestJson) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
 		membershipValidador.validatePost(requestJson);
 		// Transform the request
@@ -45,7 +45,7 @@ public class MembershipController implements Controller {
 	@GetMapping("/{membershipId}")
 	public MembershipJson get(@PathVariable("membershipId") Integer membershipId) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request - Nothing to validate
 		membershipValidador.validateGet(membershipId);
 		// Delegate to service layer
@@ -59,7 +59,7 @@ public class MembershipController implements Controller {
 	@GetMapping()
 	public SearchResult<MembershipJson> get(Integer tradeId, Integer userId, MembershipEntity.Type type, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
 		membershipValidador.validateGet(_pageNumber, _pageSize);
 		// Delegate to Service layer
@@ -74,9 +74,9 @@ public class MembershipController implements Controller {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Integer membershipId) {
 		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationProvider.getAuthentication());
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
-		membershipValidador.validateDelete(authenticationProvider.getAuthentication().getUser(), membershipId);
+		membershipValidador.validateDelete(authenticationService.findCurrentAuthentication().getUser(), membershipId);
 		// Delegate to Service layer
 		membershipService.delete(membershipId);
 	}
