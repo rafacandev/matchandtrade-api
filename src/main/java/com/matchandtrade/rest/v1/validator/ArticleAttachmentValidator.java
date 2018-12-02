@@ -3,10 +3,10 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ArticleAttachmentValidator {
 
 	@Autowired
-	ArticleRepositoryFacade articleRepositoryFacade;
+	ArticleService articleService;
 	@Autowired
 	AttachmentRepositoryFacade attachmentRepositoryFacade;
 	@Autowired
@@ -37,7 +37,7 @@ public class ArticleAttachmentValidator {
 	}
 
 	private void verifyThatArticleHasLessThanTwoFiles(Integer articleId) {
-		ArticleEntity article = articleRepositoryFacade.findByArticleId(articleId);
+		ArticleEntity article = articleService.findByArticleId(articleId);
 		if (article.getAttachments().size() > 2) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Articles cannot have more than 3 files.");
 		}

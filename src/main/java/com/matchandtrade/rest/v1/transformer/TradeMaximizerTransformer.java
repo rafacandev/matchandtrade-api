@@ -1,28 +1,27 @@
 package com.matchandtrade.rest.v1.transformer;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.matchandtrade.persistence.entity.ArticleEntity;
+import com.matchandtrade.persistence.entity.MembershipEntity;
+import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
+import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
+import com.matchandtrade.rest.service.ArticleService;
+import com.matchandtrade.rest.v1.json.TradeResultJson;
+import com.matchandtrade.rest.v1.json.TradedArticleJson;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.entity.MembershipEntity;
-import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
-import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
-import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
-import com.matchandtrade.rest.v1.json.TradeResultJson;
-import com.matchandtrade.rest.v1.json.TradedArticleJson;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class TradeMaximizerTransformer {
 	
 	@Autowired
-	private ArticleRepositoryFacade articleRepositoryFacade;
+	private ArticleService articleService;
 	@Autowired
 	private MembershipRepositoryFacade membershipRepositoryFacade;
 	@Autowired
@@ -76,7 +75,7 @@ public class TradeMaximizerTransformer {
 			MembershipEntity offeringMembership = membershipRepositoryFacade.findByMembershipId(linePojo.offeringMembershipId);
 			csvRecord.add(offeringMembership.getUser().getUserId());
 			csvRecord.add(offeringMembership.getUser().getName());
-			ArticleEntity offeringArticle = articleRepositoryFacade.findByArticleId(linePojo.offeringArticleId);
+			ArticleEntity offeringArticle = articleService.findByArticleId(linePojo.offeringArticleId);
 			csvRecord.add(offeringArticle.getArticleId());
 			csvRecord.add(offeringArticle.getName());
 			if (linePojo.receivingArticleId != null) {
@@ -85,7 +84,7 @@ public class TradeMaximizerTransformer {
 				MembershipEntity receivingMembership = membershipRepositoryFacade.findByMembershipId(linePojo.receivingMembershipId);
 				csvRecord.add(receivingMembership.getUser().getUserId());
 				csvRecord.add(receivingMembership.getUser().getName());
-				ArticleEntity receivingArticle = articleRepositoryFacade.findByArticleId(linePojo.receivingArticleId);
+				ArticleEntity receivingArticle = articleService.findByArticleId(linePojo.receivingArticleId);
 				csvRecord.add(receivingArticle.getArticleId());
 				csvRecord.add(receivingArticle.getName());
 				csvRecord.add(":SENDS:");
@@ -218,7 +217,7 @@ public class TradeMaximizerTransformer {
 			tradedArticle.setUserId(offeringMembership.getUser().getUserId());
 			tradedArticle.setUserName(offeringMembership.getUser().getName());
 			
-			ArticleEntity offeringArticle = articleRepositoryFacade.findByArticleId(linePojo.offeringArticleId);
+			ArticleEntity offeringArticle = articleService.findByArticleId(linePojo.offeringArticleId);
 			tradedArticle.setArticleId(offeringArticle.getArticleId());
 			tradedArticle.setArticleName(offeringArticle.getName());
 			
@@ -226,7 +225,7 @@ public class TradeMaximizerTransformer {
 			tradedArticle.setReceivingUserId(receivingMembership.getUser().getUserId());
 			tradedArticle.setReceivingUserName(receivingMembership.getUser().getName());
 			
-			ArticleEntity receivingArticle = articleRepositoryFacade.findByArticleId(linePojo.receivingArticleId);
+			ArticleEntity receivingArticle = articleService.findByArticleId(linePojo.receivingArticleId);
 			tradedArticle.setReceivingArticleId(receivingArticle.getArticleId());
 			tradedArticle.setReceivingArticleName(receivingArticle.getName());
 			

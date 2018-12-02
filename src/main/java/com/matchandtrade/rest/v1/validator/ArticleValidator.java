@@ -4,10 +4,10 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ArticleValidator {
 
 	@Autowired
-	ArticleRepositoryFacade articleRepositoryFacade;
+	ArticleService articleService;
 	@Autowired
 	UserRepositoryFacade userRepositoryFacade;
 	@Autowired
@@ -33,7 +33,7 @@ public class ArticleValidator {
 	 * @param restExceptionStatus HttpStatus to be used if RestException is thrown
 	 */
 	private void verifyThatArticleExists(Integer articleId, HttpStatus restExceptionStatus) {
-		ArticleEntity articleEntity = articleRepositoryFacade.findByArticleId(articleId);
+		ArticleEntity articleEntity = articleService.findByArticleId(articleId);
 		if (articleEntity == null) {
 			throw new RestException(restExceptionStatus, String.format("Article.articleId: %d does not exist.", articleId));
 		}
@@ -80,7 +80,7 @@ public class ArticleValidator {
 	 * @param articleId
 	 */
 	private void verifyThatUserOwnsArticle(Integer userId, Integer articleId) {
-		ArticleEntity article = articleRepositoryFacade.findByUserIdAndArticleId(userId, articleId);
+		ArticleEntity article = articleService.findByUserIdAndArticleId(userId, articleId);
 		if (article == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does not own Article.articleId: %d", userId, articleId));
 		}

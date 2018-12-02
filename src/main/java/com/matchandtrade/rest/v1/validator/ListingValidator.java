@@ -2,8 +2,8 @@ package com.matchandtrade.rest.v1.validator;
 
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
-import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.v1.json.ListingJson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class ListingValidator {
 
 	@Autowired
-	ArticleRepositoryFacade articleRepositoryFacade;
+	ArticleService articleService;
 	@Autowired
 	MembershipService membershipService;
 
@@ -43,7 +43,7 @@ public class ListingValidator {
 	}
 
 	private void verifyThatUserOwnsArticle(Integer userId, Integer articleId) {
-		ArticleEntity article = articleRepositoryFacade.findByUserIdAndArticleId(userId, articleId);
+		ArticleEntity article = articleService.findByUserIdAndArticleId(userId, articleId);
 		if (article == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %s does not own Article.articleId: %s", userId, articleId));
 		}

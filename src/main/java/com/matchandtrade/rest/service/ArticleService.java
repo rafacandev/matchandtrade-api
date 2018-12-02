@@ -43,4 +43,8 @@ public class ArticleService {
 		userRepositoryFacade.save(user);
 		articleRepositoryFacade.delete(articleId);
 	}
+
+	public ArticleEntity findByUserIdAndArticleId(Integer userId, Integer articleId) {
+		return articleRepositoryFacade.findByUserIdAndArticleId(userId, articleId);
+	}
 }

@@ -3,8 +3,8 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.MembershipService;
 import com.matchandtrade.rest.v1.json.ListingJson;
 import org.junit.Before;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class ListingValidatorUT {
 
 	@Mock
-	private ArticleRepositoryFacade articleRepositoryFacadeMock;
+	private ArticleService articleService;
 	private ArticleEntity existingArticle;
 	private MembershipEntity existingMembership;
 	private UserEntity existingUser;
@@ -41,8 +41,8 @@ public class ListingValidatorUT {
 		existingMembership.setMembershipId(21);
 		existingMembership.setUser(existingUser);
 
-		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);
-		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
+		when(articleService.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);
+		fixture.articleService = articleService;
 
 		MembershipEntity existingMembershipForDifferentUser = new MembershipEntity();
 		UserEntity existingUserDifferent = new UserEntity();

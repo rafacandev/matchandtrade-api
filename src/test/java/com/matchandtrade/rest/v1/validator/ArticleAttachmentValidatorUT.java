@@ -3,10 +3,10 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ArticleService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class ArticleAttachmentValidatorUT {
 
 	@Mock
-	private ArticleRepositoryFacade articleRepositoryFacadeMock;
+	private ArticleService articleService;
 	@Mock
 	private AttachmentRepositoryFacade attachmentRepositoryFacadeMock;
 	private ArticleAttachmentValidator fixture;
@@ -52,8 +52,8 @@ public class ArticleAttachmentValidatorUT {
 		doReturn(existingUser).when(userRepositoryFacadeMock).findByArticleId(existingArticle.getArticleId());
 		fixture.userRepositoryFacade = userRepositoryFacadeMock;
 
-		when(articleRepositoryFacadeMock.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
-		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
+		when(articleService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
+		fixture.articleService = articleService;
 
 		when(attachmentRepositoryFacadeMock.findByAttachmentId(21)).thenReturn(existingAttachment);
 		fixture.attachmentRepositoryFacade = attachmentRepositoryFacadeMock;

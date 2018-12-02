@@ -3,10 +3,10 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
-import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.persistence.facade.MembershipRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.v1.json.ArticleJson;
 import com.matchandtrade.rest.v1.transformer.ArticleTransformer;
 import com.matchandtrade.test.StringRandom;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class ArticleValidatorUT {
 
 	@Mock
-	private ArticleRepositoryFacade articleRepositoryFacadeMock;
+	private ArticleService articleService;
 	private ArticleTransformer articleTransformer = new ArticleTransformer();
 	private ArticleEntity existingArticleOwnedByDifferentUser;
 	private ArticleEntity existingListedArticle;
@@ -57,10 +57,10 @@ public class ArticleValidatorUT {
 		when(mockUserRepositoryFacade.findByUserId(existingUser.getUserId())).thenReturn(existingUser);
 		fixture.userRepositoryFacade = mockUserRepositoryFacade;
 
-		when(articleRepositoryFacadeMock.findByArticleId(givenExistingArticle.getArticleId())).thenReturn(existingArticle);
-		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);
-		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingListedArticle.getArticleId())).thenReturn(existingListedArticle);
-		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
+		when(articleService.findByArticleId(givenExistingArticle.getArticleId())).thenReturn(existingArticle);
+		when(articleService.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);
+		when(articleService.findByUserIdAndArticleId(existingUser.getUserId(), existingListedArticle.getArticleId())).thenReturn(existingListedArticle);
+		fixture.articleService = articleService;
 
 		MembershipEntity existingListedMembership = new MembershipEntity();
 		existingListedMembership.setMembershipId(30);
