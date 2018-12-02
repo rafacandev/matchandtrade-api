@@ -54,10 +54,10 @@ public class ArticleValidatorUT {
 		existingArticleOwnedByDifferentUser = new ArticleEntity();
 		existingArticleOwnedByDifferentUser.setArticleId(22);
 
-		when(mockUserRepositoryFacade.find(existingUser.getUserId())).thenReturn(existingUser);
+		when(mockUserRepositoryFacade.findByUserId(existingUser.getUserId())).thenReturn(existingUser);
 		fixture.userRepositoryFacade = mockUserRepositoryFacade;
 
-		when(articleRepositoryFacadeMock.find(givenExistingArticle.getArticleId())).thenReturn(existingArticle);
+		when(articleRepositoryFacadeMock.findByArticleId(givenExistingArticle.getArticleId())).thenReturn(existingArticle);
 		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingArticle.getArticleId())).thenReturn(existingArticle);
 		when(articleRepositoryFacadeMock.findByUserIdAndArticleId(existingUser.getUserId(), existingListedArticle.getArticleId())).thenReturn(existingListedArticle);
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;

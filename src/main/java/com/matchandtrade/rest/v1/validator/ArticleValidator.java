@@ -33,7 +33,7 @@ public class ArticleValidator {
 	 * @param restExceptionStatus HttpStatus to be used if RestException is thrown
 	 */
 	private void verifyThatArticleExists(Integer articleId, HttpStatus restExceptionStatus) {
-		ArticleEntity articleEntity = articleRepositoryFacade.find(articleId);
+		ArticleEntity articleEntity = articleRepositoryFacade.findByArticleId(articleId);
 		if (articleEntity == null) {
 			throw new RestException(restExceptionStatus, String.format("Article.articleId: %d does not exist.", articleId));
 		}
@@ -67,7 +67,7 @@ public class ArticleValidator {
 	 * @param userId
 	 */
 	private void verifyThatUserExists(Integer userId) {
-		UserEntity user = userRepositoryFacade.find(userId);
+		UserEntity user = userRepositoryFacade.findByUserId(userId);
 		if (user == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %d does not exist.", userId));
 		}

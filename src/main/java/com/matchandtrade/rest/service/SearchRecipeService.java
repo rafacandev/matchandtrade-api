@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 // TODO Integartion + Unit tests
 @Component
 public class SearchRecipeService {
-
 	@Autowired
 	private QueryableRepository<Dto> queryableDto;
 	@Autowired
@@ -23,5 +22,4 @@ public class SearchRecipeService {
 		SearchCriteria searchCriteria = SearchTransformer.transform(request, pageNumber, pageSize);
 		return queryableDto.query(searchCriteria, articleRecipeQueryBuilder, articleRecipeQueryBuilder.makeResultTransformer());
 	}
-
 }

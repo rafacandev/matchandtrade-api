@@ -26,7 +26,7 @@ public class OfferValidator {
 	UserService userService;
 
 	public void validateDelete(Integer authenticatedUserId, Integer membershipId, Integer offerId) {
-		MembershipEntity membership = membershipService.find(membershipId);
+		MembershipEntity membership = membershipService.findByMembershipId(membershipId);
 		verifyThatUserOwnsMembership(membership, authenticatedUserId);
 
 		UserEntity offeredArticleUser = userService.findByOfferId(offerId);
@@ -37,12 +37,12 @@ public class OfferValidator {
 
 	public void validateGetAll(Integer membershipId, Integer pageNumber, Integer pageSize, Integer authenticatedUserId) {
 		PaginationValidator.validatePageNumberAndPageSize(pageNumber, pageSize);
-		MembershipEntity membership = membershipService.find(membershipId);
+		MembershipEntity membership = membershipService.findByMembershipId(membershipId);
 		verifyThatUserOwnsMembership(membership, authenticatedUserId);
 	}
 
 	public void validateGetById(Integer authenticatedUserId, Integer membershipId) {
-		MembershipEntity membership = membershipService.find(membershipId);
+		MembershipEntity membership = membershipService.findByMembershipId(membershipId);
 		verifyThatUserOwnsMembership(membership, authenticatedUserId);
 	}
 
@@ -59,17 +59,17 @@ public class OfferValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Offer.offeredArticleId and Offer.wantedArticleId must differ");
 		}
 
-		ArticleEntity offeredArticle = articleService.find(offer.getOfferedArticleId());
+		ArticleEntity offeredArticle = articleService.findByArticleId(offer.getOfferedArticleId());
 		if (offeredArticle == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Offer.offeredArticleId was not found");
 		}
 
-		ArticleEntity wantedArticle = articleService.find(offer.getWantedArticleId());
+		ArticleEntity wantedArticle = articleService.findByArticleId(offer.getWantedArticleId());
 		if (wantedArticle == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Offer.wantedArticleId was not found");
 		}
 
-		MembershipEntity membership = membershipService.find(membershipId);
+		MembershipEntity membership = membershipService.findByMembershipId(membershipId);
 		if (!authenticatedUserId.equals(membership.getUser().getUserId())) {
 			throw new RestException(HttpStatus.FORBIDDEN, "User.userId does not own Membership.membershipId");
 		}

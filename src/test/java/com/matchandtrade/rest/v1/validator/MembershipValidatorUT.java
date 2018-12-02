@@ -1,7 +1,5 @@
 package com.matchandtrade.rest.v1.validator;
 
-import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
@@ -11,17 +9,13 @@ import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.MembershipJson;
 import com.matchandtrade.rest.v1.transformer.MembershipTransformer;
-import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.test.helper.SearchHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
-import java.util.ArrayList;
 
 import static com.matchandtrade.persistence.entity.TradeEntity.State.GENERATING_RESULTS;
 import static com.matchandtrade.persistence.entity.TradeEntity.State.SUBMITTING_ARTICLES;
@@ -69,13 +63,13 @@ public class MembershipValidatorUT {
 		existingMembershipOwnedByDifferentUser.setUser(existingDifferentUser);
 		existingMembershipOwnedByDifferentUser.setMembershipId(22);
 
-		when(mockUserService.find(existingUser.getUserId())).thenReturn(existingUser);
+		when(mockUserService.findByUserId(existingUser.getUserId())).thenReturn(existingUser);
 		fixture.userService = mockUserService;
 
-		when(mockTradeService.find(existingTrade.getTradeId())).thenReturn(existingTrade);
+		when(mockTradeService.findByTradeId(existingTrade.getTradeId())).thenReturn(existingTrade);
 		fixture.tradeService = mockTradeService;
 
-		when(mockMembershipService.find(existingMembershipOwnedByDifferentUser.getMembershipId()))
+		when(mockMembershipService.findByMembershipId(existingMembershipOwnedByDifferentUser.getMembershipId()))
 			.thenReturn(existingMembershipOwnedByDifferentUser);
 		when(mockMembershipService.findByTradeIdUserIdType(any(), any(), any(), any(), any()))
 			.thenReturn(SearchHelper.buildEmptySearchResult());

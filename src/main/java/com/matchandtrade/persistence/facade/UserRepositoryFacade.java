@@ -8,22 +8,8 @@ import com.matchandtrade.persistence.repository.UserRepository;
 
 @Repository
 public class UserRepositoryFacade {
-	
 	@Autowired
 	private UserRepository userRepository;
-
-	// TODO: Optional ??
-	public UserEntity find(Integer userId) {
-		return userRepository.findById(userId).get();
-	}
-
-	public UserEntity findByEmail(String email) {
-		return userRepository.findByEmail(email);
-	}
-
-	public void save(UserEntity entity) {
-		userRepository.save(entity);
-	}
 
 	public UserEntity findByArticleId(Integer articleId) {
 		return userRepository.findByArticleId(articleId);
@@ -33,4 +19,16 @@ public class UserRepositoryFacade {
 		return userRepository.findByOfferId(offerId);
 	}
 
+	public UserEntity findByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
+
+	// TODO: Optional ??
+	public UserEntity findByUserId(Integer userId) {
+		return userRepository.findById(userId).get();
+	}
+
+	public void save(UserEntity entity) {
+		userRepository.save(entity);
+	}
 }

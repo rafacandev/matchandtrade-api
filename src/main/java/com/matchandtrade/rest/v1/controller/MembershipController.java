@@ -49,7 +49,7 @@ public class MembershipController implements Controller {
 		// Validate the request - Nothing to validate
 		membershipValidador.validateGet(membershipId);
 		// Delegate to service layer
-		MembershipEntity searchResult = membershipService.find(membershipId);
+		MembershipEntity searchResult = membershipService.findByMembershipId(membershipId);
 		// Transform the response
 		MembershipJson response = membershipTransformer.transform(searchResult);
 		// TODO: Assemble links

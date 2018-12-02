@@ -44,7 +44,7 @@ public class ArticleHelper {
 
 	@Transactional
 	public ArticleEntity createPersistedEntity(MembershipEntity membership) {
-		MembershipEntity persistedMembership = membershipRepositoryFacade.find(membership.getMembershipId());
+		MembershipEntity persistedMembership = membershipRepositoryFacade.findByMembershipId(membership.getMembershipId());
 		ArticleEntity result = createRandomEntity();
 		persistArticleAndMembershipAndUser(persistedMembership, result);
 		return result;
@@ -52,7 +52,7 @@ public class ArticleHelper {
 
 	@Transactional
 	public ArticleEntity createPersistedEntity(MembershipEntity membership, String articleName) {
-		MembershipEntity persistedMembership = membershipRepositoryFacade.find(membership.getMembershipId());
+		MembershipEntity persistedMembership = membershipRepositoryFacade.findByMembershipId(membership.getMembershipId());
 		ArticleEntity result = createRandomEntity();
 		result.setName(articleName);
 		persistArticleAndMembershipAndUser(persistedMembership, result);
@@ -63,7 +63,7 @@ public class ArticleHelper {
 	public ArticleEntity createPersistedEntity(UserEntity user) {
 		ArticleEntity result = createRandomEntity();
 		articleRepositoryFacade.save(result);
-		UserEntity persistedUser = userRepositoryFacade.find(user.getUserId());
+		UserEntity persistedUser = userRepositoryFacade.findByUserId(user.getUserId());
 		persistedUser.getArticles().add(result);
 		userRepositoryFacade.save(persistedUser);
 		return result;

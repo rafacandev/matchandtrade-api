@@ -55,8 +55,8 @@ public class TradeValidatorUT {
 		when(mockTradeService.isNameUnique("abc")).thenReturn(true);
 		when(mockTradeService.isNameUnique(EXPECTED_DUPLICATE_NAME)).thenReturn(false);
 		when(mockTradeService.isNameUniqueExceptForTradeId(expectedUniqueName, givenTrade.getTradeId())).thenReturn(true);
-		when(mockTradeService.find(givenTrade.getTradeId())).thenReturn(existingTrade);
-		when(mockTradeService.find(existingTradeOwnedByDifferentUser.getTradeId())).thenReturn(existingTradeOwnedByDifferentUser);
+		when(mockTradeService.findByTradeId(givenTrade.getTradeId())).thenReturn(existingTrade);
+		when(mockTradeService.findByTradeId(existingTradeOwnedByDifferentUser.getTradeId())).thenReturn(existingTradeOwnedByDifferentUser);
 		fixture.tradeService = mockTradeService;
 
 		when(mockMembershipService.findByTradeIdUserIdType(existingTrade.getTradeId(), existingUser.getUserId(), OWNER, 1, 1))

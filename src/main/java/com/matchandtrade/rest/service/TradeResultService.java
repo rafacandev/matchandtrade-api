@@ -25,7 +25,6 @@ import java.util.List;
 
 @Component
 public class TradeResultService {
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(TradeResultService.class);
 	
 	@Autowired
@@ -42,7 +41,7 @@ public class TradeResultService {
 
 	private StringBuilder buildOfferLine(MembershipEntity membership, ArticleEntity article) {
 		StringBuilder line = new StringBuilder("(" + membership.getMembershipId() + ") " + article.getArticleId() + " :");
-		List<OfferEntity> offers = offerService.searchByOfferedArticleId(article.getArticleId());
+		List<OfferEntity> offers = offerService.findByOfferedArticleId(article.getArticleId());
 		offers.forEach(offer -> {
 			line.append(" " + offer.getWantedArticle().getArticleId());
 		});
@@ -64,7 +63,7 @@ public class TradeResultService {
 		do {
 			articlesResult = findArticlesByTradeId(tradeId, new Pagination(pageNumber++, pageSize));
 			articlesResult.getResultList().forEach(article -> {
-				MembershipEntity membership = findMembershipsByArticle(article);
+				MembershipEntity membership = findMembershipByArticle(article);
 				StringBuilder line = buildOfferLine(membership, article);
 				tradeMaximizerEntries.append(line.toString() + "\n");
 			});
@@ -98,21 +97,8 @@ public class TradeResultService {
 	}
 
 	@Transactional
-	public void generateResults(Integer tradeId) {
-		TradeEntity trade = tradeRepositoryFacade.find(tradeId);
-		trade.setState(TradeEntity.State.GENERATING_RESULTS);
-		tradeRepositoryFacade.save(trade);
-		String tradeMaximizerOutput = buildTradeMaximizerOutput(tradeId);
-		TradeResultEntity tradeResult = new TradeResultEntity();
-		tradeResult.setTradeMaximizerOutput(tradeMaximizerOutput);
-		trade.setResult(tradeResult);
-		tradeRepositoryFacade.save(trade);
-		trade.setState(TradeEntity.State.RESULTS_GENERATED);
-	}
-
-	@Transactional
-	public String findCsv(Integer tradeId) {
-		TradeEntity trade = tradeRepositoryFacade.find(tradeId);
+	public String findByTradeIdAsCsv(Integer tradeId) {
+		TradeEntity trade = tradeRepositoryFacade.findByTradeId(tradeId);
 		String csv;
 		// Return value from database if already exists; otherwhise generate it
 		if (trade.getResult().getCsv() != null) {
@@ -131,8 +117,8 @@ public class TradeResultService {
 
 	
 	@Transactional
-	public TradeResultJson findJson(Integer tradeId) {
-		TradeEntity trade = tradeRepositoryFacade.find(tradeId);
+	public TradeResultJson findByTradeIdAsJson(Integer tradeId) {
+		TradeEntity trade = tradeRepositoryFacade.findByTradeId(tradeId);
 		
 		String tradeResultJsonAsString;
 		TradeResultJson tradeResultJson;
@@ -167,7 +153,7 @@ public class TradeResultService {
 		return result;
 	}
 	
-	private MembershipEntity findMembershipsByArticle(ArticleEntity article) {
+	private MembershipEntity findMembershipByArticle(ArticleEntity article) {
 		SearchCriteria membershipCriteria = new SearchCriteria(new Pagination(1,1));
 		membershipCriteria.addCriterion(MembershipQueryBuilder.Field.ARTICLE_ID, article.getArticleId());
 		SearchResult<MembershipEntity> membershipResult = searchServiceMembership.search(membershipCriteria, MembershipQueryBuilder.class);
@@ -178,5 +164,17 @@ public class TradeResultService {
 		}
 		return membershipResult.getResultList().get(0);
 	}
-	
+
+	@Transactional
+	public void generateResults(Integer tradeId) {
+		TradeEntity trade = tradeRepositoryFacade.findByTradeId(tradeId);
+		trade.setState(TradeEntity.State.GENERATING_RESULTS);
+		tradeRepositoryFacade.save(trade);
+		String tradeMaximizerOutput = buildTradeMaximizerOutput(tradeId);
+		TradeResultEntity tradeResult = new TradeResultEntity();
+		tradeResult.setTradeMaximizerOutput(tradeMaximizerOutput);
+		trade.setResult(tradeResult);
+		tradeRepositoryFacade.save(trade);
+		trade.setState(TradeEntity.State.RESULTS_GENERATED);
+	}
 }

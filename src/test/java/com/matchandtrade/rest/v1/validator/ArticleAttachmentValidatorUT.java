@@ -52,10 +52,10 @@ public class ArticleAttachmentValidatorUT {
 		doReturn(existingUser).when(userRepositoryFacadeMock).findByArticleId(existingArticle.getArticleId());
 		fixture.userRepositoryFacade = userRepositoryFacadeMock;
 
-		when(articleRepositoryFacadeMock.find(existingArticle.getArticleId())).thenReturn(existingArticle);
+		when(articleRepositoryFacadeMock.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
 		fixture.articleRepositoryFacade = articleRepositoryFacadeMock;
 
-		when(attachmentRepositoryFacadeMock.find(21)).thenReturn(existingAttachment);
+		when(attachmentRepositoryFacadeMock.findByAttachmentId(21)).thenReturn(existingAttachment);
 		fixture.attachmentRepositoryFacade = attachmentRepositoryFacadeMock;
 	}
 

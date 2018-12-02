@@ -37,14 +37,14 @@ public class ArticleAttachmentValidator {
 	}
 
 	private void verifyThatArticleHasLessThanTwoFiles(Integer articleId) {
-		ArticleEntity article = articleRepositoryFacade.find(articleId);
+		ArticleEntity article = articleRepositoryFacade.findByArticleId(articleId);
 		if (article.getAttachments().size() > 2) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Articles cannot have more than 3 files.");
 		}
 	}
 
 	private void verifyThatAttachmentExists(Integer attachmentId) {
-		AttachmentEntity attachment = attachmentRepositoryFacade.find(attachmentId);
+		AttachmentEntity attachment = attachmentRepositoryFacade.findByAttachmentId(attachmentId);
 		if (attachment == null) {
 			throw new RestException(NOT_FOUND, String.format("Attachment.attachmentId: %s does not exist.", attachmentId));
 		}
@@ -59,7 +59,7 @@ public class ArticleAttachmentValidator {
 	}
 
 	public void validateGet(Integer attachmentId) {
-		AttachmentEntity entity = attachmentRepositoryFacade.find(attachmentId);
+		AttachmentEntity entity = attachmentRepositoryFacade.findByAttachmentId(attachmentId);
 		if (entity == null) {
 			throw new RestException(NOT_FOUND, String.format("Attachment.attachmentId: %s was not found", attachmentId));
 		}

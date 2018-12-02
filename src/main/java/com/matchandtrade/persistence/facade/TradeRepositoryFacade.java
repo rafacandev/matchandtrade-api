@@ -12,7 +12,6 @@ import java.util.List;
 
 @Repository
 public class TradeRepositoryFacade {
-
 	@Autowired
 	private MembershipRepository membershipRepository;
 	@Autowired
@@ -21,17 +20,16 @@ public class TradeRepositoryFacade {
 	@Transactional
 	public void delete(Integer tradeId) {
 		List<MembershipEntity> memberships = membershipRepository.findByTrade_TradeId(tradeId);
-		// TODO: Diactivate instead of deleting??
+		// TODO: Disable instead of deleting??
 		membershipRepository.deleteAll(memberships);
 		tradeRepository.deleteById(tradeId);
 	}
 
-	public TradeEntity find(Integer tradeId) {
+	public TradeEntity findByTradeId(Integer tradeId) {
 		return tradeRepository.findById(tradeId).get();
 	}
 	
 	public void save(TradeEntity entity) {
 		tradeRepository.save(entity);
 	}
-
 }

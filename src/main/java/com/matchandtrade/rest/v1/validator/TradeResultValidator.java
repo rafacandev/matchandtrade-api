@@ -15,7 +15,7 @@ public class TradeResultValidator {
 	TradeService tradeService;
 
 	public void validateGet(Integer tradeId) {
-		TradeEntity trade = tradeService.find(tradeId);
+		TradeEntity trade = tradeService.findByTradeId(tradeId);
 		if (trade.getState() != TradeEntity.State.RESULTS_GENERATED) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "TradeResult is only available when Trade.State is RESULTS_GENERATED");
 		}

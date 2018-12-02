@@ -34,7 +34,7 @@ public class WebserviceApplication {
 		String configurationFile = loadConfigurationFileProperty(cli);
 
 		if (configurationFile == null || cli.isInterrupted()) {
-			LOGGER.debug("Did not find {}", CONFIGURATION_FILE_PROPERTY_DESCRIPTION);
+			LOGGER.debug("Did not fin {}", CONFIGURATION_FILE_PROPERTY_DESCRIPTION);
 			LOGGER.info(cli.getCommandLineOutputMessage());
 		} else {
 			// Proceed normally

@@ -32,7 +32,7 @@ public class TradeResultController implements Controller {
 		// Validate the request
 		tradeResultValidator.validateGet(tradeId);
 		// Delegate to Service layer
-		return tradeResultService.findCsv(tradeId);
+		return tradeResultService.findByTradeIdAsCsv(tradeId);
 		// Transform the response - Nothing to transform
 		// Assemble links - Nothing to assemble
 	}
@@ -46,7 +46,7 @@ public class TradeResultController implements Controller {
 		// Validate the request
 		tradeResultValidator.validateGet(tradeId);
 		// Delegate to Service layer
-		return tradeResultService.findJson(tradeId);
+		return tradeResultService.findByTradeIdAsJson(tradeId);
 		// Transform the response - Nothing to transform
 		// Assemble links - Nothing to assemble
 	}

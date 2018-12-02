@@ -16,7 +16,6 @@ import java.util.List;
 
 @Service
 public class OfferService {
-	
 	@Autowired
 	private OfferRepositoryFacade offerRepositoryFacade;
 	@Autowired
@@ -26,7 +25,7 @@ public class OfferService {
 
 	@Transactional
 	public void create(Integer membershipId, OfferEntity offer) {
-		MembershipEntity membership = membershipRepositoryFacade.find(membershipId);
+		MembershipEntity membership = membershipRepositoryFacade.findByMembershipId(membershipId);
 		offerRepositoryFacade.save(offer);
 		membership.getOffers().add(offer);
 		membershipRepositoryFacade.save(membership);
@@ -35,18 +34,27 @@ public class OfferService {
 	@Transactional
 	public void delete(Integer offerId) {
 		MembershipEntity membership = membershipRepositoryFacade.findByOfferId(offerId);
-		OfferEntity offer = offerRepositoryFacade.find(offerId);
+		OfferEntity offer = offerRepositoryFacade.findByOfferId(offerId);
 		membership.getOffers().remove(offer);
 		membershipRepositoryFacade.save(membership);
 		offerRepositoryFacade.delete(offerId);
 	}
 
-	public OfferEntity find(Integer offerId) {
-		return offerRepositoryFacade.find(offerId);
+	public OfferEntity findByOfferId(Integer offerId) {
+		return offerRepositoryFacade.findByOfferId(offerId);
 	}
 
-	public SearchResult<OfferEntity> search(Integer membershipId, Integer offeredArticleId, Integer wantedArticleId,
-			Integer pageNumber, Integer pageSize) {
+	// TODO: change to SearchResult?
+	public List<OfferEntity> findByOfferedArticleId(Integer offeredArticleId) {
+		return offerRepositoryFacade.findByOfferedArticleId(offeredArticleId);
+	}
+
+	public SearchResult<OfferEntity> findByMembershipIdOfferedArticleIdWantedArticleId(
+			Integer membershipId,
+			Integer offeredArticleId,
+			Integer wantedArticleId,
+			Integer pageNumber,
+			Integer pageSize) {
 		SearchCriteria criteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
 		if (membershipId != null) {
 			criteria.addCriterion(OfferQueryBuilder.Field.MEMBERSHIP_ID, membershipId);
@@ -59,9 +67,4 @@ public class OfferService {
 		}
 		return searchService.search(criteria, OfferQueryBuilder.class);
 	}
-
-	public List<OfferEntity> searchByOfferedArticleId(Integer offeredArticleId) {
-		return offerRepositoryFacade.findByOfferedArticleId(offeredArticleId);
-	}
-
 }

@@ -14,12 +14,11 @@ import java.util.Optional;
 
 @Repository
 public class AttachmentRepositoryFacade {
-	
 	@Autowired
 	private AttachmentRepository attachmentRepository;
 
 	// TODO: Optional?
-	public AttachmentEntity find(Integer attachmentId) {
+	public AttachmentEntity findByAttachmentId(Integer attachmentId) {
 		Optional<AttachmentEntity> entity = attachmentRepository.findById(attachmentId);
 		return  entity.get();
 	}

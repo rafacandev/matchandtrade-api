@@ -49,7 +49,7 @@ public class OfferController implements Controller {
 		// Validate the request
 		offerValidator.validateGetById(authenticationProvider.getAuthentication().getUser().getUserId(), membershipId);
 		// Delegate to Service layer
-		OfferEntity entity = offerService.find(offerId);
+		OfferEntity entity = offerService.findByOfferId(offerId);
 		// Transform the response
 		OfferJson response = offerTransformer.transform(entity);
 //		// TODO: Assemble links
@@ -63,7 +63,7 @@ public class OfferController implements Controller {
 		// Validate the request
 		offerValidator.validateGetAll(membershipId, _pageNumber, _pageSize, authenticationProvider.getAuthentication().getUser().getUserId());
 		// Delegate to service layer
-		SearchResult<OfferEntity> searchResult = offerService.search(membershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize);
+		SearchResult<OfferEntity> searchResult = offerService.findByMembershipIdOfferedArticleIdWantedArticleId(membershipId, offeredArticleId, wantedArticleId, _pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<OfferJson> response = offerTransformer.transform(searchResult);
 		// TODO: Assemble links

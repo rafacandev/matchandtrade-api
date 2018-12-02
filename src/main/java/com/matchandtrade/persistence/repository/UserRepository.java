@@ -9,7 +9,6 @@ import com.matchandtrade.persistence.entity.UserEntity;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, Integer>{
-	
 	UserEntity findByEmail(String email);
 
 	@Query("FROM UserEntity AS user" +
@@ -18,11 +17,10 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer>{
 	UserEntity findByArticleId(@Param("articleId") Integer articleId);
 
 	@Query("SELECT u "
-			+ " FROM MembershipEntity tm"
-			+ " INNER JOIN tm.user AS u"
-			+ " INNER JOIN tm.offers AS o"
+			+ " FROM MembershipEntity membership"
+			+ " INNER JOIN membership.user AS u"
+			+ " INNER JOIN membership.offers AS o"
 			+ " WHERE"
 			+ " o.offerId = :offerId")
 	UserEntity findByOfferId(@Param("offerId")Integer offerId);
-
 }

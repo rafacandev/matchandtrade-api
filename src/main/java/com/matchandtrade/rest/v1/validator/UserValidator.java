@@ -23,7 +23,7 @@ public class UserValidator {
 	 * @param changeRequestUser
 	 */
 	public void validatePut(UserEntity authenticatedUser, UserJson changeRequestUser) {
-		UserEntity targetUser = userService.find(changeRequestUser.getUserId());
+		UserEntity targetUser = userService.findByUserId(changeRequestUser.getUserId());
 
 		if (targetUser == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "User.userId was not found");

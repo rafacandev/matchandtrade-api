@@ -10,7 +10,6 @@ import com.matchandtrade.persistence.entity.ArticleEntity;
 import org.springframework.data.repository.query.Param;
 
 public interface ArticleRepository extends CrudRepository<ArticleEntity, Integer>{
-
 	@Query("SELECT article" +
 		" FROM UserEntity AS user" +
 		" INNER JOIN user.articles AS article" +
@@ -18,5 +17,4 @@ public interface ArticleRepository extends CrudRepository<ArticleEntity, Integer
 	ArticleEntity findArticleByUserIdAndArticleId(@Param("userId")Integer userId, @Param("articleId") Integer articleId);
 
 	Page<ArticleEntity> findAll(Pageable pageable);
-
 }

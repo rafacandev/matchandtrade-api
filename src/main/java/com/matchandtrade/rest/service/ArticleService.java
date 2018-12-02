@@ -11,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ArticleService {
-
-	@Autowired
+@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private UserRepositoryFacade userRepositoryFacade;
@@ -24,8 +23,12 @@ public class ArticleService {
 		userRepositoryFacade.save(user);
 	}
 
-	public ArticleEntity find(Integer articleId) {
-		return articleRepositoryFacade.find(articleId);
+	public ArticleEntity findByArticleId(Integer articleId) {
+		return articleRepositoryFacade.findByArticleId(articleId);
+	}
+
+	public SearchResult<ArticleEntity> findAll(Integer pageNumber, Integer pageSize) {
+		return articleRepositoryFacade.findAll(pageNumber, pageSize);
 	}
 
 	public void update(ArticleEntity article) {
@@ -35,14 +38,9 @@ public class ArticleService {
 	@Transactional
 	public void delete(Integer articleId) {
 		UserEntity user = userRepositoryFacade.findByArticleId(articleId);
-		ArticleEntity article = articleRepositoryFacade.find(articleId);
+		ArticleEntity article = articleRepositoryFacade.findByArticleId(articleId);
 		user.getArticles().remove(article);
 		userRepositoryFacade.save(user);
 		articleRepositoryFacade.delete(articleId);
 	}
-
-	public SearchResult<ArticleEntity> findAll(Integer pageNumber, Integer pageSize) {
-		return articleRepositoryFacade.findAll(pageNumber, pageSize);
-	}
-
 }

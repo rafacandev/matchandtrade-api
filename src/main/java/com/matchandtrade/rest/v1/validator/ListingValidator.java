@@ -50,7 +50,7 @@ public class ListingValidator {
 	}
 
 	private void verifyThatUserOwnsMembership(Integer userId, Integer membershipId) {
-		MembershipEntity membership = membershipService.find(membershipId);
+		MembershipEntity membership = membershipService.findByMembershipId(membershipId);
 		if (!userId.equals(membership.getUser().getUserId())) {
 			throw new RestException(HttpStatus.BAD_REQUEST, String.format("User.userId: %s does not own Membership.membershipId: %s", userId, membershipId));
 		}

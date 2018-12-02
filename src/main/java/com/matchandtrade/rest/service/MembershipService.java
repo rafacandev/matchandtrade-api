@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MembershipService {
-
 	@Autowired
 	private SearchService<MembershipEntity> searchService;
 	@Autowired
@@ -28,8 +27,8 @@ public class MembershipService {
 		membershipRepositoryFacade.delete(membershipId);
 	}
 
-	public MembershipEntity find(Integer membershipId) {
-		return membershipRepositoryFacade.find(membershipId);
+	public MembershipEntity findByMembershipId(Integer membershipId) {
+		return membershipRepositoryFacade.findByMembershipId(membershipId);
 	}
 
 	public SearchResult<MembershipEntity> findByTradeIdUserIdType(Integer tradeId, Integer userId, MembershipEntity.Type type, Integer _pageNumber, Integer _pageSize) {
@@ -46,5 +45,4 @@ public class MembershipService {
 		// Delegate to Repository layer
 		return searchService.search(searchCriteria, MembershipQueryBuilder.class);
 	}
-
 }

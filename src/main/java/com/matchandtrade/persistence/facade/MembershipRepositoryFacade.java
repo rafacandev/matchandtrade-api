@@ -19,7 +19,7 @@ public class MembershipRepositoryFacade {
 	}
 
 	// TODO: Handle optinal??
-	public MembershipEntity find(Integer membershipId) {
+	public MembershipEntity findByMembershipId(Integer membershipId) {
 		return membershipRepository.findById(membershipId).get();
 	}
 

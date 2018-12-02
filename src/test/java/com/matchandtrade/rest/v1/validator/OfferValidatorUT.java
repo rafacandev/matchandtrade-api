@@ -72,13 +72,13 @@ public class OfferValidatorUT {
 		givenOffer.setOfferedArticleId(existingArticle.getArticleId());
 		givenOffer.setWantedArticleId(existingArticleOwnedByDifferentUser.getArticleId());
 
-		when(mockArticleService.find(existingArticle.getArticleId())).thenReturn(existingArticle);
-		when(mockArticleService.find(existingArticleNotInTrade.getArticleId())).thenReturn(existingArticleNotInTrade);
-		when(mockArticleService.find(existingArticleOwnedByDifferentUser.getArticleId())).thenReturn(existingArticleOwnedByDifferentUser);
+		when(mockArticleService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
+		when(mockArticleService.findByArticleId(existingArticleNotInTrade.getArticleId())).thenReturn(existingArticleNotInTrade);
+		when(mockArticleService.findByArticleId(existingArticleOwnedByDifferentUser.getArticleId())).thenReturn(existingArticleOwnedByDifferentUser);
 		fixture.articleService = mockArticleService;
 
-		when(mockMembershipService.find(existingMembership.getMembershipId())).thenReturn(existingMembership);
-		when(mockMembershipService.find(existingMembershipOwnedByDifferentUser.getMembershipId())).thenReturn(existingMembershipOwnedByDifferentUser);
+		when(mockMembershipService.findByMembershipId(existingMembership.getMembershipId())).thenReturn(existingMembership);
+		when(mockMembershipService.findByMembershipId(existingMembershipOwnedByDifferentUser.getMembershipId())).thenReturn(existingMembershipOwnedByDifferentUser);
 		fixture.membershipService = mockMembershipService;
 
 		when(mockUserService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingUser);

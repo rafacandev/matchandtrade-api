@@ -18,7 +18,7 @@ public class ArticleAttachmentService {
 	@Transactional
 	public AttachmentEntity create(Integer articleId, MultipartFile multipartFile) {
 		AttachmentEntity attachment = attachmentService.create(multipartFile);
-		ArticleEntity article = articleService.find(articleId);
+		ArticleEntity article = articleService.findByArticleId(articleId);
 		article.getAttachments().add(attachment);
 		articleService.update(article);
 		return attachment;
@@ -26,15 +26,15 @@ public class ArticleAttachmentService {
 
 	@Transactional
 	public void delete(Integer articleId, Integer attachmentId) {
-		AttachmentEntity attachment = attachmentService.find(attachmentId);
-		ArticleEntity article = articleService.find(articleId);
+		AttachmentEntity attachment = attachmentService.findByAttachmentId(attachmentId);
+		ArticleEntity article = articleService.findByArticleId(articleId);
 		article.getAttachments().remove(attachment);
 		articleService.update(article);
 		attachmentService.delete(attachmentId);
 	}
 
-	public AttachmentEntity find(Integer attachmentId) {
-		return attachmentService.find(attachmentId);
+	public AttachmentEntity findByAttachmentId(Integer attachmentId) {
+		return attachmentService.findByAttachmentId(attachmentId);
 	}
 
 	public SearchResult<AttachmentEntity> findByArticleId(Integer articleId) {

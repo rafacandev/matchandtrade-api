@@ -7,7 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 import com.matchandtrade.persistence.entity.OfferEntity;
 
 public interface OfferRepository extends CrudRepository<OfferEntity, Integer>{
-
 	List<OfferEntity> findByOfferedArticleArticleId(Integer offeredArticleId);
-	
 }

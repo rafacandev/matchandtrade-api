@@ -20,8 +20,8 @@ public class OfferHelper {
 	private OfferService offerService;
 
 	public OfferEntity createPersistedEntity(Integer membershipId, Integer offeredArticleId, Integer wantedArticleId) {
-		ArticleEntity offeredArticle = articleRepositoryFacade.find(offeredArticleId);
-		ArticleEntity wantedArticle = articleRepositoryFacade.find(wantedArticleId);
+		ArticleEntity offeredArticle = articleRepositoryFacade.findByArticleId(offeredArticleId);
+		ArticleEntity wantedArticle = articleRepositoryFacade.findByArticleId(wantedArticleId);
 		OfferEntity offer = new OfferEntity();
 		offer.setOfferedArticle(offeredArticle);
 		offer.setWantedArticle(wantedArticle);

@@ -38,11 +38,11 @@ public class MembershipValidator {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Membership.userId is mandatory and must refer to an existing User");
 		}
 
-		if (userService.find(membership.getUserId()) == null) {
+		if (userService.findByUserId(membership.getUserId()) == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Membership.userId must refer to an existing User");
 		}
 
-		TradeEntity trade = tradeService.find(membership.getTradeId());
+		TradeEntity trade = tradeService.findByTradeId(membership.getTradeId());
 		if (trade == null) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Membership.tradeId must refer to an existing Trade");
 		} else if (trade.getState() != TradeEntity.State.SUBMITTING_ARTICLES) {
@@ -63,7 +63,7 @@ public class MembershipValidator {
 	 * @param membershipId
 	 */
 	public void validateDelete(UserEntity authenticatedUser, Integer membershipId) {
-		MembershipEntity membership = membershipService.find(membershipId);
+		MembershipEntity membership = membershipService.findByMembershipId(membershipId);
 		if (membership == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Membership.membershipId was not found");
 		}
@@ -82,7 +82,7 @@ public class MembershipValidator {
 	 * @param membershipId
 	 */
 	public void validateGet(Integer membershipId) {
-		MembershipEntity membership = membershipService.find(membershipId);
+		MembershipEntity membership = membershipService.findByMembershipId(membershipId);
 		if (membership == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Membership.membershipId was not found");
 		}

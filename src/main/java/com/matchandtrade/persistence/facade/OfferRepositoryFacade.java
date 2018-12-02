@@ -10,7 +10,6 @@ import java.util.List;
 
 @Repository
 public class OfferRepositoryFacade {
-	
 	@Autowired
 	private OfferRepository offerRepository;
 	
@@ -22,7 +21,7 @@ public class OfferRepositoryFacade {
 	}
 
 	// TODO: Optional ??
-	public OfferEntity find(Integer offerId) {
+	public OfferEntity findByOfferId(Integer offerId) {
 		return offerRepository.findById(offerId).get();
 	}
 

@@ -75,7 +75,7 @@ public class TradeController implements Controller {
 		// Validate the request - Nothing to validate
 		tradeValidador.validateGet(_pageNumber, _pageSize);
 		// Delegate to Service layer
-		SearchResult<TradeEntity> searchResult = tradeService.search(_pageNumber, _pageSize);
+		SearchResult<TradeEntity> searchResult = tradeService.findAll(_pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<TradeJson> response = tradeTransformer.transform(searchResult);
 		// TODO: Assemble links
@@ -89,7 +89,7 @@ public class TradeController implements Controller {
 		// Validate the request
 		tradeValidador.validateGet(tradeId);
 		// Delegate to Service layer
-		TradeEntity tradeEntity = tradeService.find(tradeId);
+		TradeEntity tradeEntity = tradeService.findByTradeId(tradeId);
 		// Transform the response
 		TradeJson response = tradeTransformer.transform(tradeEntity);
 		// TODO: Assemble links

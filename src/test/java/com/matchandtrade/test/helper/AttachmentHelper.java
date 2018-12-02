@@ -31,7 +31,7 @@ public class AttachmentHelper {
 	public AttachmentEntity createPersistedEntity(ArticleEntity article) {
 		MultipartFile file = newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
 		AttachmentEntity result = attachmentService.create(file);
-		ArticleEntity persistedArticle = articleRepositoryFacade.find(article.getArticleId());
+		ArticleEntity persistedArticle = articleRepositoryFacade.findByArticleId(article.getArticleId());
 		persistedArticle.getAttachments().add(result);
 		articleRepositoryFacade.save(persistedArticle);
 		// Also adding the attachment to the original article for consistency

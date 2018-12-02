@@ -80,14 +80,14 @@ public class AttachmentService {
 		attachmentRepositoryFacade.delete(attachmentId);
 	}
 
-	public AttachmentEntity find(Integer attachmentId) {
-		return attachmentRepositoryFacade.find(attachmentId);
-	}
-
 	public SearchResult<AttachmentEntity> findByArticleId(Integer articleId) {
 		return attachmentRepositoryFacade.findByArticleId(articleId);
 	}
-	
+
+	public AttachmentEntity findByAttachmentId(Integer attachmentId) {
+		return attachmentRepositoryFacade.findByAttachmentId(attachmentId);
+	}
+
 	private void saveThumbnailEssence(AttachmentEntity attachment, Path thumbnailRelativePath) {
 		EssenceEntity thumbnailEssence = new EssenceEntity();
 		thumbnailEssence.setRelativePath(thumbnailRelativePath.toString());

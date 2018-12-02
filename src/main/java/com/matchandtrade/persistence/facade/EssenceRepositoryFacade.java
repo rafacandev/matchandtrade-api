@@ -8,7 +8,6 @@ import com.matchandtrade.persistence.repository.EssenceRepository;
 
 @Repository
 public class EssenceRepositoryFacade {
-	
 	@Autowired
 	private EssenceRepository essenceRepository;
 	
@@ -19,5 +18,4 @@ public class EssenceRepositoryFacade {
 	public void delete(Integer essenceId) {
 		essenceRepository.deleteById(essenceId);
 	}
-
 }

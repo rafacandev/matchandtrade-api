@@ -27,7 +27,6 @@ import static com.matchandtrade.persistence.criteria.TradeQueryBuilder.Field.TRA
 
 @Component
 public class TradeService {
-
 	@Autowired
 	private MembershipRepositoryFacade membershipRepository;
 	@Autowired
@@ -78,14 +77,14 @@ public class TradeService {
 		tradeRepository.delete(tradeId);
 	}
 
-	public TradeEntity find(Integer tradeId) {
-		return tradeRepository.find(tradeId);
-	}
-
-	public SearchResult<TradeEntity> search(Integer pageNumber, Integer pageSize) {
+	public SearchResult<TradeEntity> findAll(Integer pageNumber, Integer pageSize) {
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(pageNumber, pageSize));
 		searchCriteria.addSort(new Sort(TRADE_ID, Sort.Type.DESC));
 		return searchServiceTrade.search(searchCriteria, TradeQueryBuilder.class);
+	}
+
+	public TradeEntity findByTradeId(Integer tradeId) {
+		return tradeRepository.findByTradeId(tradeId);
 	}
 
 	@Transactional
@@ -95,5 +94,4 @@ public class TradeService {
 			tradeResultService.generateResults(tradeEntity.getTradeId());
 		}
 	}
-
 }

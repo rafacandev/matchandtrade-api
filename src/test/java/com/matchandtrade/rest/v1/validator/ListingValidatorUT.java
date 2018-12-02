@@ -48,8 +48,8 @@ public class ListingValidatorUT {
 		UserEntity existingUserDifferent = new UserEntity();
 		existingUserDifferent.setUserId(2);
 		existingMembershipForDifferentUser.setUser(existingUserDifferent);
-		when(membershipService.find(any())).thenReturn(existingMembershipForDifferentUser);
-		when(membershipService.find(existingMembership.getMembershipId())).thenReturn(existingMembership);
+		when(membershipService.findByMembershipId(any())).thenReturn(existingMembershipForDifferentUser);
+		when(membershipService.findByMembershipId(existingMembership.getMembershipId())).thenReturn(existingMembership);
 		fixture.membershipService = membershipService;
 	}
 

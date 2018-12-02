@@ -1,19 +1,12 @@
 package com.matchandtrade.rest.v1.validator;
 
-import com.matchandtrade.persistence.common.Criterion.Restriction;
-import com.matchandtrade.persistence.common.Pagination;
-import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.MembershipQueryBuilder;
-import com.matchandtrade.persistence.criteria.TradeQueryBuilder;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.persistence.entity.UserEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.MembershipService;
-import com.matchandtrade.rest.service.SearchService;
 import com.matchandtrade.rest.service.TradeService;
-import com.matchandtrade.rest.service.UserService;
 import com.matchandtrade.rest.v1.json.TradeJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,7 +86,7 @@ public class TradeValidator {
 	}
 
 	private void verifyThatTradeExists(Integer tradeId) {
-		TradeEntity entity = tradeService.find(tradeId);
+		TradeEntity entity = tradeService.findByTradeId(tradeId);
 		if (entity == null) {
 			throw new RestException(HttpStatus.NOT_FOUND, "Trade.tradeId was not found");
 		}

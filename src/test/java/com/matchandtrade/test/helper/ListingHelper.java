@@ -21,8 +21,8 @@ public class ListingHelper {
 
 	@Transactional
 	public void createPersisted(Integer articleId, Integer membershipId) {
-		ArticleEntity article = articleRepositoryFacade.find(articleId);
-		MembershipEntity membership = membershipRepositoryFacade.find(membershipId);
+		ArticleEntity article = articleRepositoryFacade.findByArticleId(articleId);
+		MembershipEntity membership = membershipRepositoryFacade.findByMembershipId(membershipId);
 		membership.getArticles().add(article);
 		membershipRepositoryFacade.save((membership));
 	}

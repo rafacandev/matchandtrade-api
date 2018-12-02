@@ -136,7 +136,7 @@ public class TradeControllerIT extends BaseControllerIT {
 		TradeJson actual = JsonUtil.fromString(response.getContentAsString(), TradeJson.class);
 		assertEquals(tradeTransformer.transform(expected), actual);
 
-		TradeEntity tradeGeneratingResults = tradeRepositoryFacade.find(actual.getTradeId());
+		TradeEntity tradeGeneratingResults = tradeRepositoryFacade.findByTradeId(actual.getTradeId());
 		assertTrue(tradeGeneratingResults.getState() == GENERATING_RESULTS || tradeGeneratingResults.getState() == RESULTS_GENERATED);
 	}
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SearchService<E extends Entity> {
-
 	@Autowired
 	private ApplicationContext applicationContext;
 	@Autowired
@@ -21,5 +20,4 @@ public class SearchService<E extends Entity> {
 		QueryBuilder queryBuilder = applicationContext.getBean(queryBuilderClass);
 		return queryableRepository.query(searchCriteria, queryBuilder);
 	}
-
 }

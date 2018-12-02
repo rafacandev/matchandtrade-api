@@ -57,7 +57,7 @@ public class ArticleAttachmentController implements Controller {
 		// Validate the request
 		articleAttachmentValidator.validateGet(attachmentId);
 		// Delegate to service layer
-		AttachmentEntity entity = articleAttachmentService.find(attachmentId);
+		AttachmentEntity entity = articleAttachmentService.findByAttachmentId(attachmentId);
 		// TODO: Links
 		return attachmentTransformer.transform(entity);
 	}

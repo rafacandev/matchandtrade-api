@@ -18,10 +18,6 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public UserEntity find(Integer userId) {
-		return userRepository.find(userId);
-	}
-
 	public UserEntity findByArticleId(Integer articleId) {
 		return userRepository.findByArticleId(articleId);
 	}
@@ -30,14 +26,19 @@ public class UserService {
 		return userRepository.findByOfferId(offerId);
 	}
 
+	public UserEntity findByUserId(Integer userId) {
+		return userRepository.findByUserId(userId);
+	}
+
 	/**
-	 * Only return {@code UserEntity.userId and UserEntity.name}
-	 * if the authenticated user is requesting information from a user that is not themselves.
-	 * @param requestingUser
+	 * Only return {@code UserEntity.userId and UserEntity.name} when {@code requestingUser}
+	 * and {@code authenticatedUser} do not have the same {@code UserEntity.userId}
+	 *
 	 * @param authenticatedUser
+	 * @param requestingUser
 	 * @return
 	 */
-	public UserEntity sanitize(UserEntity requestingUser, UserEntity authenticatedUser) {
+	public UserEntity sanitize(UserEntity authenticatedUser, UserEntity requestingUser) {
 		if (requestingUser == null) {
 			return null;
 		} else if (requestingUser.getUserId().equals(authenticatedUser.getUserId())) {

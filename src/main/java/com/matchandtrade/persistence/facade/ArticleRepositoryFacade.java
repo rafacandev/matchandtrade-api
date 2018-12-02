@@ -11,13 +11,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ArticleRepositoryFacade {
-	
 	@Autowired
 	private ArticleRepository articleRepository;
 
-
 	// TODO: Optional?
-	public ArticleEntity find(Integer articleId) {
+	public ArticleEntity findByArticleId(Integer articleId) {
 		return articleRepository.findById(articleId).get();
 	}
 
@@ -38,5 +36,4 @@ public class ArticleRepositoryFacade {
 		Page<ArticleEntity> page = articleRepository.findAll(pageable);
 		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
-
 }

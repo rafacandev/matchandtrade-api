@@ -38,7 +38,7 @@ public class TradeResultValidatorUT {
 		existingTrade.setState(RESULTS_GENERATED);
 		existingTrade.setResult(new TradeResultEntity());
 
-		when(mockTradeService.find(existingTrade.getTradeId())).thenReturn(existingTrade);
+		when(mockTradeService.findByTradeId(existingTrade.getTradeId())).thenReturn(existingTrade);
 		fixture.tradeService = mockTradeService;
 	}
 
