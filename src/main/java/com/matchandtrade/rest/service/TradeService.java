@@ -30,7 +30,7 @@ public class TradeService {
 	@Autowired
 	private SearchService<TradeEntity> searchServiceTrade;
 	@Autowired
-	private TradeRepositoryFacade tradeRepository;
+	private TradeRepositoryFacade tradeRepositoryFacade;
 	@Autowired
 	private TradeResultService tradeResultService;
 
@@ -45,7 +45,7 @@ public class TradeService {
 	@Transactional
 	public void create(TradeEntity tradeEntity, UserEntity tradeOwner) {
 		tradeEntity.setState(TradeEntity.State.SUBMITTING_ARTICLES);
-		tradeRepository.save(tradeEntity);
+		tradeRepositoryFacade.save(tradeEntity);
 		// Make authenticated user the owner of the trade
 		MembershipEntity membershipEntity = new MembershipEntity();
 		membershipEntity.setTrade(tradeEntity);
@@ -70,7 +70,7 @@ public class TradeService {
 	}
 
 	public void delete(Integer tradeId) {
-		tradeRepository.delete(tradeId);
+		tradeRepositoryFacade.delete(tradeId);
 	}
 
 	public SearchResult<TradeEntity> findAll(Integer pageNumber, Integer pageSize) {
@@ -80,12 +80,12 @@ public class TradeService {
 	}
 
 	public TradeEntity findByTradeId(Integer tradeId) {
-		return tradeRepository.findByTradeId(tradeId);
+		return tradeRepositoryFacade.findByTradeId(tradeId);
 	}
 
 	@Transactional
 	public void update(TradeEntity tradeEntity) {
-		tradeRepository.save(tradeEntity);
+		tradeRepositoryFacade.save(tradeEntity);
 		if (TradeEntity.State.GENERATE_RESULTS == tradeEntity.getState()) {
 			tradeResultService.generateResults(tradeEntity.getTradeId());
 		}

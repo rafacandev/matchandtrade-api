@@ -1,8 +1,8 @@
 package com.matchandtrade.rest.v1.transformer;
 
 import com.matchandtrade.persistence.entity.MembershipEntity;
-import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.persistence.facade.UserRepositoryFacade;
+import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.MembershipJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ public class MembershipTransformer extends Transformer<MembershipEntity, Members
 	@Autowired
 	private UserRepositoryFacade userRepositoryFacade;
 	@Autowired
-	private TradeRepositoryFacade tradeRepositoryFacade;
+	private TradeService tradeService;
 
 	@Override
 	public MembershipJson transform(MembershipEntity entity) {
@@ -38,7 +38,7 @@ public class MembershipTransformer extends Transformer<MembershipEntity, Members
 		MembershipEntity result;
 		result = new MembershipEntity();
 		result.setMembershipId(json.getMembershipId());
-		result.setTrade(tradeRepositoryFacade.findByTradeId(json.getTradeId()));
+		result.setTrade(tradeService.findByTradeId(json.getTradeId()));
 		result.setUser(userRepositoryFacade.findByUserId(json.getUserId()));
 		return result;
 	}

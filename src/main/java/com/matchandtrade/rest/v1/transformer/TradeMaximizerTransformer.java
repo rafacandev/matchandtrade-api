@@ -3,9 +3,9 @@ package com.matchandtrade.rest.v1.transformer;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
-import com.matchandtrade.persistence.facade.TradeRepositoryFacade;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.MembershipService;
+import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeResultJson;
 import com.matchandtrade.rest.v1.json.TradedArticleJson;
 import org.apache.commons.csv.CSVFormat;
@@ -25,7 +25,7 @@ public class TradeMaximizerTransformer {
 	@Autowired
 	private MembershipService membershipService;
 	@Autowired
-	private TradeRepositoryFacade tradeRepositoryFacade;
+	private TradeService tradeService;
 
 	/**
 	 * Helper class to temporarily hold parsed values from a trade line 
@@ -103,7 +103,7 @@ public class TradeMaximizerTransformer {
 	}
 
 	private void printSummary(Integer tradeId, Integer totalOfArticles, int totalOfTradedArticles, CSVPrinter csvPrinter) throws IOException {
-		TradeEntity trade = tradeRepositoryFacade.findByTradeId(tradeId);
+		TradeEntity trade = tradeService.findByTradeId(tradeId);
 		csvPrinter.println();
 		csvPrinter.printComment("--------------------------------");
 		csvPrinter.printComment("Summary of Trade [" + trade.getTradeId() + " : " + trade.getName() + "]");
@@ -199,7 +199,7 @@ public class TradeMaximizerTransformer {
 	}
 	
 	public TradeResultJson toJson(Integer tradeId, String tradeMaximizerOutput) {
-		TradeEntity trade = tradeRepositoryFacade.findByTradeId(tradeId);
+		TradeEntity trade = tradeService.findByTradeId(tradeId);
 		List<String> lines = transformTradeMaximizerToList(tradeMaximizerOutput);
 		int totalOfTradedArticles = 0;
 		
