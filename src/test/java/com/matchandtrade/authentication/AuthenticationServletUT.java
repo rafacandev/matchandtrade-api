@@ -73,7 +73,7 @@ public class AuthenticationServletUT {
 		assertTrue(actualUri.getQuery().contains("client_id=" + MockConfigurationProperties.AUTHENTICATION_CLIENT_ID));
 		assertTrue(actualUri.getQuery().contains("response_type=code"));
 		assertTrue(actualUri.getQuery().contains("scope=openid+email+profile"));
-		assertTrue(actualUri.getQuery().contains("redirect_uri="+ MockConfigurationProperties.AUTHENTICATION_REDIRECT_URL+"&state"));
+		assertTrue(actualUri.getQuery().contains("redirect_uri=" + MockConfigurationProperties.AUTHENTICATION_REDIRECT_URL + "&state"));
 	}
 	
 	@Test

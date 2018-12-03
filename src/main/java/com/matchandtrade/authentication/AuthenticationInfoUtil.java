@@ -14,7 +14,7 @@ import com.matchandtrade.util.JsonUtil;
 
 public class AuthenticationInfoUtil {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationInfoUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(AuthenticationInfoUtil.class);
 
 	// Utility classes should not have public constructors
 	private AuthenticationInfoUtil() {}
@@ -35,7 +35,7 @@ public class AuthenticationInfoUtil {
 			response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
 			response.getWriter().println(authenticationInfoJsonAsString);
 		} catch (IOException e) {
-			LOGGER.error("Not able to write AuthenticationInfoJson in the response body.", e);
+			log.error("Not able to write AuthenticationInfoJson in the response body.", e);
 			throw new AuthenticationException(e);
 		}
 	}

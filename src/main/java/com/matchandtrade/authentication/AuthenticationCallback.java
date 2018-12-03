@@ -20,7 +20,7 @@ import com.matchandtrade.persistence.facade.UserRepositoryFacade;
 @Component
 public class AuthenticationCallback {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationCallback.class);
+	private final Logger log = LoggerFactory.getLogger(AuthenticationCallback.class);
 	private static final String CODE_PARAMETER = "code";
 	private static final String STATE_PARAMETER = "state";
 
@@ -38,12 +38,12 @@ public class AuthenticationCallback {
 	protected void authenticate(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// oAuth Step 3. Confirm anti-forgery state token
 		String stateParameter = request.getParameter(STATE_PARAMETER);
-		LOGGER.debug("Received request with state parameter: [{}]", stateParameter);
+		log.debug("Received request with state parameter: [{}]", stateParameter);
 
 		AuthenticationEntity authenticationEntity = authenticationRepository.findByAtiForgeryState(stateParameter);
 		// Return HTTP-STATUS 401 if anti-forgery state token is not found
 		if (authenticationEntity == null) {
-			LOGGER.debug("Invalidating session because there is no authentication for state parameter: [{}].", stateParameter);
+			log.debug("Invalidating session because there is no authentication for state parameter: [{}].", stateParameter);
 			response.setStatus(401);
 			request.getSession().invalidate();
 			return;
@@ -57,18 +57,18 @@ public class AuthenticationCallback {
 			configProperties.authentication.getRedirectUrl());
 		
 		// oAuth Step 5. Obtain user information from the ID token
-		LOGGER.debug("Obtaining user information by access token.");
+		log.debug("Obtaining user information by access token.");
 		AuthenticationResponsePojo userInfoFromAuthenticationAuthority = authenticationOAuth.obtainUserInformation(accessToken);
 		
 		// oAuth Step 6. Authenticate the user
-		LOGGER.debug("Authenticating user with email: {}", userInfoFromAuthenticationAuthority.getEmail());
+		log.debug("Authenticating user with email: {}", userInfoFromAuthenticationAuthority.getEmail());
 		AuthenticationResponsePojo persistedUserInfo = updateUserInfo(userInfoFromAuthenticationAuthority.getEmail(), userInfoFromAuthenticationAuthority.getName());
-		LOGGER.debug("Storing authentication for userId: {}", persistedUserInfo.getUserId());
+		log.debug("Storing authentication for userId: {}", persistedUserInfo.getUserId());
 		updateAuthenticationInfo(authenticationEntity, persistedUserInfo.getUserId(), accessToken);
 		
 		// Using accessToken as AuthorizationToken since authorization is managed locally instead of the Authentication Authority
 		response.addHeader(AuthenticationOAuth.AUTHORIZATION_HEADER, accessToken);
-		LOGGER.debug("Setting authentication in session for userId: {}", persistedUserInfo.getUserId());
+		log.debug("Setting authentication in session for userId: {}", persistedUserInfo.getUserId());
 		request.getSession().setMaxInactiveInterval(configProperties.authentication.getSessionTimeout());
 		request.getSession().setAttribute(AuthenticationOAuth.AUTHORIZATION_HEADER, accessToken);
 		
@@ -85,9 +85,9 @@ public class AuthenticationCallback {
 	private void redirectResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String callbackUrl = configProperties.authentication.getCallbackUrl();
 		if (callbackUrl == null || callbackUrl.isEmpty()) {
-			LOGGER.warn("Redirecting URL property (authentication.callback.url) is missing. Skipping redirect");
+			log.warn("Redirecting URL property (authentication.callback.url) is missing. Skipping redirect");
 		} else {
-			LOGGER.debug("Redirecting request to callback url property {} with value: {}", "authentication.callback.url", callbackUrl);
+			log.debug("Redirecting request to callback url property {} with value: {}", "authentication.callback.url", callbackUrl);
 			response.sendRedirect(callbackUrl);
 		}
 	}

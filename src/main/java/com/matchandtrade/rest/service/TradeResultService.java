@@ -25,7 +25,7 @@ import java.util.List;
 
 @Component
 public class TradeResultService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TradeResultService.class);
+	private final Logger log = LoggerFactory.getLogger(TradeResultService.class);
 	
 	@Autowired
 	private SearchService<ArticleEntity> searchServiceArticle;
@@ -58,7 +58,7 @@ public class TradeResultService {
 	 */
 	private String buildTradeMaximizerInput(Integer tradeId) {
 		StringBuilder tradeMaximizerEntries = new StringBuilder();
-		LOGGER.debug("Finding all articles for Trade.tradeId: {}", tradeId);
+		log.debug("Finding all articles for Trade.tradeId: {}", tradeId);
 		
 		int pageNumber = 1;
 		int pageSize = 50;
@@ -84,7 +84,7 @@ public class TradeResultService {
 	protected String buildTradeMaximizerOutput(Integer tradeId) {
 		// The entries to be passed to Trade Maximizer
 		String tradeMaximizerInputString = buildTradeMaximizerInput(tradeId);
-		LOGGER.info("Using TradeMaximizer input:\n{}", tradeMaximizerInputString);
+		log.info("Using TradeMaximizer input:\n{}", tradeMaximizerInputString);
 		InputStream tradeMaximizerInput = new ByteArrayInputStream(tradeMaximizerInputString.getBytes());
 		OutputStream tradeMaximizerOuput = new ByteArrayOutputStream();
 		TradeMaximizer tradeMaximizer = new TradeMaximizer(tradeMaximizerInput, tradeMaximizerOuput);
@@ -95,7 +95,7 @@ public class TradeResultService {
 		} catch (IOException e) {
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Error when build TradeMaximizer output. " + e.getMessage());
 		}
-		LOGGER.debug("TradeMaximizer output:\n{}", result);
+		log.debug("TradeMaximizer output:\n{}", result);
 		return result;
 	}
 
@@ -112,7 +112,7 @@ public class TradeResultService {
 		} catch (IOException e) {
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to parse results from tradeId " + tradeId + " in CSV format.");
 		}
-		LOGGER.debug("Transformed TradeMaximizer output into csv:\n{}", csv);
+		log.debug("Transformed TradeMaximizer output into csv:\n{}", csv);
 		trade.getResult().setCsv(csv);
 		tradeRepositoryFacade.save(trade);
 		return csv;
@@ -137,7 +137,7 @@ public class TradeResultService {
 			tradeResultJson = tradeMaximizerTransformer.toJson(tradeId, trade.getResult().getTradeMaximizerOutput());
 			try {
 				tradeResultJsonAsString = JsonUtil.toJson(tradeResultJson);
-				LOGGER.debug("Transformed TradeMaximizer output into json:\n{}", tradeResultJsonAsString);
+				log.debug("Transformed TradeMaximizer output into json:\n{}", tradeResultJsonAsString);
 			} catch (JsonProcessingException e) {
 				throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to parse results from tradeId " + tradeId + " in JSON format.");
 			}
@@ -152,7 +152,7 @@ public class TradeResultService {
 		SearchCriteria articlesCriteria = new SearchCriteria(pagination);
 		articlesCriteria.addCriterion(ArticleQueryBuilder.Field.TRADE_ID, tradeId);
 		SearchResult<ArticleEntity> result = searchServiceArticle.search(articlesCriteria, ArticleQueryBuilder.class);
-		LOGGER.debug("Found articles with {} ", pagination);
+		log.debug("Found articles with {} ", pagination);
 		return result;
 	}
 	

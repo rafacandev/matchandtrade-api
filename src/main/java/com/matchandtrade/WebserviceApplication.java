@@ -13,8 +13,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @SpringBootApplication
 @EnableAutoConfiguration
 public class WebserviceApplication {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(WebserviceApplication.class);
+	private static final Logger log = LoggerFactory.getLogger(WebserviceApplication.class);
 	private static final String CONFIGURATION_FILE_PROPERTY_DESCRIPTION = "--configFile or -cf or -Dspring.config.location";
 	private static final String CONFIGURATION_FILE_PROPERTY_KEY = "spring.config.location";
 
@@ -24,7 +23,7 @@ public class WebserviceApplication {
 		try {
 			cli = new AppCli(arguments);
 		} catch (Exception e) {
-			LOGGER.info("Not able to start application! ", e.getMessage(), e);
+			log.info("Not able to start application! ", e.getMessage(), e);
 			System.exit(1);
 		}
 
@@ -32,8 +31,8 @@ public class WebserviceApplication {
 		String configurationFile = loadConfigurationFileProperty(cli);
 
 		if (configurationFile == null || cli.isInterrupted()) {
-			LOGGER.debug("Did not fin {}", CONFIGURATION_FILE_PROPERTY_DESCRIPTION);
-			LOGGER.info(cli.getCommandLineOutputMessage());
+			log.debug("Did not fin {}", CONFIGURATION_FILE_PROPERTY_DESCRIPTION);
+			log.info(cli.getCommandLineOutputMessage());
 		} else {
 			// Proceed normally
 			SpringApplication.run(WebserviceApplication.class);
@@ -43,7 +42,7 @@ public class WebserviceApplication {
 	private static String loadConfigurationFileProperty(AppCli cli) {
 		String configurationFile;
 		if (cli.configurationFilePath() != null) {
-			LOGGER.debug("Found {}={}", CONFIGURATION_FILE_PROPERTY_DESCRIPTION, cli.configurationFilePath());
+			log.debug("Found {}={}", CONFIGURATION_FILE_PROPERTY_DESCRIPTION, cli.configurationFilePath());
 			configurationFile = cli.configurationFilePath();
 			System.setProperty(CONFIGURATION_FILE_PROPERTY_KEY, configurationFile);
 		} else {
@@ -54,5 +53,4 @@ public class WebserviceApplication {
 		}
 		return configurationFile;
 	}
-
 }

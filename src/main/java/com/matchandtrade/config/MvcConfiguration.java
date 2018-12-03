@@ -18,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableWebMvc
 public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(MvcConfiguration.class);
+	private final Logger log = LoggerFactory.getLogger(MvcConfiguration.class);
 	public static final String ESSENCES_URL_PATTERN = "/matchandtrade-api/essences/**";
 	
 	@Autowired
@@ -27,7 +27,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		String fileStorageRootFolderProperty = "file:" + confiProperties.getConfigurationFile();
-		LOGGER.info("Exposing static files with the patter [{}] from [{}].", ESSENCES_URL_PATTERN, fileStorageRootFolderProperty);
+		log.info("Exposing static files with the patter [{}] from [{}].", ESSENCES_URL_PATTERN, fileStorageRootFolderProperty);
 		registry.addResourceHandler(ESSENCES_URL_PATTERN).addResourceLocations(fileStorageRootFolderProperty);
 	}
 

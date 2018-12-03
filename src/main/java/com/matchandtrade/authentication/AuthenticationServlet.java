@@ -21,7 +21,7 @@ import java.security.SecureRandom;
 public class AuthenticationServlet extends HttpServlet {
 	private static final long serialVersionUID = 373664290851751809L;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationServlet.class);
+	private final Logger log = LoggerFactory.getLogger(AuthenticationServlet.class);
 	
 	@Autowired
 	AuthenticationOAuth authenticationOAuth;
@@ -43,10 +43,10 @@ public class AuthenticationServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		AuthenticationAction targetAction = obtainAuthenticationAction(request);
-		LOGGER.debug("Performing Authentication Action {} for requet [{}].", targetAction, request.getRequestURI());
+		log.debug("Performing Authentication Action {} for requet [{}].", targetAction, request.getRequestURI());
 		try {
 			if (targetAction == null) {
-				LOGGER.info("URI request not recognized: {}", request.getRequestURI());
+				log.info("URI request not recognized: {}", request.getRequestURI());
 				response.setStatus(404);
 				return;
 			}
@@ -68,7 +68,7 @@ public class AuthenticationServlet extends HttpServlet {
 				break;
 			}
 		} catch (Exception e) {
-			LOGGER.error("Error when performing a GET /authenticate/* with targetAction {}", targetAction, e);
+			log.error("Error when performing a GET /authenticate/* with targetAction {}", targetAction, e);
 			response.setStatus(500);
 		}
 	}
@@ -103,11 +103,11 @@ public class AuthenticationServlet extends HttpServlet {
 
 		// oAuth Step 2. Send an authentication request to the Authorization Authority
 		authenticationOAuth.redirectToAuthorizationAuthority(response, state, configProperties.authentication.getClientId(), configProperties.authentication.getRedirectUrl());
-		LOGGER.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", configProperties.authentication.getRedirectUrl());
+		log.debug("Redirecting request to Authorization Authority with redirectURI: [{}].", configProperties.authentication.getRedirectUrl());
 	}
 	
 	private void signOff(HttpServletRequest request, HttpServletResponse response) {
-		LOGGER.debug("Signing off from session id: [{}]", request.getSession().getId());
+		log.debug("Signing off from session id: [{}]", request.getSession().getId());
 		// Delete authentication details
 		String accessToken = request.getHeader(AuthenticationOAuth.AUTHORIZATION_HEADER);
 		if (accessToken != null) {

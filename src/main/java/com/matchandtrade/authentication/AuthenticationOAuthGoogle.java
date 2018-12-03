@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthenticationOAuthGoogle implements AuthenticationOAuth {
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthGoogle.class);
+	private final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthGoogle.class);
 	
 	/**
 	 * Extracts the access token from the response string.

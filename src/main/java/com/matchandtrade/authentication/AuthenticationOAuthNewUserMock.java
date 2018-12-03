@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AuthenticationOAuthNewUserMock implements AuthenticationOAuth {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthNewUserMock.class);
+	private final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthNewUserMock.class);
 
 	private String buidRandomAccessToken() {
 		Random random = new Random();

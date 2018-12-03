@@ -40,7 +40,7 @@ public class RestResponseAdvice implements ResponseBodyAdvice<Object> {
 		public String totalCount;
 	}
 	
-	private static final Logger logger = LoggerFactory.getLogger(RestResponseAdvice.class);
+	private final Logger logger = LoggerFactory.getLogger(RestResponseAdvice.class);
 
 	/**
 	 * When <i>body</i> is an instance of <i>JsonLinkSupport<i> or SearchResult<JsonLinkSupport>, then

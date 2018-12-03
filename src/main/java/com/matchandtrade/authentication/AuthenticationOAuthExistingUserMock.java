@@ -32,7 +32,7 @@ public class AuthenticationOAuthExistingUserMock implements AuthenticationOAuth 
 	@Autowired
 	private AppConfigurationProperties configProperties;
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
+	private final Logger logger = LoggerFactory.getLogger(AuthenticationOAuthExistingUserMock.class);
 
 	private String buidRandomAccessToken() {
 		Random random = new Random();

@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Service
 public class EssenceStorageService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(EssenceStorageService.class);
+	private final Logger log = LoggerFactory.getLogger(EssenceStorageService.class);
 
 	@Autowired
 	private AppConfigurationProperties configProperties;
@@ -33,10 +33,10 @@ public class EssenceStorageService {
 	@PostConstruct
 	private void init() {
 		String rootFolderProperty = configProperties.filestorage.getEssenceRootPath();
-		LOGGER.info("Initiating essence service with root folder: {}", rootFolderProperty);
+		log.info("Initiating essence service with root folder: {}", rootFolderProperty);
 		Path targetRootPath = Paths.get(rootFolderProperty);
 		if (!targetRootPath.toFile().isDirectory()) {
-			LOGGER.error("Root folder is not a directory: {}", rootFolderProperty);
+			log.error("Root folder is not a directory: {}", rootFolderProperty);
 			throw new IllegalArgumentException("Root is not a directory: " + rootFolderProperty);
 		}
 		rootFolder = targetRootPath;

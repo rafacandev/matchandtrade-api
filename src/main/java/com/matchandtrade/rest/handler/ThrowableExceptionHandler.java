@@ -16,7 +16,7 @@ import com.matchandtrade.rest.RestException;
 @ControllerAdvice
 public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ThrowableExceptionHandler.class);
+	private final Logger log = LoggerFactory.getLogger(ThrowableExceptionHandler.class);
 
 	@ExceptionHandler(Throwable.class)
     @ResponseBody
@@ -31,7 +31,7 @@ public class ThrowableExceptionHandler extends ResponseEntityExceptionHandler {
     		status = e.getHttpStatus();
        		resultEntity = buildErrorJson(e);
 		} else {
-			LOGGER.error("Error proccessing request to URI: [{}]. Exception message: [{}].", request.getRequestURI(), exception.getMessage(), exception);
+			log.error("Error proccessing request to URI: [{}]. Exception message: [{}].", request.getRequestURI(), exception.getMessage(), exception);
 			resultEntity = buildErrorJson("Unknown error. " + status.getReasonPhrase());
 		}
     	return new ResponseEntity<>(resultEntity, status);

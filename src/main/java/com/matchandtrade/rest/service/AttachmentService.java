@@ -23,7 +23,7 @@ import java.nio.file.Path;
 
 @Service
 public class AttachmentService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentService.class);
+	private final Logger log = LoggerFactory.getLogger(AttachmentService.class);
 	private final int THUMBNAIL_SIZE = 128;
 
 	@Autowired
@@ -36,16 +36,16 @@ public class AttachmentService {
 	@Transactional
 	public AttachmentEntity create(MultipartFile multipartFile) {
 		Path originalEssenceRelativePath = essenceStorageService.makeRelativePath(multipartFile.getOriginalFilename());
-		LOGGER.debug("Storing original essence file at: {}", originalEssenceRelativePath);
+		log.debug("Storing original essence file at: {}", originalEssenceRelativePath);
 		storeFileOnFileSystem(multipartFile, originalEssenceRelativePath);
 
-		LOGGER.debug("Saving original essence entity");
+		log.debug("Saving original essence entity");
 		EssenceEntity originalEssence = new EssenceEntity();
 		originalEssence.setType(Type.ORIGINAL);
 		originalEssence.setRelativePath(originalEssenceRelativePath.toString());
 		essenceService.save(originalEssence);
 		
-		LOGGER.debug("Saving AttachmentEntity with original EssenceEntity");
+		log.debug("Saving AttachmentEntity with original EssenceEntity");
 		AttachmentEntity result = new AttachmentEntity();
 		result.setContentType(multipartFile.getContentType());
 		result.setName(multipartFile.getOriginalFilename());
@@ -54,13 +54,13 @@ public class AttachmentService {
 
 		if (multipartFile.getContentType() != null && multipartFile.getContentType().contains("image")) {
 			Path thumbnailRelativePath = essenceStorageService.makeRelativePath(multipartFile.getOriginalFilename());
-			LOGGER.debug("Attempting to generate thumbnail for content type: {}; from essence file: {}; to thumbnail file: {}", multipartFile.getContentType(), originalEssenceRelativePath, thumbnailRelativePath);
+			log.debug("Attempting to generate thumbnail for content type: {}; from essence file: {}; to thumbnail file: {}", multipartFile.getContentType(), originalEssenceRelativePath, thumbnailRelativePath);
 			try {
 				storeThumbnailOnFileSystem(originalEssenceRelativePath, thumbnailRelativePath);
-				LOGGER.debug("Saving thumbnail essence entity");
+				log.debug("Saving thumbnail essence entity");
 				saveThumbnailEssence(result, thumbnailRelativePath);
 			} catch (IOException | IllegalArgumentException e) {
-				LOGGER.warn("Unable to save thumbnail, proceeding without a thumbnail. {}", e.getMessage());
+				log.warn("Unable to save thumbnail, proceeding without a thumbnail. {}", e.getMessage());
 			}
 		}
 		return result;
@@ -93,7 +93,7 @@ public class AttachmentService {
 		thumbnailEssence.setRelativePath(thumbnailRelativePath.toString());
 		thumbnailEssence.setType(Type.THUMBNAIL);
 		essenceService.save(thumbnailEssence);
-		LOGGER.debug("Saving AttachmentEntity with thumbnail EssenceEntity");
+		log.debug("Saving AttachmentEntity with thumbnail EssenceEntity");
 		attachment.getEssences().add(thumbnailEssence);
 		attachmentRepositoryFacade.save(attachment);
 	}
@@ -102,7 +102,7 @@ public class AttachmentService {
 		try {
 			essenceStorageService.store(multipartFile.getBytes(), relativePath);
 		} catch (IOException e) {
-			LOGGER.error("Unable to store file", e);
+			log.error("Unable to store file", e);
 			throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to store file. " + e.getMessage());
 		}
 	}
