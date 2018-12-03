@@ -16,27 +16,17 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
 public class ArticleServiceIT {
-
 	@Autowired
 	private ArticleService fixture;
 	@Autowired
 	private ArticleHelper articleHelper;
 
-	/**
-	 * Alert, this test is not tread save.
-	 * In a multi-threaded environment, when asserting results, assertion {@code assertTrue(actual.getResultList().contains(article))}
-	 * might fail if other tests inserted many articles in the data storage; resulting in a false positive.
-	 */
-	 // TODO: Review this
 	@Test
-	public void get_When_ThereIsOneArticleForTheUser_Then_ReturnsOneArticle() {
-		// Setting a long page size
-		int pageSize = 50;
-		int startingTotal = (int) fixture.findAll(1, pageSize).getPagination().getTotal();
-		ArticleEntity article = articleHelper.createPersistedEntity();
-		SearchResult<ArticleEntity> actual = fixture.findAll((startingTotal/pageSize)+1, pageSize);
-		assertTrue(actual.getPagination().getTotal() > startingTotal); // This assertion should e enough for most cases
-		assertTrue(actual.getResultList().contains(article));
+	public void get_When_ThereAreArticles_Then_ReturnsArticles() {
+		int startingTotal = (int) fixture.findAll(1, 1).getPagination().getTotal();
+		articleHelper.createPersistedEntity();
+		SearchResult<ArticleEntity> actual = fixture.findAll(1, 1);
+		assertTrue(actual.getPagination().getTotal() > startingTotal);
+		assertEquals(1, actual.getResultList().size());
 	}
-
 }
