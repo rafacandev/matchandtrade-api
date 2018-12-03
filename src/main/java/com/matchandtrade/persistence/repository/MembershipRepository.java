@@ -1,15 +1,12 @@
 package com.matchandtrade.persistence.repository;
 
-import java.util.List;
-
+import com.matchandtrade.persistence.entity.MembershipEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
-import com.matchandtrade.persistence.entity.MembershipEntity;
+import java.util.List;
 
-@Repository
 public interface MembershipRepository extends CrudRepository<MembershipEntity, Integer> {
 	List<MembershipEntity> findByTrade_TradeId(Integer tradeId);
 

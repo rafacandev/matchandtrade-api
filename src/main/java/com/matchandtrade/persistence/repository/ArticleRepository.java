@@ -1,12 +1,10 @@
 package com.matchandtrade.persistence.repository;
 
-import com.matchandtrade.persistence.entity.TradeEntity;
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-
-import com.matchandtrade.persistence.entity.ArticleEntity;
 import org.springframework.data.repository.query.Param;
 
 public interface ArticleRepository extends CrudRepository<ArticleEntity, Integer>{

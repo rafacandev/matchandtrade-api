@@ -7,13 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
-@SpringBootApplication
-@EnableAutoConfiguration()
-@EntityScan(basePackages = "com.matchandtrade.persistence.entity") // TODO: Review this
+@SpringBootApplication(scanBasePackages = {"com.matchandtrade"})
+@EnableAutoConfiguration
 public class WebserviceApplication {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebserviceApplication.class);
