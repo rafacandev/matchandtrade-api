@@ -53,7 +53,7 @@ public class AuthenticationCallbackUT {
 		when(authenticationOAuthMock.obtainUserInformation(Mockito.any())).thenReturn(sessionUserAuthentication);
 		fixture.authenticationOAuth = authenticationOAuthMock;
 
-		fixture.configProperties = ConfigurationPropertiesMocker.buildConfigProperties();
+		fixture.configProperties = MockConfigurationProperties.buildConfigProperties();
 
 		requestMock = new MockHttpServletRequest();
 		requestMock.setParameter("state", defaultStateValue);

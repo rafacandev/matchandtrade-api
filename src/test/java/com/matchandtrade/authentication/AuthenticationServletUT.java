@@ -21,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 // TODO: Remove Silent runner and fix issues
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class AuthenticationServletUT {
 
 	@Mock
@@ -36,11 +36,11 @@ public class AuthenticationServletUT {
 	@Before
 	public void before() throws URISyntaxException {
 		fixture = new AuthenticationServlet();
-		redirectUri = new URI(ConfigurationPropertiesMocker.AUTHENTICATION_REDIRECT_URL);
+		redirectUri = new URI(MockConfigurationProperties.AUTHENTICATION_REDIRECT_URL);
 		fixture.authenticationRepository = authenticationRepositoryFacadeMock;
 		fixture.authenticationCallbak = authenticationCallbackMock;
 		fixture.authenticationOAuth = new AuthenticationOAuthNewUserMock();
-		fixture.configProperties = ConfigurationPropertiesMocker.buildConfigProperties();
+		fixture.configProperties = MockConfigurationProperties.buildConfigProperties();
 		requestMock = new MockHttpServletRequest();
 		responseMock = new MockHttpServletResponse();
 	}
@@ -70,10 +70,10 @@ public class AuthenticationServletUT {
 		URI actualUri = new URI(responseMock.getRedirectedUrl());
 		assertEquals(redirectUri.getHost(), actualUri.getHost());
 		assertEquals(redirectUri.getScheme(), actualUri.getScheme());
-		assertTrue(actualUri.getQuery().contains("client_id=" + ConfigurationPropertiesMocker.AUTHENTICATION_CLIENT_ID));
+		assertTrue(actualUri.getQuery().contains("client_id=" + MockConfigurationProperties.AUTHENTICATION_CLIENT_ID));
 		assertTrue(actualUri.getQuery().contains("response_type=code"));
 		assertTrue(actualUri.getQuery().contains("scope=openid+email+profile"));
-		assertTrue(actualUri.getQuery().contains("redirect_uri="+ConfigurationPropertiesMocker.AUTHENTICATION_REDIRECT_URL+"&state"));
+		assertTrue(actualUri.getQuery().contains("redirect_uri="+ MockConfigurationProperties.AUTHENTICATION_REDIRECT_URL+"&state"));
 	}
 	
 	@Test

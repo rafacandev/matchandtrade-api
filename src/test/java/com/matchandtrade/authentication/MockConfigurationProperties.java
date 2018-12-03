@@ -3,22 +3,18 @@ package com.matchandtrade.authentication;
 import com.matchandtrade.config.AppConfigurationProperties;
 import org.mockito.Mockito;
 
-public class ConfigurationPropertiesMocker {
+import static org.mockito.Mockito.when;
 
-	public static final String AUTHENTICATION_CALLBACK_URL = "http://callbackurl.com";
+public class MockConfigurationProperties {
 	public static final String AUTHENTICATION_CLIENT_ID = "clientId";
-	public static final String AUTHENTICATION_CLIENT_SECRET = "clientSecret";
 	public static final String AUTHENTICATION_REDIRECT_URL = "http://redirecturl.com";
 
 	public static AppConfigurationProperties buildConfigProperties() {
 		AppConfigurationProperties configPropertiesMock = Mockito.mock(AppConfigurationProperties.class);
 		AppConfigurationProperties.Authentication authenticationMock = Mockito.mock(AppConfigurationProperties.Authentication.class);
-		Mockito.doReturn(AUTHENTICATION_CLIENT_ID).when(authenticationMock).getClientId();
-		Mockito.doReturn(AUTHENTICATION_CLIENT_SECRET).when(authenticationMock).getClientSecret();
-		Mockito.doReturn(AUTHENTICATION_REDIRECT_URL).when(authenticationMock).getRedirectUrl();
-		Mockito.doReturn(AUTHENTICATION_CALLBACK_URL).when(authenticationMock).getCallbackUrl();
+		when(authenticationMock.getClientId()).thenReturn(AUTHENTICATION_CLIENT_ID);
+		when(authenticationMock.getRedirectUrl()).thenReturn(AUTHENTICATION_REDIRECT_URL);
 		configPropertiesMock.authentication = authenticationMock;
 		return configPropertiesMock;
 	}
-
 }
