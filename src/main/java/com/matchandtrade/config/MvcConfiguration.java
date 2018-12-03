@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
@@ -16,19 +17,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 @EnableWebMvc
-public class MvcConfiguration extends WebMvcConfigurerAdapter {
-
-	private final Logger log = LoggerFactory.getLogger(MvcConfiguration.class);
+public class MvcConfiguration implements WebMvcConfigurer {
 	public static final String ESSENCES_URL_PATTERN = "/matchandtrade-api/essences/**";
-	
+	private final Logger log = LoggerFactory.getLogger(MvcConfiguration.class);
+
 	@Autowired
 	private AppConfigurationProperties confiProperties;
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		String fileStorageRootFolderProperty = "file:" + confiProperties.getConfigurationFile();
-		log.info("Exposing static files with the patter [{}] from [{}].", ESSENCES_URL_PATTERN, fileStorageRootFolderProperty);
+		String fileStorageRootFolderProperty = "file:" + confiProperties.filestorage.getEssenceRootPath();
+		log.info("Exposing static files located at: [{}] with the pattern [{}].", fileStorageRootFolderProperty, ESSENCES_URL_PATTERN);
 		registry.addResourceHandler(ESSENCES_URL_PATTERN).addResourceLocations(fileStorageRootFolderProperty);
 	}
-
 }

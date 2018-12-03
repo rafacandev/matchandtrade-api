@@ -11,7 +11,7 @@ import com.matchandtrade.util.VersionUtil;
 
 @Component
 public class ConfigurationInfoLogger implements ApplicationRunner {
-    private final Logger logger = LoggerFactory.getLogger("plainTextLogger");
+    private final Logger log = LoggerFactory.getLogger("plainTextLogger");
     
     @Autowired
 	private AppConfigurationProperties config;
@@ -24,21 +24,22 @@ public class ConfigurationInfoLogger implements ApplicationRunner {
 			"|\\/| |__|  |  |    |__|    |__| |\\ | |  \\     |  |__/ |__| |  \\ |___ \n" +
 			"|  | |  |  |  |___ |  |    |  | | \\| |__/     |  |  \\ |  | |__/ |___ \n";
 
-		logger.info(logo);
-		logger.info("|===========================================================");
-		logger.info("|            WELCOME TO MATCH AND TRADE API");
-		logger.info("| Project Name: {}", versionUtil.projectName());
-		logger.info("| Project Version: {}", versionUtil.projectVersion());
-		logger.info("| Build Number: {}", versionUtil.buildNumber());
-		logger.info("| Build Timestamp: {}", versionUtil.buildTimestamp());
-		logger.info("|");
-		logger.info("| {}: {}", "authentication.oauth.class", config.authentication.getOauthClass());
-		logger.info("| {}: {}", "datasource.driver.class", config.datasource.getDriverClass());
-		logger.info("| {}: {}", "datasource.jdbc.url", config.datasource.getJdbcUrl());
-		logger.info("| {}: {}", "--configFile -cf -Dspring.config.location", config.getConfigurationFile());
-		logger.info("| {}: {}", "logging.file", config.springboot.getLoggingFile());
-		logger.info("| {}: {}", "server.port", config.springboot.getServerPort());
-		logger.info("|===========================================================");
+		log.info(logo);
+		log.info("|===========================================================");
+		log.info("|            WELCOME TO MATCH AND TRADE API");
+		log.info("| Project Name: {}", versionUtil.projectName());
+		log.info("| Project Version: {}", versionUtil.projectVersion());
+		log.info("| Build Number: {}", versionUtil.buildNumber());
+		log.info("| Build Timestamp: {}", versionUtil.buildTimestamp());
+		log.info("|");
+		log.info("| {}: {}", "authentication.oauth.class", config.authentication.getOauthClass());
+		log.info("| {}: {}", "--configFile -cf -Dspring.config.location", config.getConfigurationFile());
+		log.info("| {}: {}", "datasource.driver.class", config.datasource.getDriverClass());
+		log.info("| {}: {}", "datasource.jdbc.url", config.datasource.getJdbcUrl());
+		log.info("| {}: {}", "essence.root.folder", config.filestorage.getEssenceRootPath());
+		log.info("| {}: {}", "logging.file", config.springboot.getLoggingFile());
+		log.info("| {}: {}", "server.port", config.springboot.getServerPort());
+		log.info("|===========================================================");
     }
 
 }
