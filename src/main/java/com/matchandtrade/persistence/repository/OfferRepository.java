@@ -1,11 +1,10 @@
 package com.matchandtrade.persistence.repository;
 
-import java.util.List;
-
+import com.matchandtrade.persistence.entity.OfferEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
-import com.matchandtrade.persistence.entity.OfferEntity;
-
 public interface OfferRepository extends CrudRepository<OfferEntity, Integer>{
-	List<OfferEntity> findByOfferedArticleArticleId(Integer offeredArticleId);
+	Page<OfferEntity> findByOfferedArticleArticleId(Integer offeredArticleId, Pageable pageable);
 }

@@ -43,9 +43,8 @@ public class OfferService {
 		return offerRepositoryFacade.findByOfferId(offerId);
 	}
 
-	// TODO: change to SearchResult?
-	public List<OfferEntity> findByOfferedArticleId(Integer offeredArticleId) {
-		return offerRepositoryFacade.findByOfferedArticleId(offeredArticleId);
+	public SearchResult<OfferEntity> findByOfferedArticleId(Integer offeredArticleId, Pagination pagination) {
+		return offerRepositoryFacade.findByOfferedArticleId(offeredArticleId, pagination);
 	}
 
 	public SearchResult<OfferEntity> findByMembershipIdOfferedArticleIdWantedArticleId(

@@ -40,12 +40,15 @@ public class TradeResultService {
 
 
 	private StringBuilder buildOfferLine(MembershipEntity membership, ArticleEntity article) {
-		StringBuilder line = new StringBuilder("(" + membership.getMembershipId() + ") " + article.getArticleId() + " :");
-		List<OfferEntity> offers = offerService.findByOfferedArticleId(article.getArticleId());
-		offers.forEach(offer -> {
-			line.append(" " + offer.getWantedArticle().getArticleId());
-		});
-		return line;
+		StringBuilder line = new StringBuilder("(");
+		line.append(membership.getMembershipId()).append(") ").append(article.getArticleId()).append(" :");
+		for (int i=1; ;i++) {
+			SearchResult<OfferEntity> searchResult = offerService.findByOfferedArticleId(article.getArticleId(), new Pagination(i, 1));
+			searchResult.getResultList().forEach(offer -> line.append(" " + offer.getWantedArticle().getArticleId()));
+			if (searchResult.isEmpty()) {
+				return line;
+			}
+		}
 	}
 	
 	/**

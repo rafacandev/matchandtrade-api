@@ -1,12 +1,15 @@
 package com.matchandtrade.persistence.facade;
 
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.PersistenceUtil;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.OfferEntity;
 import com.matchandtrade.persistence.repository.OfferRepository;
 import com.matchandtrade.persistence.repository.TradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class OfferRepositoryFacade {
@@ -25,8 +28,10 @@ public class OfferRepositoryFacade {
 		return offerRepository.findById(offerId).get();
 	}
 
-	public List<OfferEntity> findByOfferedArticleId(Integer offeredArticleId) {
-		return offerRepository.findByOfferedArticleArticleId(offeredArticleId);
+	public SearchResult<OfferEntity> findByOfferedArticleId(Integer offeredArticleId, Pagination pagination) {
+		Pageable pageable = PersistenceUtil.buildPageable(pagination.getNumber(), pagination.getSize());
+		Page<OfferEntity> page = offerRepository.findByOfferedArticleArticleId(offeredArticleId, pageable);
+		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
 
 	public void save(OfferEntity entity) {

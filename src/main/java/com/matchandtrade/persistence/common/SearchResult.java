@@ -19,7 +19,7 @@ public class SearchResult<T> {
 	}
 
 	public boolean isEmpty() {
-		return pagination.getTotal() < 1;
+		return resultList.isEmpty();
 	}
 
 	public Pagination getPagination() {
