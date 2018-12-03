@@ -18,8 +18,9 @@ public class ArticleService {
 	@Transactional
 	public void create(UserEntity user, ArticleEntity article) {
 		articleRepositoryFacade.save(article);
-		user.getArticles().add(article);
-		userService.save(user);
+		UserEntity persistedUser = userService.findByUserId(user.getUserId());
+		persistedUser.getArticles().add(article);
+		userService.save(persistedUser);
 	}
 
 	public ArticleEntity findByArticleId(Integer articleId) {
