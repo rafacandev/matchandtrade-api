@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @ServletComponentScan(basePackageClasses=AuthenticationServlet.class)
-@SpringBootApplication(scanBasePackages = {"com.matchandtrade"})
+@SpringBootApplication
 @EnableAutoConfiguration
 public class WebserviceApplication {
 	
