@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.matchandtrade.util.JsonUtil;
 
 public class AuthenticationInfoUtil {
-	
 	private static final Logger log = LoggerFactory.getLogger(AuthenticationInfoUtil.class);
 
 	// Utility classes should not have public constructors
@@ -39,5 +38,4 @@ public class AuthenticationInfoUtil {
 			throw new AuthenticationException(e);
 		}
 	}
-	
 }
