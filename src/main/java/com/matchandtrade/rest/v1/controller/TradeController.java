@@ -6,13 +6,17 @@ import com.matchandtrade.persistence.entity.TradeEntity;
 import com.matchandtrade.rest.service.AuthenticationService;
 import com.matchandtrade.rest.service.TradeService;
 import com.matchandtrade.rest.v1.json.TradeJson;
+import com.matchandtrade.rest.v1.linkassembler.TradeLinkAssembler;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@ExposesResourceFor(TradeJson.class)
 @RequestMapping(path="/matchandtrade-api/v1/trades")
 public class TradeController implements Controller {
 
@@ -23,8 +27,10 @@ public class TradeController implements Controller {
 	@Autowired
 	TradeService tradeService;
 	private TradeTransformer tradeTransformer = new TradeTransformer();
+	@Autowired
+	private TradeLinkAssembler tradeLinkAssembler;
 
-	@RequestMapping(path="/", method=RequestMethod.POST)
+	@PostMapping("/")
 	@ResponseStatus(HttpStatus.CREATED)
 	public TradeJson post(@RequestBody TradeJson requestJson) {
 		// Validate request identity
@@ -40,9 +46,9 @@ public class TradeController implements Controller {
 		// TODO: Assemble links
 		return response;
 	}
-	
-	@RequestMapping(path="/{tradeId}", method=RequestMethod.PUT)
-	public TradeJson put(@PathVariable Integer tradeId, @RequestBody TradeJson requestJson) {
+
+	@PutMapping("/{id}")
+	public TradeJson put(@PathVariable("id") Integer tradeId, @RequestBody TradeJson requestJson) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
@@ -58,9 +64,9 @@ public class TradeController implements Controller {
 		return response;
 	}
 	
-	@RequestMapping(path="/{tradeId}", method=RequestMethod.DELETE)
+	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Integer tradeId) {
+	public void delete(@PathVariable("id") Integer tradeId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
@@ -69,7 +75,7 @@ public class TradeController implements Controller {
 		tradeService.delete(tradeId);
 	}
 
-	@RequestMapping(path={"", "/"}, method=RequestMethod.GET)
+	@GetMapping(path = {"", "/"})
 	public SearchResult<TradeJson> get(Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity - Nothing to validate it is a public resource
 		// Validate the request - Nothing to validate
@@ -78,12 +84,12 @@ public class TradeController implements Controller {
 		SearchResult<TradeEntity> searchResult = tradeService.findAll(_pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<TradeJson> response = tradeTransformer.transform(searchResult);
-		// TODO: Assemble links
+		tradeLinkAssembler.assemble(response);
 		return response;
 	}
 
-	@RequestMapping(path="/{tradeId}", method=RequestMethod.GET)
-	public TradeJson get(@PathVariable("tradeId") Integer tradeId) {
+	@GetMapping("/{id}")
+	public TradeJson get(@PathVariable("id") Integer tradeId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
