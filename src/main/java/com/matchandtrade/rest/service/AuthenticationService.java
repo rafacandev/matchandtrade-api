@@ -17,6 +17,9 @@ public class AuthenticationService {
 	
 	public AuthenticationEntity findCurrentAuthentication() {
 		String authenticationHeader = httpRequest.getHeader(AuthenticationOAuth.AUTHORIZATION_HEADER);
+		if (authenticationHeader == null || authenticationHeader.isEmpty()) {
+			return null;
+		}
 		return authenticationRepository.findByToken(authenticationHeader);
 	}
 }
