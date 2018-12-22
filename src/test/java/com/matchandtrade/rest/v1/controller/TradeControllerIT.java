@@ -49,9 +49,7 @@ public class TradeControllerIT extends BaseControllerIT {
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(JsonUtil.toJson(expected))
 			)
-			.andExpect(status().isNoContent())
-			.andReturn()
-			.getResponse();
+			.andExpect(status().isNoContent());
 	}
 
 	@Test

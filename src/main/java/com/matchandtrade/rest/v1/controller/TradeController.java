@@ -10,16 +10,12 @@ import com.matchandtrade.rest.v1.linkassembler.TradeLinkAssembler;
 import com.matchandtrade.rest.v1.transformer.TradeTransformer;
 import com.matchandtrade.rest.v1.validator.TradeValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityLinks;
-import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@ExposesResourceFor(TradeJson.class)
 @RequestMapping(path="/matchandtrade-api/v1/trades")
 public class TradeController implements Controller {
-
 	@Autowired
 	AuthenticationService authenticationService;
 	@Autowired
@@ -43,7 +39,8 @@ public class TradeController implements Controller {
 		tradeService.create(tradeEntity, authenticationService.findCurrentAuthentication().getUser());
 		// Transform the response
 		TradeJson response = tradeTransformer.transform(tradeEntity);
-		// TODO: Assemble links
+		// Assemble links
+		tradeLinkAssembler.assemble(response);
 		return response;
 	}
 
@@ -60,7 +57,8 @@ public class TradeController implements Controller {
 		tradeService.update(tradeEntity);
 		// Transform the response
 		TradeJson response = tradeTransformer.transform(tradeEntity);
-		// TODO: Assemble links
+		// Assemble links
+		tradeLinkAssembler.assemble(response);
 		return response;
 	}
 	
@@ -84,6 +82,7 @@ public class TradeController implements Controller {
 		SearchResult<TradeEntity> searchResult = tradeService.findAll(_pageNumber, _pageSize);
 		// Transform the response
 		SearchResult<TradeJson> response = tradeTransformer.transform(searchResult);
+		// Assemble links
 		tradeLinkAssembler.assemble(response);
 		return response;
 	}
@@ -98,8 +97,8 @@ public class TradeController implements Controller {
 		TradeEntity tradeEntity = tradeService.findByTradeId(tradeId);
 		// Transform the response
 		TradeJson response = tradeTransformer.transform(tradeEntity);
-		// TODO: Assemble links
+		// Assemble links
+		tradeLinkAssembler.assemble(response);
 		return response;
 	}
-
 }
