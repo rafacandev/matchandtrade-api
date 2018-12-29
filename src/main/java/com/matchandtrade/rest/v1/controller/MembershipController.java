@@ -58,8 +58,6 @@ public class MembershipController implements Controller {
 
 	@GetMapping()
 	public SearchResult<MembershipJson> get(Integer tradeId, Integer userId, MembershipEntity.Type type, Integer _pageNumber, Integer _pageSize) {
-		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
 		membershipValidador.validateGet(_pageNumber, _pageSize);
 		// Delegate to Service layer
@@ -80,5 +78,4 @@ public class MembershipController implements Controller {
 		// Delegate to Service layer
 		membershipService.delete(membershipId);
 	}
-	
 }

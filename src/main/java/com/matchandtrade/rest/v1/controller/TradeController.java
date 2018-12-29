@@ -75,8 +75,7 @@ public class TradeController implements Controller {
 
 	@GetMapping(path = {"", "/"})
 	public SearchResult<TradeJson> get(Integer _pageNumber, Integer _pageSize) {
-		// Validate request identity - Nothing to validate it is a public resource
-		// Validate the request - Nothing to validate
+		// Validate the request
 		tradeValidador.validateGet(_pageNumber, _pageSize);
 		// Delegate to Service layer
 		SearchResult<TradeEntity> searchResult = tradeService.findAll(_pageNumber, _pageSize);
@@ -89,8 +88,6 @@ public class TradeController implements Controller {
 
 	@GetMapping("/{id}")
 	public TradeJson get(@PathVariable("id") Integer tradeId) {
-		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
 		tradeValidador.validateGet(tradeId);
 		// Delegate to Service layer
