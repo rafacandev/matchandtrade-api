@@ -1,18 +1,17 @@
 package com.matchandtrade.authentication;
 
 public class AuthenticationInfoJson {
-	private String authenticationHeader;
+	private String authorizationHeader;
 
-	public String getAuthenticationHeader() {
-		return authenticationHeader;
+	public String getAuthorizationHeader() {
+		return authorizationHeader;
 	}
 
-	public void setAuthenticationHeader(Object authenticationHeader) {
-		if (authenticationHeader != null) {
-			this.authenticationHeader = authenticationHeader.toString();
+	public void setAuthorizationHeader(Object authorizationHeader) {
+		if (authorizationHeader != null) {
+			this.authorizationHeader = authorizationHeader.toString();
 		} else {
-			this.authenticationHeader = null;
+			this.authorizationHeader = null;
 		}
 	}
-
 }

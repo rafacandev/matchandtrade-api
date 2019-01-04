@@ -26,7 +26,7 @@ public class AuthenticationInfoUtil {
 		}
 		
 		AuthenticationInfoJson authenticationInfoJson = new AuthenticationInfoJson();
-		authenticationInfoJson.setAuthenticationHeader(authorizationHeader);
+		authenticationInfoJson.setAuthorizationHeader(authorizationHeader);
 
 		try {
 			String authenticationInfoJsonAsString = JsonUtil.toJson(authenticationInfoJson);
