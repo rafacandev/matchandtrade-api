@@ -112,7 +112,9 @@ public class AuthenticationServlet extends HttpServlet {
 		String accessToken = request.getHeader(AuthenticationOAuth.AUTHORIZATION_HEADER);
 		if (accessToken != null) {
 			AuthenticationEntity authenticationEntity = authenticationRepository.findByToken(accessToken);
-			authenticationRepository.delete(authenticationEntity);
+			if (authenticationEntity != null) {
+				authenticationRepository.delete(authenticationEntity);
+			}
 		}
 		
 		// Invalidate the current session (not required, but good practice overall)
