@@ -46,7 +46,7 @@ public class TradeValidator {
 	 */
 	public void validatePost(TradeJson json) {
 		verifyThatUserNameIsBetween3And150(json.getName());
-		verifyThatDescriptionIsBetween3And1000(json.getDescription());
+		verifyThatDescriptionIsBetween3And20000(json.getDescription());
 		verifyThatNameIsUnique(json);
 	}
 
@@ -61,15 +61,15 @@ public class TradeValidator {
 	@Transactional
 	public void validatePut(TradeJson json, UserEntity user) {
 		verifyThatUserNameIsBetween3And150(json.getName());
-		verifyThatDescriptionIsBetween3And1000(json.getDescription());
+		verifyThatDescriptionIsBetween3And20000(json.getDescription());
 		verifyThatTradeExists(json.getTradeId());
 		validateThatUserOwnsTrade(json.getTradeId(), user.getUserId());
 		verifyThatNameIsUniqueExceptForTheCurrentTrade(json);
 	}
 
-	private void verifyThatDescriptionIsBetween3And1000(String description) {
-		if (description != null && (description.length() < 3 || description.length() > 1000)) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.description must be between 3 and 1000 in length");
+	private void verifyThatDescriptionIsBetween3And20000(String description) {
+		if (description != null && (description.length() < 3 || description.length() > 20000)) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.description must be between 3 and 20000 in length");
 		}
 	}
 

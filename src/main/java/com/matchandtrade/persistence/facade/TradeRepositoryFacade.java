@@ -25,8 +25,9 @@ public class TradeRepositoryFacade {
 		tradeRepository.deleteById(tradeId);
 	}
 
+	// TODO: Use optionals
 	public TradeEntity findByTradeId(Integer tradeId) {
-		return tradeRepository.findById(tradeId).get();
+		return tradeRepository.findById(tradeId).orElse(null);
 	}
 	
 	public void save(TradeEntity entity) {

@@ -113,12 +113,12 @@ public class TradeValidatorUT {
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_Description1001Characters_Then_BadRequest() {
-		givenTrade.setDescription(StringRandom.sequentialNumericString(1001));
+		givenTrade.setDescription(StringRandom.sequentialNumericString(20001));
 		try {
 			fixture.validatePost(givenTrade);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertEquals("Trade.description must be between 3 and 1000 in length", e.getDescription());
+			assertEquals("Trade.description must be between 3 and 20000 in length", e.getDescription());
 			throw e;
 		}
 	}
@@ -130,7 +130,7 @@ public class TradeValidatorUT {
 			fixture.validatePost(givenTrade);
 		} catch (RestException e) {
 			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertEquals("Trade.description must be between 3 and 1000 in length", e.getDescription());
+			assertEquals("Trade.description must be between 3 and 20000 in length", e.getDescription());
 			throw e;
 		}
 	}
