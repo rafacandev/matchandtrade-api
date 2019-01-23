@@ -10,9 +10,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @Component
 public class TradeLinkAssembler {
-	public void assemble(SearchResult<TradeJson> json) {
-		for (TradeJson tradeJson : json.getResultList()) {
-			assemble(tradeJson);
+	public void assemble(SearchResult<TradeJson> searchResult) {
+		for (TradeJson json : searchResult.getResultList()) {
+			assemble(json);
 		}
 	}
 

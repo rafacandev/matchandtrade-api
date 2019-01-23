@@ -90,6 +90,4 @@ public class ArticleAttachmentServiceIT {
 		assertEquals("image-landscape.png", actual.getName());
 		assertNull(actual.getContentType());
 	}
-
-
 }
