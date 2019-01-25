@@ -1,14 +1,15 @@
 package com.matchandtrade.persistence.criteria;
 
+import com.matchandtrade.persistence.common.Criterion;
 import com.matchandtrade.persistence.common.SearchCriteria;
-import com.matchandtrade.persistence.dto.ArticleAndMembershipIdDto;
-import com.matchandtrade.persistence.entity.ArticleEntity;
-import org.hibernate.transform.ResultTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
-import java.util.List;
+
+import static com.matchandtrade.persistence.criteria.ArticleRecipeQueryBuilder.Field.ARTICLE_ID;
+import static com.matchandtrade.persistence.criteria.ArticleRecipeQueryBuilder.Field.TRADE_ID;
+import static com.matchandtrade.persistence.criteria.ArticleRecipeQueryBuilder.Field.USER_ID;
 
 @Component
 public class ArticleRecipeQueryBuilder implements QueryBuilder {
@@ -17,51 +18,48 @@ public class ArticleRecipeQueryBuilder implements QueryBuilder {
 	private QueryBuilderHelper queryBuilderHelper;
 
 	public enum Field implements com.matchandtrade.persistence.common.Field {
-		TRADE_ID("membership.trade.tradeId"), TRADE_MEMBERSHIP_ID("membership.membershipId"), ARTICLE_ID("article.articleId");
+		ARTICLE_ID("article.articleId"),
+		TRADE_ID("membership.trade.tradeId"),
+		USER_ID("user.userId");
 
 		private String alias;
-		
-		Field(String alias) { this.alias = alias; }
-		
+
+		Field(String alias) {
+			this.alias = alias;
+		}
+
 		@Override
-		public String alias() { return alias; }
+		public String alias() {
+			return alias;
+		}
 	}
-	
-    private static final String BASIC_HQL = "FROM MembershipEntity AS membership"
-    		+ " INNER JOIN membership.articles AS article";
 
-    @Override
-    public Query buildCountQuery(SearchCriteria searchCriteria) {
-    	StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + BASIC_HQL);
-    	return queryBuilderHelper.buildQuery(searchCriteria, hql, true);
-    }
 
-    @Override
+	@Override
+	public Query buildCountQuery(SearchCriteria searchCriteria) {
+		StringBuilder hql = new StringBuilder("SELECT COUNT(*) " + buildBasicHql(searchCriteria));
+		return queryBuilderHelper.buildQuery(searchCriteria, hql, true);
+	}
+
+	private String buildBasicHql(SearchCriteria searchCriteria) {
+		StringBuilder result = new StringBuilder("FROM  ArticleEntity AS article,");
+
+		boolean searchesForTradeId = searchCriteria.getCriteria().stream().anyMatch(c -> c.getField().alias().equals(TRADE_ID.alias()));
+		if (searchesForTradeId) {
+			result.append(" MembershipEntity AS membership WHERE membership.articles.articleId=article.articleId");
+		}
+
+		boolean searchesForUserId = searchCriteria.getCriteria().stream().anyMatch(c -> c.getField().alias().equals(USER_ID.alias()));
+		if (searchesForUserId) {
+			result.append(" INNER JOIN UserEntity AS user");
+		}
+
+		return result.toString();
+	}
+
+	@Override
 	public Query buildSearchQuery(SearchCriteria searchCriteria) {
-		StringBuilder hql = new StringBuilder("SELECT membership.membershipId, article " + BASIC_HQL);
+		StringBuilder hql = new StringBuilder("SELECT article " + buildBasicHql(searchCriteria));
 		return queryBuilderHelper.buildQuery(searchCriteria, hql);
 	}
-
-	public ResultTransformer makeResultTransformer() {
-		return new ArticleAndMembershipId();
-	}
-	
-	// TODO: Review this, is there a simpler way to solve this problem? 
-	public class ArticleAndMembershipId implements ResultTransformer {
-		private static final long serialVersionUID = -912373493890582112L;
-
-		@Override
-		public Object transformTuple(Object[] tuple, String[] arg1) {
-			Integer membershipId = (Integer) tuple[0];
-			ArticleEntity article = (ArticleEntity) tuple[1];
-			return new ArticleAndMembershipIdDto(article, membershipId);
-		}
-		
-		@SuppressWarnings("rawtypes")
-		@Override
-		public List transformList(List collection) {
-			return collection;
-		}		
-	}
-	
 }

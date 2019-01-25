@@ -12,7 +12,7 @@ import com.matchandtrade.rest.RestException;
 public class Pagination {
 
 	private int size = 10;
-	private int number = 1;
+	private int number = 1; // TODO: Number should start at zero!
 	private long total = 0;
 
 	public enum Parameter {

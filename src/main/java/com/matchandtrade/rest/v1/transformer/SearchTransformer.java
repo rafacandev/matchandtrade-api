@@ -1,9 +1,9 @@
 package com.matchandtrade.rest.v1.transformer;
 
 import com.matchandtrade.persistence.common.*;
-import com.matchandtrade.persistence.criteria.ArticleRecipeQueryBuilder;
-import com.matchandtrade.persistence.dto.ArticleAndMembershipIdDto;
-import com.matchandtrade.persistence.dto.Dto;
+import com.matchandtrade.persistence.criteria.ArticleNativeQueryRepository;
+import com.matchandtrade.persistence.entity.ArticleEntity;
+import com.matchandtrade.persistence.entity.Entity;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.v1.json.search.Matcher;
 import com.matchandtrade.rest.v1.json.search.Operator;
@@ -20,12 +20,12 @@ public class SearchTransformer {
 
 	private static final ArticleTransformer articleTransformer = new ArticleTransformer();
 
-	public static SearchResult<Json> transform(SearchResult<Dto> searchResult, Recipe recipe) {
+	public static SearchResult<Json> transform(SearchResult<Entity> searchResult, Recipe recipe) {
 		List<Json> resultList = searchResult.getResultList().stream()
-			.map(dto -> {
+			.map(entity -> {
 				if (Recipe.ARTICLES == recipe) {
-					ArticleAndMembershipIdDto membershipAndArticleDto = (ArticleAndMembershipIdDto) dto;
-					return articleTransformer.transform(membershipAndArticleDto.getArticle());
+					ArticleEntity article = (ArticleEntity) entity;
+					return articleTransformer.transform(article);
 				} else {
 					throw new InvalidParameterException("Unsupported recipe: " + recipe);
 				}
@@ -58,10 +58,9 @@ public class SearchTransformer {
 	private static Field transformField(String key) {
 		switch (key) {
 			case "Trade.tradeId":
-				return ArticleRecipeQueryBuilder.Field.TRADE_ID;
+				return ArticleNativeQueryRepository.Field.TRADE_ID;
 			default:
 				throw new IllegalArgumentException("Invalid key: " + key);
 		}
 	}
-
 }

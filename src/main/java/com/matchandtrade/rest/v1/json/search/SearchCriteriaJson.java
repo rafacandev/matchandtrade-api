@@ -6,7 +6,7 @@ import java.util.List;
 
 public class SearchCriteriaJson {
 	
-	private Recipe recipe;
+	private String recipe;
 	
 	private List<Criterion> criteria = new ArrayList<>();
 
@@ -22,7 +22,7 @@ public class SearchCriteriaJson {
 		return criteria;
 	}
 
-	public Recipe getRecipe() {
+	public String getRecipe() {
 		return recipe;
 	}
 
@@ -30,7 +30,7 @@ public class SearchCriteriaJson {
 		this.criteria = criteria;
 	}
 	
-	public void setRecipe(Recipe recipe) {
+	public void setRecipe(String recipe) {
 		this.recipe = recipe;
 	}
 	

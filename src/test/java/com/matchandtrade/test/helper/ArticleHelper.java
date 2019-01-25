@@ -76,6 +76,7 @@ public class ArticleHelper {
 	public static ArticleJson createRandomJson() {
 		ArticleJson result = new ArticleJson();
 		result.setName(StringRandom.nextName());
+		result.setDescription(StringRandom.nextDescription());
 		return result;
 	}
 

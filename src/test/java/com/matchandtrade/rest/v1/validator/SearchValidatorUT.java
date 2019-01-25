@@ -10,6 +10,8 @@ import static org.junit.Assert.assertEquals;
 
 public class SearchValidatorUT {
 
+	private static final String ARTICLES_RECIPE = "ARTICLES";
+
 	@Test(expected = RestException.class)
 	public void validatePost_When_SearchCriteriaHasNoRecipe_Then_BadRequest() {
 		SearchCriteriaJson given = new SearchCriteriaJson();
@@ -25,7 +27,7 @@ public class SearchValidatorUT {
 	@Test(expected = RestException.class)
 	public void validatePost_When_SearchCriteriaHasRecipeButNoCriteria_Then_BadRequest() {
 		SearchCriteriaJson given = new SearchCriteriaJson();
-		given.setRecipe(Recipe.ARTICLES);
+		given.setRecipe(ARTICLES_RECIPE);
 		try {
 			SearchValidator.validatePost(given, 1, 1);
 		} catch (RestException e) {
@@ -38,9 +40,22 @@ public class SearchValidatorUT {
 	@Test
 	public void validatePost_When_SearchCriteriaHasRecipeAndCriteria_Then_Succeeds() {
 		SearchCriteriaJson given = new SearchCriteriaJson();
-		given.setRecipe(Recipe.ARTICLES);
+		given.setRecipe(ARTICLES_RECIPE);
 		given.addCriterion("article.articleId", 1);
 		SearchValidator.validatePost(given, 1, 1);
 	}
 
+	@Test(expected = RestException.class)
+	public void validatePost_When_SearchCriteriaHasInvalidRecipe_Then_BadRequest() {
+		SearchCriteriaJson given = new SearchCriteriaJson();
+		given.setRecipe("Invalid recipe :p");
+		given.addCriterion("article.articleId", 1);
+		try {
+			SearchValidator.validatePost(given, 1, 1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("Invalid recipe", e.getDescription());
+			throw e;
+		}
+	}
 }

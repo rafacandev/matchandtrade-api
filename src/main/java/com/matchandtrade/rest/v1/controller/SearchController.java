@@ -1,11 +1,14 @@
 package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
+import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.dto.Dto;
+import com.matchandtrade.persistence.entity.Entity;
 import com.matchandtrade.rest.service.AuthenticationService;
 import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.service.SearchRecipeService;
+import com.matchandtrade.rest.v1.json.search.Recipe;
 import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
 import com.matchandtrade.rest.v1.transformer.SearchTransformer;
 import com.matchandtrade.rest.v1.validator.SearchValidator;
@@ -30,14 +33,12 @@ public class SearchController implements Controller {
 		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request
 		SearchValidator.validatePost(request, _pageNumber, _pageSize);
-		/*
-		 * We are making an exception on the overall architecture and delegating SearchCriteriaJson directly to the
-		 * service layer. SearchCriteria is not intended to be used in Controllers.
-		 */
-		// Delegate to service layer
-		SearchResult<Dto> searchResult = searchRecipeService.search(request, _pageNumber, _pageSize);
+		// Transform the request
+		SearchCriteria searchCriteria = SearchTransformer.transform(request, _pageNumber, _pageSize);
+		// Delegate to the service layer
+		SearchResult<Entity> searchResult = searchRecipeService.search(searchCriteria);
 		// Transform the response
-		SearchResult<Json> response = SearchTransformer.transform(searchResult, request.getRecipe());
+		SearchResult<Json> response = SearchTransformer.transform(searchResult, Recipe.valueOf(request.getRecipe()));
 		// TODO: Assemble links
 		return response;
 	}
