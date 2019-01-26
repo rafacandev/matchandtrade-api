@@ -41,8 +41,22 @@ public class SearchValidatorUT {
 	public void validatePost_When_SearchCriteriaHasRecipeAndCriteria_Then_Succeeds() {
 		SearchCriteriaJson given = new SearchCriteriaJson();
 		given.setRecipe(ARTICLES_RECIPE);
-		given.addCriterion("article.articleId", 1);
+		given.addCriterion("Article.articleId", 1);
 		SearchValidator.validatePost(given, 1, 1);
+	}
+
+	@Test
+	public void validatePost_When_SearchCriteriaHasRecipeAndInvalidCriteria_Then_BadRequest() {
+		SearchCriteriaJson given = new SearchCriteriaJson();
+		given.setRecipe(ARTICLES_RECIPE);
+		given.addCriterion("Invalid field", 1);
+		try {
+			SearchValidator.validatePost(given, 1, 1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("Invalid field: Invalid field", e.getDescription());
+		}
+
 	}
 
 	@Test(expected = RestException.class)

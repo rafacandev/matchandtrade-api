@@ -47,7 +47,7 @@ public class SearchTransformer {
 		return result;
 	}
 
-	private static Field transformField(String field) {
+	public static Field transformField(String field) {
 		for (Field f : SearchRecipeService.Field.values()) {
 			if (f.alias().equals(field)) {
 				return f;
