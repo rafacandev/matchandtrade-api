@@ -1,34 +1,34 @@
 package com.matchandtrade.rest.v1.json.search;
 
-public class Criterion {
-	private String key;
+public class CriterionJson {
+	private String field;
 	private Object value;
 	private Operator operator = Operator.AND;
 	private Matcher matcher = Matcher.EQUALS;
 
 	// Empty constructor required by Jackson serialization
-	public Criterion() { }
+	public CriterionJson() { }
 	
-	Criterion(String key, Object value) {
-		this.key = key;
+	CriterionJson(String field, Object value) {
+		this.field = field;
 		this.value = value;
 	}
 
-	Criterion(String key, Object value, Operator operator) {
-		this.key = key;
+	CriterionJson(String field, Object value, Operator operator) {
+		this.field = field;
 		this.value = value;
 		this.operator = operator;
 	}
 
-	Criterion(String key, Object value, Operator operator, Matcher restriction) {
-		this.key = key;
+	CriterionJson(String field, Object value, Operator operator, Matcher restriction) {
+		this.field = field;
 		this.value = value;
 		this.operator = operator;
 		this.matcher = restriction;
 	}
 	
-	public String getKey() {
-		return key;
+	public String getField() {
+		return field;
 	}
 	public Matcher getMatcher() {
 		return matcher;

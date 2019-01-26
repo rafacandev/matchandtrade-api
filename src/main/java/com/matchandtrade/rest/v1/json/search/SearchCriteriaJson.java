@@ -8,17 +8,17 @@ public class SearchCriteriaJson {
 	
 	private String recipe;
 	
-	private List<Criterion> criteria = new ArrayList<>();
+	private List<CriterionJson> criteria = new ArrayList<>();
 
 	public void addCriterion(String key, Object value) {
-		criteria.add(new Criterion(key, value));
+		criteria.add(new CriterionJson(key, value));
 	}
 
 	public void addCriterion(String key, Object value, Operator operator, Matcher restriction) {
-		criteria.add(new Criterion(key, value, operator, restriction));
+		criteria.add(new CriterionJson(key, value, operator, restriction));
 	}
 
-	public List<Criterion> getCriteria() {
+	public List<CriterionJson> getCriteria() {
 		return criteria;
 	}
 
@@ -26,7 +26,7 @@ public class SearchCriteriaJson {
 		return recipe;
 	}
 
-	public void setCriteria(List<Criterion> criteria) {
+	public void setCriteria(List<CriterionJson> criteria) {
 		this.criteria = criteria;
 	}
 	

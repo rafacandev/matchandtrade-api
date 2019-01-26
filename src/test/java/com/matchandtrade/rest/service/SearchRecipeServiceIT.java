@@ -3,7 +3,6 @@ package com.matchandtrade.rest.service;
 import com.matchandtrade.persistence.common.Pagination;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.criteria.ArticleNativeQueryRepository;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.MembershipEntity;
 import com.matchandtrade.persistence.entity.TradeEntity;
@@ -15,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.matchandtrade.rest.service.SearchRecipeService.Field.*;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -43,7 +43,7 @@ public class SearchRecipeServiceIT {
 		ArticleEntity article3 = articleHelper.createPersistedEntity(user);
 
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ArticleNativeQueryRepository.Field.USER_ID, user.getUserId());
+		searchCriteria.addCriterion(USER_ID, user.getUserId());
 		SearchResult<ArticleEntity> searchResult = fixture.search(searchCriteria);
 
 		assertTrue(searchResult.getResultList().contains(article1));
@@ -58,8 +58,8 @@ public class SearchRecipeServiceIT {
 		ArticleEntity article = articleHelper.createPersistedEntity(user);
 
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ArticleNativeQueryRepository.Field.USER_ID, user.getUserId());
-		searchCriteria.addCriterion(ArticleNativeQueryRepository.Field.ARTICLE_ID, article.getArticleId());
+		searchCriteria.addCriterion(USER_ID, user.getUserId());
+		searchCriteria.addCriterion(ARTICLE_ID, article.getArticleId());
 		SearchResult<ArticleEntity> searchResult = fixture.search(searchCriteria);
 
 		assertTrue(searchResult.getResultList().contains(article));
@@ -72,8 +72,8 @@ public class SearchRecipeServiceIT {
 		ArticleEntity article = articleHelper.createPersistedEntity();
 
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ArticleNativeQueryRepository.Field.USER_ID, user.getUserId());
-		searchCriteria.addCriterion(ArticleNativeQueryRepository.Field.ARTICLE_ID, article.getArticleId());
+		searchCriteria.addCriterion(USER_ID, user.getUserId());
+		searchCriteria.addCriterion(ARTICLE_ID, article.getArticleId());
 		SearchResult<ArticleEntity> searchResult = fixture.search(searchCriteria);
 
 		assertTrue(searchResult.getResultList().isEmpty());
@@ -89,7 +89,7 @@ public class SearchRecipeServiceIT {
 		listingHelper.createPersisted(article.getArticleId(), membership.getMembershipId());
 
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination());
-		searchCriteria.addCriterion(ArticleNativeQueryRepository.Field.TRADE_ID, trade.getTradeId());
+		searchCriteria.addCriterion(TRADE_ID, trade.getTradeId());
 		SearchResult<ArticleEntity> searchResult = fixture.search(searchCriteria);
 
 		assertTrue(searchResult.getResultList().contains(article));
@@ -104,7 +104,7 @@ public class SearchRecipeServiceIT {
 		ArticleEntity article3 = articleHelper.createPersistedEntity(user);
 
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(1, 2));
-		searchCriteria.addCriterion(ArticleNativeQueryRepository.Field.USER_ID, user.getUserId());
+		searchCriteria.addCriterion(USER_ID, user.getUserId());
 		SearchResult<ArticleEntity> searchResult = fixture.search(searchCriteria);
 
 		assertTrue(searchResult.getResultList().contains(article1));
@@ -121,7 +121,7 @@ public class SearchRecipeServiceIT {
 		ArticleEntity article3 = articleHelper.createPersistedEntity(user);
 
 		SearchCriteria searchCriteria = new SearchCriteria(new Pagination(2, 2));
-		searchCriteria.addCriterion(ArticleNativeQueryRepository.Field.USER_ID, user.getUserId());
+		searchCriteria.addCriterion(USER_ID, user.getUserId());
 		SearchResult<ArticleEntity> searchResult = fixture.search(searchCriteria);
 
 		assertFalse(searchResult.getResultList().contains(article1));

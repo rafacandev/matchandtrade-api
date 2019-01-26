@@ -21,7 +21,7 @@ public class QueryBuilderHelper {
 
 	/**
 	 * Builds a string representing a JPA Query WHERE clause.
-	 * It takes in consideration the {@code Criterion.LogicalOperator} and {@code Criterion.Restriction} 
+	 * It takes in consideration the {@code Criterion.LogicalOperator} and {@code Criterion.Restriction}
 	 */
 	private static String buildClauses(List<Criterion> criteria) {
 		Deque<Criterion> queue = new ArrayDeque<>(criteria);

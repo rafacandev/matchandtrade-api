@@ -13,27 +13,13 @@ import javax.persistence.Query;
 import java.math.BigInteger;
 import java.util.List;
 
-import static com.matchandtrade.persistence.criteria.ArticleNativeQueryRepository.Field.ARTICLE_ID;
-import static com.matchandtrade.persistence.criteria.ArticleNativeQueryRepository.Field.USER_ID;
-import static com.matchandtrade.persistence.criteria.ArticleNativeQueryRepository.Field.TRADE_ID;
+import static com.matchandtrade.rest.service.SearchRecipeService.Field.ARTICLE_ID;
+import static com.matchandtrade.rest.service.SearchRecipeService.Field.TRADE_ID;
+import static com.matchandtrade.rest.service.SearchRecipeService.Field.USER_ID;
 import static java.util.Collections.emptyList;
 
 @Component
 public class ArticleNativeQueryRepository {
-	public enum Field implements com.matchandtrade.persistence.common.Field {
-		ARTICLE_ID("article.articleId"),
-		USER_ID("user.userId"),
-		TRADE_ID("membership.trade.tradeId");
-		private String alias;
-		Field(String alias) {
-			this.alias = alias;
-		}
-		@Override
-		public String alias() {
-			return alias;
-		}
-	}
-
 	@Autowired
 	private EntityManager entityManager;
 
@@ -98,14 +84,14 @@ public class ArticleNativeQueryRepository {
 			StringBuilder where = new StringBuilder();
 
 			for (Criterion c : criteria) {
-				if (c.getField().alias().equals(ARTICLE_ID.alias())) {
+				if (ARTICLE_ID == c.getField()) {
 					addWhereClause(where, "article.article_id = :", c);
-				} if (c.getField().alias().equals(TRADE_ID.alias())) {
+				} if (TRADE_ID == c.getField()) {
 					sql.append(" INNER JOIN membership_to_article m2a ON m2a.article_id = article.article_id");
 					sql.append(" INNER JOIN membership ON membership.membership_id = m2a.membership_id");
 					sql.append(" INNER JOIN trade ON trade.trade_id = membership.trade_id");
 					addWhereClause(where, "trade.trade_id = :", c);
-				} else if (c.getField().alias().equals(USER_ID.alias())) {
+				} else if (USER_ID == c.getField()) {
 					sql.append(" INNER JOIN user_to_article u2a ON u2a.article_id = article.article_id");
 					addWhereClause(where, "u2a.user_id = :", c);
 				}
