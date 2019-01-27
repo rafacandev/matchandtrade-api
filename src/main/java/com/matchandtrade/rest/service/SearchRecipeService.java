@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class SearchRecipeService {
 	public enum Field implements com.matchandtrade.persistence.common.Field {
 		ARTICLE_ID("Article.articleId"),
+		ARTICLE_NAME("Article.name"),
 		USER_ID("User.userId"),
 		TRADE_ID("Trade.tradeId");
 		private String alias;

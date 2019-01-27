@@ -50,7 +50,19 @@ public class StringRandom {
 		int pPosition = random.nextInt(prepositions.length);
 		return nextName() + " - " + prepositions[pPosition] + " " + nextName();
 	}
-	
+
+	public static String nextFromAToZ(int targetLength) {
+		int leftLimit = 97; // 'a'
+		int rightLimit = 122; // 'z'
+		Random random = new Random();
+		StringBuilder buffer = new StringBuilder(targetLength);
+		for (int i = 0; i < targetLength; i++) {
+			int randomLimitedInt = leftLimit + (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
+			buffer.append((char) randomLimitedInt);
+		}
+		return buffer.toString();
+	}
+
 	public static String nextEmail() {
 		return nextName().replace(" ", "").replace("-", "") + "@random.com";
 	}

@@ -43,6 +43,17 @@ public class ArticleHelper {
 	}
 
 	@Transactional
+	public ArticleEntity createPersistedEntity(String name) {
+		ArticleEntity result = createRandomEntity();
+		result.setName(name);
+		articleRepositoryFacade.save(result);
+		UserEntity user = userHelper.createPersistedEntity();
+		user.getArticles().add(result);
+		userRepositoryFacade.save(user);
+		return result;
+	}
+
+	@Transactional
 	public ArticleEntity createPersistedEntity(MembershipEntity membership) {
 		MembershipEntity persistedMembership = membershipRepositoryFacade.findByMembershipId(membership.getMembershipId());
 		ArticleEntity result = createRandomEntity();
