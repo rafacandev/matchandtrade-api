@@ -84,8 +84,7 @@ public class SearchRecipeServiceIT {
 
 	@Test
 	public void post_When_RecipeIsArticleAndCriteriaIsName_Then_ReturnAllArticlesWithThatName() {
-		String name = StringRandom.nextFromAToZ(150);
-		System.out.println(name);
+		String name = StringRandom.nextAlphanumeric(150);
 		ArticleEntity article1 = articleHelper.createPersistedEntity(name);
 		ArticleEntity article2 = articleHelper.createPersistedEntity(name);
 

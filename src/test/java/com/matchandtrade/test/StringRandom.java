@@ -51,16 +51,20 @@ public class StringRandom {
 		return nextName() + " - " + prepositions[pPosition] + " " + nextName();
 	}
 
-	public static String nextFromAToZ(int targetLength) {
-		int leftLimit = 97; // 'a'
-		int rightLimit = 122; // 'z'
+	public static String nextAlphanumeric(int targetLength) {
+		// ASCII values from 0(48) to 0(57), from A(65) to Z(90), from a(97) to z(122)
+		int alphabet[] = {48,49,50,51,52,53,54,55,56,57,
+			65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
+			97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122};
+		StringBuilder result = new StringBuilder();
 		Random random = new Random();
-		StringBuilder buffer = new StringBuilder(targetLength);
 		for (int i = 0; i < targetLength; i++) {
-			int randomLimitedInt = leftLimit + (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
-			buffer.append((char) randomLimitedInt);
+			int randomAlphabetIndex = random.nextInt(alphabet.length-1);
+
+			char letter = (char) alphabet[randomAlphabetIndex];
+			result.append(letter);
 		}
-		return buffer.toString();
+		return result.toString();
 	}
 
 	public static String nextEmail() {
