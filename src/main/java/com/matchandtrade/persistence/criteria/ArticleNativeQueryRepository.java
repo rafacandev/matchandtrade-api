@@ -47,7 +47,7 @@ public class ArticleNativeQueryRepository {
 		private final String pagination;
 
 		public SqlBuilder(SearchCriteria searchCriteria) {
-			this.sortList = searchCriteria.getSortList();
+			this.sortList = searchCriteria.getSorts();
 			this.criteria = searchCriteria.getCriteria();
 			this.pagination =
 				  " OFFSET "

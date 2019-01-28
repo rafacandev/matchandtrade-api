@@ -74,7 +74,7 @@ public class QueryBuilderHelper {
 	public Query buildQuery(SearchCriteria searchCriteria, StringBuilder hql, boolean skipSorting) {
 		hql.append(buildClauses(searchCriteria.getCriteria()));
 		if (!skipSorting) {
-			hql.append(buildSort(searchCriteria.getSortList()));
+			hql.append(buildSort(searchCriteria.getSorts()));
 		}
 		Query result = entityManager.createQuery(hql.toString());
 		for (Criterion c : searchCriteria.getCriteria()) {

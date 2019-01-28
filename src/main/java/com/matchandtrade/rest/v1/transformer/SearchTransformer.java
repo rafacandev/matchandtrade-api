@@ -33,6 +33,11 @@ public class SearchTransformer {
 		}
 	}
 
+	private static Sort transform(SortJson sort) {
+		Sort.Type type = Sort.Type.valueOf(sort.getType().name());
+		return new Sort(transformField(sort.getField()), type);
+	}
+
 	public static SearchCriteria transform(SearchCriteriaJson searchCriteriaJson, Integer pageNumber, Integer pageSize) {
 		SearchCriteria result = new SearchCriteria(new Pagination(pageNumber, pageSize));
 		for (CriterionJson criterionJson : searchCriteriaJson.getCriteria()) {
@@ -44,6 +49,10 @@ public class SearchTransformer {
 			);
 			result.getCriteria().add(criterionEntity);
 		}
+
+		searchCriteriaJson.getSorts().forEach(sort -> {
+			result.addSort(transform(sort));
+		});
 		return result;
 	}
 

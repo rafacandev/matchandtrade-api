@@ -12,7 +12,7 @@ import java.util.List;
 public class SearchCriteria {
 
 	private List<Criterion> criteria = new ArrayList<>();
-	private List<Sort> sortList = new ArrayList<>();
+	private List<Sort> sorts = new ArrayList<>();
 	private Pagination pagination;
 	
 	public SearchCriteria(Pagination pagination) {
@@ -30,7 +30,7 @@ public class SearchCriteria {
 	}
 
 	public void addSort(Sort sort) {
-		this.sortList.add(sort);
+		this.sorts.add(sort);
 	}
 
 	public List<Criterion> getCriteria() {
@@ -41,7 +41,7 @@ public class SearchCriteria {
 		return pagination;
 	}
 
-	public List<Sort> getSortList() {
-		return sortList;
+	public List<Sort> getSorts() {
+		return sorts;
 	}
 }
