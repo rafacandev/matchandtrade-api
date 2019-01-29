@@ -72,9 +72,6 @@ public class SearchControllerIT extends BaseControllerIT {
 		List<ArticleJson> actual = JsonUtil.fromArrayString(response, ArticleJson.class);
 		ArticleTransformer articleTransformer = new ArticleTransformer();
 		ArticleJson expected = articleTransformer.transform(expectedArticle);
-		System.out.println("=================");
-		System.out.println(actual.get(0).getArticleId());
-		System.out.println("=================");
 		assertEquals(expected, actual.get(0));
 	}
 }

@@ -10,6 +10,7 @@ import com.matchandtrade.rest.Json;
 import com.matchandtrade.rest.service.SearchRecipeService;
 import com.matchandtrade.rest.v1.json.search.Recipe;
 import com.matchandtrade.rest.v1.json.search.SearchCriteriaJson;
+import com.matchandtrade.rest.v1.linkassembler.SearchLinkAssembler;
 import com.matchandtrade.rest.v1.transformer.SearchTransformer;
 import com.matchandtrade.rest.v1.validator.SearchValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path="/matchandtrade-api/v1/search")
 public class SearchController implements Controller {
-
 	@Autowired
 	AuthenticationService authenticationService;
 	@Autowired
+	private SearchLinkAssembler searchLinkAssembler;
+	@Autowired
 	private SearchRecipeService searchRecipeService;
-	
+
 	@RequestMapping(path={"", "/"}, method=RequestMethod.POST)
 	public SearchResult<Json> post(@RequestBody SearchCriteriaJson request, Integer _pageNumber, Integer _pageSize) {
 		// Validate request identity
@@ -39,8 +41,8 @@ public class SearchController implements Controller {
 		SearchResult<Entity> searchResult = searchRecipeService.search(searchCriteria);
 		// Transform the response
 		SearchResult<Json> response = SearchTransformer.transform(searchResult, Recipe.valueOf(request.getRecipe()));
-		// TODO: Assemble links
+		// Assemble links
+		searchLinkAssembler.assemble(response);
 		return response;
 	}
-
 }
