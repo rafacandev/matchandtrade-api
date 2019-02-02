@@ -4,6 +4,8 @@ import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.junit.Assert.assertEquals;
 
 public class AttachmentTransformerUT {
@@ -12,7 +14,7 @@ public class AttachmentTransformerUT {
 	@Test
 	public void transform_When_GivenEntity_Then_ReturnEquivalentJson() {
 		AttachmentEntity expected = new AttachmentEntity();
-		expected.setAttachmentId(1);
+		expected.setAttachmentId(UUID.randomUUID());
 		expected.setContentType("image/png");
 		expected.setName("name");
 		AttachmentJson actual = fixture.transform(expected);
@@ -24,7 +26,7 @@ public class AttachmentTransformerUT {
 	@Test
 	public void transform_When_GivenJson_Then_ReturnEquivalentEntity() {
 		AttachmentJson expected = new AttachmentJson();
-		expected.setAttachmentId(1);
+		expected.setAttachmentId(UUID.randomUUID());
 		expected.setContentType("image/png");
 		expected.setName("name");
 		AttachmentEntity actual = fixture.transform(expected);

@@ -3,10 +3,10 @@ package com.matchandtrade.rest.v1.json;
 import com.matchandtrade.rest.JsonLinkSupport;
 
 import java.util.Objects;
+import java.util.UUID;
 
-// TODO: Add essences
 public class AttachmentJson extends JsonLinkSupport {
-	private Integer attachmentId;
+	private UUID attachmentId;
 	private String name;
 	private String contentType;
 
@@ -20,7 +20,7 @@ public class AttachmentJson extends JsonLinkSupport {
 			Objects.equals(contentType, that.contentType);
 	}
 
-	public Integer getAttachmentId() {
+	public UUID getAttachmentId() {
 		return attachmentId;
 	}
 
@@ -37,7 +37,7 @@ public class AttachmentJson extends JsonLinkSupport {
 		return Objects.hash(attachmentId, name, contentType);
 	}
 
-	public void setAttachmentId(Integer attachmentId) {
+	public void setAttachmentId(UUID attachmentId) {
 		this.attachmentId = attachmentId;
 	}
 

@@ -2,15 +2,25 @@ package com.matchandtrade.persistence.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
-import javax.persistence.*;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.OneToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Entity;
 
 @Entity
 @Table(name = "attachment")
 public class AttachmentEntity implements com.matchandtrade.persistence.entity.Entity {
 
-	private Integer attachmentId;
+	private UUID attachmentId;
 	private String contentType;
 	private String name;
 	private Set<EssenceEntity> essences = new HashSet<>();
@@ -55,9 +65,8 @@ public class AttachmentEntity implements com.matchandtrade.persistence.entity.En
 	
 	@Id
 	@Column(name = "attachment_id")
-	@SequenceGenerator(name="attachment_id_generator", sequenceName = "attachment_id_sequence")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "attachment_id_generator")
-	public Integer getAttachmentId() {
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	public UUID getAttachmentId() {
 		return attachmentId;
 	}
 
@@ -85,7 +94,7 @@ public class AttachmentEntity implements com.matchandtrade.persistence.entity.En
 		this.essences = essences;
 	}
 
-	public void setAttachmentId(Integer attachmentId) {
+	public void setAttachmentId(UUID attachmentId) {
 		this.attachmentId = attachmentId;
 	}
 

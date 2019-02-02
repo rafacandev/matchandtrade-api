@@ -20,6 +20,7 @@ import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.UUID;
 
 @Service
 public class AttachmentService {
@@ -76,7 +77,7 @@ public class AttachmentService {
 		return ImageUtil.obtainCenterCrop(imageResized, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
 	}
 
-	public void delete(Integer attachmentId) {
+	public void delete(UUID attachmentId) {
 		attachmentRepositoryFacade.delete(attachmentId);
 	}
 
@@ -84,7 +85,7 @@ public class AttachmentService {
 		return attachmentRepositoryFacade.findByArticleId(articleId);
 	}
 
-	public AttachmentEntity findByAttachmentId(Integer attachmentId) {
+	public AttachmentEntity findByAttachmentId(UUID attachmentId) {
 		return attachmentRepositoryFacade.findByAttachmentId(attachmentId);
 	}
 

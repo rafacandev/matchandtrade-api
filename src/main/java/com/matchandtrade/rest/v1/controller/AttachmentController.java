@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping(path = "/matchandtrade-api/v1/attachments")
 public class AttachmentController implements Controller {
@@ -28,7 +30,7 @@ public class AttachmentController implements Controller {
 	private AttachmentTransformer attachmentTransformer = new AttachmentTransformer();
 
 	@GetMapping("/{attachmentId}")
-	public AttachmentJson get(@PathVariable Integer attachmentId) {
+	public AttachmentJson get(@PathVariable UUID attachmentId) {
 		// Validate request identity
 		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
 		// Validate the request

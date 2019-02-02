@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -20,7 +22,7 @@ public class AttachmentValidator {
 	@Autowired
 	AttachmentService attachmentService;
 
-	public void validateGet(Integer attachmentId) {
+	public void validateGet(UUID attachmentId) {
 		AttachmentEntity attachment = attachmentService.findByAttachmentId(attachmentId);
 		if (attachment == null) {
 			throw new RestException(NOT_FOUND, "Article.articleId was not found");

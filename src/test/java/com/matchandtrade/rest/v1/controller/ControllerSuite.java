@@ -6,7 +6,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	ArticleAttachmentControllerIT.class,
 	ArticleControllerIT.class,
 	AuthenticationControllerIT.class,
 	ListingControllerIT.class,

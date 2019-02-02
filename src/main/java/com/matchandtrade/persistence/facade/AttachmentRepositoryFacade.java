@@ -11,6 +11,7 @@ import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.repository.AttachmentRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class AttachmentRepositoryFacade {
@@ -18,7 +19,7 @@ public class AttachmentRepositoryFacade {
 	private AttachmentRepository attachmentRepository;
 
 	// TODO: Optional?
-	public AttachmentEntity findByAttachmentId(Integer attachmentId) {
+	public AttachmentEntity findByAttachmentId(UUID attachmentId) {
 		Optional<AttachmentEntity> entity = attachmentRepository.findById(attachmentId);
 		return  entity.get();
 	}
@@ -27,8 +28,8 @@ public class AttachmentRepositoryFacade {
 		attachmentRepository.save(entity);
 	}
 
-	public void delete(Integer fileId) {
-		attachmentRepository.deleteById(fileId);
+	public void delete(UUID attachmentId) {
+		attachmentRepository.deleteById(attachmentId);
 	}
 
 	public SearchResult<AttachmentEntity> findByArticleId(Integer articleId) {
