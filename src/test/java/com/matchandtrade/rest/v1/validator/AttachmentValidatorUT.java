@@ -3,11 +3,16 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.AttachmentService;
+import com.matchandtrade.test.helper.AttachmentHelper;
+import javassist.bytecode.analysis.MultiType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.UUID;
 
@@ -49,5 +54,11 @@ public class AttachmentValidatorUT {
 			assertEquals("Article.articleId was not found", e.getDescription());
 			throw e;
 		}
+	}
+
+	@Test
+	public void validatePost_When_SizeIsLessThan5Mb_Then_Succeeds() {
+		MockMultipartFile file = AttachmentHelper.newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
+		fixture.validatePost(file);
 	}
 }

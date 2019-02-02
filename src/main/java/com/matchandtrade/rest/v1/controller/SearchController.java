@@ -3,7 +3,6 @@ package com.matchandtrade.rest.v1.controller;
 import com.matchandtrade.authorization.AuthorizationValidator;
 import com.matchandtrade.persistence.common.SearchCriteria;
 import com.matchandtrade.persistence.common.SearchResult;
-import com.matchandtrade.persistence.dto.Dto;
 import com.matchandtrade.persistence.entity.Entity;
 import com.matchandtrade.rest.service.AuthenticationService;
 import com.matchandtrade.rest.Json;

@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @Component
 public class AttachmentValidator {
@@ -26,6 +26,13 @@ public class AttachmentValidator {
 		AttachmentEntity attachment = attachmentService.findByAttachmentId(attachmentId);
 		if (attachment == null) {
 			throw new RestException(NOT_FOUND, "Article.articleId was not found");
+		}
+	}
+
+	public void validatePost(MultipartFile multipartFile) {
+		int megabyteMultiplier = 1_000_000;
+		if (multipartFile.getSize() > 5 * megabyteMultiplier) {
+			throw new RestException(BAD_REQUEST, "Files need to be smaller than 5 megabytes");
 		}
 	}
 }

@@ -9,10 +9,9 @@ import com.matchandtrade.rest.v1.linkassembler.AttachmentLinkAssembler;
 import com.matchandtrade.rest.v1.transformer.AttachmentTransformer;
 import com.matchandtrade.rest.v1.validator.AttachmentValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -37,6 +36,21 @@ public class AttachmentController implements Controller {
 		attachmentValidator.validateGet(attachmentId);
 		// Delegate to service layer
 		AttachmentEntity entity = attachmentService.findByAttachmentId(attachmentId);
+		// Transform the response
+		AttachmentJson response = attachmentTransformer.transform(entity);
+		// Assemble links
+		attachmentLinkAssembler.assemble(response);
+		return response;
+	}
+
+	@PostMapping(path = {"", "/"})
+	@ResponseStatus(HttpStatus.CREATED)
+	public AttachmentJson post(@RequestPart(name="file") MultipartFile multipartFile) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
+		// Validate the request
+		attachmentValidator.validatePost(multipartFile);
+		AttachmentEntity entity = attachmentService.create(multipartFile);
 		// Transform the response
 		AttachmentJson response = attachmentTransformer.transform(entity);
 		// Assemble links
