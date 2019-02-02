@@ -9,7 +9,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	ArticleServiceIT.class,
 	SearchRecipeServiceIT.class,
 	TradeResultServiceIT.class,
-	TradeServiceIT.class
+	TradeServiceIT.class,
+	ArticleAttachmentServiceIT.class
 })
 public class ServiceSuite {
 

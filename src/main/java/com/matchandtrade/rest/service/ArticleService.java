@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ArticleService {
-@Autowired
+	@Autowired
 	private ArticleRepositoryFacade articleRepositoryFacade;
 	@Autowired
 	private UserService userService;

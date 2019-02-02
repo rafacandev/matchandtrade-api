@@ -40,5 +40,4 @@ public class ListingController {
 		// Delegate to service layer
 		listingService.delete(request.getMembershipId(), request.getArticleId());
 	}
-
 }

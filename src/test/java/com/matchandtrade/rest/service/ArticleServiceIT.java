@@ -22,7 +22,7 @@ public class ArticleServiceIT {
 	private ArticleHelper articleHelper;
 
 	@Test
-	public void get_When_ThereAreArticles_Then_ReturnsArticles() {
+	public void get_When_ArticlesExist_Then_ReturnArticles() {
 		int startingTotal = (int) fixture.findAll(1, 1).getPagination().getTotal();
 		articleHelper.createPersistedEntity();
 		SearchResult<ArticleEntity> actual = fixture.findAll(1, 1);
