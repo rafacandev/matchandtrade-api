@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	TradeControllerIT.class,
 	TradeResultControllerIT.class,
 	UserControllerIT.class,
+	AttachmentControllerIT.class
 })
 public class ControllerSuite {
 

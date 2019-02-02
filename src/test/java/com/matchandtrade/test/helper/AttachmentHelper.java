@@ -12,7 +12,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.service.AttachmentService;
@@ -29,13 +28,18 @@ public class AttachmentHelper {
 	
 	@Transactional
 	public AttachmentEntity createPersistedEntity(ArticleEntity article) {
-		MultipartFile file = newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
+		MockMultipartFile file = newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
 		AttachmentEntity result = attachmentService.create(file);
 		ArticleEntity persistedArticle = articleRepositoryFacade.findByArticleId(article.getArticleId());
 		persistedArticle.getAttachments().add(result);
 		articleRepositoryFacade.save(persistedArticle);
-		// Also adding the attachment to the original article for consistency
-		article.getAttachments().add(result);
+		return result;
+	}
+
+	@Transactional
+	public AttachmentEntity createPersistedEntity() {
+		MockMultipartFile file = newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
+		AttachmentEntity result = attachmentService.create(file);
 		return result;
 	}
 

@@ -7,6 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	ArticleLinkAssemblerIT.class,
+	AttachmentLinkAssemblerIT.class,
 	SearchLinkAssemblerIT.class,
 	TradeLinkAssemblerIT.class
 })

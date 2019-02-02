@@ -4,7 +4,6 @@ import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 
 public class AttachmentTransformer extends Transformer<AttachmentEntity, AttachmentJson> {
-
 	@Override
 	public AttachmentJson transform(AttachmentEntity entity) {
 		AttachmentJson result = new AttachmentJson();
@@ -16,8 +15,10 @@ public class AttachmentTransformer extends Transformer<AttachmentEntity, Attachm
 
 	@Override
 	public AttachmentEntity transform(AttachmentJson json) {
-		// So far nobody needs this method. Fell free to implement it when needed.
-		throw new UnsupportedOperationException();
+		AttachmentEntity result = new AttachmentEntity();
+		result.setContentType(json.getContentType());
+		result.setAttachmentId(json.getAttachmentId());
+		result.setName(json.getName());
+		return result;
 	}
-
 }

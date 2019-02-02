@@ -34,11 +34,6 @@ public class AttachmentEntity implements com.matchandtrade.persistence.entity.En
 				return false;
 		} else if (!essences.equals(other.essences))
 			return false;
-		if (attachmentId == null) {
-			if (other.attachmentId != null)
-				return false;
-		} else if (!attachmentId.equals(other.attachmentId))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -61,7 +56,7 @@ public class AttachmentEntity implements com.matchandtrade.persistence.entity.En
 	@Id
 	@Column(name = "attachment_id")
 	@SequenceGenerator(name="attachment_id_generator", sequenceName = "attachment_id_sequence")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "attachment_id_generator")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "attachment_id_generator")
 	public Integer getAttachmentId() {
 		return attachmentId;
 	}
@@ -78,7 +73,6 @@ public class AttachmentEntity implements com.matchandtrade.persistence.entity.En
 		int result = 1;
 		result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
 		result = prime * result + ((essences == null) ? 0 : essences.hashCode());
-		result = prime * result + ((attachmentId == null) ? 0 : attachmentId.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
