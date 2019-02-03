@@ -33,7 +33,8 @@ public class AttachmentRepositoryFacade {
 	}
 
 	public SearchResult<AttachmentEntity> findByArticleId(Integer articleId) {
-		Pageable pageable = PersistenceUtil.buildPageable(1, 10);
+		// TODO: currently this is hardcoded to a max of 3 attachments per article
+		Pageable pageable = PersistenceUtil.buildPageable(1, 3);
 		Page<AttachmentEntity> page = attachmentRepository.findAttachmentsByArticleId(articleId, pageable);
 		return PersistenceUtil.buildSearchResult(pageable, page);
 	}

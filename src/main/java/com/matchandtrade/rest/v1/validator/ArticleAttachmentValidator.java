@@ -21,20 +21,20 @@ public class ArticleAttachmentValidator {
 
 	public void validatePut(Integer articleId, UUID attachmentId) {
 		verifyThatArticleExists(articleId);
-		AttachmentEntity attachment = attachmentService.findByAttachmentId(attachmentId);
-		if (attachment == null) {
-			throw new RestException(NOT_FOUND, "Attachment.attachmentId was not found");
-		}
-	}
-
-	public void validateGet(Integer articleId) {
-		verifyThatArticleExists(articleId);
+		verifyThatAttachmentExists(attachmentId);
 	}
 
 	private void verifyThatArticleExists(Integer articleId) {
 		ArticleEntity article = articleService.findByArticleId(articleId);
 		if (article == null) {
 			throw new RestException(NOT_FOUND, "Article.articleId was not found");
+		}
+	}
+
+	private void verifyThatAttachmentExists(UUID attachmentId) {
+		AttachmentEntity attachment = attachmentService.findByAttachmentId(attachmentId);
+		if (attachment == null) {
+			throw new RestException(NOT_FOUND, "Attachment.attachmentId was not found");
 		}
 	}
 }

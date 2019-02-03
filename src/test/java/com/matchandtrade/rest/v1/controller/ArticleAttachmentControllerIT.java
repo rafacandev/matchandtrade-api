@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,7 +23,6 @@ public class ArticleAttachmentControllerIT extends BaseControllerIT {
 	private ArticleHelper articleHelper;
 	@Autowired
 	private AttachmentHelper attachmentHelper;
-	private ArticleTransformer articleTransformer = new ArticleTransformer();
 
 	@Before
 	public void before() {
@@ -42,17 +40,5 @@ public class ArticleAttachmentControllerIT extends BaseControllerIT {
 				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 			)
 			.andExpect(status().isCreated());
-	}
-
-	@Test
-	public void getAll_When_ArticleAndAttachmentExists_Then_Succeeds() throws Exception {
-		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
-		mockMvc
-			.perform(
-				get("/matchandtrade-api/v1/articles/{articleId}/attachments/",
-					existingArticle.getArticleId())
-				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-			)
-			.andExpect(status().isOk());
 	}
 }

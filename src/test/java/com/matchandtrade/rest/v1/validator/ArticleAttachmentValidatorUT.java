@@ -5,13 +5,11 @@ import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.AttachmentService;
-import com.matchandtrade.test.helper.ArticleHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
@@ -67,15 +65,6 @@ public class ArticleAttachmentValidatorUT {
 	@Test
 	public void validatePut_When_ArticleAndAttachmentExist_Then_Succeeds() {
 		fixture.validatePut(existingArticle.getArticleId(), existingAttachment.getAttachmentId());
-	}
-
-	@Test(expected = RestException.class)
-	public void validateGet_When_ArticleDoesNotExist_Then_NotFound() {
-		try {
-			fixture.validateGet(-1);
-		} catch (RestException e) {
-			verifyThatArticleIsNotFound(e);
-		}
 	}
 
 	private void verifyThatArticleIsNotFound(RestException e) {

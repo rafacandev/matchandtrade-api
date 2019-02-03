@@ -11,26 +11,30 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
-public class ArticleAttachmentServiceIT {
+public class AttachmentServiceIT {
 	@Autowired
 	private ArticleHelper articleHelper;
 	@Autowired
 	private AttachmentHelper attachmentHelper;
 	@Autowired
-	private AttachmentService attachmentService;
-	@Autowired
-	private ArticleAttachmentService fixture;
+	private AttachmentService fixture;
 
 	@Test
-	public void create_When_ArticleDoesNotExist_Then_Succeeds() {
+	public void findByArticleId_When_ArticlesExist_Then_ReturnArticle() {
 		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
-		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity();
-		fixture.create(existingArticle.getArticleId(), existingAttachment.getAttachmentId());
-		SearchResult<AttachmentEntity> searchResult = attachmentService.findByArticleId(existingArticle.getArticleId());
-		assertTrue(searchResult.getResultList().contains(existingAttachment));
+		AttachmentEntity existingAttachment1 = attachmentHelper.createPersistedEntity(existingArticle);
+		AttachmentEntity existingAttachment2 = attachmentHelper.createPersistedEntity(existingArticle);
+		AttachmentEntity existingAttachment3 = attachmentHelper.createPersistedEntity(existingArticle);
+		SearchResult<AttachmentEntity> searchResult = fixture.findByArticleId(existingArticle.getArticleId());
+		assertEquals(3, searchResult.getPagination().getTotal());
+		assertTrue(searchResult.getResultList().contains(existingAttachment1));
+		assertTrue(searchResult.getResultList().contains(existingAttachment2));
+		assertTrue(searchResult.getResultList().contains(existingAttachment3));
 	}
 }
