@@ -47,6 +47,7 @@ public class EssenceStorageService {
 	}
 
 	Path makeRelativePath(String filename) {
+		// TODO: Fix case where file does not have extension
 		String fileExtention;
 		if (filename != null && !filename.isEmpty() && filename.lastIndexOf(".") < filename.length()) {
 			fileExtention = filename.substring(filename.lastIndexOf(".")).toLowerCase();

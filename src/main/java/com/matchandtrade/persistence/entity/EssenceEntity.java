@@ -55,6 +55,8 @@ public class EssenceEntity implements com.matchandtrade.persistence.entity.Entit
 		return relativePath;
 	}
 
+	@Enumerated(EnumType.STRING)
+	@Column(name="type", nullable=false, length = 100)
 	public Type getType() {
 		return type;
 	}

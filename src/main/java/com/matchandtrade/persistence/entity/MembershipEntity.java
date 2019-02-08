@@ -60,7 +60,7 @@ public class MembershipEntity implements com.matchandtrade.persistence.entity.En
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="type", nullable=false)
+	@Column(name="type", nullable=false, length = 100)
 	public Type getType() {
 		return type;
 	}
