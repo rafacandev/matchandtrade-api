@@ -64,7 +64,7 @@ public class AttachmentValidatorUT {
 
 	@Test
 	public void validatePost_When_SizeIsLessThan5Mb_Then_Succeeds() {
-		MockMultipartFile file = AttachmentHelper.newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
+		MockMultipartFile file = AttachmentHelper.newMockMultiPartFileImage();
 		fixture.validatePost(file);
 	}
 

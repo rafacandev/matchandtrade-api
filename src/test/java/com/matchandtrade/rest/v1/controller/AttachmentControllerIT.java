@@ -76,7 +76,7 @@ public class AttachmentControllerIT extends BaseControllerIT {
 
 	@Test
 	public void post_When_NewArticle_Then_Succeeds() throws Exception {
-		MockMultipartFile multipartFile = attachmentHelper.newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
+		MockMultipartFile multipartFile = attachmentHelper.newMockMultiPartFileImage();
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 			.multipart("/matchandtrade-api/v1/attachments/")
 			.file(multipartFile);

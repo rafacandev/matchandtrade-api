@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +37,8 @@ public class AttachmentService {
 
 	@Transactional
 	public AttachmentEntity create(MultipartFile multipartFile) {
-		Path originalEssenceRelativePath = essenceStorageService.makeRelativePath(multipartFile.getOriginalFilename());
+		String targetFileName = obtainFileName(multipartFile);
+		Path originalEssenceRelativePath = essenceStorageService.makeRelativePath(targetFileName);
 		log.debug("Storing original essence file at: {}", originalEssenceRelativePath);
 		storeFileOnFileSystem(multipartFile, originalEssenceRelativePath);
 
@@ -49,12 +51,12 @@ public class AttachmentService {
 		log.debug("Saving AttachmentEntity with original EssenceEntity");
 		AttachmentEntity result = new AttachmentEntity();
 		result.setContentType(multipartFile.getContentType());
-		result.setName(multipartFile.getOriginalFilename());
+		result.setName(targetFileName);
 		result.getEssences().add(originalEssence);
 		attachmentRepositoryFacade.save(result);
 
 		if (multipartFile.getContentType() != null && multipartFile.getContentType().contains("image")) {
-			Path thumbnailRelativePath = essenceStorageService.makeRelativePath(multipartFile.getOriginalFilename());
+			Path thumbnailRelativePath = essenceStorageService.makeRelativePath(targetFileName);
 			log.debug("Attempting to generate thumbnail for content type: {}; from essence file: {}; to thumbnail file: {}", multipartFile.getContentType(), originalEssenceRelativePath, thumbnailRelativePath);
 			try {
 				storeThumbnailOnFileSystem(originalEssenceRelativePath, thumbnailRelativePath);
@@ -65,6 +67,21 @@ public class AttachmentService {
 			}
 		}
 		return result;
+	}
+
+	private String obtainFileName(MultipartFile multipartFile) {
+		String extension = "";
+		if (MediaType.IMAGE_PNG_VALUE.equals(multipartFile.getContentType())) {
+			extension += ".png";
+		} else if (MediaType.IMAGE_GIF_VALUE.equals(multipartFile.getContentType())) {
+			extension += ".gif";
+		} else if (MediaType.IMAGE_JPEG_VALUE.equals(multipartFile.getContentType())) {
+			extension += ".jpg";
+		}
+		if (multipartFile.getOriginalFilename().toLowerCase().endsWith(extension)) {
+			return multipartFile.getOriginalFilename();
+		}
+		return multipartFile.getOriginalFilename() + extension;
 	}
 
 	private Image createThumbnailImage(Path relativePath) throws IOException {

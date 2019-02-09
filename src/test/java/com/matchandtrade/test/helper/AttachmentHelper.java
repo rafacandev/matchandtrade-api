@@ -28,7 +28,7 @@ public class AttachmentHelper {
 	
 	@Transactional
 	public AttachmentEntity createPersistedEntity(ArticleEntity article) {
-		MockMultipartFile file = newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
+		MockMultipartFile file = newMockMultiPartFileImage();
 		AttachmentEntity result = attachmentService.create(file);
 		ArticleEntity persistedArticle = articleRepositoryFacade.findByArticleId(article.getArticleId());
 		persistedArticle.getAttachments().add(result);
@@ -38,17 +38,21 @@ public class AttachmentHelper {
 
 	@Transactional
 	public AttachmentEntity createPersistedEntity() {
-		MockMultipartFile file = newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE);
+		MockMultipartFile file = newMockMultiPartFileImage();
 		AttachmentEntity result = attachmentService.create(file);
 		return result;
 	}
 
-	public static MockMultipartFile newMockMultiPartFileImage(String mediaType) {
-		String imageResource = "image-landscape.png";
+	public static MockMultipartFile newMockMultiPartFileImage() {
+		String filename = "image-landscape.png";
+		return newMockMultiPartFileImage(MediaType.IMAGE_PNG_VALUE, filename);
+	}
+
+	public static MockMultipartFile newMockMultiPartFileImage(String mediaType, String filename) {
 		MockMultipartFile result;
 		try {
-			InputStream imageInputStream = AttachmentHelper.class.getClassLoader().getResource(imageResource).openStream();
-			result = new MockMultipartFile("file", imageResource, mediaType, imageInputStream);
+			InputStream imageInputStream = AttachmentHelper.class.getClassLoader().getResource("image-landscape.png").openStream();
+			result = new MockMultipartFile("file", filename, mediaType, imageInputStream);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
@@ -60,5 +64,4 @@ public class AttachmentHelper {
 		String content = "Plain text file with content type: " + contentType;
 		return new MockMultipartFile("file", fileName, contentType, content.getBytes());
 	}
-
 }

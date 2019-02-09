@@ -47,15 +47,14 @@ public class EssenceStorageService {
 	}
 
 	Path makeRelativePath(String filename) {
-		// TODO: Fix case where file does not have extension
-		String fileExtention;
-		if (filename != null && !filename.isEmpty() && filename.lastIndexOf(".") < filename.length()) {
-			fileExtention = filename.substring(filename.lastIndexOf(".")).toLowerCase();
+		String fileExtension;
+		if (filename != null && !filename.isEmpty() && filename.contains(".") && filename.lastIndexOf(".") < filename.length()) {
+			fileExtension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
 		} else {
-			fileExtention = ".file";
+			fileExtension = ".file";
 		}
 		OffsetDateTime nowInUtc = OffsetDateTime.now(ZoneOffset.UTC);
-		String pathAsString = nowInUtc.getYear() + "" + File.separatorChar + "" + nowInUtc.getMonthValue() + File.separatorChar + UUID.randomUUID() + fileExtention;
+		String pathAsString = nowInUtc.getYear() + "" + File.separatorChar + "" + nowInUtc.getMonthValue() + File.separatorChar + UUID.randomUUID() + fileExtension;
 		return Paths.get(pathAsString);
 	}
 

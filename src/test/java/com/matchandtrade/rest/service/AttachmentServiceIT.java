@@ -9,7 +9,11 @@ import com.matchandtrade.test.helper.AttachmentHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.awt.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -36,5 +40,19 @@ public class AttachmentServiceIT {
 		assertTrue(searchResult.getResultList().contains(existingAttachment1));
 		assertTrue(searchResult.getResultList().contains(existingAttachment2));
 		assertTrue(searchResult.getResultList().contains(existingAttachment3));
+	}
+
+	@Test
+	public void create_When_IsPngFileAndContentTypeIsPng_Then_CreatePngFile() {
+		MultipartFile multipartFile = AttachmentHelper.newMockMultiPartFileImage();
+		AttachmentEntity actual = fixture.create(multipartFile);
+		assertTrue(actual.getName().endsWith(".png"));
+	}
+
+	@Test
+	public void create_When_IsPngFileAndContentTypeIsJpg_Then_CreateJpgFile() {
+		MultipartFile multipartFile = AttachmentHelper.newMockMultiPartFileImage(MediaType.IMAGE_JPEG_VALUE, "image.jpg");
+		AttachmentEntity actual = fixture.create(multipartFile);
+		assertTrue(actual.getName().endsWith(".jpg"));
 	}
 }
