@@ -36,7 +36,7 @@ public class AttachmentLinkAssemblerIT {
 	@Autowired
 	private AttachmentLinkAssembler fixture;
 
-	// TODO: MockBeans dirties the context. Let's create a mock factory when performance degrades
+	// TODO: MockBeans dirties the context. Can we create a mock factory for better performance?
 	@MockBean(name = "mockedAttachmentService")
 	private AttachmentService mockedAttachmentService;
 
@@ -76,14 +76,18 @@ public class AttachmentLinkAssemblerIT {
 		return existingAttachment.getEssences().stream().filter(e -> type.equals(e.getType())).findFirst().get();
 	}
 
+	private String obtainEssenceHref(EssenceEntity expectedOriginalEssence) {
+		return "http://localhost/matchandtrade-api/v1/essences/" + expectedOriginalEssence.getRelativePath();
+	}
+
 	private void verifyLinks() {
 		Map.Entry<String, String> actualSelfLink = obtainLink("self", attachment.getLinks());
 		assertEquals(buildSelfUrl(attachment), actualSelfLink.getValue());
 		Map.Entry<String, String> actualOriginalLink = obtainLink("original", attachment.getLinks());
 		EssenceEntity expectedOriginalEssence = obtainEssence(EssenceEntity.Type.ORIGINAL, existingAttachment);
-		assertEquals(expectedOriginalEssence.getRelativePath(), actualOriginalLink.getValue());
+		assertEquals(obtainEssenceHref(expectedOriginalEssence), actualOriginalLink.getValue());
 		Map.Entry<String, String> actualThumbnailLink = obtainLink("thumbnail", attachment.getLinks());
 		EssenceEntity expectedThumbnailEssence = obtainEssence(EssenceEntity.Type.THUMBNAIL, existingAttachment);
-		assertEquals(expectedThumbnailEssence.getRelativePath(), actualThumbnailLink.getValue());
+		assertEquals(obtainEssenceHref(expectedThumbnailEssence), actualThumbnailLink.getValue());
 	}
 }

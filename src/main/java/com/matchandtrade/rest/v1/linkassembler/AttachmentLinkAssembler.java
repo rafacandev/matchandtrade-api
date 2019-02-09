@@ -5,11 +5,13 @@ import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.EssenceEntity;
 import com.matchandtrade.rest.service.AttachmentService;
 import com.matchandtrade.rest.v1.controller.AttachmentController;
+import com.matchandtrade.rest.v1.controller.BaseController;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
 import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -32,18 +34,11 @@ public class AttachmentLinkAssembler {
 	}
 
 	private void assembleEssenceLinks(AttachmentJson json) {
+		String baseUri = linkTo(BaseController.class).toUri().toString();
 		AttachmentEntity attachment = attachmentService.findByAttachmentId(json.getAttachmentId());
 		Set<EssenceEntity> essences = attachment.getEssences();
 		for (EssenceEntity essence : essences) {
-			switch (essence.getType()) {
-				case ORIGINAL:
-					json.add("original", essence.getRelativePath());
-					break;
-				case THUMBNAIL:
-					json.add("thumbnail", essence.getRelativePath());
-					break;
-				default: // No default action
-			}
+			json.add(essence.getType().toString().toLowerCase(), String.format("%s/%s/%s", baseUri, "essences", essence.getRelativePath()));
 		}
 	}
 }
