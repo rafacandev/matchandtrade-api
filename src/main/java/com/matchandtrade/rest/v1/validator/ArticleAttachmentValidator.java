@@ -37,4 +37,8 @@ public class ArticleAttachmentValidator {
 			throw new RestException(NOT_FOUND, "Attachment.attachmentId was not found");
 		}
 	}
+
+	public void validateGet(Integer articleId) {
+		verifyThatArticleExists(articleId);
+	}
 }

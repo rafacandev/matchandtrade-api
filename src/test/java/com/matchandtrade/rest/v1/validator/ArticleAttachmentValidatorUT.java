@@ -67,6 +67,20 @@ public class ArticleAttachmentValidatorUT {
 		fixture.validatePut(existingArticle.getArticleId(), existingAttachment.getAttachmentId());
 	}
 
+	@Test
+	public void validateGet_When_ArticleExists_Then_Succeeds() {
+		fixture.validateGet(existingArticle.getArticleId());
+	}
+
+	@Test(expected = RestException.class)
+	public void validateGet_When_ArticleDoesNotExist_Then_NotFound() {
+		try {
+			fixture.validateGet(-1);
+		} catch (RestException e) {
+			verifyThatArticleIsNotFound(e);
+		}
+	}
+
 	private void verifyThatArticleIsNotFound(RestException e) {
 		assertEquals(NOT_FOUND, e.getHttpStatus());
 		assertEquals("Article.articleId was not found", e.getDescription());

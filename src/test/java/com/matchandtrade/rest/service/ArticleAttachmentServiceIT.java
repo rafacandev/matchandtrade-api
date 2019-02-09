@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -32,5 +33,22 @@ public class ArticleAttachmentServiceIT {
 		fixture.create(existingArticle.getArticleId(), existingAttachment.getAttachmentId());
 		SearchResult<AttachmentEntity> searchResult = attachmentService.findByArticleId(existingArticle.getArticleId());
 		assertTrue(searchResult.getResultList().contains(existingAttachment));
+	}
+
+	@Test
+	public void findByArticleId_When_AttachmentExist_Then_ReturnAttachments() {
+		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
+		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity(existingArticle);
+		SearchResult<AttachmentEntity> searchResult = fixture.findByArticleId(existingArticle.getArticleId());
+		assertEquals(1, searchResult.getPagination().getTotal());
+		assertEquals(existingAttachment, searchResult.getResultList().get(0));
+	}
+
+	@Test
+	public void findByArticleId_When_AttachmentDoesNotExist_Then_ReturnEmptySearchResults() {
+		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
+		attachmentHelper.createPersistedEntity();
+		SearchResult<AttachmentEntity> searchResult = fixture.findByArticleId(existingArticle.getArticleId());
+		assertEquals(0, searchResult.getPagination().getTotal());
 	}
 }

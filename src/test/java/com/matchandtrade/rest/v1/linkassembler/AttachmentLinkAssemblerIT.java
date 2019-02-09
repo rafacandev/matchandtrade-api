@@ -77,7 +77,7 @@ public class AttachmentLinkAssemblerIT {
 	}
 
 	private String obtainEssenceHref(EssenceEntity expectedOriginalEssence) {
-		return "http://localhost/matchandtrade-api/v1/essences/" + expectedOriginalEssence.getRelativePath();
+		return "http://localhost/matchandtrade-api/essences/" + expectedOriginalEssence.getRelativePath();
 	}
 
 	private void verifyLinks() {

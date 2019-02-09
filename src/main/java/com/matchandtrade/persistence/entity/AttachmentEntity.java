@@ -1,6 +1,7 @@
 package com.matchandtrade.persistence.entity;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class AttachmentEntity implements com.matchandtrade.persistence.entity.En
 	private UUID attachmentId;
 	private String contentType;
 	private String name;
-	private Set<EssenceEntity> essences = new HashSet<>();
+	private Set<EssenceEntity> essences = new LinkedHashSet<>();
 
 	@Override
 	public boolean equals(Object obj) {

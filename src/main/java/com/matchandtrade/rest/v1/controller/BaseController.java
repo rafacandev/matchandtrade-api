@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
  * This is an empty controller to assist on the creation of links (e.g.: via LinkAssemblers)
  */
 @RestController
-@RequestMapping(path = "/matchandtrade-api/v1")
+@RequestMapping(path = "/matchandtrade-api")
 public class BaseController implements Controller {
 
 }
