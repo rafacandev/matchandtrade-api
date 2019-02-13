@@ -2,17 +2,12 @@ package com.matchandtrade.rest.v1.validator;
 
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
-import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -37,13 +32,6 @@ public class ArticleAttachmentValidator {
 		}
 	}
 
-	private void verifyThatAttachmentExists(UUID attachmentId) {
-		AttachmentEntity attachment = attachmentService.findByAttachmentId(attachmentId);
-		if (attachment == null) {
-			throw new RestException(NOT_FOUND, "Attachment.attachmentId was not found");
-		}
-	}
-
 	public void validateGet(Integer articleId) {
 		verifyThatArticleExists(articleId);
 	}
@@ -51,10 +39,5 @@ public class ArticleAttachmentValidator {
 	public void validatePost(Integer articleId) {
 		verifyThatArticleExists(articleId);
 		verifyThatArticleHasLessThanThreeAttachments(articleId);
-	}
-
-	public void validatePut(Integer articleId, UUID attachmentId) {
-		verifyThatArticleExists(articleId);
-		verifyThatAttachmentExists(attachmentId);
 	}
 }

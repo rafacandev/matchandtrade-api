@@ -30,15 +30,6 @@ public class ArticleAttachmentServiceIT {
 	private ArticleAttachmentService fixture;
 
 	@Test
-	public void old_create_When_ArticleDoesNotExist_Then_Succeeds() {
-		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
-		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity();
-		fixture.create(existingArticle.getArticleId(), existingAttachment.getAttachmentId());
-		SearchResult<AttachmentEntity> searchResult = attachmentService.findByArticleId(existingArticle.getArticleId());
-		assertTrue(searchResult.getResultList().contains(existingAttachment));
-	}
-
-	@Test
 	public void create_When_ArticleExists_Then_CreateAttachment() {
 		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
 		MultipartFile multipartFile = AttachmentHelper.newMockMultiPartFileImage();

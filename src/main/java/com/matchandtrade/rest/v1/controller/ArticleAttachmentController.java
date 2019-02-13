@@ -31,17 +31,6 @@ public class ArticleAttachmentController implements Controller {
 	private AttachmentLinkAssembler attachmentLinkAssembler;
 	private AttachmentTransformer attachmentTransformer = new AttachmentTransformer();
 
-	@PutMapping("/{attachmentId}")
-	@ResponseStatus(OK)
-	public void put(@PathVariable Integer articleId, @PathVariable UUID attachmentId) {
-		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
-		// Validate the request
-		articleAttachmentValidator.validatePut(articleId, attachmentId);
-		// Delegate to service layer
-		articleAttachmentService.create(articleId, attachmentId);
-	}
-
 	@PostMapping({"", "/"})
 	@ResponseStatus(CREATED)
 	public AttachmentJson post(@PathVariable Integer articleId, @RequestPart(name="file") MultipartFile multipartFile) {
