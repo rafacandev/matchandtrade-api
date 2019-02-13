@@ -1,5 +1,7 @@
 package com.matchandtrade.rest.v1.validator;
 
+import com.matchandtrade.persistence.common.Pagination;
+import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.RestException;
@@ -10,9 +12,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -39,6 +43,36 @@ public class ArticleAttachmentValidatorUT {
 		fixture.articleService = mockedArticleService;
 		when(mockedAttachmentService.findByAttachmentId(existingAttachment.getAttachmentId())).thenReturn(existingAttachment);
 		fixture.attachmentService = mockedAttachmentService;
+	}
+
+	@Test
+	public void validatePost_When_ArticleHas0Attachments_Then_Succeeds() {
+		SearchResult<AttachmentEntity> mockedSearchResult = new SearchResult<>(emptyList(), new Pagination(1, 10, 0L));
+		when(mockedAttachmentService.findByArticleId(1)).thenReturn(mockedSearchResult);
+		fixture.validatePost(1);
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_ArticleHas3Attachments_Then_BadRequest() {
+		SearchResult<AttachmentEntity> mockedSearchResult = new SearchResult<>(emptyList(), new Pagination(1, 10, 3L));
+		when(mockedAttachmentService.findByArticleId(1)).thenReturn(mockedSearchResult);
+		try {
+			fixture.validatePost(1);
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("Articles cannot have more than 3 Attachments", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePost_When_ArticleDoesNotExist_Then_NotFound() {
+		try {
+			fixture.validatePost(-1);
+		} catch (RestException e) {
+			verifyThatArticleIsNotFound(e);
+			return;
+		}
 	}
 
 	@Test(expected = RestException.class)

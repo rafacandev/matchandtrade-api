@@ -11,9 +11,11 @@ import com.matchandtrade.rest.v1.transformer.AttachmentTransformer;
 import com.matchandtrade.rest.v1.validator.ArticleAttachmentValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -38,6 +40,22 @@ public class ArticleAttachmentController implements Controller {
 		articleAttachmentValidator.validatePut(articleId, attachmentId);
 		// Delegate to service layer
 		articleAttachmentService.create(articleId, attachmentId);
+	}
+
+	@PostMapping({"", "/"})
+	@ResponseStatus(CREATED)
+	public AttachmentJson post(@PathVariable Integer articleId, @RequestPart(name="file") MultipartFile multipartFile) {
+		// Validate request identity
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
+		// Validate the request
+		articleAttachmentValidator.validatePost(articleId);
+		// Delegate to service layer
+		AttachmentEntity entity = articleAttachmentService.create(articleId, multipartFile);
+		// Transform the response
+		AttachmentJson response = attachmentTransformer.transform(entity);
+		// Assemble links
+		attachmentLinkAssembler.assemble(response);
+		return response;
 	}
 
 	@GetMapping({"","/"})

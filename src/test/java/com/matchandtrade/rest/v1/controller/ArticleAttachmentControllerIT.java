@@ -7,16 +7,23 @@ import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.JsonTestUtil;
 import com.matchandtrade.test.helper.ArticleHelper;
 import com.matchandtrade.test.helper.AttachmentHelper;
+import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,7 +42,7 @@ public class ArticleAttachmentControllerIT extends BaseControllerIT {
 	}
 
 	@Test
-	public void post_When_NewArticle_Then_StatusIsOk() throws Exception {
+	public void put_When_NewArticle_Then_StatusIsOk() throws Exception {
 		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
 		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity();
 		mockMvc
@@ -45,6 +52,25 @@ public class ArticleAttachmentControllerIT extends BaseControllerIT {
 					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 			)
 			.andExpect(status().isOk());
+	}
+
+	@Test
+	public void post_When_Attachment_Then_StatusIsOk() throws Exception {
+		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
+
+		MockMultipartFile multipartFile = attachmentHelper.newMockMultiPartFileImage();
+
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+			.multipart("/matchandtrade-api/v1/articles/{articleId}/attachments/", existingArticle.getArticleId())
+			.file(multipartFile);
+		MockHttpServletResponse response = mockMvc.perform(request.header(HttpHeaders.AUTHORIZATION, authorizationHeader))
+			.andExpect(status().isCreated())
+			.andReturn()
+			.getResponse();
+		AttachmentJson actual = JsonUtil.fromString(response.getContentAsString(), AttachmentJson.class);
+		assertNotNull(actual.getAttachmentId());
+		assertNotNull(actual.getName());
+		assertEquals(MediaType.IMAGE_PNG_VALUE, actual.getContentType());
 	}
 
 	@Test
