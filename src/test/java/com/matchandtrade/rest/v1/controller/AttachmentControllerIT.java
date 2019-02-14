@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -49,6 +51,17 @@ public class AttachmentControllerIT extends BaseControllerIT {
 		AttachmentJson actual = JsonUtil.fromString(response.getContentAsString(), AttachmentJson.class);
 		AttachmentJson expected = attachmentTransformer.transform(existingAttachment);
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void delete_When_AttachmentExists_Then_NoContent() throws Exception {
+		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity();
+		mockMvc.perform(
+			delete("/matchandtrade-api/v1/attachments/{attachmentId}", existingAttachment.getAttachmentId())
+				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+			)
+			.andDo(print())
+			.andExpect(status().isNoContent());
 	}
 
 	@Test

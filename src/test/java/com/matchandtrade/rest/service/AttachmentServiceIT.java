@@ -11,6 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.NoSuchElementException;
+
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -36,5 +39,13 @@ public class AttachmentServiceIT {
 		MultipartFile multipartFile = AttachmentHelper.newMockMultiPartFileImage(MediaType.IMAGE_JPEG_VALUE, "image.jpg");
 		AttachmentEntity actual = fixture.create(multipartFile);
 		assertTrue(actual.getName().endsWith(".jpg"));
+	}
+
+	// TODO: Handle the optional in AttachmentRepositoryFacade
+	@Test(expected = NoSuchElementException.class)
+	public void delete_When_AttachmentExists_Then_Succeeds() {
+		AttachmentEntity expected = attachmentHelper.createPersistedEntity();
+		fixture.delete(expected.getAttachmentId());
+		fixture.findByAttachmentId(expected.getAttachmentId());
 	}
 }

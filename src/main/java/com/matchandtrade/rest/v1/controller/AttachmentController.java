@@ -43,6 +43,15 @@ public class AttachmentController implements Controller {
 		return response;
 	}
 
+	@DeleteMapping("/{attachmentId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@PathVariable UUID attachmentId) {
+		// Validate the request identity
+		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
+		// Delegate to service layer
+		attachmentService.delete(attachmentId);
+	}
+
 	@PostMapping(path = {"", "/"})
 	@ResponseStatus(HttpStatus.CREATED)
 	public AttachmentJson post(@RequestPart(name="file") MultipartFile multipartFile) {
