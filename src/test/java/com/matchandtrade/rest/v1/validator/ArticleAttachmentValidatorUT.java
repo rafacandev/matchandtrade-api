@@ -5,6 +5,7 @@ import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ArticleAttachmentService;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.AttachmentService;
 import org.junit.Before;
@@ -28,6 +29,8 @@ public class ArticleAttachmentValidatorUT {
 	private ArticleService mockedArticleService;
 	@Mock
 	private AttachmentService mockedAttachmentService;
+	@Mock
+	private ArticleAttachmentService mockedArticleAttachmentService;
 	private ArticleEntity existingArticle;
 	private AttachmentEntity existingAttachment;
 
@@ -43,19 +46,20 @@ public class ArticleAttachmentValidatorUT {
 
 		fixture.articleService = mockedArticleService;
 		fixture.attachmentService = mockedAttachmentService;
+		fixture.articleAttachmentService= mockedArticleAttachmentService;
 	}
 
 	@Test
 	public void validatePost_When_ArticleHas0Attachments_Then_Succeeds() {
 		SearchResult<AttachmentEntity> mockedSearchResult = new SearchResult<>(emptyList(), new Pagination(1, 10, 0L));
-		when(mockedAttachmentService.findByArticleId(1)).thenReturn(mockedSearchResult);
+		when(mockedArticleAttachmentService.findByArticleId(1)).thenReturn(mockedSearchResult);
 		fixture.validatePost(1);
 	}
 
 	@Test(expected = RestException.class)
 	public void validatePost_When_ArticleHas3Attachments_Then_BadRequest() {
 		SearchResult<AttachmentEntity> mockedSearchResult = new SearchResult<>(emptyList(), new Pagination(1, 10, 3L));
-		when(mockedAttachmentService.findByArticleId(1)).thenReturn(mockedSearchResult);
+		when(mockedArticleAttachmentService.findByArticleId(1)).thenReturn(mockedSearchResult);
 		try {
 			fixture.validatePost(1);
 		} catch (RestException e) {

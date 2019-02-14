@@ -1,6 +1,5 @@
 package com.matchandtrade.rest.v1.controller;
 
-import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.rest.v1.transformer.AttachmentTransformer;
@@ -20,8 +19,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,8 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AttachmentControllerIT extends BaseControllerIT {
 	@Autowired
 	private AttachmentHelper attachmentHelper;
-	@Autowired
-	private ArticleHelper articleHelper;
 	private AttachmentTransformer attachmentTransformer = new AttachmentTransformer();
 
 	@Before
@@ -54,24 +49,6 @@ public class AttachmentControllerIT extends BaseControllerIT {
 		AttachmentJson actual = JsonUtil.fromString(response.getContentAsString(), AttachmentJson.class);
 		AttachmentJson expected = attachmentTransformer.transform(existingAttachment);
 		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void get_When_GivenArticleId_Then_ReturnsAllArticleAttachments() throws Exception {
-		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
-		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity(existingArticle);
-		String response = mockMvc.perform(
-			get("/matchandtrade-api/v1/attachments?articleId={articleId}", existingArticle.getArticleId())
-				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
-			)
-			.andExpect(status().isOk())
-			.andReturn()
-			.getResponse()
-			.getContentAsString();
-
-		List<AttachmentJson> actualList = JsonUtil.fromArrayString(response, AttachmentJson.class);
-		AttachmentJson expectedAttachment = attachmentTransformer.transform(existingAttachment);
-		assertEquals(expectedAttachment, actualList.get(0));
 	}
 
 	@Test

@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+// TODO: Use JUnit Rule instead of a base parent class
 public class BaseControllerIT {
 
 	protected String authorizationHeader;

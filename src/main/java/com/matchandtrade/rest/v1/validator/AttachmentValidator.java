@@ -1,12 +1,10 @@
 package com.matchandtrade.rest.v1.validator;
 
-import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,8 +15,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Component
 public class AttachmentValidator {
-	@Autowired
-	ArticleService articleService;
 	@Autowired
 	AttachmentService attachmentService;
 
@@ -33,13 +29,6 @@ public class AttachmentValidator {
 		int megabyteMultiplier = 1_000_000;
 		if (multipartFile.getSize() > 5 * megabyteMultiplier) {
 			throw new RestException(BAD_REQUEST, "Files need to be smaller than 5 megabytes");
-		}
-	}
-
-	public void validateFind(Integer articleId) {
-		ArticleEntity article = articleService.findByArticleId(articleId);
-		if (article == null) {
-			throw new RestException(HttpStatus.NOT_FOUND, "Article.articleId was not found");
 		}
 	}
 }

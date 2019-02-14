@@ -1,7 +1,6 @@
 package com.matchandtrade.rest.v1.controller;
 
 import com.matchandtrade.authorization.AuthorizationValidator;
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.service.AttachmentService;
 import com.matchandtrade.rest.service.AuthenticationService;
@@ -39,21 +38,6 @@ public class AttachmentController implements Controller {
 		AttachmentEntity entity = attachmentService.findByAttachmentId(attachmentId);
 		// Transform the response
 		AttachmentJson response = attachmentTransformer.transform(entity);
-		// Assemble links
-		attachmentLinkAssembler.assemble(response);
-		return response;
-	}
-
-	@GetMapping()
-	public SearchResult<AttachmentJson> get(Integer articleId) {
-		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
-		// Validate the request
-		attachmentValidator.validateFind(articleId);
-		// Delegate to service layer
-		SearchResult<AttachmentEntity> searchResult = attachmentService.findByArticleId(articleId);
-		// Transform the response
-		SearchResult<AttachmentJson> response = attachmentTransformer.transform(searchResult);
 		// Assemble links
 		attachmentLinkAssembler.assemble(response);
 		return response;

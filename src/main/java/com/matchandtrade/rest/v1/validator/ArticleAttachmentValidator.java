@@ -3,6 +3,7 @@ package com.matchandtrade.rest.v1.validator;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.rest.RestException;
+import com.matchandtrade.rest.service.ArticleAttachmentService;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class ArticleAttachmentValidator {
 	ArticleService articleService;
 	@Autowired
 	AttachmentService attachmentService;
+	@Autowired
+	ArticleAttachmentService articleAttachmentService;
 
 	private void verifyThatArticleExists(Integer articleId) {
 		ArticleEntity article = articleService.findByArticleId(articleId);
@@ -26,7 +29,7 @@ public class ArticleAttachmentValidator {
 	}
 
 	private void verifyThatArticleHasLessThanThreeAttachments(Integer articleId) {
-		SearchResult searchResult = attachmentService.findByArticleId(articleId);
+		SearchResult searchResult = articleAttachmentService.findByArticleId(articleId);
 		if (searchResult.getPagination().getTotal() >= 3) {
 			throw new RestException(HttpStatus.BAD_REQUEST, "Articles cannot have more than 3 Attachments");
 		}

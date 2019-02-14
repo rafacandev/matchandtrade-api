@@ -1,6 +1,5 @@
 package com.matchandtrade.rest.service;
 
-import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.persistence.entity.EssenceEntity;
 import com.matchandtrade.persistence.entity.EssenceEntity.Type;
@@ -96,10 +95,6 @@ public class AttachmentService {
 
 	public void delete(UUID attachmentId) {
 		attachmentRepositoryFacade.delete(attachmentId);
-	}
-
-	public SearchResult<AttachmentEntity> findByArticleId(Integer articleId) {
-		return attachmentRepositoryFacade.findByArticleId(articleId);
 	}
 
 	public AttachmentEntity findByAttachmentId(UUID attachmentId) {
