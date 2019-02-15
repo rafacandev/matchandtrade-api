@@ -7,7 +7,6 @@ import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -26,15 +25,6 @@ public class ArticleAttachmentService {
 		AttachmentEntity attachment = attachmentService.findByAttachmentId(attachmentId);
 		article.getAttachments().add(attachment);
 		articleService.update(article);
-	}
-
-	@Transactional
-	public AttachmentEntity create(Integer articleId, MultipartFile file) {
-		ArticleEntity article = articleService.findByArticleId(articleId);
-		AttachmentEntity attachment = attachmentService.create(file);
-		article.getAttachments().add(attachment);
-		articleService.update(article);
-		return attachment;
 	}
 
 	public SearchResult<AttachmentEntity> findByArticleId(Integer articleId) {

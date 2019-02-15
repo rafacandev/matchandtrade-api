@@ -51,13 +51,9 @@ public class ArticleAttachmentValidator {
 		verifyThatArticleExists(articleId);
 	}
 
-	public void validatePost(Integer articleId) {
-		verifyThatArticleExists(articleId);
-		verifyThatArticleHasLessThanThreeAttachments(articleId);
-	}
-
 	public void validatePut(Integer articleId, UUID attachmentId) {
 		verifyThatArticleExists(articleId);
 		verifyThatAttachmentExists(attachmentId);
+		verifyThatArticleHasLessThanThreeAttachments(articleId);
 	}
 }

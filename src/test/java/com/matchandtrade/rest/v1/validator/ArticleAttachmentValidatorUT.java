@@ -8,6 +8,7 @@ import com.matchandtrade.rest.RestException;
 import com.matchandtrade.rest.service.ArticleAttachmentService;
 import com.matchandtrade.rest.service.ArticleService;
 import com.matchandtrade.rest.service.AttachmentService;
+import com.matchandtrade.test.helper.SearchHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,51 +39,21 @@ public class ArticleAttachmentValidatorUT {
 	public void before() {
 		existingArticle = new ArticleEntity();
 		existingArticle.setArticleId(1);
+		when(mockedArticleService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
 
 		existingAttachment = new AttachmentEntity();
 		existingAttachment.setAttachmentId(UUID.randomUUID());
-
-		when(mockedArticleService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
-		fixture.articleService = mockedArticleService;
 		when(mockedAttachmentService.findByAttachmentId(existingAttachment.getAttachmentId())).thenReturn(existingAttachment);
+
+		fixture.articleService = mockedArticleService;
 		fixture.attachmentService = mockedAttachmentService;
 		fixture.articleAttachmentService= mockedArticleAttachmentService;
-	}
-
-	@Test
-	public void validatePost_When_ArticleHas0Attachments_Then_Succeeds() {
-		SearchResult<AttachmentEntity> mockedSearchResult = new SearchResult<>(emptyList(), new Pagination(1, 10, 0L));
-		when(mockedArticleAttachmentService.findByArticleId(1)).thenReturn(mockedSearchResult);
-		fixture.validatePost(1);
-	}
-
-	@Test(expected = RestException.class)
-	public void validatePost_When_ArticleHas3Attachments_Then_BadRequest() {
-		SearchResult<AttachmentEntity> mockedSearchResult = new SearchResult<>(emptyList(), new Pagination(1, 10, 3L));
-		when(mockedArticleAttachmentService.findByArticleId(1)).thenReturn(mockedSearchResult);
-		try {
-			fixture.validatePost(1);
-		} catch (RestException e) {
-			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
-			assertEquals("Articles cannot have more than 3 Attachments", e.getDescription());
-			throw e;
-		}
-	}
-
-	@Test(expected = RestException.class)
-	public void validatePost_When_ArticleDoesNotExist_Then_NotFound() {
-		try {
-			fixture.validatePost(-1);
-		} catch (RestException e) {
-			verifyThatArticleIsNotFound(e);
-			return;
-		}
 	}
 
 	@Test(expected = RestException.class)
 	public void validatePut_When_ArticleDoesNotExist_Then_NotFound() {
 		try {
-			fixture.validatePut(-1, UUID.randomUUID());
+			fixture.validatePut(-1, existingAttachment.getAttachmentId());
 		} catch (RestException e) {
 			verifyThatArticleIsNotFound(e);
 			return;
@@ -100,8 +71,22 @@ public class ArticleAttachmentValidatorUT {
 		}
 	}
 
+	@Test(expected = RestException.class)
+	public void validatePut_When_ArticleHas3Attachments_Then_BadRequest() {
+		SearchResult<AttachmentEntity> mockedSearchResult = new SearchResult<>(emptyList(), new Pagination(1, 10, 3L));
+		when(mockedArticleAttachmentService.findByArticleId(1)).thenReturn(mockedSearchResult);
+		try {
+			fixture.validatePut(1, existingAttachment.getAttachmentId());
+		} catch (RestException e) {
+			assertEquals(HttpStatus.BAD_REQUEST, e.getHttpStatus());
+			assertEquals("Articles cannot have more than 3 Attachments", e.getDescription());
+			throw e;
+		}
+	}
+
 	@Test
 	public void validatePut_When_ArticleAndAttachmentExist_Then_Succeeds() {
+		when(mockedArticleAttachmentService.findByArticleId(1)).thenReturn(SearchHelper.buildEmptySearchResult());
 		fixture.validatePut(existingArticle.getArticleId(), existingAttachment.getAttachmentId());
 	}
 

@@ -42,22 +42,6 @@ public class ArticleAttachmentController implements Controller {
 		articleAttachmentService.create(articleId, attachmentId);
 	}
 
-	@PostMapping({"", "/"})
-	@ResponseStatus(CREATED)
-	public AttachmentJson post(@PathVariable Integer articleId, @RequestPart(name="file") MultipartFile multipartFile) {
-		// Validate request identity
-		AuthorizationValidator.validateIdentity(authenticationService.findCurrentAuthentication());
-		// Validate the request
-		articleAttachmentValidator.validatePost(articleId);
-		// Delegate to service layer
-		AttachmentEntity entity = articleAttachmentService.create(articleId, multipartFile);
-		// Transform the response
-		AttachmentJson response = attachmentTransformer.transform(entity);
-		// Assemble links
-		attachmentLinkAssembler.assemble(response);
-		return response;
-	}
-
 	@GetMapping({"","/"})
 	@ResponseStatus(OK)
 	public SearchResult<AttachmentJson> get(@PathVariable Integer articleId) {

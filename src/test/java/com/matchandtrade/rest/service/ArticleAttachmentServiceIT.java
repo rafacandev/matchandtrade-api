@@ -45,20 +45,6 @@ public class ArticleAttachmentServiceIT {
 	}
 
 	@Test
-	public void create_When_ArticleExists_Then_CreateAttachment() {
-		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
-		MultipartFile multipartFile = AttachmentHelper.newMockMultiPartFileImage();
-		AttachmentEntity actualAttachment = fixture.create(existingArticle.getArticleId(), multipartFile);
-
-		assertNotNull(actualAttachment);
-		assertNotNull(actualAttachment.getAttachmentId());
-		assertEquals(multipartFile.getOriginalFilename(), actualAttachment.getName());
-		assertEquals(multipartFile.getContentType(), actualAttachment.getContentType());
-		SearchResult<AttachmentEntity> searchResult = attachmentRepositoryFacade.findByArticleId(existingArticle.getArticleId());
-		assertEquals(1, searchResult.getPagination().getTotal());
-	}
-
-	@Test
 	public void findByArticleId_When_AttachmentExist_Then_ReturnAttachments() {
 		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
 		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity(existingArticle);

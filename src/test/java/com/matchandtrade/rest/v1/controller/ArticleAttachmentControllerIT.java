@@ -55,25 +55,6 @@ public class ArticleAttachmentControllerIT extends BaseControllerIT {
 	}
 
 	@Test
-	public void post_When_Attachment_Then_StatusIsOk() throws Exception {
-		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
-
-		MockMultipartFile multipartFile = attachmentHelper.newMockMultiPartFileImage();
-
-		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-			.multipart("/matchandtrade-api/v1/articles/{articleId}/attachments/", existingArticle.getArticleId())
-			.file(multipartFile);
-		MockHttpServletResponse response = mockMvc.perform(request.header(HttpHeaders.AUTHORIZATION, authorizationHeader))
-			.andExpect(status().isCreated())
-			.andReturn()
-			.getResponse();
-		AttachmentJson actual = JsonUtil.fromString(response.getContentAsString(), AttachmentJson.class);
-		assertNotNull(actual.getAttachmentId());
-		assertNotNull(actual.getName());
-		assertEquals(MediaType.IMAGE_PNG_VALUE, actual.getContentType());
-	}
-
-	@Test
 	public void get_When_AttachmentExists_Then_StatusIsOk() throws Exception {
 		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
 		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity(existingArticle);
