@@ -43,8 +43,8 @@ public class ArticleAttachmentValidatorUT {
 		existingAttachment.setAttachmentId(UUID.randomUUID());
 
 		when(mockedArticleService.findByArticleId(existingArticle.getArticleId())).thenReturn(existingArticle);
-
 		fixture.articleService = mockedArticleService;
+		when(mockedAttachmentService.findByAttachmentId(existingAttachment.getAttachmentId())).thenReturn(existingAttachment);
 		fixture.attachmentService = mockedAttachmentService;
 		fixture.articleAttachmentService= mockedArticleAttachmentService;
 	}
@@ -77,6 +77,32 @@ public class ArticleAttachmentValidatorUT {
 			verifyThatArticleIsNotFound(e);
 			return;
 		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePut_When_ArticleDoesNotExist_Then_NotFound() {
+		try {
+			fixture.validatePut(-1, UUID.randomUUID());
+		} catch (RestException e) {
+			verifyThatArticleIsNotFound(e);
+			return;
+		}
+	}
+
+	@Test(expected = RestException.class)
+	public void validatePut_When_AttachmentDoesNotExist_Then_NotFound() {
+		try {
+			fixture.validatePut(existingArticle.getArticleId(), UUID.randomUUID());
+		} catch (RestException e) {
+			assertEquals(NOT_FOUND, e.getHttpStatus());
+			assertEquals("Attachment.attachmentId was not found", e.getDescription());
+			throw e;
+		}
+	}
+
+	@Test
+	public void validatePut_When_ArticleAndAttachmentExist_Then_Succeeds() {
+		fixture.validatePut(existingArticle.getArticleId(), existingAttachment.getAttachmentId());
 	}
 
 	@Test

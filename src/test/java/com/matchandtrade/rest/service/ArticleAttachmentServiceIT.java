@@ -3,10 +3,12 @@ package com.matchandtrade.rest.service;
 import com.matchandtrade.persistence.common.SearchResult;
 import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
+import com.matchandtrade.persistence.facade.ArticleRepositoryFacade;
 import com.matchandtrade.persistence.facade.AttachmentRepositoryFacade;
 import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.ArticleHelper;
 import com.matchandtrade.test.helper.AttachmentHelper;
+import com.matchandtrade.test.helper.SearchHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @DefaultTestingConfiguration
 public class ArticleAttachmentServiceIT {
 	@Autowired
 	private ArticleHelper articleHelper;
+	@Autowired
+	private ArticleAttachmentService articleAttachmentService;
 	@Autowired
 	private AttachmentHelper attachmentHelper;
 	@Autowired
@@ -29,6 +34,15 @@ public class ArticleAttachmentServiceIT {
 	private AttachmentRepositoryFacade attachmentRepositoryFacade;
 	@Autowired
 	private ArticleAttachmentService fixture;
+
+	@Test
+	public void create_When_ArticleExists_Then_Succeeds() {
+		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
+		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity();
+		fixture.create(existingArticle.getArticleId(), existingAttachment.getAttachmentId());
+		SearchResult<AttachmentEntity> searchResult = articleAttachmentService.findByArticleId(existingArticle.getArticleId());
+		assertEquals(1, searchResult.getPagination().getTotal());
+	}
 
 	@Test
 	public void create_When_ArticleExists_Then_CreateAttachment() {

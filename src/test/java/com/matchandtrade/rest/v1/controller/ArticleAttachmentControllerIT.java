@@ -25,6 +25,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -38,6 +39,19 @@ public class ArticleAttachmentControllerIT extends BaseControllerIT {
 	@Before
 	public void before() {
 		super.before();
+	}
+
+	@Test
+	public void put_When_NewArticle_Then_StatusIsOk() throws Exception {
+		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
+		AttachmentEntity existingAttachment = attachmentHelper.createPersistedEntity();
+		mockMvc
+			.perform(
+				put("/matchandtrade-api/v1/articles/{articleId}/attachments/{attachmentId}",
+					existingArticle.getArticleId(), existingAttachment.getAttachmentId())
+					.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
+			)
+			.andExpect(status().isOk());
 	}
 
 	@Test

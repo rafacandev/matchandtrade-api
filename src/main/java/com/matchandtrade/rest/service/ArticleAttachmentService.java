@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @Service
 public class ArticleAttachmentService {
 	@Autowired
@@ -17,6 +19,14 @@ public class ArticleAttachmentService {
 	private AttachmentService attachmentService;
 	@Autowired
 	private AttachmentRepositoryFacade attachmentRepositoryFacade;
+
+	@Transactional
+	public void create(Integer articleId, UUID attachmentId) {
+		ArticleEntity article = articleService.findByArticleId(articleId);
+		AttachmentEntity attachment = attachmentService.findByAttachmentId(attachmentId);
+		article.getAttachments().add(attachment);
+		articleService.update(article);
+	}
 
 	@Transactional
 	public AttachmentEntity create(Integer articleId, MultipartFile file) {

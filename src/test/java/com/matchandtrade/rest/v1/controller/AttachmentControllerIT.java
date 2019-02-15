@@ -4,7 +4,6 @@ import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.rest.v1.json.AttachmentJson;
 import com.matchandtrade.rest.v1.transformer.AttachmentTransformer;
 import com.matchandtrade.test.DefaultTestingConfiguration;
-import com.matchandtrade.test.helper.ArticleHelper;
 import com.matchandtrade.test.helper.AttachmentHelper;
 import com.matchandtrade.util.JsonUtil;
 import org.junit.Before;
@@ -23,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -60,7 +58,6 @@ public class AttachmentControllerIT extends BaseControllerIT {
 			delete("/matchandtrade-api/v1/attachments/{attachmentId}", existingAttachment.getAttachmentId())
 				.header(HttpHeaders.AUTHORIZATION, authorizationHeader)
 			)
-			.andDo(print())
 			.andExpect(status().isNoContent());
 	}
 
