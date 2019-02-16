@@ -5,16 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import javax.persistence.Entity;
 
 @Entity
@@ -58,7 +49,7 @@ public class AttachmentEntity implements com.matchandtrade.persistence.entity.En
 		return contentType;
 	}
 	
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="attachment_to_essence", joinColumns=@JoinColumn(name="attachment_id", foreignKey=@ForeignKey(name="attachment_to_essence_attachment_id_fk")), inverseJoinColumns = @JoinColumn(name="essence_id", foreignKey=@ForeignKey(name="attachment_to_essence_essence_id_fk")))
 	public Set<EssenceEntity> getEssences() {
 		return essences;

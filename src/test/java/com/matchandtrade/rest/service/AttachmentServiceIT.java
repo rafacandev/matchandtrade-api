@@ -1,5 +1,6 @@
 package com.matchandtrade.rest.service;
 
+import com.matchandtrade.persistence.entity.ArticleEntity;
 import com.matchandtrade.persistence.entity.AttachmentEntity;
 import com.matchandtrade.test.DefaultTestingConfiguration;
 import com.matchandtrade.test.helper.ArticleHelper;
@@ -45,6 +46,14 @@ public class AttachmentServiceIT {
 	@Test(expected = NoSuchElementException.class)
 	public void delete_When_AttachmentExists_Then_Succeeds() {
 		AttachmentEntity expected = attachmentHelper.createPersistedEntity();
+		fixture.delete(expected.getAttachmentId());
+		fixture.findByAttachmentId(expected.getAttachmentId());
+	}
+
+	@Test(expected = NoSuchElementException.class)
+	public void delete_When_AttachmentIsAssociatedToArticle_Then_Succeeds() {
+		ArticleEntity existingArticle = articleHelper.createPersistedEntity();
+		AttachmentEntity expected = attachmentHelper.createPersistedEntity(existingArticle);
 		fixture.delete(expected.getAttachmentId());
 		fixture.findByAttachmentId(expected.getAttachmentId());
 	}

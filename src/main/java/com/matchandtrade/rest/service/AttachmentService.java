@@ -94,7 +94,8 @@ public class AttachmentService {
 	}
 
 	public void delete(UUID attachmentId) {
-		attachmentRepositoryFacade.delete(attachmentId);
+
+		attachmentRepositoryFacade.deleteCascade(attachmentId);
 	}
 
 	public AttachmentEntity findByAttachmentId(UUID attachmentId) {

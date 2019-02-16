@@ -38,4 +38,9 @@ public class AttachmentRepositoryFacade {
 		Page<AttachmentEntity> page = attachmentRepository.findAttachmentsByArticleId(articleId, pageable);
 		return PersistenceUtil.buildSearchResult(pageable, page);
 	}
+
+	public void deleteCascade(UUID attachmentId) {
+		attachmentRepository.deleteArticleAttachmentAssociation(attachmentId);
+		delete(attachmentId);
+	}
 }
