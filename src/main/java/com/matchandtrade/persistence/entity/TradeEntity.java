@@ -34,7 +34,7 @@ public class TradeEntity implements com.matchandtrade.persistence.entity.Entity 
 			Objects.equals(name, that.name);
 	}
 
-	@Column(name = "description", length = 20000, nullable = true, unique = false)
+	@Column(name = "description", length = 25000, nullable = false, unique = false)
 	public String getDescription() {
 		return description;
 	}

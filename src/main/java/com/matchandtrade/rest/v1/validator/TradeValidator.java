@@ -68,8 +68,8 @@ public class TradeValidator {
 	}
 
 	private void verifyThatDescriptionIsBetween3And25000(String description) {
-		if (description != null && (description.length() < 3 || description.length() > 25000)) {
-			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.description must be between 3 and 25000 in length");
+		if (description != null && (description.length() < 10 || description.length() > 25000)) {
+			throw new RestException(HttpStatus.BAD_REQUEST, "Trade.description must be between 10 and 25000 in length");
 		}
 	}
 
