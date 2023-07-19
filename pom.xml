@@ -32,7 +32,7 @@
 
 		<chrisokasaki.tm.trade-maximizer.version>1.3c-beta</chrisokasaki.tm.trade-maximizer.version>
 
-		<com.h2database.h2.version>2.1.210</com.h2database.h2.version>
+		<com.h2database.h2.version>2.2.220</com.h2database.h2.version>
 		<org.apache.httpcomponents.httpclient>4.5.3</org.apache.httpcomponents.httpclient>
 		<apache-commons-cli>1.3.1</apache-commons-cli>
 		<org.jacoco.version>0.8.1</org.jacoco.version>
